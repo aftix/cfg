@@ -13,6 +13,7 @@ in
       ./hardware-configuration.nix
       ./machine.nix
       ./impermanence/nixos.nix
+      ./user.nix
     ];
 
     nix.nixPath = [
@@ -56,6 +57,86 @@ in
           "/var/lib/systemd/coredump"
         ];
       };
+    };
+
+    environment.systemPackages = with pkgs; [
+      stablepkgs.systemd
+      stablepkgs.dbus
+      stablepkgs.sudo
+      networkmanager-openvpn
+      pipewire
+      wireplumber
+      curl
+      btrfs-progs
+      inotify-tools
+      openssh
+      ssh-agents
+      rsync
+      gnupg
+      pinentry-curses
+      pinentry-gtk2
+      python3
+      elvish
+      carapace
+      zsh
+      git
+      jujutsu
+      libsForQt5.kwin
+      kdePackages.sddm
+      catppuccin-sddm-corners
+      hyprland
+      hyprlock
+      hypridle
+      hyprpaper
+      hyprcursor
+      waybar
+      helix
+      eza
+      dust
+      bat
+      ripgrep
+      fzf
+      ffmpeg_5
+      mpv
+      yt-dlp
+      imagemagick
+      dunst
+      kitty
+      kitty-img
+      kitty-themes
+      home-manager
+      hunspell
+      starship
+      udisks
+      udiskie
+      wl-clipboard
+      xclip
+      clipman
+    ];
+
+    fonts.packages = with pkgs; [
+      inconsolata
+      dejavu_fonts
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+      dina-font
+      proggyfonts
+      nerdfonts
+    ];
+
+    # Users
+    security.sudo = {
+      enable = true;
+      execWheelOnly = true;
+    };
+
+    users = {
+      mutableUsers = false;
+      users.root.hashedPasswordFile = "/state/passwd.root";
     };
 
     # Locales
@@ -125,123 +206,8 @@ in
       dnsovertls = "true";
     };
 
-    environment.systemPackages = with pkgs; [
-      stablepkgs.systemd
-      stablepkgs.dbus
-      stablepkgs.sudo
-      networkmanager-openvpn
-      pipewire
-      wireplumber
-      curl
-      btrfs-progs
-      inotify-tools
-      openssh
-      ssh-agents
-      rsync
-      gnupg
-      pinentry-curses
-      pinentry-gtk2
-      python3
-      elvish
-      carapace
-      zsh
-      git
-      jujutsu
-      libsForQt5.kwin
-      kdePackages.sddm
-      catppuccin-sddm-corners
-      hyprland
-      hyprlock
-      hypridle
-      hyprpaper
-      hyprcursor
-      waybar
-      helix
-      mpd
-      eza
-      dust
-      bat
-      ripgrep
-      fzf
-      ffmpeg_5
-      mpv
-      yt-dlp
-      imagemagick
-      dunst
-      kitty
-      kitty-img
-      kitty-themes
-      home-manager
-      hunspell
-      starship
-      udisks
-      udiskie
-      wl-clipboard
-      xclip
-      clipman
-    ];
-
-    fonts.packages = with pkgs; [
-      inconsolata
-      dejavu_fonts
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      dina-font
-      proggyfonts
-      nerdfonts
-    ];
-
     programs.zsh.enable = true;
     programs.ssh.startAgent = true;
-
-    # Users
-    security.sudo = {
-      enable = true;
-      execWheelOnly = true;
-    };
-
-    users.mutableUsers = false;
-
-    users.users = {
-      aftix = {
-        isNormalUser = true;
-        description = "aftix";
-        extraGroups = ["networkmanager" "wheel"];
-        shell = pkgs.zsh;
-        uid = 1000;
-        hashedPasswordFile = "/state/passwd.aftix";
-        packages = with pkgs; [
-          rustup
-          go
-          sccache
-          firefox-bin
-          ungoogled-chromium
-          pipx
-          conda
-          pavucontrol
-          mpc-cli
-          pass
-          xdotool
-          vault
-          gh
-          element-desktop
-          discord
-          betterdiscordctl
-          tofi
-          slurp
-          libnotify
-          notify-desktop
-          weechat-unwrapped
-          weechatScripts.weechat-notify-send
-          python312Packages.aria2p
-        ];
-      };
-      root.hashedPasswordFile = "/state/passwd.root";
-    };
 
     # This option defines the first version of NixOS you have installed on this particular machine,
     # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

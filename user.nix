@@ -10,7 +10,6 @@
 in
   with channels; {
     imports = [
-      ./user/mpd.nix
     ];
 
     programs.ssh.startAgent = true;
