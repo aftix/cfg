@@ -90,14 +90,6 @@ set-env OBJC_DISABLE_INITIALIZE_FORK_SAFETY "YES"
 set-env LC_ALL "en_US.UTF-8"
 
 fn upgrade {
-  var su = (external sudo)
-
-  if (has-external paru) {
-    paru -Syu
-  } elif (has-external pacman)  {
-    $su pacman -Syu
-  }
-  
   if (has-external rustup) {
     rustup update
   }
@@ -106,12 +98,8 @@ fn upgrade {
     cargo install-update --all
   }
 
-  cpan -u
-  $su cpan -u
-
   if (has-external pipx) {
     pipx upgrade-all
-    $su pipx upgrade-all
   }
 }
 
@@ -179,8 +167,6 @@ fn diff {|@a| e:diff --color=auto $@a}
 # Programs with specific options
 set edit:completion:arg-completer[sysu] = $edit:completion:arg-completer[systemctl]
 fn sysu {|@a| systemctl --user $@a }
-
-fn PU {|@a| e:paru -Syu $@a }
 
 set edit:completion:arg-completer[k] = $edit:completion:arg-completer[make]
 set edit:completion:arg-completer[kd] = $edit:completion:arg-completer[make]
@@ -301,7 +287,6 @@ if (has-external pbzip2) {
 fn abook { abook -C (path:join $E:XDG_CONFIG_HOME abook abookrc) --datafile (path:join $E:XDG_DATA_HOME abook addressbook) }
 fn mbsync { mbsync -c (path:join $E:XDG_CONFIG_HOME isync mbsyncrc) }
 
-
 set-env FZF_DEFAULT_OPTS "--layout=reverse --height 40%"
 
 # Some convience functions that are a bit more complex but not script worthy
@@ -356,6 +341,7 @@ use completions/molecule
 use completions/crev
 use jump
 use iterm2
+use nix
 
 fn add_bookmark {|@args| jump:add_bookmark $@args }
 fn remove_bookmark {|@args| jump:remove_bookmark $@args }
