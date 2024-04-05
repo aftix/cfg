@@ -1,0 +1,9 @@
+[Unit]
+Description=Refresh gpg keys every 8 hours
+
+[Timer]
+OnStartupSec=1m
+OnUnitActiveSec=8h
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=aria2 Daemon
+
+[Service]
+Type=forking
+EnvironmentFile=%h/.config/aria2/aria2d.env
+ExecStart=/usr/bin/aria2c --conf-path=%h/.config/aria2/aria2d.conf --rpc-secret="${ARIA2_RPC_TOKEN}"
+
+[Install]
+WantedBy=default.target
