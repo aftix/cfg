@@ -1,0 +1,25 @@
+backend = "gpg"
+[user]
+name = "aftix"
+email = "aftix@aftix.xyz"
+
+[ui]
+pager = "bat -p"
+
+[ui.diff]
+tool = ["kitty", "+kitten", "diff", "$left", "$right"]
+
+[signing]
+sign-all = true
+key = "C6F4434A6A4C3A74DC9569C247DB00554BA8E05F"
+
+[signing.backends]
+
+[signing.backends.gpg]
+allow-expired-keys = false
+
+[git]
+auto-local-branch = true
+
+[revsets]
+log = ".."

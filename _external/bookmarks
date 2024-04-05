@@ -1,0 +1,29 @@
+# vim: set noexpandtab:
+# bookmarks for my directories
+# Try not to conflict prefixes
+# format is name \t location \t comments
+rtd	$XDG_RUNTIME_HOME
+mdd	/run/media/aftix
+vdd	$HOME/video/download	permanant video download
+vv	$HOME/video
+dwn	$HOME/Downloads
+src	$HOME/src
+cfg	$XDG_CONFIG_HOME
+che	$XDG_CACHE_HOME
+trr	/var/lib/transmission/torrent
+arc	$HOME/archive
+img	$HOME/img
+bok	$HOME/book
+doc	$HOME/doc
+ltx	$HOME/latex
+wtc	/var/lib/transmission/watch
+mus	$HOME/music
+dot	$HOME/src/dotfiles
+nmt	$XDG_CONFIG_HOME/neomutt
+dwm	$HOME/src/dwm
+dbl	$HOME/src/dwmblocks
+loc	$HOME/.local
+shr	$HOME/.local/share
+bin	$HOME/.local/bin
+pdd	$HOME/podcast/download
+pp	$HOME/podcast
