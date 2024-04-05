@@ -1,0 +1,21 @@
+set guioptions none
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+map u scroll half-up
+map e scroll half-down
+map H toggle_page_mode
+map g zoom in
+map c zoom out
+map r reload
+map i recolor
+map p print
+map h scroll left
+map j scroll down
+map k scroll up
+map l scroll right
+map d follow
+map z quit
+map f goto 1
+map A adjust_window width
+map R rotate
