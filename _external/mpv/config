@@ -1,0 +1,21 @@
+slang=en
+vo=gpu
+video-sync=display-resample
+interpolation
+tscale=oversample
+hwdec=best
+ytdl-format=bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best
+save-position-on-quit
+sub-font='Source Han Serif JP'
+sub-auto=fuzzy
+
+[extension.gif]
+loop-file=inf
+
+[extension.jpg]
+pause
+[extension.png]
+pause
+
+no-border
+no-osc
