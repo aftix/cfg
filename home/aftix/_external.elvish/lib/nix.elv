@@ -31,7 +31,7 @@ fn rebuild_home {
   tmp pwd = $E:HOME/src/cfg
 
   echo "Rebuilding Home..."
-  home-manager switch --flake ./home/aftix 2>&1 | tee home-manager-switch.log | try {
+  home-manager switch --flake ./home/aftix -b backup 2>&1 | tee home-manager-switch.log | try {
     grep --color 'error: '
   } catch { }
 
