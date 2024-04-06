@@ -9,17 +9,22 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     impermanence.url = "github:nix-community/impermanence";
+
+    aftix.url = "path:./home/aftix";
+    aftix.inputs.nixpkgs.follows = "nixpkgs";
+    aftix.inputs.stablepkgs.follows = "stablepkgs";
   };
 
   outputs = {
-    self,
     nixpkgs,
     stablepkgs,
     home-manager,
     impermanence,
+    aftix,
     ...
   }: let
     system = "x86_64-linux";
+    lib = nixpkgs.lib // home-manager.lib;
     upkgs = import nixpkgs {
       inherit system;
       config.allowUnfreePredicate = pkg:
@@ -30,6 +35,7 @@
     };
     spkgs = import stablepkgs {inherit system;};
   in {
+    formatter = upkgs.nixfmt;
     nixosConfigurations.hamilton = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
@@ -44,8 +50,10 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.aftix = import ./aftix.nix;
+            users.root = import ./home/root/root.nix;
+            users.aftix = import ./home/aftix/aftix.nix;
             extraSpecialArgs = {
+              home-impermanence = impermanence.nixosModules.home-manager.impermanence;
               inherit upkgs;
               inherit spkgs;
             };
