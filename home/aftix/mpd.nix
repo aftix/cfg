@@ -32,5 +32,12 @@
     ];
   };
 
+  xdg.configFile."ncmpcpp/config".text = ''
+    ncmpcpp_directory = ${config.home.homeDirectory}/.config/ncmpcpp
+    lyrics_directory = ${config.home.homeDirectory}/.local/share/lyrics
+    mpd_host = 127.0.0.1
+    mpd_port = 6600
+    mpd_music_dir = ${config.home.homeDirectory}/music
+  '';
 }
 
