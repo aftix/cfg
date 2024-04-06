@@ -8,7 +8,7 @@ fn rebuild {
   tmp pwd = $E:HOME/src/cfg
 
   echo "Rebuilding NixOS..."
-    sudo nixos-rebuild switch 2>&1 | tee nixos-switch.log | try {
+  sudo nixos-rebuild switch --flake . 2>&1 | tee nixos-switch.log | try {
     grep --color 'error: '
   } catch { }
 
@@ -43,40 +43,6 @@ fn commit {
   var response = (read-upto "\n" | str:trim (all) "\n" | str:to-lower (all))
   if (has-value [n no] $response) {
     echo "Exiting."
-    return
-  }
-
-  rebuild
-}
-
-# Upgrade channels and rebuild
-fn upgrade {
-  tmp pwd = $E:HOME/src/cfg
-
-  var unstable = [(str:split "\t" (git ls-remote 'https://github.com/nixos/nixpkgs' nixos-unstable | head -n1))]
-  var stable = [(str:split "\t" (git ls-remote 'https://github.com/nixos/nixpkgs' nixos-23.11 | head -n1))]
-  var ts = (date "+%Y-%m-%d")
-
-  jj new >/dev/null 2>/dev/null
-
-  echo '{ config, stableconfig, ... }: {
-pkgs = import (builtins.fetchGit {
-  name = "nixos-unstable-'$ts'";
-  url = "https://github.com/nixos/nixpkgs";
-  ref = "'$unstable[1]'";
-  rev = "'$unstable[0]'";
-  }) {};
-stablepkgs = import (builtins.fetchGit {
-  name = "nixos-23.11-'$ts'";
-  url = "https://github.com/nixos/nixpkgs";
-  ref = "'$stable[1]'";
-  rev = "'$stable[0]'";
-}) {};
-}' > channels.nix
-
-  if (== (jj diff --no-pager --git --from @- | wc -l) 0) {
-    echo "No updates detected, exiting"
-    jj edit @- >/dev/null 2>&1
     return
   }
 
