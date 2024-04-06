@@ -1,0 +1,5110 @@
+[[grammar]]
+name = "rust"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-rust"
+rev = "0431a2c60828731f27491ee9fdefe25e250ce9c9"
+
+[[grammar]]
+name = "sway"
+
+[grammar.source]
+git = "https://github.com/FuelLabs/tree-sitter-sway"
+rev = "e491a005ee1d310f4c138bf215afd44cfebf959c"
+
+[[grammar]]
+name = "toml"
+
+[grammar.source]
+git = "https://github.com/ikatyang/tree-sitter-toml"
+rev = "7cff70bbcbbc62001b465603ca1ea88edd668704"
+
+[[grammar]]
+name = "awk"
+
+[grammar.source]
+git = "https://github.com/Beaglefoot/tree-sitter-awk"
+rev = "a799bc5da7c2a84bc9a06ba5f3540cf1191e4ee3"
+
+[[grammar]]
+name = "protobuf"
+
+[grammar.source]
+git = "https://github.com/yusdacra/tree-sitter-protobuf"
+rev = "19c211a01434d9f03efff99f85e19f967591b175"
+
+[[grammar]]
+name = "elixir"
+
+[grammar.source]
+git = "https://github.com/elixir-lang/tree-sitter-elixir"
+rev = "b20eaa75565243c50be5e35e253d8beb58f45d56"
+
+[[grammar]]
+name = "fish"
+
+[grammar.source]
+git = "https://github.com/ram02z/tree-sitter-fish"
+rev = "84436cf24c2b3176bfbb220922a0fdbd0141e406"
+
+[[grammar]]
+name = "janet-simple"
+
+[grammar.source]
+git = "https://github.com/sogaiu/tree-sitter-janet-simple"
+rev = "51271e260346878e1a1aa6c506ce6a797b7c25e2"
+
+[[grammar]]
+name = "json"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-json"
+rev = "73076754005a460947cafe8e03a8cf5fa4fa2938"
+
+[[grammar]]
+name = "json5"
+
+[grammar.source]
+git = "https://github.com/Joakker/tree-sitter-json5"
+rev = "c23f7a9b1ee7d45f516496b1e0e4be067264fa0d"
+
+[[grammar]]
+name = "c"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-c"
+rev = "7175a6dd5fc1cee660dce6fe23f6043d75af424a"
+
+[[grammar]]
+name = "cpp"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-cpp"
+rev = "670404d7c689be1c868a46f919ba2a3912f2b7ef"
+
+[[grammar]]
+name = "c-sharp"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-c-sharp"
+rev = "5b60f99545fea00a33bbfae5be956f684c4c69e2"
+
+[[grammar]]
+name = "cel"
+
+[grammar.source]
+git = "https://github.com/bufbuild/tree-sitter-cel"
+rev = "9f2b65da14c216df53933748e489db0f11121464"
+
+[[grammar]]
+name = "spicedb"
+
+[grammar.source]
+git = "https://github.com/jzelinskie/tree-sitter-spicedb"
+rev = "a4e4645651f86d6684c15dfa9931b7841dc52a66"
+
+[[grammar]]
+name = "go"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-go"
+rev = "64457ea6b73ef5422ed1687178d4545c3e91334a"
+
+[[grammar]]
+name = "gomod"
+
+[grammar.source]
+git = "https://github.com/camdencheek/tree-sitter-go-mod"
+rev = "e8f51f8e4363a3d9a427e8f63f4c1bbc5ef5d8d0"
+
+[[grammar]]
+name = "gotmpl"
+
+[grammar.source]
+git = "https://github.com/dannylongeuay/tree-sitter-go-template"
+rev = "395a33e08e69f4155156f0b90138a6c86764c979"
+
+[[grammar]]
+name = "gowork"
+
+[grammar.source]
+git = "https://github.com/omertuc/tree-sitter-go-work"
+rev = "6dd9dd79fb51e9f2abc829d5e97b15015b6a8ae2"
+
+[[grammar]]
+name = "javascript"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-javascript"
+rev = "f772967f7b7bc7c28f845be2420a38472b16a8ee"
+
+[[grammar]]
+name = "typescript"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-typescript"
+rev = "b1bf4825d9eaa0f3bdeb1e52f099533328acfbdf"
+subpath = "typescript"
+
+[[grammar]]
+name = "tsx"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-typescript"
+rev = "b1bf4825d9eaa0f3bdeb1e52f099533328acfbdf"
+subpath = "tsx"
+
+[[grammar]]
+name = "css"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-css"
+rev = "769203d0f9abe1a9a691ac2b9fe4bb4397a73c51"
+
+[[grammar]]
+name = "scss"
+
+[grammar.source]
+git = "https://github.com/serenadeai/tree-sitter-scss"
+rev = "c478c6868648eff49eb04a4df90d703dc45b312a"
+
+[[grammar]]
+name = "html"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-html"
+rev = "29f53d8f4f2335e61bf6418ab8958dac3282077a"
+
+[[grammar]]
+name = "python"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-python"
+rev = "4bfdd9033a2225cc95032ce77066b7aeca9e2efc"
+
+[[grammar]]
+name = "nickel"
+
+[grammar.source]
+git = "https://github.com/nickel-lang/tree-sitter-nickel"
+rev = "e1d9337864d209898a08c26b8cd4c2dd14c15148"
+
+[[grammar]]
+name = "nix"
+
+[grammar.source]
+git = "https://github.com/nix-community/tree-sitter-nix"
+rev = "1b69cf1fa92366eefbe6863c184e5d2ece5f187d"
+
+[[grammar]]
+name = "ruby"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-ruby"
+rev = "206c7077164372c596ffa8eaadb9435c28941364"
+
+[[grammar]]
+name = "bash"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-bash"
+rev = "275effdfc0edce774acf7d481f9ea195c6c403cd"
+
+[[grammar]]
+name = "php"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-php"
+rev = "f860e598194f4a71747f91789bf536b393ad4a56"
+
+[[grammar]]
+name = "php-only"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-php"
+rev = "cf1f4a0f1c01c705c1d6cf992b104028d5df0b53"
+subpath = "php_only"
+
+[[grammar]]
+name = "blade"
+
+[grammar.source]
+git = "https://github.com/EmranMR/tree-sitter-blade"
+rev = "4c66efe1e05c639c555ee70092021b8223d2f440"
+
+[[grammar]]
+name = "twig"
+
+[grammar.source]
+git = "https://github.com/gbprod/tree-sitter-twig"
+rev = "807b293fec3fead64f54c64fdf6fb05516c032b9"
+
+[[grammar]]
+name = "latex"
+
+[grammar.source]
+git = "https://github.com/latex-lsp/tree-sitter-latex"
+rev = "8c75e93cd08ccb7ce1ccab22c1fbd6360e3bcea6"
+
+[[grammar]]
+name = "bibtex"
+
+[grammar.source]
+git = "https://github.com/latex-lsp/tree-sitter-bibtex"
+rev = "ccfd77db0ed799b6c22c214fe9d2937f47bc8b34"
+
+[[grammar]]
+name = "lean"
+
+[grammar.source]
+git = "https://github.com/Julian/tree-sitter-lean"
+rev = "d98426109258b266e1e92358c5f11716d2e8f638"
+
+[[grammar]]
+name = "lpf"
+
+[grammar.source]
+git = "https://gitlab.com/TheZoq2/tree-sitter-lpf"
+rev = "db7372e60c722ca7f12ab359e57e6bf7611ab126"
+
+[[grammar]]
+name = "julia"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-julia"
+rev = "8fb38abff74652c4faddbf04d2d5bbbc6b4bae25"
+
+[[grammar]]
+name = "java"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-java"
+rev = "09d650def6cdf7f479f4b78f595e9ef5b58ce31e"
+
+[[grammar]]
+name = "smali"
+
+[grammar.source]
+git = "https://github.com/amaanq/tree-sitter-smali"
+rev = "5ae51e15c4d1ac93cba6127caf3d1f0a072c140c"
+
+[[grammar]]
+name = "ledger"
+
+[grammar.source]
+git = "https://github.com/cbarrete/tree-sitter-ledger"
+rev = "1f864fb2bf6a87fe1b48545cc6adc6d23090adf7"
+
+[[grammar]]
+name = "beancount"
+
+[grammar.source]
+git = "https://github.com/polarmutex/tree-sitter-beancount"
+rev = "f3741a3a68ade59ec894ed84a64673494d2ba8f3"
+
+[[grammar]]
+name = "ocaml"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-ocaml"
+rev = "9965d208337d88bbf1a38ad0b0fe49e5f5ec9677"
+subpath = "ocaml"
+
+[[grammar]]
+name = "ocaml-interface"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-ocaml"
+rev = "9965d208337d88bbf1a38ad0b0fe49e5f5ec9677"
+subpath = "interface"
+
+[[grammar]]
+name = "lua"
+
+[grammar.source]
+git = "https://github.com/tree-sitter-grammars/tree-sitter-lua"
+rev = "88e446476a1e97a8724dff7a23e2d709855077f2"
+
+[[grammar]]
+name = "svelte"
+
+[grammar.source]
+git = "https://github.com/Himujjal/tree-sitter-svelte"
+rev = "be7f2e7db1fc19f0852265ec60923fc058380739"
+
+[[grammar]]
+name = "vue"
+
+[grammar.source]
+git = "https://github.com/ikatyang/tree-sitter-vue"
+rev = "91fe2754796cd8fba5f229505a23fa08f3546c06"
+
+[[grammar]]
+name = "yaml"
+
+[grammar.source]
+git = "https://github.com/ikatyang/tree-sitter-yaml"
+rev = "0e36bed171768908f331ff7dff9d956bae016efb"
+
+[[grammar]]
+name = "haskell"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-haskell"
+rev = "d7ac98f49e3ed7e17541256fe3881a967d7ffdd3"
+
+[[grammar]]
+name = "haskell-persistent"
+
+[grammar.source]
+git = "https://github.com/MercuryTechnologies/tree-sitter-haskell-persistent"
+rev = "58a6ccfd56d9f1de8fb9f77e6c42151f8f0d0f3d"
+
+[[grammar]]
+name = "purescript"
+
+[grammar.source]
+git = "https://github.com/postsolar/tree-sitter-purescript"
+rev = "5ef5592674ea42de75fc2792972e4ea0b6e3da6c"
+
+[[grammar]]
+name = "zig"
+
+[grammar.source]
+git = "https://github.com/maxxnino/tree-sitter-zig"
+rev = "0d08703e4c3f426ec61695d7617415fff97029bd"
+
+[[grammar]]
+name = "tsq"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-tsq"
+rev = "48b5e9f82ae0a4727201626f33a17f69f8e0ff86"
+
+[[grammar]]
+name = "cmake"
+
+[grammar.source]
+git = "https://github.com/uyha/tree-sitter-cmake"
+rev = "6e51463ef3052dd3b328322c22172eda093727ad"
+
+[[grammar]]
+name = "make"
+
+[grammar.source]
+git = "https://github.com/alemuller/tree-sitter-make"
+rev = "a4b9187417d6be349ee5fd4b6e77b4172c6827dd"
+
+[[grammar]]
+name = "glsl"
+
+[grammar.source]
+git = "https://github.com/theHamsta/tree-sitter-glsl"
+rev = "88408ffc5e27abcffced7010fc77396ae3636d7e"
+
+[[grammar]]
+name = "perl"
+
+[grammar.source]
+git = "https://github.com/tree-sitter-perl/tree-sitter-perl"
+rev = "e99bb5283805db4cb86c964722d709df21b0ac16"
+
+[[grammar]]
+name = "pod"
+
+[grammar.source]
+git = "https://github.com/tree-sitter-perl/tree-sitter-pod"
+rev = "39da859947b94abdee43e431368e1ae975c0a424"
+
+[[grammar]]
+name = "comment"
+
+[grammar.source]
+git = "https://github.com/stsewd/tree-sitter-comment"
+rev = "aefcc2813392eb6ffe509aa0fc8b4e9b57413ee1"
+
+[[grammar]]
+name = "wgsl"
+
+[grammar.source]
+git = "https://github.com/szebniok/tree-sitter-wgsl"
+rev = "272e89ef2aeac74178edb9db4a83c1ffef80a463"
+
+[[grammar]]
+name = "llvm"
+
+[grammar.source]
+git = "https://github.com/benwilliamgraham/tree-sitter-llvm"
+rev = "e9948edc41e9e5869af99dddb2b5ff5cc5581af6"
+
+[[grammar]]
+name = "llvm-mir"
+
+[grammar.source]
+git = "https://github.com/Flakebi/tree-sitter-llvm-mir"
+rev = "06fabca19454b2dc00c1b211a7cb7ad0bc2585f1"
+
+[[grammar]]
+name = "tablegen"
+
+[grammar.source]
+git = "https://github.com/Flakebi/tree-sitter-tablegen"
+rev = "568dd8a937347175fd58db83d4c4cdaeb6069bd2"
+
+[[grammar]]
+name = "markdown"
+
+[grammar.source]
+git = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+rev = "62516e8c78380e3b51d5b55727995d2c511436d8"
+subpath = "tree-sitter-markdown"
+
+[[grammar]]
+name = "markdown_inline"
+
+[grammar.source]
+git = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+rev = "62516e8c78380e3b51d5b55727995d2c511436d8"
+subpath = "tree-sitter-markdown-inline"
+
+[[grammar]]
+name = "dart"
+
+[grammar.source]
+git = "https://github.com/UserNobody14/tree-sitter-dart"
+rev = "e398400a0b785af3cf571f5a57eccab242f0cdf9"
+
+[[grammar]]
+name = "scala"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-scala"
+rev = "7891815f42dca9ed6aeb464c2edc39d479ab965c"
+
+[[grammar]]
+name = "dockerfile"
+
+[grammar.source]
+git = "https://github.com/camdencheek/tree-sitter-dockerfile"
+rev = "8ee3a0f7587b2bd8c45c8cb7d28bd414604aec62"
+
+[[grammar]]
+name = "git-commit"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-git-commit"
+rev = "6f193a66e9aa872760823dff020960c6cedc37b3"
+
+[[grammar]]
+name = "diff"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-diff"
+rev = "fd74c78fa88a20085dbc7bbeaba066f4d1692b63"
+
+[[grammar]]
+name = "git-rebase"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-git-rebase"
+rev = "d8a4207ebbc47bd78bacdf48f883db58283f9fd8"
+
+[[grammar]]
+name = "regex"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-regex"
+rev = "e1cfca3c79896ff79842f057ea13e529b66af636"
+
+[[grammar]]
+name = "git-config"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-git-config"
+rev = "9c2a1b7894e6d9eedfe99805b829b4ecd871375e"
+
+[[grammar]]
+name = "gitattributes"
+
+[grammar.source]
+git = "https://github.com/mtoohey31/tree-sitter-gitattributes"
+rev = "3dd50808e3096f93dccd5e9dc7dc3dba2eb12dc4"
+
+[[grammar]]
+name = "gitignore"
+
+[grammar.source]
+git = "https://github.com/shunsambongi/tree-sitter-gitignore"
+rev = "f4685bf11ac466dd278449bcfe5fd014e94aa504"
+
+[[grammar]]
+name = "graphql"
+
+[grammar.source]
+git = "https://github.com/bkegley/tree-sitter-graphql"
+rev = "5e66e961eee421786bdda8495ed1db045e06b5fe"
+
+[[grammar]]
+name = "elm"
+
+[grammar.source]
+git = "https://github.com/elm-tooling/tree-sitter-elm"
+rev = "df4cb639c01b76bc9ac9cc66788709a6da20002c"
+
+[[grammar]]
+name = "iex"
+
+[grammar.source]
+git = "https://github.com/elixir-lang/tree-sitter-iex"
+rev = "39f20bb51f502e32058684e893c0c0b00bb2332c"
+
+[[grammar]]
+name = "rescript"
+
+[grammar.source]
+git = "https://github.com/jaredramirez/tree-sitter-rescript"
+rev = "467dcf99f68c47823d7b378779a6b282d7ef9782"
+
+[[grammar]]
+name = "erlang"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-erlang"
+rev = "9d4b36a76d5519e3dbf1ec4f4b61bb1a293f584c"
+
+[[grammar]]
+name = "kotlin"
+
+[grammar.source]
+git = "https://github.com/fwcd/tree-sitter-kotlin"
+rev = "a4f71eb9b8c9b19ded3e0e9470be4b1b77c2b569"
+
+[[grammar]]
+name = "hcl"
+
+[grammar.source]
+git = "https://github.com/MichaHoffmann/tree-sitter-hcl"
+rev = "3cb7fc28247efbcb2973b97e71c78838ad98a583"
+
+[[grammar]]
+name = "org"
+
+[grammar.source]
+git = "https://github.com/milisims/tree-sitter-org"
+rev = "698bb1a34331e68f83fc24bdd1b6f97016bb30de"
+
+[[grammar]]
+name = "solidity"
+
+[grammar.source]
+git = "https://github.com/JoranHonig/tree-sitter-solidity"
+rev = "9004b86531cb424bd379424cf7266a4585f2af7d"
+
+[[grammar]]
+name = "gleam"
+
+[grammar.source]
+git = "https://github.com/gleam-lang/tree-sitter-gleam"
+rev = "bcf9c45b56cbe46e9dac5eee0aee75df270000ac"
+
+[[grammar]]
+name = "ron"
+
+[grammar.source]
+git = "https://github.com/zee-editor/tree-sitter-ron"
+rev = "7762d709a0f7c1f9e269d0125a2e8a7a69006146"
+
+[[grammar]]
+name = "robot"
+
+[grammar.source]
+git = "https://github.com/Hubro/tree-sitter-robot"
+rev = "322e4cc65754d2b3fdef4f2f8a71e0762e3d13af"
+
+[[grammar]]
+name = "r"
+
+[grammar.source]
+git = "https://github.com/r-lib/tree-sitter-r"
+rev = "cc04302e1bff76fa02e129f332f44636813b0c3c"
+
+[[grammar]]
+name = "swift"
+
+[grammar.source]
+git = "https://github.com/alex-pinkus/tree-sitter-swift"
+rev = "b1b66955d420d5cf5ff268ae552f0d6e43ff66e1"
+
+[[grammar]]
+name = "embedded-template"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-embedded-template"
+rev = "d21df11b0ecc6fd211dbe11278e92ef67bd17e97"
+
+[[grammar]]
+name = "eex"
+
+[grammar.source]
+git = "https://github.com/connorlay/tree-sitter-eex"
+rev = "f742f2fe327463335e8671a87c0b9b396905d1d1"
+
+[[grammar]]
+name = "heex"
+
+[grammar.source]
+git = "https://github.com/phoenixframework/tree-sitter-heex"
+rev = "2e1348c3cf2c9323e87c2744796cf3f3868aa82a"
+
+[[grammar]]
+name = "sql"
+
+[grammar.source]
+git = "https://github.com/DerekStride/tree-sitter-sql"
+rev = "da2d1eff425b146d3c8cab7be8dfa98b11d896dc"
+
+[[grammar]]
+name = "gdscript"
+
+[grammar.source]
+git = "https://github.com/PrestonKnopp/tree-sitter-gdscript"
+rev = "a4b57cc3bcbfc24550e858159647e9238e7ad1ac"
+
+[[grammar]]
+name = "godot-resource"
+
+[grammar.source]
+git = "https://github.com/PrestonKnopp/tree-sitter-godot-resource"
+rev = "b6ef0768711086a86b3297056f9ffb5cc1d77b4a"
+
+[[grammar]]
+name = "nu"
+
+[grammar.source]
+git = "https://github.com/nushell/tree-sitter-nu"
+rev = "358c4f509eb97f0148bbd25ad36acc729819b9c1"
+
+[[grammar]]
+name = "vala"
+
+[grammar.source]
+git = "https://github.com/vala-lang/tree-sitter-vala"
+rev = "c9eea93ba2ec4ec1485392db11945819779745b3"
+
+[[grammar]]
+name = "hare"
+
+[grammar.source]
+git = "https://git.sr.ht/~ecmma/tree-sitter-hare"
+rev = "2495958aaf3f93581c87ec020164255e80655331"
+
+[[grammar]]
+name = "devicetree"
+
+[grammar.source]
+git = "https://github.com/joelspadin/tree-sitter-devicetree"
+rev = "877adbfa0174d25894c40fa75ad52d4515a36368"
+
+[[grammar]]
+name = "cpon"
+
+[grammar.source]
+git = "https://github.com/fvacek/tree-sitter-cpon"
+rev = "0d01fcdae5a53191df5b1349f9bce053833270e7"
+
+[[grammar]]
+name = "odin"
+
+[grammar.source]
+git = "https://github.com/ap29600/tree-sitter-odin"
+rev = "b219207e49ffca2952529d33e94ed63b1b75c4f1"
+
+[[grammar]]
+name = "meson"
+
+[grammar.source]
+git = "https://github.com/staysail/tree-sitter-meson"
+rev = "32a83e8f200c347232fa795636cfe60dde22957a"
+
+[[grammar]]
+name = "sshclientconfig"
+
+[grammar.source]
+git = "https://github.com/metio/tree-sitter-ssh-client-config"
+rev = "e45c6d5c71657344d4ecaf87dafae7736f776c57"
+
+[[grammar]]
+name = "scheme"
+
+[grammar.source]
+git = "https://github.com/6cdh/tree-sitter-scheme"
+rev = "af3af6c9356b936f8a515a1e449c32e804c2b1a8"
+
+[[grammar]]
+name = "v"
+
+[grammar.source]
+git = "https://github.com/v-analyzer/v-analyzer"
+rev = "e14fdf6e661b10edccc744102e4ccf0b187aa8ad"
+subpath = "tree_sitter_v"
+
+[[grammar]]
+name = "verilog"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-verilog"
+rev = "4457145e795b363f072463e697dfe2f6973c9a52"
+
+[[grammar]]
+name = "edoc"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-edoc"
+rev = "74774af7b45dd9cefbf9510328fc6ff2374afc50"
+
+[[grammar]]
+name = "jsdoc"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-jsdoc"
+rev = "189a6a4829beb9cdbe837260653b4a3dfb0cc3db"
+
+[[grammar]]
+name = "openscad"
+
+[grammar.source]
+git = "https://github.com/bollian/tree-sitter-openscad"
+rev = "5c3ce93df0ac1da7197cf6ae125aade26d6b8972"
+
+[[grammar]]
+name = "prisma"
+
+[grammar.source]
+git = "https://github.com/victorhqc/tree-sitter-prisma"
+rev = "eca2596a355b1a9952b4f80f8f9caed300a272b5"
+
+[[grammar]]
+name = "clojure"
+
+[grammar.source]
+git = "https://github.com/sogaiu/tree-sitter-clojure"
+rev = "e57c569ae332ca365da623712ae1f50f84daeae2"
+
+[[grammar]]
+name = "elvish"
+
+[grammar.source]
+git = "https://github.com/ckafi/tree-sitter-elvish"
+rev = "e50787cadd3bc54f6d9c0704493a79078bb8a4e5"
+
+[[grammar]]
+name = "fortran"
+
+[grammar.source]
+git = "https://github.com/stadelmanma/tree-sitter-fortran"
+rev = "f0f2f100952a353e64e26b0fa710b4c296d7af13"
+
+[[grammar]]
+name = "ungrammar"
+
+[grammar.source]
+git = "https://github.com/Philipp-M/tree-sitter-ungrammar"
+rev = "a7e104629cff5a8b7367187610631e8f5eb7c6ea"
+
+[[grammar]]
+name = "dot"
+
+[grammar.source]
+git = "https://github.com/rydesun/tree-sitter-dot"
+rev = "917230743aa10f45a408fea2ddb54bbbf5fbe7b7"
+
+[[grammar]]
+name = "cue"
+
+[grammar.source]
+git = "https://github.com/eonpatapon/tree-sitter-cue"
+rev = "61843e3beebf19417e4fede4e8be4df1084317ad"
+
+[[grammar]]
+name = "slint"
+
+[grammar.source]
+git = "https://github.com/slint-ui/tree-sitter-slint"
+rev = "3c82235f41b63f35a01ae3888206e93585cbb84a"
+
+[[grammar]]
+name = "task"
+
+[grammar.source]
+git = "https://github.com/alexanderbrevig/tree-sitter-task"
+rev = "f2cb435c5dbf3ee19493e224485d977cb2d36d8b"
+
+[[grammar]]
+name = "xit"
+
+[grammar.source]
+git = "https://github.com/synaptiko/tree-sitter-xit"
+rev = "7d7902456061bc2ad21c64c44054f67b5515734c"
+
+[[grammar]]
+name = "esdl"
+
+[grammar.source]
+git = "https://github.com/greym0uth/tree-sitter-esdl"
+rev = "df83acc8cacd0cfb139eecee0e718dc32c4f92e2"
+
+[[grammar]]
+name = "pascal"
+
+[grammar.source]
+git = "https://github.com/Isopod/tree-sitter-pascal"
+rev = "2fd40f477d3e2794af152618ccfac8d92eb72a66"
+
+[[grammar]]
+name = "sml"
+
+[grammar.source]
+git = "https://github.com/Giorbo/tree-sitter-sml"
+rev = "bd4055d5554614520d4a0706b34dc0c317c6b608"
+
+[[grammar]]
+name = "jsonnet"
+
+[grammar.source]
+git = "https://github.com/sourcegraph/tree-sitter-jsonnet"
+rev = "0475a5017ad7dc84845d1d33187f2321abcb261d"
+
+[[grammar]]
+name = "ada"
+
+[grammar.source]
+git = "https://github.com/briot/tree-sitter-ada"
+rev = "ba0894efa03beb70780156b91e28c716b7a4764d"
+
+[[grammar]]
+name = "astro"
+
+[grammar.source]
+git = "https://github.com/virchau13/tree-sitter-astro"
+rev = "947e93089e60c66e681eba22283f4037841451e7"
+
+[[grammar]]
+name = "bass"
+
+[grammar.source]
+git = "https://github.com/vito/tree-sitter-bass"
+rev = "501133e260d768ed4e1fd7374912ed5c86d6fd90"
+
+[[grammar]]
+name = "wat"
+
+[grammar.source]
+git = "https://github.com/wasm-lsp/tree-sitter-wasm"
+rev = "2ca28a9f9d709847bf7a3de0942a84e912f59088"
+subpath = "wat"
+
+[[grammar]]
+name = "wast"
+
+[grammar.source]
+git = "https://github.com/wasm-lsp/tree-sitter-wasm"
+rev = "2ca28a9f9d709847bf7a3de0942a84e912f59088"
+subpath = "wast"
+
+[[grammar]]
+name = "d"
+
+[grammar.source]
+git = "https://github.com/gdamore/tree-sitter-d"
+rev = "5566f8ce8fc24186fad06170bbb3c8d97c935d74"
+
+[[grammar]]
+name = "vhs"
+
+[grammar.source]
+git = "https://github.com/charmbracelet/tree-sitter-vhs"
+rev = "9534865e614c95eb9418e5e73f061c32fa4d9540"
+
+[[grammar]]
+name = "kdl"
+
+[grammar.source]
+git = "https://github.com/amaanq/tree-sitter-kdl"
+rev = "3ca569b9f9af43593c24f9e7a21f02f43a13bb88"
+
+[[grammar]]
+name = "xml"
+
+[grammar.source]
+git = "https://github.com/RenjiSann/tree-sitter-xml"
+rev = "48a7c2b6fb9d515577e115e6788937e837815651"
+
+[[grammar]]
+name = "dtd"
+
+[grammar.source]
+git = "https://github.com/KMikeeU/tree-sitter-dtd"
+rev = "6116becb02a6b8e9588ef73d300a9ba4622e156f"
+
+[[grammar]]
+name = "wit"
+
+[grammar.source]
+git = "https://github.com/hh9527/tree-sitter-wit"
+rev = "c917790ab9aec50c5fd664cbfad8dd45110cfff3"
+
+[[grammar]]
+name = "ini"
+
+[grammar.source]
+git = "https://github.com/justinmk/tree-sitter-ini"
+rev = "4d247fb876b4ae6b347687de4a179511bf67fcbc"
+
+[[grammar]]
+name = "bicep"
+
+[grammar.source]
+git = "https://github.com/the-mikedavis/tree-sitter-bicep"
+rev = "d8e097fcfa143854861ef737161163a09cc2916b"
+
+[[grammar]]
+name = "qmljs"
+
+[grammar.source]
+git = "https://github.com/yuja/tree-sitter-qmljs"
+rev = "0b2b25bcaa7d4925d5f0dda16f6a99c588a437f1"
+
+[[grammar]]
+name = "mermaid"
+
+[grammar.source]
+git = "https://github.com/monaqa/tree-sitter-mermaid"
+rev = "d787c66276e7e95899230539f556e8b83ee16f6d"
+
+[[grammar]]
+name = "matlab"
+
+[grammar.source]
+git = "https://github.com/acristoffers/tree-sitter-matlab"
+rev = "6071891a8c39600203eba20513666cf93b4d650a"
+
+[[grammar]]
+name = "ponylang"
+
+[grammar.source]
+git = "https://github.com/mfelsche/tree-sitter-ponylang"
+rev = "ef66b151bc2604f431b5668fcec4747db4290e11"
+
+[[grammar]]
+name = "dhall"
+
+[grammar.source]
+git = "https://github.com/jbellerb/tree-sitter-dhall"
+rev = "affb6ee38d629c9296749767ab832d69bb0d9ea8"
+
+[[grammar]]
+name = "pem"
+
+[grammar.source]
+git = "https://github.com/mtoohey31/tree-sitter-pem"
+rev = "be67a4330a1aa507c7297bc322204f936ec1132c"
+
+[[grammar]]
+name = "passwd"
+
+[grammar.source]
+git = "https://github.com/ath3/tree-sitter-passwd"
+rev = "20239395eacdc2e0923a7e5683ad3605aee7b716"
+
+[[grammar]]
+name = "hosts"
+
+[grammar.source]
+git = "https://github.com/ath3/tree-sitter-hosts"
+rev = "301b9379ce7dfc8bdbe2c2699a6887dcb73953f9"
+
+[[grammar]]
+name = "uxntal"
+
+[grammar.source]
+git = "https://github.com/Jummit/tree-sitter-uxntal"
+rev = "d68406066648cd6db4c6a2f11ec305af02079884"
+
+[[grammar]]
+name = "yuck"
+
+[grammar.source]
+git = "https://github.com/Philipp-M/tree-sitter-yuck"
+rev = "e3d91a3c65decdea467adebe4127b8366fa47919"
+
+[[grammar]]
+name = "prql"
+
+[grammar.source]
+git = "https://github.com/PRQL/tree-sitter-prql"
+rev = "09e158cd3650581c0af4c49c2e5b10c4834c8646"
+
+[[grammar]]
+name = "po"
+
+[grammar.source]
+git = "https://github.com/erasin/tree-sitter-po"
+rev = "417cee9abb2053ed26b19e7de972398f2da9b29e"
+
+[[grammar]]
+name = "nasm"
+
+[grammar.source]
+git = "https://github.com/naclsn/tree-sitter-nasm"
+rev = "a0db15db6fcfb1bf2cc8702500e55e558825c48b"
+
+[[grammar]]
+name = "gas"
+
+[grammar.source]
+git = "https://github.com/sirius94/tree-sitter-gas"
+rev = "60f443646b20edee3b7bf18f3a4fb91dc214259a"
+
+[[grammar]]
+name = "rst"
+
+[grammar.source]
+git = "https://github.com/stsewd/tree-sitter-rst"
+rev = "25e6328872ac3a764ba8b926aea12719741103f1"
+
+[[grammar]]
+name = "capnp"
+
+[grammar.source]
+git = "https://github.com/amaanq/tree-sitter-capnp"
+rev = "fc6e2addf103861b9b3dffb82c543eb6b71061aa"
+
+[[grammar]]
+name = "smithy"
+
+[grammar.source]
+git = "https://github.com/indoorvivants/tree-sitter-smithy"
+rev = "8327eb84d55639ffbe08c9dc82da7fff72a1ad07"
+
+[[grammar]]
+name = "vhdl"
+
+[grammar.source]
+git = "https://github.com/teburd/tree-sitter-vhdl"
+rev = "c57313adee2231100db0a7880033f6865deeadb2"
+
+[[grammar]]
+name = "rego"
+
+[grammar.source]
+git = "https://github.com/FallenAngel97/tree-sitter-rego"
+rev = "9ac75e71b2d791e0aadeef68098319d86a2a14cf"
+
+[[grammar]]
+name = "nim"
+
+[grammar.source]
+git = "https://github.com/alaviss/tree-sitter-nim"
+rev = "c5f0ce3b65222f5dbb1a12f9fe894524881ad590"
+
+[[grammar]]
+name = "hurl"
+
+[grammar.source]
+git = "https://github.com/pfeiferj/tree-sitter-hurl"
+rev = "cd1a0ada92cc73dd0f4d7eedc162be4ded758591"
+
+[[grammar]]
+name = "markdoc"
+
+[grammar.source]
+git = "https://github.com/markdoc-extra/tree-sitter-markdoc"
+rev = "5ffe71b29e8a3f94823913ea9cea51fcfa7e3bf8"
+
+[[grammar]]
+name = "opencl"
+
+[grammar.source]
+git = "https://github.com/lefp/tree-sitter-opencl"
+rev = "8e1d24a57066b3cd1bb9685bbc1ca9de5c1b78fb"
+
+[[grammar]]
+name = "just"
+
+[grammar.source]
+git = "https://github.com/IndianBoy42/tree-sitter-just"
+rev = "8af0aab79854aaf25b620a52c39485849922f766"
+
+[[grammar]]
+name = "gn"
+
+[grammar.source]
+git = "https://github.com/willcassella/tree-sitter-gn"
+rev = "e18d6e36a79b20dafb58f19d407bd38b0e60260e"
+
+[[grammar]]
+name = "blueprint"
+
+[grammar.source]
+git = "https://gitlab.com/gabmus/tree-sitter-blueprint"
+rev = "863cea9f83ad5637300478e0559262f1e791684b"
+
+[[grammar]]
+name = "forth"
+
+[grammar.source]
+git = "https://github.com/alexanderbrevig/tree-sitter-forth"
+rev = "90189238385cf636b9ee99ce548b9e5b5e569d48"
+
+[[grammar]]
+name = "fsharp"
+
+[grammar.source]
+git = "https://github.com/kaashyapan/tree-sitter-fsharp"
+rev = "18da392fd9bd5e79f357abcce13f61f3a15e3951"
+
+[[grammar]]
+name = "t32"
+
+[grammar.source]
+git = "https://gitlab.com/xasc/tree-sitter-t32"
+rev = "6da5e3cbabd376b566d04282005e52ffe67ef74a"
+
+[[grammar]]
+name = "typst"
+
+[grammar.source]
+git = "https://github.com/uben0/tree-sitter-typst"
+rev = "ecf8596336857adfcd5f7cbb3b2aa11a67badc37"
+
+[[grammar]]
+name = "jinja2"
+
+[grammar.source]
+git = "https://github.com/varpeti/tree-sitter-jinja2"
+rev = "a533cd3c33aea6acb0f9bf9a56f35dcfe6a8eb53"
+
+[[grammar]]
+name = "wren"
+
+[grammar.source]
+git = "https://git.sr.ht/~jummit/tree-sitter-wren"
+rev = "6748694be32f11e7ec6b5faeb1b48ca6156d4e06"
+
+[[grammar]]
+name = "unison"
+
+[grammar.source]
+git = "https://github.com/kylegoetz/tree-sitter-unison"
+rev = "1f505e2447fa876a87aee47ff3d70b9e141c744f"
+
+[[grammar]]
+name = "todotxt"
+
+[grammar.source]
+git = "https://github.com/arnarg/tree-sitter-todotxt"
+rev = "0207f6a4ab6aeafc4b091914d31d8235049a2578"
+
+[[grammar]]
+name = "strace"
+
+[grammar.source]
+git = "https://github.com/sigmaSd/tree-sitter-strace"
+rev = "2b18fdf9a01e7ec292cc6006724942c81beb7fd5"
+
+[[grammar]]
+name = "gemini"
+
+[grammar.source]
+git = "https://git.sr.ht/~nbsp/tree-sitter-gemini"
+rev = "3cc5e4bdf572d5df4277fc2e54d6299bd59a54b3"
+
+[[grammar]]
+name = "agda"
+
+[grammar.source]
+git = "https://github.com/tree-sitter/tree-sitter-agda"
+rev = "c21c3a0f996363ed17b8ac99d827fe5a4821f217"
+
+[[grammar]]
+name = "templ"
+
+[grammar.source]
+git = "https://github.com/vrischmann/tree-sitter-templ"
+rev = "ea56ac0655243490a4929a988f4eaa91dfccc995"
+
+[[grammar]]
+name = "dbml"
+
+[grammar.source]
+git = "https://github.com/dynamotn/tree-sitter-dbml"
+rev = "2e2fa5640268c33c3d3f27f7e676f631a9c68fd9"
+
+[[grammar]]
+name = "log"
+
+[grammar.source]
+git = "https://github.com/Tudyx/tree-sitter-log"
+rev = "62cfe307e942af3417171243b599cc7deac5eab9"
+
+[[grammar]]
+name = "hoon"
+
+[grammar.source]
+git = "https://github.com/urbit-pilled/tree-sitter-hoon"
+rev = "1d5df35af3e0afe592832a67b9fb3feeeba1f7b6"
+
+[[grammar]]
+name = "hocon"
+
+[grammar.source]
+git = "https://github.com/antosha417/tree-sitter-hocon"
+rev = "c390f10519ae69fdb03b3e5764f5592fb6924bcc"
+
+[[grammar]]
+name = "koka"
+
+[grammar.source]
+git = "https://github.com/mtoohey31/tree-sitter-koka"
+rev = "2527e152d4b6a79fd50aebd8d0b4b4336c94a034"
+
+[[grammar]]
+name = "tact"
+
+[grammar.source]
+git = "https://github.com/tact-lang/tree-sitter-tact"
+rev = "ec57ab29c86d632639726631fb2bb178d23e1c91"
+
+[[grammar]]
+name = "pkl"
+
+[grammar.source]
+git = "https://github.com/apple/tree-sitter-pkl"
+rev = "c03f04a313b712f8ab00a2d862c10b37318699ae"
+
+[[grammar]]
+name = "groovy"
+
+[grammar.source]
+git = "https://github.com/murtaza64/tree-sitter-groovy"
+rev = "235009aad0f580211fc12014bb0846c3910130c1"
+
+[[grammar]]
+name = "fidl"
+
+[grammar.source]
+git = "https://github.com/google/tree-sitter-fidl"
+rev = "bdbb635a7f5035e424f6173f2f11b9cd79703f8d"
+
+[[grammar]]
+name = "powershell"
+
+[grammar.source]
+git = "https://github.com/airbus-cert/tree-sitter-powershell"
+rev = "c9316be0faca5d5b9fd3b57350de650755f42dc0"
+
+[[grammar]]
+name = "ld"
+
+[grammar.source]
+git = "https://github.com/mtoohey31/tree-sitter-ld"
+rev = "81978cde3844bfc199851e39c80a20ec6444d35e"
+
+[[grammar]]
+name = "hyprlang"
+
+[grammar.source]
+git = "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"
+rev = "27af9b74acf89fa6bed4fb8cb8631994fcb2e6f3"
+
+[[grammar]]
+name = "supercollider"
+
+[grammar.source]
+git = "https://github.com/madskjeldgaard/tree-sitter-supercollider"
+rev = "3b35bd0fded4423c8fb30e9585c7bacbcd0e8095"
+
+[[grammar]]
+name = "glimmer"
+
+[grammar.source]
+git = "https://github.com/ember-tooling/tree-sitter-glimmer"
+rev = "5dc6d1040e8ff8978ff3680e818d85447bbc10aa"
+
+[[grammar]]
+name = "ohm"
+
+[grammar.source]
+git = "https://github.com/novusnota/tree-sitter-ohm"
+rev = "80f14f0e477ddacc1e137d5ed8e830329e3fb7a3"
+
+[[language]]
+auto-format = true
+comment-tokens = ["//", "///", "//!"]
+file-types = ["rs"]
+injection-regex = "rust"
+language-servers = ["rust-analyzer"]
+name = "rust"
+persistent-diagnostic-sources = ["rustc", "clippy"]
+roots = ["Cargo.toml", "Cargo.lock"]
+scope = "source.rust"
+
+[[language.block-comment-tokens]]
+end = "*/"
+start = "/*"
+
+[[language.block-comment-tokens]]
+end = "*/"
+start = "/**"
+
+[[language.block-comment-tokens]]
+end = "*/"
+start = "/*!"
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"`" = "`"
+"{" = "}"
+
+[language.debugger]
+command = "lldb-vscode"
+name = "lldb-vscode"
+transport = "stdio"
+
+[[language.debugger.templates]]
+name = "binary"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[language.debugger.templates.args]
+program = "{0}"
+
+[[language.debugger.templates]]
+name = "binary (terminal)"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[language.debugger.templates.args]
+program = "{0}"
+runInTerminal = true
+
+[[language.debugger.templates]]
+completion = ["pid"]
+name = "attach"
+request = "attach"
+
+[language.debugger.templates.args]
+pid = "{0}"
+
+[[language.debugger.templates]]
+completion = [{default = "connect://localhost:3333", name = "lldb connect url"}, {completion = "filename", name = "file"}, "pid"]
+name = "gdbserver attach"
+request = "attach"
+
+[language.debugger.templates.args]
+attachCommands = ["platform select remote-gdb-server", "platform connect {0}", "file {1}", "attach {2}"]
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "//"
+file-types = ["sw"]
+injection-regex = "sway"
+language-servers = ["forc"]
+name = "sway"
+roots = ["Forc.toml", "Forc.lock"]
+scope = "source.sway"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["toml", {glob = "poetry.lock"}, {glob = "Cargo.lock"}]
+injection-regex = "toml"
+language-servers = ["taplo"]
+name = "toml"
+scope = "source.toml"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["awk", "gawk", "nawk", "mawk"]
+injection-regex = "awk"
+language-servers = ["awk-language-server"]
+name = "awk"
+scope = "source.awk"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["proto"]
+injection-regex = "protobuf"
+language-servers = ["bufls", "pbkit"]
+name = "protobuf"
+scope = "source.proto"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["ex", "exs", {glob = "mix.lock"}]
+injection-regex = "(elixir|ex)"
+language-servers = ["elixir-ls"]
+name = "elixir"
+roots = ["mix.exs", "mix.lock"]
+scope = "source.elixir"
+shebangs = ["elixir"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "#"
+file-types = ["fish"]
+injection-regex = "fish"
+name = "fish"
+scope = "source.fish"
+shebangs = ["fish"]
+
+[language.formatter]
+command = "fish_indent"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "//"
+file-types = ["mint"]
+injection-regex = "mint"
+language-servers = ["mint"]
+name = "mint"
+scope = "source.mint"
+shebangs = []
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["cgen", "janet", "jdn"]
+grammar = "janet-simple"
+injection-regex = "janet"
+name = "janet"
+roots = ["project.janet"]
+scope = "source.janet"
+shebangs = ["janet"]
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"`" = "`"
+"{" = "}"
+
+[language.formatter]
+command = "janet-format"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+file-types = ["json", "arb", "ipynb", "geojson", "gltf", "webmanifest", {glob = "flake.lock"}, {glob = ".babelrc"}, {glob = ".bowerrc"}, {glob = ".jscrc"}, "js.map", "ts.map", "css.map", {glob = ".jslintrc"}, "jsonld", {glob = ".vuerc"}, {glob = "composer.lock"}, {glob = ".watchmanconfig"}, "avsc", {glob = ".prettierrc"}]
+injection-regex = "json"
+language-servers = ["vscode-json-language-server"]
+name = "json"
+scope = "source.json"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+file-types = ["jsonc"]
+grammar = "json"
+injection-regex = "jsonc"
+language-servers = ["vscode-json-language-server"]
+name = "jsonc"
+scope = "source.json"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["json5"]
+injection-regex = "json5"
+language-servers = []
+name = "json5"
+scope = "source.json5"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "//"
+file-types = ["c"]
+injection-regex = "c"
+language-servers = ["clangd"]
+name = "c"
+scope = "source.c"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.debugger]
+command = "lldb-vscode"
+name = "lldb-vscode"
+transport = "stdio"
+
+[[language.debugger.templates]]
+name = "binary"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[language.debugger.templates.args]
+console = "internalConsole"
+program = "{0}"
+
+[[language.debugger.templates]]
+completion = ["pid"]
+name = "attach"
+request = "attach"
+
+[language.debugger.templates.args]
+console = "internalConsole"
+pid = "{0}"
+
+[[language.debugger.templates]]
+completion = [{default = "connect://localhost:3333", name = "lldb connect url"}, {completion = "filename", name = "file"}, "pid"]
+name = "gdbserver attach"
+request = "attach"
+
+[language.debugger.templates.args]
+attachCommands = ["platform select remote-gdb-server", "platform connect {0}", "file {1}", "attach {2}"]
+console = "internalConsole"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["cc", "hh", "c++", "cpp", "hpp", "h", "ipp", "tpp", "cxx", "hxx", "ixx", "txx", "ino", "C", "H", "cu", "cuh", "cppm", "h++", "ii", "inl", {glob = ".hpp.in"}, {glob = ".h.in"}]
+injection-regex = "cpp"
+language-servers = ["clangd"]
+name = "cpp"
+scope = "source.cpp"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.debugger]
+command = "lldb-vscode"
+name = "lldb-vscode"
+transport = "stdio"
+
+[[language.debugger.templates]]
+name = "binary"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[language.debugger.templates.args]
+console = "internalConsole"
+program = "{0}"
+
+[[language.debugger.templates]]
+completion = ["pid"]
+name = "attach"
+request = "attach"
+
+[language.debugger.templates.args]
+console = "internalConsole"
+pid = "{0}"
+
+[[language.debugger.templates]]
+completion = [{default = "connect://localhost:3333", name = "lldb connect url"}, {completion = "filename", name = "file"}, "pid"]
+name = "gdbserver attach"
+request = "attach"
+
+[language.debugger.templates.args]
+attachCommands = ["platform select remote-gdb-server", "platform connect {0}", "file {1}", "attach {2}"]
+console = "internalConsole"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["cr"]
+grammar = "ruby"
+language-servers = ["crystalline"]
+name = "crystal"
+roots = ["shard.yml", "shard.lock"]
+scope = "source.cr"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["cs", "csx", "cake"]
+injection-regex = "c-?sharp"
+language-servers = ["omnisharp"]
+name = "c-sharp"
+roots = ["sln", "csproj"]
+scope = "source.csharp"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.debugger]
+args = ["--interpreter=vscode"]
+command = "netcoredbg"
+name = "netcoredbg"
+port-arg = "--server={}"
+transport = "tcp"
+
+[[language.debugger.templates]]
+name = "launch"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "path to dll"
+
+[language.debugger.templates.args]
+console = "internalConsole"
+internalConsoleOptions = "openOnSessionStart"
+program = "{0}"
+type = "coreclr"
+
+[[language.debugger.templates]]
+completion = ["pid"]
+name = "attach"
+request = "attach"
+
+[language.debugger.templates.args]
+processId = "{0}"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["cel"]
+injection-regex = "cel"
+name = "cel"
+scope = "source.cel"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["zed"]
+injection-regex = "spicedb"
+name = "spicedb"
+scope = "source.zed"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["go"]
+injection-regex = "go"
+language-servers = ["gopls", "golangci-lint-lsp"]
+name = "go"
+roots = ["go.work", "go.mod"]
+scope = "source.go"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.debugger]
+args = ["dap"]
+command = "dlv"
+name = "go"
+port-arg = "-l 127.0.0.1:{}"
+transport = "tcp"
+
+[[language.debugger.templates]]
+name = "source"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+default = "."
+name = "entrypoint"
+
+[language.debugger.templates.args]
+mode = "debug"
+program = "{0}"
+
+[[language.debugger.templates]]
+name = "binary"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[language.debugger.templates.args]
+mode = "exec"
+program = "{0}"
+
+[[language.debugger.templates]]
+name = "test"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "directory"
+default = "."
+name = "tests"
+
+[language.debugger.templates.args]
+mode = "test"
+program = "{0}"
+
+[[language.debugger.templates]]
+completion = ["pid"]
+name = "attach"
+request = "attach"
+
+[language.debugger.templates.args]
+mode = "local"
+processId = "{0}"
+
+[[language.debugger.templates]]
+name = "core"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "core"
+
+[language.debugger.templates.args]
+coreFilePath = "{1}"
+mode = "core"
+program = "{0}"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+auto-format = true
+comment-token = "//"
+injection-regex = "gomod"
+language-servers = ["gopls"]
+name = "gomod"
+scope = "source.gomod"
+
+[[language.file-types]]
+glob = "go.mod"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["gotmpl"]
+injection-regex = "gotmpl"
+language-servers = ["gopls"]
+name = "gotmpl"
+scope = "source.gotmpl"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = " "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+injection-regex = "gowork"
+language-servers = ["gopls"]
+name = "gowork"
+scope = "source.gowork"
+
+[[language.file-types]]
+glob = "go.work"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["js", "mjs", "cjs", "rules", "es6", "pac", {glob = "jakefile"}]
+injection-regex = "(js|javascript)"
+language-id = "javascript"
+language-servers = ["typescript-language-server"]
+name = "javascript"
+scope = "source.js"
+shebangs = ["node"]
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.debugger]
+name = "node-debug2"
+transport = "stdio"
+
+[language.debugger.quirks]
+absolute-paths = true
+
+[[language.debugger.templates]]
+name = "source"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+default = "index.js"
+name = "main"
+
+[language.debugger.templates.args]
+program = "{0}"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["jsx"]
+grammar = "javascript"
+injection-regex = "jsx"
+language-id = "javascriptreact"
+language-servers = ["typescript-language-server"]
+name = "jsx"
+scope = "source.jsx"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["ts", "mts", "cts"]
+injection-regex = "(ts|typescript)"
+language-id = "typescript"
+language-servers = ["typescript-language-server"]
+name = "typescript"
+scope = "source.ts"
+shebangs = ["deno", "ts-node"]
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["tsx"]
+injection-regex = "(tsx)"
+language-id = "typescriptreact"
+language-servers = ["typescript-language-server"]
+name = "tsx"
+scope = "source.tsx"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+file-types = ["css", "scss"]
+injection-regex = "css"
+language-servers = ["vscode-css-language-server"]
+name = "css"
+scope = "source.css"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+file-types = ["scss"]
+injection-regex = "scss"
+language-servers = ["vscode-css-language-server"]
+name = "scss"
+scope = "source.scss"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+file-types = ["html", "htm", "shtml", "xhtml", "xht", "jsp", "asp", "aspx", "jshtm", "volt", "rhtml"]
+injection-regex = "html"
+language-servers = ["vscode-html-language-server"]
+name = "html"
+scope = "text.html.basic"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["py", "pyi", "py3", "pyw", "ptl", "rpy", "cpy", "ipy", "pyt", {glob = ".pythonstartup"}, {glob = ".pythonrc"}, {glob = "SConstruct"}, {glob = "SConscript"}]
+injection-regex = "python"
+language-servers = ["pylsp"]
+name = "python"
+roots = ["pyproject.toml", "setup.py", "poetry.lock", "pyrightconfig.json"]
+scope = "source.python"
+shebangs = ["python"]
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["ncl"]
+injection-regex = "nickel"
+language-servers = ["nls"]
+name = "nickel"
+scope = "source.nickel"
+shebangs = []
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "#"
+file-types = ["nix"]
+injection-regex = "nix"
+language-servers = ["nil"]
+name = "nix"
+scope = "source.nix"
+shebangs = []
+
+[language.formatter]
+command = "alejandra"
+args = [ "--quiet", "-" ]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["rb", "rake", "irb", "gemspec", "rabl", "jbuilder", "jb", "podspec", "rjs", "rbi", {glob = "rakefile"}, {glob = "gemfile"}, {glob = "Rakefile"}, {glob = "Gemfile"}, {glob = "Podfile"}, {glob = "Vagrantfile"}, {glob = "Brewfile"}, {glob = "Guardfile"}, {glob = "Capfile"}, {glob = "Cheffile"}, {glob = "Hobofile"}, {glob = "Appraisals"}, {glob = "Rantfile"}, {glob = "Berksfile"}, {glob = "Berksfile.lock"}, {glob = "Thorfile"}, {glob = "Puppetfile"}, {glob = "Fastfile"}, {glob = "Appfile"}, {glob = "Deliverfile"}, {glob = "Matchfile"}, {glob = "Scanfile"}, {glob = "Snapfile"}, {glob = "Gymfile"}]
+injection-regex = "ruby"
+language-servers = ["solargraph"]
+name = "ruby"
+scope = "source.ruby"
+shebangs = ["ruby"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["sh", "bash", "zsh", "zshenv", "zlogin", "zlogout", "zprofile", "zshrc", "eclass", "ebuild", "bazelrc", "Renviron", "zsh-theme", "ksh", "cshrc", "tcshrc", "bashrc_Apple_Terminal", "zshrc_Apple_Terminal", {glob = "tmux.conf"}, {glob = ".bash_history"}, {glob = ".bash_login"}, {glob = ".bash_logout"}, {glob = ".bash_profile"}, {glob = ".bashrc"}, {glob = ".profile"}, {glob = ".zshenv"}, {glob = ".zlogin"}, {glob = ".zlogout"}, {glob = ".zprofile"}, {glob = ".zshrc"}, {glob = ".zimrc"}, {glob = "APKBUILD"}, {glob = ".bash_aliases"}, {glob = ".Renviron"}, {glob = ".xprofile"}, {glob = ".xsession"}, {glob = ".xsessionrc"}, {glob = ".yashrc"}, {glob = ".yash_profile"}, {glob = ".hushlogin"}]
+injection-regex = "(shell|bash|zsh|sh)"
+language-servers = ["bash-language-server"]
+name = "bash"
+scope = "source.bash"
+shebangs = ["sh", "bash", "dash", "zsh"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["php", "inc", "php4", "php5", "phtml", "ctp"]
+injection-regex = "php"
+language-servers = ["intelephense"]
+name = "php"
+roots = ["composer.json", "index.php"]
+scope = "source.php"
+shebangs = ["php"]
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+file-types = []
+injection-regex = "php-only"
+name = "php-only"
+roots = ["composer.json", "index.php"]
+scope = "source.php-only"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+file-types = [{glob = "*.blade.php"}, "blade"]
+injection-regex = "blade"
+name = "blade"
+roots = ["composer.json", "index.php"]
+scope = "source.blade.php"
+
+[[language]]
+file-types = ["twig"]
+injection-regex = "twig"
+name = "twig"
+scope = "source.twig"
+
+[language.block-comment-tokens]
+end = "#}"
+start = "{#"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "%"
+file-types = ["tex", "sty", "cls", "Rd", "bbx", "cbx"]
+injection-regex = "tex"
+language-servers = ["texlab"]
+name = "latex"
+scope = "source.tex"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+auto-format = true
+comment-token = "%"
+file-types = ["bib"]
+injection-regex = "bib"
+language-servers = ["texlab"]
+name = "bibtex"
+scope = "source.bib"
+
+[language.formatter]
+args = ["-", "--curly", "--drop-all-caps", "--remove-empty-fields", "--sort-fields", "--sort=year,author,id", "--strip-enclosing-braces", "--trailing-commas"]
+command = "bibtex-tidy"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "--"
+file-types = ["lean"]
+injection-regex = "lean"
+language-servers = ["lean"]
+name = "lean"
+roots = ["lakefile.lean"]
+scope = "source.lean"
+
+[language.block-comment-tokens]
+end = "-/"
+start = "/-"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["lpf"]
+name = "lpf"
+scope = "source.lpf"
+
+[[language]]
+comment-token = "#"
+file-types = ["jl"]
+injection-regex = "julia"
+language-servers = ["julia"]
+name = "julia"
+roots = ["Manifest.toml", "Project.toml"]
+scope = "source.julia"
+shebangs = ["julia"]
+
+[language.block-comment-tokens]
+end = "=#"
+start = "#="
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+file-types = ["java", "jav", "pde"]
+injection-regex = "java"
+language-servers = ["jdtls"]
+name = "java"
+roots = ["pom.xml", "build.gradle", "build.gradle.kts"]
+scope = "source.java"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["smali"]
+injection-regex = "smali"
+name = "smali"
+roots = []
+scope = "source.smali"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = ";"
+file-types = ["ldg", "ledger", "journal"]
+injection-regex = "ledger"
+name = "ledger"
+scope = "source.ledger"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = ";"
+file-types = ["beancount", "bean"]
+injection-regex = "beancount"
+name = "beancount"
+scope = "source.beancount"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["ml"]
+injection-regex = "ocaml"
+language-servers = ["ocamllsp"]
+name = "ocaml"
+scope = "source.ocaml"
+shebangs = ["ocaml", "ocamlrun", "ocamlscript"]
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.block-comment-tokens]
+end = "*)"
+start = "(*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "(**)"
+file-types = ["mli"]
+language-servers = ["ocamllsp"]
+name = "ocaml-interface"
+scope = "source.ocaml.interface"
+shebangs = []
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.block-comment-tokens]
+end = "*)"
+start = "(*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["lua"]
+injection-regex = "lua"
+language-servers = ["lua-language-server"]
+name = "lua"
+roots = [".luarc.json", ".luacheckrc", ".stylua.toml", "selene.toml", ".git"]
+scope = "source.lua"
+shebangs = ["lua", "luajit"]
+
+[language.block-comment-tokens]
+end = "--]]"
+start = "--[["
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["svelte"]
+injection-regex = "svelte"
+language-servers = ["svelteserver"]
+name = "svelte"
+scope = "source.svelte"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["vue"]
+injection-regex = "vue"
+language-servers = ["vuels"]
+name = "vue"
+roots = ["package.json"]
+scope = "source.vue"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["yml", "yaml"]
+injection-regex = "yml|yaml"
+language-servers = ["yaml-language-server", "ansible-language-server"]
+name = "yaml"
+scope = "source.yaml"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["hs", "hs-boot"]
+injection-regex = "haskell"
+language-servers = ["haskell-language-server"]
+name = "haskell"
+roots = ["Setup.hs", "stack.yaml", "cabal.project"]
+scope = "source.haskell"
+
+[language.block-comment-tokens]
+end = "-}"
+start = "{-"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["persistentmodels"]
+name = "haskell-persistent"
+scope = "source.persistentmodels"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "--"
+file-types = ["purs"]
+injection-regex = "purescript"
+language-servers = ["purescript-language-server"]
+name = "purescript"
+roots = ["spago.yaml", "spago.dhall", "bower.json"]
+scope = "source.purescript"
+
+[language.block-comment-tokens]
+end = "-}"
+start = "{-"
+
+[language.formatter]
+args = ["format"]
+command = "purs-tidy"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["zig", "zon"]
+injection-regex = "zig"
+language-servers = ["zls"]
+name = "zig"
+roots = ["build.zig"]
+scope = "source.zig"
+
+[language.debugger]
+command = "lldb-vscode"
+name = "lldb-vscode"
+transport = "stdio"
+
+[[language.debugger.templates]]
+name = "binary"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[language.debugger.templates.args]
+console = "internalConsole"
+program = "{0}"
+
+[[language.debugger.templates]]
+completion = ["pid"]
+name = "attach"
+request = "attach"
+
+[language.debugger.templates.args]
+console = "internalConsole"
+pid = "{0}"
+
+[[language.debugger.templates]]
+completion = [{default = "connect://localhost:3333", name = "lldb connect url"}, {completion = "filename", name = "file"}, "pid"]
+name = "gdbserver attach"
+request = "attach"
+
+[language.debugger.templates.args]
+attachCommands = ["platform select remote-gdb-server", "platform connect {0}", "file {1}", "attach {2}"]
+console = "internalConsole"
+
+[language.formatter]
+args = ["fmt", "--stdin"]
+command = "zig"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "%"
+file-types = ["pl", "prolog"]
+language-servers = ["swipl"]
+name = "prolog"
+scope = "source.prolog"
+shebangs = ["swipl"]
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[[language]]
+comment-token = ";"
+file-types = ["tsq"]
+injection-regex = "tsq"
+name = "tsq"
+scope = "source.tsq"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["cmake", {glob = "CMakeLists.txt"}]
+injection-regex = "cmake"
+language-servers = ["cmake-language-server"]
+name = "cmake"
+scope = "source.cmake"
+
+[language.block-comment-tokens]
+end = "]]"
+start = "#[["
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = [{glob = "Makefile"}, {glob = "makefile"}, "make", "mk", "mak", {glob = "GNUmakefile"}, {glob = "OCamlMakefile"}]
+injection-regex = "(make|makefile|Makefile|mk)"
+name = "make"
+scope = "source.make"
+shebangs = ["make", "gmake"]
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["glsl", "vert", "tesc", "tese", "geom", "frag", "comp"]
+injection-regex = "glsl"
+name = "glsl"
+scope = "source.glsl"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["pl", "pm", "t", "psgi", "raku", "rakumod", "rakutest", "rakudoc", "nqp", "p6", "pl6", "pm6"]
+language-servers = ["perlnavigator"]
+name = "perl"
+scope = "source.perl"
+shebangs = ["perl"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["pod"]
+injection-regex = "pod"
+name = "pod"
+scope = "source.pod"
+
+[[language]]
+comment-token = ";"
+file-types = ["rkt", "rktd", "rktl", "scrbl"]
+grammar = "scheme"
+language-servers = ["racket"]
+name = "racket"
+scope = "source.racket"
+shebangs = ["racket"]
+
+[language.block-comment-tokens]
+end = "|#"
+start = "#|"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = ";"
+file-types = ["lisp", "asd", "cl", "l", "lsp", "ny", "podsl", "sexp"]
+grammar = "scheme"
+language-servers = ["cl-lsp"]
+name = "common-lisp"
+scope = "source.lisp"
+shebangs = ["lisp", "sbcl", "ccl", "clisp", "ecl"]
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = []
+injection-regex = "comment"
+name = "comment"
+scope = "scope.comment"
+
+[[language]]
+comment-token = "//"
+file-types = ["wgsl"]
+language-servers = ["wgsl_analyzer"]
+name = "wgsl"
+scope = "source.wgsl"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = ";"
+file-types = ["ll"]
+injection-regex = "llvm"
+name = "llvm"
+scope = "source.llvm"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = ";"
+file-types = []
+injection-regex = "mir"
+name = "llvm-mir"
+scope = "source.llvm_mir"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["mir"]
+name = "llvm-mir-yaml"
+scope = "source.yaml"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["td"]
+injection-regex = "tablegen"
+name = "tablegen"
+scope = "source.tablegen"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["md", "markdown", "mkd", "mdwn", "mdown", "markdn", "mdtxt", "mdtext", "workbook", {glob = "PULLREQ_EDITMSG"}]
+injection-regex = "md|markdown"
+language-servers = ["marksman", "markdown-oxide"]
+name = "markdown"
+roots = [".marksman.toml"]
+scope = "source.md"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = []
+grammar = "markdown_inline"
+injection-regex = "markdown\\.inline"
+name = "markdown.inline"
+scope = "source.markdown.inline"
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["dart"]
+language-servers = ["dart"]
+name = "dart"
+roots = ["pubspec.yaml"]
+scope = "source.dart"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["scala", "sbt", "sc"]
+language-servers = ["metals"]
+name = "scala"
+roots = ["build.sbt", "build.sc", "build.gradle", "build.gradle.kts", "pom.xml", ".scala-build"]
+scope = "source.scala"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["Dockerfile", {glob = "Dockerfile"}, {glob = "Dockerfile.*"}, "dockerfile", {glob = "dockerfile"}, {glob = "dockerfile.*"}, "Containerfile", {glob = "Containerfile"}, {glob = "Containerfile.*"}, "containerfile", {glob = "containerfile"}, {glob = "containerfile.*"}]
+injection-regex = "docker|dockerfile"
+language-servers = ["docker-langserver"]
+name = "dockerfile"
+roots = ["Dockerfile", "Containerfile"]
+scope = "source.dockerfile"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+grammar = "yaml"
+language-servers = ["docker-compose-langserver", "yaml-language-server"]
+name = "docker-compose"
+roots = ["docker-compose.yaml", "docker-compose.yml"]
+scope = "source.yaml.docker-compose"
+
+[[language.file-types]]
+glob = "docker-compose.yaml"
+
+[[language.file-types]]
+glob = "docker-compose.yml"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+name = "git-commit"
+rulers = [51, 73]
+scope = "git.commitmsg"
+text-width = 72
+
+[[language.file-types]]
+glob = "COMMIT_EDITMSG"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["diff", "patch", "rej"]
+injection-regex = "diff"
+name = "diff"
+scope = "source.diff"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+injection-regex = "git-rebase"
+name = "git-rebase"
+scope = "source.gitrebase"
+
+[[language.file-types]]
+glob = "git-rebase-todo"
+
+[language.indent]
+tab-width = 2
+unit = "y"
+
+[[language]]
+file-types = ["regex", {glob = ".Rbuildignore"}]
+injection-regex = "regex"
+name = "regex"
+scope = "source.regex"
+
+[[language]]
+comment-token = "#"
+injection-regex = "git-config"
+name = "git-config"
+scope = "source.gitconfig"
+
+[[language.file-types]]
+glob = ".gitmodules"
+
+[[language.file-types]]
+glob = ".gitconfig"
+
+[[language.file-types]]
+glob = ".git/config"
+
+[[language.file-types]]
+glob = ".config/git/config"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "#"
+grammar = "gitattributes"
+injection-regex = "git-attributes"
+name = "git-attributes"
+scope = "source.gitattributes"
+
+[[language.file-types]]
+glob = ".gitattributes"
+
+[[language]]
+comment-token = "#"
+grammar = "gitignore"
+injection-regex = "git-ignore"
+name = "git-ignore"
+scope = "source.gitignore"
+
+[[language.file-types]]
+glob = ".gitignore"
+
+[[language.file-types]]
+glob = ".gitignore_global"
+
+[[language.file-types]]
+glob = ".ignore"
+
+[[language.file-types]]
+glob = ".prettierignore"
+
+[[language.file-types]]
+glob = ".eslintignore"
+
+[[language.file-types]]
+glob = ".npmignore"
+
+[[language.file-types]]
+glob = "CODEOWNERS"
+
+[[language.file-types]]
+glob = ".config/helix/ignore"
+
+[[language.file-types]]
+glob = ".helix/ignore"
+
+[[language]]
+comment-token = "#"
+file-types = ["gql", "graphql", "graphqls"]
+injection-regex = "graphql"
+language-servers = ["graphql-language-service"]
+name = "graphql"
+scope = "source.graphql"
+
+[language.block-comment-tokens]
+end = "\"\"\""
+start = "\"\"\""
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "--"
+file-types = ["elm"]
+injection-regex = "elm"
+language-servers = ["elm-language-server"]
+name = "elm"
+roots = ["elm.json"]
+scope = "source.elm"
+
+[language.block-comment-tokens]
+end = "-}"
+start = "{-"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["iex"]
+injection-regex = "iex"
+name = "iex"
+scope = "source.iex"
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["res"]
+injection-regex = "rescript"
+language-servers = ["rescript-language-server"]
+name = "rescript"
+roots = ["bsconfig.json"]
+scope = "source.rescript"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "%%"
+file-types = ["erl", "hrl", "app", {glob = "rebar.config"}, {glob = "rebar.lock"}, {glob = "*.app.src"}]
+injection-regex = "erl(ang)?"
+language-servers = ["erlang-ls"]
+name = "erlang"
+roots = ["rebar.config"]
+scope = "source.erlang"
+shebangs = ["escript"]
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "//"
+file-types = ["kt", "kts"]
+language-servers = ["kotlin-language-server"]
+name = "kotlin"
+roots = ["settings.gradle", "settings.gradle.kts"]
+scope = "source.kotlin"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+auto-format = true
+comment-token = "#"
+file-types = ["hcl", "tf", "nomad"]
+injection-regex = "(hcl|tf|nomad)"
+language-id = "terraform"
+language-servers = ["terraform-ls"]
+name = "hcl"
+scope = "source.hcl"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "#"
+file-types = ["tfvars"]
+grammar = "hcl"
+language-id = "terraform-vars"
+language-servers = ["terraform-ls"]
+name = "tfvars"
+scope = "source.tfvars"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["org"]
+injection-regex = "org"
+name = "org"
+scope = "source.org"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["sol"]
+injection-regex = "(sol|solidity)"
+language-servers = ["solc"]
+name = "solidity"
+scope = "source.sol"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["gleam"]
+injection-regex = "gleam"
+language-servers = ["gleam"]
+name = "gleam"
+roots = ["gleam.toml"]
+scope = "source.gleam"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["ron"]
+injection-regex = "ron"
+name = "ron"
+scope = "source.ron"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["robot", "resource"]
+injection-regex = "robot"
+language-servers = ["robotframework_ls"]
+name = "robot"
+scope = "source.robot"
+
+[language.indent]
+tab-width = 4
+unit = " "
+
+[[language]]
+comment-token = "#"
+file-types = ["r", "R", {glob = ".Rprofile"}, {glob = "Rprofile.site"}, {glob = ".RHistory"}]
+injection-regex = "(r|R)"
+language-servers = ["r"]
+name = "r"
+scope = "source.r"
+shebangs = ["r", "R"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["rmd", "Rmd"]
+grammar = "markdown"
+injection-regex = "(r|R)md"
+language-id = "rmd"
+language-servers = ["r"]
+name = "rmarkdown"
+scope = "source.rmd"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["swift"]
+injection-regex = "swift"
+language-servers = ["sourcekit-lsp"]
+name = "swift"
+roots = ["Package.swift"]
+scope = "source.swift"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[[language]]
+file-types = ["erb"]
+grammar = "embedded-template"
+injection-regex = "erb"
+name = "erb"
+scope = "text.html.erb"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["ejs"]
+grammar = "embedded-template"
+injection-regex = "ejs"
+name = "ejs"
+scope = "text.html.ejs"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["eex"]
+injection-regex = "eex"
+name = "eex"
+roots = ["mix.exs", "mix.lock"]
+scope = "source.eex"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["heex"]
+injection-regex = "heex"
+language-servers = ["elixir-ls"]
+name = "heex"
+roots = ["mix.exs", "mix.lock"]
+scope = "source.heex"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["sql", "dsql"]
+injection-regex = "sql"
+name = "sql"
+scope = "source.sql"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+auto-format = true
+comment-token = "#"
+file-types = ["gd"]
+injection-regex = "gdscript"
+name = "gdscript"
+roots = ["project.godot"]
+scope = "source.gdscript"
+shebangs = []
+
+[language.formatter]
+args = ["-"]
+command = "gdformat"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+auto-format = false
+comment-token = ";"
+file-types = ["tscn", "tres", "godot", "gdextension"]
+injection-regex = "godot"
+name = "godot-resource"
+roots = ["project.godot"]
+scope = "source.tscn"
+shebangs = []
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "#"
+file-types = ["nu", "nuon"]
+injection-regex = "nu"
+language-servers = ["nu-lsp"]
+name = "nu"
+scope = "source.nu"
+shebangs = ["nu"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["vala", "vapi"]
+injection-regex = "vala"
+language-servers = ["vala-language-server"]
+name = "vala"
+scope = "source.vala"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["ha"]
+injection-regex = "hare"
+name = "hare"
+scope = "source.hare"
+
+[language.indent]
+tab-width = 8
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["dts", "dtsi"]
+injection-regex = "(dtsi?|devicetree|fdt)"
+name = "devicetree"
+scope = "source.devicetree"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["cairo"]
+grammar = "rust"
+injection-regex = "cairo"
+language-servers = ["cairo-language-server"]
+name = "cairo"
+scope = "source.cairo"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["cpon", "cp"]
+injection-regex = "cpon"
+name = "cpon"
+scope = "scope.cpon"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["odin"]
+language-servers = ["ols"]
+name = "odin"
+roots = ["ols.json", "main.odin"]
+scope = "source.odin"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.formatter]
+args = ["-stdin", "true"]
+command = "odinfmt"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "#"
+injection-regex = "meson"
+name = "meson"
+scope = "source.meson"
+
+[[language.file-types]]
+glob = "meson.build"
+
+[[language.file-types]]
+glob = "meson_options.txt"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+name = "sshclientconfig"
+scope = "source.sshclientconfig"
+
+[[language.file-types]]
+glob = ".ssh/config"
+
+[[language.file-types]]
+glob = "/etc/ssh/ssh_config"
+
+[[language]]
+comment-token = ";"
+file-types = ["ss", "scm"]
+injection-regex = "scheme"
+name = "scheme"
+scope = "source.scheme"
+shebangs = ["scheme", "guile", "chicken"]
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["v", "vv", "vsh"]
+language-servers = ["vlang-language-server"]
+name = "v"
+roots = ["v.mod"]
+scope = "source.v"
+shebangs = ["v run"]
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["v", "vh", "sv", "svh"]
+injection-regex = "verilog"
+language-servers = ["svlangserver"]
+name = "verilog"
+scope = "source.verilog"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["edoc", "edoc.in"]
+injection-regex = "edoc"
+name = "edoc"
+scope = "source.edoc"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+file-types = ["jsdoc"]
+injection-regex = "jsdoc"
+name = "jsdoc"
+scope = "source.jsdoc"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["scad"]
+injection-regex = "openscad"
+language-servers = ["openscad-lsp"]
+name = "openscad"
+scope = "source.openscad"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["prisma"]
+injection-regex = "prisma"
+language-servers = ["prisma-language-server"]
+name = "prisma"
+roots = ["package.json"]
+scope = "source.prisma"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = ";"
+file-types = ["clj", "cljs", "cljc", "clje", "cljr", "cljx", "edn", "boot"]
+injection-regex = "(clojure|clj|edn|boot)"
+language-servers = ["clojure-lsp"]
+name = "clojure"
+roots = ["project.clj", "build.boot", "deps.edn", "shadow-cljs.edn"]
+scope = "source.clojure"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["bzl", "bazel", "star", {glob = "BUILD"}, {glob = "BUILD.*"}]
+grammar = "python"
+injection-regex = "(starlark|bzl|bazel)"
+name = "starlark"
+scope = "source.starlark"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["elv"]
+grammar = "elvish"
+language-servers = ["elvish"]
+name = "elvish"
+scope = "source.elvish"
+shebangs = ["elvish"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["idr"]
+injection-regex = "idr"
+language-servers = ["idris2-lsp"]
+name = "idris"
+scope = "source.idr"
+shebangs = []
+
+[language.block-comment-tokens]
+end = "-}"
+start = "{-"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "!"
+file-types = ["f", "for", "f90", "f95", "f03"]
+injection-regex = "fortran"
+language-servers = ["fortls"]
+name = "fortran"
+roots = ["fpm.toml"]
+scope = "source.fortran"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "//"
+file-types = ["ungram", "ungrammar"]
+injection-regex = "ungrammar"
+name = "ungrammar"
+scope = "source.ungrammar"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["dot"]
+injection-regex = "dot"
+language-servers = ["dot-language-server"]
+name = "dot"
+scope = "source.dot"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["cue"]
+injection-regex = "cue"
+language-servers = ["cuelsp"]
+name = "cue"
+roots = ["cue.mod"]
+scope = "source.cue"
+
+[language.formatter]
+args = ["fmt", "-"]
+command = "cue"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "//"
+file-types = ["slint"]
+injection-regex = "slint"
+language-servers = ["slint-lsp"]
+name = "slint"
+scope = "source.slint"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["task"]
+injection-regex = "task"
+name = "task"
+scope = "source.task"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["xit"]
+injection-regex = "xit"
+name = "xit"
+scope = "source.xit"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["esdl"]
+injection-regex = "esdl"
+name = "esdl"
+roots = ["edgedb.toml"]
+scope = "source.esdl"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["pas", "pp", "inc", "lpr", "lfm"]
+injection-regex = "pascal"
+language-servers = ["pasls"]
+name = "pascal"
+scope = "source.pascal"
+
+[language.block-comment-tokens]
+end = "}"
+start = "{"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["sml"]
+injection-regex = "sml"
+name = "sml"
+scope = "source.sml"
+
+[language.block-comment-tokens]
+end = "*)"
+start = "(*"
+
+[[language]]
+comment-token = "//"
+file-types = ["libsonnet", "jsonnet"]
+language-servers = ["jsonnet-language-server"]
+name = "jsonnet"
+roots = ["jsonnetfile.json"]
+scope = "source.jsonnet"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["adb", "ads", "gpr"]
+injection-regex = "ada"
+language-servers = ["ada-language-server", "ada-gpr-language-server"]
+name = "ada"
+roots = ["alire.toml"]
+scope = "source.ada"
+
+[language.indent]
+tab-width = 3
+unit = "   "
+
+[[language]]
+file-types = ["astro"]
+injection-regex = "astro"
+name = "astro"
+scope = "source.astro"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = ";"
+file-types = ["bass"]
+injection-regex = "bass"
+language-servers = ["bass"]
+name = "bass"
+scope = "source.bass"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = ";;"
+file-types = ["wat"]
+name = "wat"
+scope = "source.wat"
+
+[language.block-comment-tokens]
+end = ";)"
+start = "(;"
+
+[[language]]
+comment-token = ";;"
+file-types = ["wast"]
+name = "wast"
+scope = "source.wast"
+
+[language.block-comment-tokens]
+end = ";)"
+start = "(;"
+
+[[language]]
+comment-token = "//"
+file-types = ["d", "dd"]
+injection-regex = "d"
+language-servers = ["serve-d"]
+name = "d"
+scope = "source.d"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.formatter]
+command = "dfmt"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["tape"]
+grammar = "vhs"
+name = "vhs"
+scope = "source.vhs"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["kdl"]
+injection-regex = "kdl"
+name = "kdl"
+scope = "source.kdl"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[[language]]
+file-types = ["xml", "mobileconfig", "plist", "xib", "storyboard", "svg", "xsd", "gml", "xaml", "gir", "rss", "atom", "opml", "policy", "ascx", "axml", "axaml", "bpmn", "cpt", "csl", "csproj.user", "dita", "ditamap", "dtml", "fxml", "iml", "isml", "jmx", "launch", "menu", "mxml", "nuspec", "osc", "osm", "pt", "publishsettings", "pubxml", "pubxml.user", "rbxlx", "rbxmx", "rng", "shproj", "tld", "tmx", "vbproj.user", "vcxproj", "vcxproj.filters", "wsdl", "wxi", "wxs", "xbl", "xlf", "xliff", "xpdl", "xul", "xoml", "musicxml", "glif", "ui"]
+injection-regex = "xml"
+name = "xml"
+scope = "source.xml"
+
+[language.auto-pairs]
+"\"" = "\""
+"'" = "'"
+"(" = ")"
+"<" = ">"
+"[" = "]"
+"{" = "}"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["dtd", "ent"]
+injection-regex = "dtd"
+name = "dtd"
+scope = "source.dtd"
+
+[language.auto-pairs]
+"\"" = "\""
+"'" = "'"
+"(" = ")"
+"<" = ">"
+"[" = "]"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["wit"]
+injection-regex = "wit"
+name = "wit"
+scope = "source.wit"
+
+[language.auto-pairs]
+"\"" = "\""
+"'" = "'"
+"(" = ")"
+"<" = ">"
+"[" = "]"
+"{" = "}"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+grammar = "bash"
+injection-regex = "env"
+name = "env"
+scope = "source.env"
+
+[[language.file-types]]
+glob = ".env"
+
+[[language.file-types]]
+glob = ".env.*"
+
+[[language.file-types]]
+glob = ".envrc"
+
+[[language.file-types]]
+glob = ".envrc.*"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "#"
+file-types = ["ini", "service", "automount", "device", "mount", "path", "service", "slice", "socket", "swap", "target", "timer", "container", "volume", "kube", "network", {glob = ".editorconfig"}, {glob = "rclone.conf"}, "properties", "cfg", "directory"]
+injection-regex = "ini"
+name = "ini"
+scope = "source.ini"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["bicep"]
+language-servers = ["bicep-langserver"]
+name = "bicep"
+scope = "source.bicep"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = " "
+
+[[language]]
+comment-token = "//"
+file-types = ["qml"]
+grammar = "qmljs"
+language-servers = ["qmlls"]
+name = "qml"
+scope = "source.qml"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "%%"
+file-types = ["mermaid", "mmd"]
+injection-regex = "mermaid"
+name = "mermaid"
+scope = "source.mermaid"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "%"
+file-types = ["m"]
+name = "matlab"
+scope = "source.m"
+shebangs = ["octave-cli", "matlab"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["pony"]
+injection-regex = "pony"
+name = "ponylang"
+roots = ["corral.json", "lock.json"]
+scope = "source.pony"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["dhall"]
+injection-regex = "dhall"
+language-servers = ["dhall-lsp-server"]
+name = "dhall"
+scope = "source.dhall"
+
+[language.block-comment-tokens]
+end = "-}"
+start = "{-"
+
+[language.formatter]
+args = ["format"]
+command = "dhall"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["sage"]
+grammar = "python"
+injection-regex = "sage"
+name = "sage"
+scope = "source.sage"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+file-types = ["proj", "vbproj", "csproj", "fsproj", "targets", "props"]
+grammar = "xml"
+injection-regex = "msbuild"
+name = "msbuild"
+scope = "source.msbuild"
+
+[language.auto-pairs]
+"\"" = "\""
+"'" = "'"
+"(" = ")"
+"<" = ">"
+"[" = "]"
+"{" = "}"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["pem", "cert", "crt"]
+grammar = "pem"
+injection-regex = "pem"
+name = "pem"
+scope = "source.pem"
+
+[[language]]
+name = "passwd"
+scope = "source.passwd"
+[[language.file-types]]
+glob = "passwd"
+
+[[language]]
+comment-token = "#"
+name = "hosts"
+scope = "source.hosts"
+
+[[language.file-types]]
+glob = "hosts"
+
+[[language]]
+auto-format = false
+file-types = ["tal"]
+injection-regex = "tal"
+name = "uxntal"
+scope = "source.tal"
+
+[language.block-comment-tokens]
+end = ")"
+start = "("
+
+[[language]]
+comment-token = ";"
+file-types = ["yuck"]
+injection-regex = "yuck"
+name = "yuck"
+scope = "source.yuck"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["prql"]
+injection-regex = "prql"
+name = "prql"
+scope = "source.prql"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["po", "pot"]
+name = "po"
+scope = "source.po"
+
+[[language]]
+comment-token = ";"
+file-types = ["asm", "S", "nasm"]
+injection-regex = "n?asm"
+name = "nasm"
+scope = "source.nasm"
+
+[language.indent]
+tab-width = 8
+unit = "        "
+
+[[language]]
+comment-token = "#"
+file-types = ["s"]
+injection-regex = "gas"
+name = "gas"
+scope = "source.gas"
+
+[language.indent]
+tab-width = 8
+unit = "        "
+
+[[language]]
+comment-token = ".."
+file-types = ["rst"]
+name = "rst"
+scope = "source.rst"
+
+[[language]]
+comment-token = "#"
+file-types = ["capnp"]
+injection-regex = "capnp"
+name = "capnp"
+scope = "source.capnp"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["smithy"]
+injection-regex = "smithy"
+language-servers = ["cs"]
+name = "smithy"
+roots = ["smithy-build.json"]
+scope = "source.smithy"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "--"
+file-types = ["vhd", "vhdl"]
+injection-regex = "vhdl"
+language-servers = ["vhdl_ls"]
+name = "vhdl"
+scope = "source.vhdl"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "#"
+file-types = ["rego"]
+grammar = "rego"
+injection-regex = "rego"
+language-servers = ["regols"]
+name = "rego"
+scope = "source.rego"
+
+[[language]]
+comment-token = "#"
+file-types = ["nim", "nims", "nimble"]
+injection-regex = "nim"
+language-servers = ["nimlangserver"]
+name = "nim"
+scope = "source.nim"
+shebangs = []
+
+[language.auto-pairs]
+"\"" = "\""
+"'" = "'"
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.block-comment-tokens]
+end = "]#"
+start = "#["
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "--"
+file-types = ["cabal"]
+language-servers = ["haskell-language-server"]
+name = "cabal"
+roots = ["cabal.project", "Setup.hs"]
+scope = "source.cabal"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+file-types = ["hurl"]
+injection-regex = "hurl"
+name = "hurl"
+scope = "source.hurl"
+
+[language.formatter]
+command = "hurlfmt"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["mdoc"]
+language-servers = ["markdoc-ls"]
+name = "markdoc"
+scope = "text.markdoc"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[[language]]
+comment-token = "//"
+file-types = ["cl"]
+injection-regex = "(cl|opencl)"
+language-servers = ["clangd"]
+name = "opencl"
+scope = "source.cl"
+
+[[language]]
+comment-token = "#"
+injection-regex = "just"
+name = "just"
+scope = "source.just"
+
+[[language.file-types]]
+glob = "justfile"
+
+[[language.file-types]]
+glob = "Justfile"
+
+[[language.file-types]]
+glob = ".justfile"
+
+[[language.file-types]]
+glob = ".Justfile"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["gn", "gni"]
+injection-regex = "gn"
+name = "gn"
+roots = []
+scope = "source.gn"
+
+[language.formatter]
+args = ["format", "--stdin"]
+command = "gn"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["blp"]
+injection-regex = "blueprint"
+language-servers = ["blueprint-compiler"]
+name = "blueprint"
+scope = "source.blueprint"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "\\"
+file-types = ["fs", "forth", "fth", "4th"]
+injection-regex = "forth"
+language-servers = ["forth-lsp"]
+name = "forth"
+scope = "source.forth"
+
+[language.indent]
+tab-width = 3
+unit = "   "
+
+[[language]]
+auto-format = true
+comment-token = "//"
+file-types = ["fs", "fsx", "fsi", "fsscript"]
+injection-regex = "fsharp"
+language-servers = ["fsharp-ls"]
+name = "fsharp"
+roots = ["sln", "fsproj"]
+scope = "source.fs"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = ";"
+file-types = ["cmm", "t32"]
+injection-regex = "t32"
+name = "t32"
+scope = "source.t32"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["webc"]
+grammar = "html"
+injection-regex = "webc"
+name = "webc"
+scope = "text.html.webc"
+
+[language.block-comment-tokens]
+end = "-->"
+start = "<!--"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["typst", "typ"]
+injection-regex = "typst"
+language-servers = ["typst-lsp"]
+name = "typst"
+scope = "source.typst"
+
+[language.auto-pairs]
+"\"" = "\""
+"$" = "$"
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["njk"]
+grammar = "jinja2"
+injection-regex = "nunjucks"
+name = "nunjucks"
+scope = "text.html.nunjucks"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["jinja", "jinja2", "j2"]
+grammar = "jinja2"
+injection-regex = "jinja"
+name = "jinja"
+scope = "text.html.jinja"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["wren"]
+injection-regex = "wren"
+name = "wren"
+scope = "source.wren"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = false
+comment-token = "--"
+file-types = ["u"]
+injection-regex = "unison"
+name = "unison"
+scope = "source.unison"
+shebangs = []
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"[" = "]"
+"`" = "`"
+"{" = "}"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+auto-format = true
+file-types = [{glob = "todo.txt"}, {glob = "*.todo.txt"}, "todotxt"]
+name = "todotxt"
+scope = "text.todotxt"
+
+[language.formatter]
+command = "sort"
+
+[[language]]
+file-types = ["strace"]
+name = "strace"
+scope = "source.strace"
+
+[[language]]
+file-types = ["gmi"]
+name = "gemini"
+scope = "source.gmi"
+
+[[language]]
+auto-format = false
+comment-token = "--"
+file-types = ["agda"]
+injection-regex = "agda"
+name = "agda"
+roots = []
+scope = "source.agda"
+
+[language.auto-pairs]
+"\"" = "\""
+"'" = "'"
+"(" = ")"
+"[" = "]"
+"{" = "}"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["templ"]
+language-servers = ["templ"]
+name = "templ"
+roots = ["go.work", "go.mod"]
+scope = "source.templ"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = ";"
+file-types = ["dbml"]
+injection-regex = "dbml"
+name = "dbml"
+scope = "source.dbml"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+file-types = ["log"]
+name = "log"
+scope = "source.log"
+
+[[language]]
+comment-token = "::"
+file-types = ["hoon"]
+injection-regex = "hoon"
+name = "hoon"
+scope = "source.hoon"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+auto-format = true
+comment-token = "#"
+file-types = ["conf"]
+name = "hocon"
+scope = "source.conf"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["kk"]
+injection-regex = "koka"
+name = "koka"
+scope = "source.koka"
+
+[language.indent]
+tab-width = 8
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["tact"]
+injection-regex = "tact"
+name = "tact"
+scope = "source.tact"
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"<" = ">"
+"{" = "}"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "//"
+file-types = ["pkl", "pcf"]
+injection-regex = "pkl"
+name = "pkl"
+scope = "source.pkl"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["gradle", "groovy", "jenkinsfile", {glob = "Jenkinsfile"}, {glob = "Jenkinsfile.*"}]
+language-id = "groovy"
+name = "groovy"
+scope = "source.groovy"
+shebangs = ["groovy"]
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "//"
+file-types = ["fidl"]
+injection-regex = "fidl"
+name = "fidl"
+scope = "source.fidl"
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"<" = ">"
+"{" = "}"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+comment-token = "#"
+file-types = ["ps1", "psm1", "psd1", "pscc", "psrc"]
+injection-regex = "(pwsh|powershell)"
+name = "powershell"
+scope = "source.powershell"
+shebangs = ["pwsh", "powershell"]
+
+[language.block-comment-tokens]
+end = "#>"
+start = "<#"
+
+[language.indent]
+tab-width = 4
+unit = "    "
+
+[[language]]
+file-types = ["ld"]
+injection-regex = "ld"
+name = "ld"
+scope = "source.ld"
+
+[language.block-comment-tokens]
+end = "*/"
+start = "/*"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[[language]]
+comment-token = "#"
+grammar = "hyprlang"
+name = "hyprlang"
+roots = ["hyprland.conf"]
+scope = "source.hyprlang"
+
+[[language.file-types]]
+glob = "hyprland.conf"
+
+[[language]]
+comment-token = "//"
+file-types = ["scd", "sc", "quark"]
+injection-regex = "supercollider"
+name = "supercollider"
+scope = "source.supercollider"
+
+[language.indent]
+tab-width = 4
+unit = "\t"
+
+[[language]]
+comment-token = "#"
+grammar = "bash"
+language-servers = ["pkgbuild-language-server", {except-features = ["diagnostics"], name = "bash-language-server"}]
+name = "pkgbuild"
+scope = "source.bash"
+
+[[language.file-types]]
+glob = "PKGBUILD"
+
+[[language]]
+comment-token = "#"
+grammar = "gotmpl"
+language-servers = ["helm_ls"]
+name = "helm"
+roots = ["Chart.yaml"]
+scope = "source.helm"
+
+[[language.file-types]]
+glob = "templates/*.yaml"
+
+[[language.file-types]]
+glob = "templates/_helpers.tpl"
+
+[[language.file-types]]
+glob = "templates/NOTES.txt"
+
+[[language]]
+grammar = "glimmer"
+injection-regex = "hbs"
+language-servers = ["ember-language-server"]
+name = "glimmer"
+roots = ["package.json", "ember-cli-build.js"]
+scope = "source.glimmer"
+[[language.file-types]]
+glob = "{app,addon}/{components,templates}/*.hbs"
+
+[language.auto-pairs]
+"\"" = "\""
+"'" = "'"
+"(" = ")"
+"<" = ">"
+"{" = "}"
+
+[language.block-comment-tokens]
+end = "}}"
+start = "{{!"
+
+[language.formatter]
+args = ["--parser", "glimmer"]
+command = "prettier"
+
+[[language]]
+comment-token = "//"
+file-types = ["ohm"]
+injection-regex = "ohm"
+name = "ohm"
+scope = "source.ohm"
+[[language.block-comment-tokens]]
+end = "*/"
+start = "/*"
+
+[[language.block-comment-tokens]]
+end = "*/"
+start = "/**"
+
+[language.auto-pairs]
+"\"" = "\""
+"(" = ")"
+"<" = ">"
+"{" = "}"
+
+[language.indent]
+tab-width = 2
+unit = "  "
+
+[language-server]
+[language-server.ada-gpr-language-server]
+args = ["--language-gpr"]
+command = "ada_language_server"
+
+[language-server.ada-language-server]
+command = "ada_language_server"
+
+[language-server.als]
+command = "als"
+
+[language-server.ansible-language-server]
+args = ["--stdio"]
+command = "ansible-language-server"
+
+[language-server.awk-language-server]
+command = "awk-language-server"
+
+[language-server.bash-language-server]
+args = ["start"]
+command = "bash-language-server"
+
+[language-server.bass]
+args = ["--lsp"]
+command = "bass"
+
+[language-server.bicep-langserver]
+command = "bicep-langserver"
+
+[language-server.blueprint-compiler]
+args = ["lsp"]
+command = "blueprint-compiler"
+
+[language-server.bufls]
+args = ["serve"]
+command = "bufls"
+
+[language-server.cairo-language-server]
+args = []
+command = "cairo-language-server"
+
+[language-server.cl-lsp]
+args = ["stdio"]
+command = "cl-lsp"
+
+[language-server.clangd]
+command = "clangd"
+
+[language-server.clojure-lsp]
+command = "clojure-lsp"
+
+[language-server.cmake-language-server]
+command = "cmake-language-server"
+
+[language-server.crystalline]
+args = ["--stdio"]
+command = "crystalline"
+
+[language-server.cs]
+args = ["launch", "--contrib", "smithy-language-server", "--", "0"]
+command = "cs"
+
+[language-server.csharp-ls]
+command = "csharp-ls"
+
+[language-server.cuelsp]
+command = "cuelsp"
+
+[language-server.dart]
+args = ["language-server", "--client-id=helix"]
+command = "dart"
+
+[language-server.dhall-lsp-server]
+command = "dhall-lsp-server"
+
+[language-server.docker-compose-langserver]
+args = ["--stdio"]
+command = "docker-compose-langserver"
+
+[language-server.docker-langserver]
+args = ["--stdio"]
+command = "docker-langserver"
+
+[language-server.dot-language-server]
+args = ["--stdio"]
+command = "dot-language-server"
+
+[language-server.elixir-ls]
+command = "elixir-ls"
+
+[language-server.elixir-ls.config.elixirLS]
+dialyzerEnabled = false
+
+[language-server.elm-language-server]
+command = "elm-language-server"
+
+[language-server.elvish]
+args = ["-lsp"]
+command = "elvish"
+
+[language-server.ember-language-server]
+args = ["--stdio"]
+command = "ember-language-server"
+
+[language-server.erlang-ls]
+command = "erlang_ls"
+
+[language-server.forc]
+args = ["lsp"]
+command = "forc"
+
+[language-server.forth-lsp]
+command = "forth-lsp"
+
+[language-server.fortls]
+args = ["--lowercase_intrinsics"]
+command = "fortls"
+
+[language-server.fsharp-ls]
+command = "fsautocomplete"
+
+[language-server.fsharp-ls.config]
+AutomaticWorkspaceInit = true
+
+[language-server.gleam]
+args = ["lsp"]
+command = "gleam"
+
+[language-server.golangci-lint-lsp]
+command = "golangci-lint-langserver"
+
+[language-server.golangci-lint-lsp.config]
+command = ["golangci-lint", "run", "--out-format", "json", "--issues-exit-code=1"]
+
+[language-server.gopls]
+command = "gopls"
+
+[language-server.gopls.config.hints]
+assignVariableTypes = true
+compositeLiteralFields = true
+constantValues = true
+functionTypeParameters = true
+parameterNames = true
+rangeVariableTypes = true
+
+[language-server.graphql-language-service]
+args = ["server", "-m", "stream"]
+command = "graphql-lsp"
+
+[language-server.haskell-language-server]
+args = ["--lsp"]
+command = "haskell-language-server-wrapper"
+
+[language-server.helm_ls]
+args = ["serve"]
+command = "helm_ls"
+
+[language-server.idris2-lsp]
+command = "idris2-lsp"
+
+[language-server.intelephense]
+args = ["--stdio"]
+command = "intelephense"
+
+[language-server.jdtls]
+command = "jdtls"
+
+[language-server.jsonnet-language-server]
+args = ["-t", "--lint"]
+command = "jsonnet-language-server"
+
+[language-server.julia]
+args = ["--startup-file=no", "--history-file=no", "--quiet", "-e", "using LanguageServer; runserver()"]
+command = "julia"
+timeout = 60
+
+[language-server.kotlin-language-server]
+command = "kotlin-language-server"
+
+[language-server.lean]
+args = ["--server"]
+command = "lean"
+
+[language-server.ltex-ls]
+command = "ltex-ls"
+
+[language-server.lua-language-server]
+command = "lua-language-server"
+
+[language-server.lua-language-server.config.Lua.hint]
+arrayIndex = "Enable"
+await = true
+enable = true
+paramName = "All"
+paramType = true
+setType = true
+
+[language-server.markdoc-ls]
+args = ["--stdio"]
+command = "markdoc-ls"
+
+[language-server.markdown-oxide]
+command = "markdown-oxide"
+
+[language-server.marksman]
+args = ["server"]
+command = "marksman"
+
+[language-server.metals]
+command = "metals"
+
+[language-server.metals.config]
+isHttpEnabled = true
+
+[language-server.mint]
+args = ["ls"]
+command = "mint"
+
+[language-server.nil]
+command = "nil"
+
+[language-server.nimlangserver]
+command = "nimlangserver"
+
+[language-server.nimlsp]
+command = "nimlsp"
+
+[language-server.nls]
+command = "nls"
+
+[language-server.nu-lsp]
+args = ["--lsp"]
+command = "nu"
+
+[language-server.ocamllsp]
+command = "ocamllsp"
+
+[language-server.ols]
+args = []
+command = "ols"
+
+[language-server.omnisharp]
+args = ["--languageserver"]
+command = "OmniSharp"
+
+[language-server.openscad-lsp]
+args = ["--stdio"]
+command = "openscad-lsp"
+
+[language-server.pasls]
+args = []
+command = "pasls"
+
+[language-server.pbkit]
+args = ["lsp"]
+command = "pb"
+
+[language-server.perlnavigator]
+args = ["--stdio"]
+command = "perlnavigator"
+
+[language-server.pkgbuild-language-server]
+command = "pkgbuild-language-server"
+
+[language-server.prisma-language-server]
+args = ["--stdio"]
+command = "prisma-language-server"
+
+[language-server.purescript-language-server]
+args = ["--stdio"]
+command = "purescript-language-server"
+
+[language-server.pylsp]
+command = "pylsp"
+
+[language-server.pylyzer]
+args = ["--server"]
+command = "pylyzer"
+
+[language-server.pyright]
+args = ["--stdio"]
+command = "pyright-langserver"
+
+[language-server.pyright.config]
+
+[language-server.qmlls]
+command = "qmlls"
+
+[language-server.r]
+args = ["--no-echo", "-e", "languageserver::run()"]
+command = "R"
+
+[language-server.racket]
+args = ["-l", "racket-langserver"]
+command = "racket"
+
+[language-server.regols]
+command = "regols"
+
+[language-server.rescript-language-server]
+args = ["--stdio"]
+command = "rescript-language-server"
+
+[language-server.robotframework_ls]
+command = "robotframework_ls"
+
+[language-server.rust-analyzer]
+command = "rust-analyzer"
+
+[language-server.rust-analyzer.config.inlayHints]
+[language-server.rust-analyzer.config.inlayHints.bindingModeHints]
+enable = false
+
+[language-server.rust-analyzer.config.inlayHints.closingBraceHints]
+minLines = 10
+
+[language-server.rust-analyzer.config.inlayHints.closureReturnTypeHints]
+enable = "with_block"
+
+[language-server.rust-analyzer.config.inlayHints.discriminantHints]
+enable = "fieldless"
+
+[language-server.rust-analyzer.config.inlayHints.lifetimeElisionHints]
+enable = "skip_trivial"
+
+[language-server.rust-analyzer.config.inlayHints.typeHints]
+hideClosureInitialization = false
+
+[language-server.serve-d]
+command = "serve-d"
+
+[language-server.slint-lsp]
+args = []
+command = "slint-lsp"
+
+[language-server.solargraph]
+args = ["stdio"]
+command = "solargraph"
+
+[language-server.solc]
+args = ["--lsp"]
+command = "solc"
+
+[language-server.sourcekit-lsp]
+command = "sourcekit-lsp"
+
+[language-server.svelteserver]
+args = ["--stdio"]
+command = "svelteserver"
+
+[language-server.svelteserver.config.configuration]
+[language-server.svelteserver.config.configuration.javascript.inlayHints]
+[language-server.svelteserver.config.configuration.javascript.inlayHints.enumMemberValues]
+enabled = true
+
+[language-server.svelteserver.config.configuration.javascript.inlayHints.functionLikeReturnTypes]
+enabled = true
+
+[language-server.svelteserver.config.configuration.javascript.inlayHints.parameterNames]
+enabled = "all"
+
+[language-server.svelteserver.config.configuration.javascript.inlayHints.parameterTypes]
+enabled = true
+
+[language-server.svelteserver.config.configuration.javascript.inlayHints.propertyDeclarationTypes]
+enabled = true
+
+[language-server.svelteserver.config.configuration.javascript.inlayHints.variableTypes]
+enabled = true
+
+[language-server.svelteserver.config.configuration.typescript.inlayHints]
+[language-server.svelteserver.config.configuration.typescript.inlayHints.enumMemberValues]
+enabled = true
+
+[language-server.svelteserver.config.configuration.typescript.inlayHints.functionLikeReturnTypes]
+enabled = true
+
+[language-server.svelteserver.config.configuration.typescript.inlayHints.parameterNames]
+enabled = "all"
+
+[language-server.svelteserver.config.configuration.typescript.inlayHints.parameterTypes]
+enabled = true
+
+[language-server.svelteserver.config.configuration.typescript.inlayHints.propertyDeclarationTypes]
+enabled = true
+
+[language-server.svelteserver.config.configuration.typescript.inlayHints.variableTypes]
+enabled = true
+
+[language-server.svlangserver]
+args = []
+command = "svlangserver"
+
+[language-server.swipl]
+args = ["-g", "use_module(library(lsp_server))", "-g", "lsp_server:main", "-t", "halt", "--", "stdio"]
+command = "swipl"
+
+[language-server.tailwindcss-ls]
+args = ["--stdio"]
+command = "tailwindcss-language-server"
+
+[language-server.taplo]
+args = ["lsp", "stdio"]
+command = "taplo"
+
+[language-server.templ]
+args = ["lsp"]
+command = "templ"
+
+[language-server.terraform-ls]
+args = ["serve"]
+command = "terraform-ls"
+
+[language-server.texlab]
+command = "texlab"
+
+[language-server.typescript-language-server]
+args = ["--stdio"]
+command = "typescript-language-server"
+
+[language-server.typescript-language-server.config]
+hostInfo = "helix"
+
+[language-server.typescript-language-server.config.javascript.inlayHints]
+includeInlayEnumMemberValueHints = true
+includeInlayFunctionLikeReturnTypeHints = true
+includeInlayFunctionParameterTypeHints = true
+includeInlayParameterNameHints = "all"
+includeInlayParameterNameHintsWhenArgumentMatchesName = true
+includeInlayPropertyDeclarationTypeHints = true
+includeInlayVariableTypeHints = true
+
+[language-server.typescript-language-server.config.typescript.inlayHints]
+includeInlayEnumMemberValueHints = true
+includeInlayFunctionLikeReturnTypeHints = true
+includeInlayFunctionParameterTypeHints = true
+includeInlayParameterNameHints = "all"
+includeInlayParameterNameHintsWhenArgumentMatchesName = true
+includeInlayPropertyDeclarationTypeHints = true
+includeInlayVariableTypeHints = true
+
+[language-server.typst-lsp]
+command = "typst-lsp"
+
+[language-server.vala-language-server]
+command = "vala-language-server"
+
+[language-server.vhdl_ls]
+args = []
+command = "vhdl_ls"
+
+[language-server.vlang-language-server]
+command = "v-analyzer"
+
+[language-server.vscode-css-language-server]
+args = ["--stdio"]
+command = "vscode-css-language-server"
+
+[language-server.vscode-css-language-server.config]
+provideFormatter = true
+[language-server.vscode-css-language-server.config.css.validate]
+enable = true
+
+[language-server.vscode-html-language-server]
+args = ["--stdio"]
+command = "vscode-html-language-server"
+
+[language-server.vscode-html-language-server.config]
+provideFormatter = true
+
+[language-server.vscode-json-language-server]
+args = ["--stdio"]
+command = "vscode-json-language-server"
+
+[language-server.vscode-json-language-server.config]
+provideFormatter = true
+[language-server.vscode-json-language-server.config.json.validate]
+enable = true
+
+[language-server.vuels]
+args = ["--stdio"]
+command = "vue-language-server"
+
+[language-server.vuels.config.typescript]
+tsdk = "node_modules/typescript/lib/"
+
+[language-server.wgsl_analyzer]
+command = "wgsl_analyzer"
+
+[language-server.yaml-language-server]
+args = ["--stdio"]
+command = "yaml-language-server"
+
+[language-server.zls]
+command = "zls"
+
+[use-grammars]
+except = ["hare", "wren", "gemini"]
