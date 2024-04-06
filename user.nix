@@ -13,6 +13,7 @@ in
     ];
 
     programs.ssh.startAgent = true;
+    services.udisks2.enable = true;
 
     environment.systemPackages = with pkgs; [
       ssh-agents
