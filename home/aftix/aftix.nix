@@ -3,6 +3,7 @@
 {
   imports = [
     home-impermanence
+    ./elvish.nix
     ./mpd.nix
     ./helix.nix
   ];
