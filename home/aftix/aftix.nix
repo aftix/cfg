@@ -1,8 +1,10 @@
-{ upkgs, spkgs, ... }:
+{ home-impermanence, upkgs, spkgs, ... }:
 
 {
   imports = [
-    ./aftix/mpd.nix
+    home-impermanence
+    ./mpd.nix
+    ./helix.nix
   ];
 
   home.username = "aftix";
@@ -20,6 +22,12 @@
     weechat-unwrapped weechatScripts.weechat-notify-send
     python312Packages.aria2p
   ];
+
+  programs.starship.settings = {
+    "$schema" = "https://starship.rs/config-schema.json";
+    add_newline = true;
+    package.disabled = true;
+  };
 
   home.stateVersion = "23.11";
   programs.home-manager.enable = true;
