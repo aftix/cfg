@@ -7,6 +7,7 @@
     ./elvish.nix
     ./mpd.nix
     ./helix.nix
+    ./vcs.nix
   ];
 
   home.username = "aftix";
@@ -19,6 +20,7 @@
     pavucontrol pass xdotool
     vault
     gh
+    kitty kitty-img kitty-themes
     element-desktop discord betterdiscordctl
     tofi slurp libnotify notify-desktop
     weechat-unwrapped weechatScripts.weechat-notify-send
