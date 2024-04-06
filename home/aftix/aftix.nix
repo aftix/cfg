@@ -3,6 +3,7 @@
 {
   imports = [
     home-impermanence
+    ./aria2.nix
     ./elvish.nix
     ./mpd.nix
     ./helix.nix
@@ -21,7 +22,6 @@
     element-desktop discord betterdiscordctl
     tofi slurp libnotify notify-desktop
     weechat-unwrapped weechatScripts.weechat-notify-send
-    python312Packages.aria2p
   ];
 
   programs.starship.settings = {
