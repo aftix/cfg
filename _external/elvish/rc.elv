@@ -312,7 +312,7 @@ set-env TERMINAL $E:TERM
 set-env RUSTC_WRAPPER sccache
 set-env VAULT_ADDR "https://vault.aftix.xyz"
 set-env DOCKER_HOST "unix://"(path:join $E:XDG_RUNTIME_DIR docker.sock)
-set-env SSH_AUTH_SOCK (path:join $E:XDG_RUNTIME_DIR ssh-agent.socket)
+set-env SSH_AUTH_SOCK (path:join $E:XDG_RUNTIME_DIR ssh-agent)
 
 if (has-external brew) {
   eval (^
