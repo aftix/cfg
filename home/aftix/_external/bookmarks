@@ -18,3 +18,4 @@ loc $HOME/.local
 shr $HOME/.local/share
 bin $HOME/.local/bin
 cfg $HOME/src/cfg
+o $HOME/src/cfg

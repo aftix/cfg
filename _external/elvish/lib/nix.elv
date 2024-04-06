@@ -26,6 +26,31 @@ fn rebuild {
   notify-send "NixOS Rebuild succeeded" --icon=software-update-available
 }
 
+# Rebuild home-manager configuration and commit if succeeded
+fn rebuild_home {
+  tmp pwd = $E:HOME/src/cfg
+
+  echo "Rebuilding Home..."
+  home-manager switch --flake ./home/aftix 2>&1 | tee home-manager-switch.log | try {
+    grep --color 'error: '
+  } catch { }
+
+  if ?(grep --quiet 'error: ' home-manager-switch.log) {
+    fail "`home-manager switch` failed"
+  }
+
+  e:cp --remove-destination -R _external/* $E:HOME/.config/.
+
+  if (jj st | grep 'Working copy' | re:match '\(no description set\)' (slurp)) {
+    var current = (home-manager generations | head -n1)
+    jj ci --message=$current
+  } else {
+    jj new
+  }
+
+  notify-send "Home rebuild secceeded" --icon=software-update-available
+}
+
 # If there are changes in the configuration, nixos-rebuild switch and commit if succeeded
 fn commit {
   tmp pwd = $E:HOME/src/cfg
