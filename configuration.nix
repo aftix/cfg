@@ -14,6 +14,7 @@ in
       ./machine.nix
       ./impermanence/nixos.nix
       ./user.nix
+      ./vpn.nix
     ];
 
     nix.nixPath = [
@@ -45,7 +46,6 @@ in
         directories = [
           "/var/lib/nixos"
           "/etc/nixos"
-          "/etc/NetworkManager/system-connections"
         ];
       };
       # /state is not backup up (btrfs subvolume under local)
