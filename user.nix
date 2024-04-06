@@ -1,5 +1,8 @@
 {upkgs, ...}: {
-  programs.ssh.startAgent = true;
+  programs = {
+    ssh.startAgent = true;
+    zsh.enable = true;
+  };
 
   environment.systemPackages = with upkgs; [
     ssh-agents
