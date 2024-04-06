@@ -1,4 +1,4 @@
-{ home-impermanence, upkgs, spkgs, ... }:
+{ home-impermanence, config, upkgs, spkgs, ... }:
 
 {
   imports = [
@@ -28,6 +28,31 @@
     "$schema" = "https://starship.rs/config-schema.json";
     add_newline = true;
     package.disabled = true;
+  };
+
+  systemd.user.startServices = true;
+
+  # GPG
+  programs.gpg = {
+    enable = true;
+    homedir = "${config.home.homeDirectory}/.local/share/gnupg";
+  };
+  services.gpg-agent.enable = true;
+  systemd.user.services.keyrefresh = {
+    Unit.Description = "Refresh gpg keys";
+    Service = {
+      Type = "oneshot";
+      Environment = "GNUPGHOME=\"${config.programs.gpg.homedir}\"";
+      ExecStart = "${upkgs.gnupg}/bin/gpg --refresh-keys";
+    };
+  };
+  systemd.user.timers.keyrefresh = {
+    Unit.Description = "Refresh gpg keys every 8 hours";
+    Timer = {
+      OnStartupSec = "1m";
+      OnUnitActiveSec = "8h";
+    };
+    Install.WantedBy = [ "timers.target" ];
   };
 
   home.stateVersion = "23.11";

@@ -1,6 +1,0 @@
-[Unit]
-Description=Refresh gpg keys
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/gpg --refresh-keys
