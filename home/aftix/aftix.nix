@@ -9,6 +9,7 @@
     ./mpd.nix
     ./helix.nix
     ./vcs.nix
+    ./waybar.nix
   ];
 
   home.username = "aftix";
@@ -57,6 +58,14 @@
       OnUnitActiveSec = "8h";
     };
     Install.WantedBy = [ "timers.target" ];
+  };
+
+  # Hyprland - just symlink as config is pretty dynamic
+  home.activation = {
+    linkHypr = ''
+      export ROOT="${config.home.homeDirectory}/src/cfg/home/aftix"
+      ln -sf "$ROOT/_external.hypr" .config/hypr
+    '';
   };
 
   # Fonts
