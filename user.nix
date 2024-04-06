@@ -1,7 +1,10 @@
 {upkgs, ...}: {
   programs = {
     ssh.startAgent = true;
-    zsh.enable = true;
+    zsh = {
+      enable = true;
+      interactiveShellInit = builtins.readFile ./_external/.zshrc;
+    };
   };
 
   environment.systemPackages = with upkgs; [
