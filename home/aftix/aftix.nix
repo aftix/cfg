@@ -4,6 +4,7 @@
   imports = [
     home-impermanence
     ./aria2.nix
+    ./dunst.nix
     ./elvish.nix
     ./mpd.nix
     ./helix.nix

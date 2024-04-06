@@ -91,7 +91,6 @@
     mpv
     yt-dlp
     imagemagick
-    dunst
     kitty
     kitty-img
     kitty-themes
@@ -188,7 +187,6 @@
     pulse.enable = true;
   };
 
-  programs.zsh.enable = true;
   programs.ssh.startAgent = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
