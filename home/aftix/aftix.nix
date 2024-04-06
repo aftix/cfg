@@ -21,6 +21,7 @@
     pavucontrol pass xdotool
     vault
     gh
+    fontconfig
     kitty kitty-img kitty-themes
     element-desktop discord betterdiscordctl
     tofi slurp libnotify notify-desktop
@@ -58,6 +59,28 @@
     Install.WantedBy = [ "timers.target" ];
   };
 
+  # Fonts
+  fonts.fontconfig.enable = true;
+  xdg.configFile."fontconfig/fonts.conf".text = ''
+    <?xml version="1.0"?>
+    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+    <fontconfig>
+    <match target="pattern">
+      <test qual="any" name="family"><string>serif</string></test>
+      <edit name="family" mode="assign" binding="same"><string>Source Han Serif JP</string></edit>
+    </match>
+    <match target="pattern">
+      <test qual="any" name="family"><string>sans-serif</string></test>
+      <edit name="family" mode="assign" binding="same"><string>Source Han Sans JP</string></edit>
+    </match>
+    <match target="pattern">
+      <test qual="any" name="family"><string>monospace</string></test>
+      <edit name="family" mode="assign" binding="same"><string>WenQuanYi Zen Hei Mono</string></edit>
+    </match>
+    </fontconfig>
+  '';
+
+  # Home manager
   home.stateVersion = "23.11";
   programs.home-manager.enable = true;
 }
