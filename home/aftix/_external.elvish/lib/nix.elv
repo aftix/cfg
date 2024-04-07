@@ -9,11 +9,16 @@ fn rebuild {
 
   echo "Rebuilding NixOS..."
   sudo nixos-rebuild switch --flake . 2>&1 | tee nixos-switch.log | try {
-    grep --color 'error: '
+    grep --color '(?<!warning:)error: '
   } catch { }
 
-  if ?(grep --quiet 'error: ' nixos-switch.log) {
+  if ?(grep --quiet '(?<!warning:)error: ' nixos-switch.log) {
     fail "`nixos-rebuild switch` failed"
+  }
+
+  if (== (jj diff --no-pager --git --from @- | wc -l) 0) {
+    notify-send "NixOS Rebuild succeeded" --icon=software-update-available
+    return
   }
 
   if (jj st | grep 'Working copy' | re:match '\(no description set\)' (slurp)) {
@@ -32,14 +37,17 @@ fn rebuild_home {
 
   echo "Rebuilding Home..."
   home-manager switch --flake ./home/aftix -b backup 2>&1 | tee home-manager-switch.log | try {
-    grep --color 'error: '
+    grep --color '(?<!warning:)error: '
   } catch { }
 
-  if ?(grep --quiet 'error: ' home-manager-switch.log) {
+  if ?(grep --quiet '(?<!warning:)error: ' home-manager-switch.log) {
     fail "`home-manager switch` failed"
   }
 
-  e:cp --remove-destination -R _external/* $E:HOME/.config/.
+  if (== (jj diff --no-pager --git --from @- | wc -l) 0) {
+    notify-send "Home rebuild secceeded" --icon=software-update-available
+    return
+  }
 
   if (jj st | grep 'Working copy' | re:match '\(no description set\)' (slurp)) {
     var current = (home-manager generations | head -n1)
