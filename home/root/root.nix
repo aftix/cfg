@@ -1,10 +1,10 @@
-{ home-impermanence, upkgs, spkgs, ... }:
-
 {
-  imports = [
-    home-impermanence
-    ../aftix/helix.nix
-  ];
+  home-impermanence,
+  upkgs,
+  spkgs,
+  ...
+}: {
+  imports = [home-impermanence ../aftix/helix.nix];
 
   home.username = "root";
   home.homeDirectory = "/root";

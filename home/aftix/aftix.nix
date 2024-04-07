@@ -1,6 +1,9 @@
-{ home-impermanence, config, upkgs, spkgs, ... }:
-
 {
+  home-impermanence,
+  config,
+  upkgs,
+  ...
+}: {
   imports = [
     home-impermanence
     ./aria2.nix
@@ -41,19 +44,36 @@
   };
 
   home.packages = with upkgs; [
-    rustup go sccache
-    firefox-bin ungoogled-chromium
-    pipx conda
+    nil
+    statix
+    alejandra
+    rustup
+    go
+    sccache
+    firefox-bin
+    ungoogled-chromium
+    pipx
+    conda
     tealdeer
-    pavucontrol pass xdotool
+    pavucontrol
+    pass
+    xdotool
     vault
     gh
     fontconfig
-    element-desktop discord betterdiscordctl
-    tofi slurp libnotify
-    aspell aspellDicts.en aspellDicts.en-science aspellDicts.en-computers
+    element-desktop
+    discord
+    betterdiscordctl
+    tofi
+    slurp
+    libnotify
+    aspell
+    aspellDicts.en
+    aspellDicts.en-science
+    aspellDicts.en-computers
     zenith
-    weechat-unwrapped weechatScripts.weechat-notify-send
+    weechat-unwrapped
+    weechatScripts.weechat-notify-send
   ];
 
   # Various minor configs
@@ -79,7 +99,7 @@
     Unit.Description = "Refresh gpg keys";
     Service = {
       Type = "oneshot";
-      Environment = "GNUPGHOME=\"${config.programs.gpg.homedir}\"";
+      Environment = ''GNUPGHOME="${config.programs.gpg.homedir}"'';
       ExecStart = "${upkgs.gnupg}/bin/gpg --refresh-keys";
     };
   };
@@ -89,7 +109,7 @@
       OnStartupSec = "1m";
       OnUnitActiveSec = "8h";
     };
-    Install.WantedBy = [ "timers.target" ];
+    Install.WantedBy = ["timers.target"];
   };
 
   # Hyprland - just symlink as config is pretty dynamic
@@ -159,7 +179,7 @@
       ytdl-format = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best";
       save-position-on-quit = true;
       sub-font = "Source Han Serif JP";
-      sub-auto= "fuzzy";
+      sub-auto = "fuzzy";
     };
     profiles = {
       "extension.gif".loop-file = "inf";
@@ -205,7 +225,6 @@
       R = "rotate";
     };
   };
-  
 
   # GH
   programs.gh = {
@@ -222,40 +241,39 @@
     mkdir -p .config/gh
     ln -sf "$ROOT/.local/share/gh/hosts.yml" .config/gh/hosts.yml
   '';
- 
 
   # Setup xdg default programs
   xdg.enable = true;
   xdg.portal = {
     enable = true;
-    extraPortals = [ upkgs.xdg-desktop-portal-hyprland ];
-    configPackages = [ upkgs.xdg-desktop-portal-hyprland ];
+    extraPortals = [upkgs.xdg-desktop-portal-hyprland];
+    configPackages = [upkgs.xdg-desktop-portal-hyprland];
     config.preferred.default = "xdg-desktop-portal-hyprland";
   };
   xdg.mime.enable = true;
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "application/pdf" = [ "zathura.desktop" ];
-      "application/x-pdf" = [ "zathura.desktop" ];
-      "application/epub" = [ "zathura.desktop" ];
-      "image/png" = [ "feh.desktop" ];
-      "image/tiff" = [ "feh.desktop" ];
-      "image/jpg" = [ "feh.desktop" ];
-      "image/gif" = [ "mpv.desktop" ];
-      "video/mp4" = [ "mpv.desktop" ];
-      "video/avi" = [ "mpv.desktop" ];
-      "video/mkv" = [ "mpv.desktop" ];
-      "video/webm" = [ "mpv.desktop" ];
-      "audio/flac" = [ "mpv.desktop" ];
-      "audio/ogg" = [ "mpv.desktop" ];
-      "audio/mp3" = [ "mpv.desktop" ];
-      "x-scheme-handler/http" = [ "firefox.desktop" ];
-      "x-scheme-handler/https" = [ "firefox.desktop" ];
-      "x-scheme-handler/ftp" = [ "firefox.desktop" ];
+      "application/pdf" = ["zathura.desktop"];
+      "application/x-pdf" = ["zathura.desktop"];
+      "application/epub" = ["zathura.desktop"];
+      "image/png" = ["feh.desktop"];
+      "image/tiff" = ["feh.desktop"];
+      "image/jpg" = ["feh.desktop"];
+      "image/gif" = ["mpv.desktop"];
+      "video/mp4" = ["mpv.desktop"];
+      "video/avi" = ["mpv.desktop"];
+      "video/mkv" = ["mpv.desktop"];
+      "video/webm" = ["mpv.desktop"];
+      "audio/flac" = ["mpv.desktop"];
+      "audio/ogg" = ["mpv.desktop"];
+      "audio/mp3" = ["mpv.desktop"];
+      "x-scheme-handler/http" = ["firefox.desktop"];
+      "x-scheme-handler/https" = ["firefox.desktop"];
+      "x-scheme-handler/ftp" = ["firefox.desktop"];
     };
   };
-  
+
   # Home manager
   home.stateVersion = "23.11";
   programs.home-manager.enable = true;

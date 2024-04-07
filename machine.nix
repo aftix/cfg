@@ -1,13 +1,17 @@
-{ config, lib, pkgs, modulesPath, ... }:
-
 {
-  boot.initrd.kernelModules = [ "amdgpu" ];
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}: {
+  boot.initrd.kernelModules = ["amdgpu"];
 
-  fileSystems."/".options = [ "noatime" "nodiratime" "discard=async" ];
-  fileSystems."/persist".options = [ "noatime" "nodiratime" "discard=async" ];
-  fileSystems."/nix".options = [ "noatime" "nodiratime" "discard=async" ];
-  fileSystems."/home".options = [ "noatime" "nodiratime" "discard=async" ];
-  fileSystems."/state".options = [ "noatime" "nodiratime" "discard=async" ];
+  fileSystems."/".options = ["noatime" "nodiratime" "discard=async"];
+  fileSystems."/persist".options = ["noatime" "nodiratime" "discard=async"];
+  fileSystems."/nix".options = ["noatime" "nodiratime" "discard=async"];
+  fileSystems."/home".options = ["noatime" "nodiratime" "discard=async"];
+  fileSystems."/state".options = ["noatime" "nodiratime" "discard=async"];
 
   fileSystems."/persist".neededForBoot = true;
   fileSystems."/state".neededForBoot = true;
@@ -28,10 +32,12 @@
     hostName = "hamilton";
     networkmanager.enable = true;
     interfaces = {
-      enp6s0.ipv4.addresses = [{
-        address = "192.168.1.179";
-        prefixLength = 24;
-      }];
+      enp6s0.ipv4.addresses = [
+        {
+          address = "192.168.1.179";
+          prefixLength = 24;
+        }
+      ];
     };
     defaultGateway = {
       address = "192.168.1.1";
@@ -42,11 +48,11 @@
   # Setup bind mounts to media directories (on hdd)
   fileSystems."/home/aftix/media" = {
     device = "/mnt/home/aftix/media";
-    options = [ "bind" ];
+    options = ["bind"];
   };
   fileSystems."/home/aftix/.transmission" = {
     device = "/mnt/home/aftix/transmission";
-    options = [ "bind" ];
+    options = ["bind"];
   };
 
   # Misc

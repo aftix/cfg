@@ -1,9 +1,9 @@
-{ config, upkgs, ... }:
-
 {
-  home.packages = with upkgs; [
-    waybar
-  ];
+  config,
+  upkgs,
+  ...
+}: {
+  home.packages = with upkgs; [waybar];
 
   programs.waybar.enable = true;
 
