@@ -121,7 +121,7 @@ if (and (os:exists ~/.config/aria2/aria2d.env) (os:is-regular ~/.config/aria2/ar
   }
 }
 
-fn aria2p  {|@a| e:aria2p --secret=$E:ARIA2_RPC_TOKEN $@a }
+fn aria2p {|@a| e:aria2p --secret=$E:ARIA2_RPC_TOKEN $@a }
 
 fn icat {|@rest| e:kitty +kitten icat $@rest}
 fn kdiff {|@rest| e:kitty +kitten diff $@rest}
@@ -135,15 +135,10 @@ if (has-external nvim) {
   set vimdiff~ = {|@a| e:nvim -d $@a}
 }
 
-fn mutt {|@a| e:mutt $@a}
-fn em {|@a| e:mutt $@a}
-
-if (has-external neomutt) {
-  set edit:completion:arg-completer[mutt] = $edit:completion:arg-completer[neomutt]
-  set edit:completion:arg-completer[em] = $edit:completion:arg-completer[neomutt]
-  set mutt~ =  {|@a| e:neomutt $@a}
-  set em~ = {|@a| e:neomutt $@a}
-} 
+fn mutt {|@a| e:neomutt $@a}
+fn em {|@a| e:neomutt $@a}
+set edit:completion:arg-completer[mutt] = $edit:completion:arg-completer[neomutt]
+set edit:completion:arg-completer[em] = $edit:completion:arg-completer[neomutt]
 
 # Standard utils with better options
 set edit:completion:arg-completer[mkd] = $edit:completion:arg-completer[mkdir]
@@ -167,7 +162,7 @@ fn diff {|@a| e:diff --color=auto $@a}
 
 # Programs with specific options
 set edit:completion:arg-completer[sysu] = $edit:completion:arg-completer[systemctl]
-fn sysu {|@a| systemctl --user $@a }
+fn sysu {|@a| e:systemctl --user $@a }
 
 set edit:completion:arg-completer[k] = $edit:completion:arg-completer[make]
 set edit:completion:arg-completer[kd] = $edit:completion:arg-completer[make]
@@ -182,14 +177,14 @@ if (has-external nproc) {
 set edit:completion:arg-completer[mpvf] = $edit:completion:arg-completer[mpv]
 set edit:completion:arg-completer[anipv] = $edit:completion:arg-completer[mpv]
 set edit:completion:arg-completer[termpv] = $edit:completion:arg-completer[mpv]
-fn mpvf {|@a| mpv --fs $@a }
-fn anipv {|@a| mpv --slang=en,eng --fs --alang=jpn,jp $@a }
-fn termpv {|@a| mpv --vo=kitty --vo-kitty-use-shm=yes $@a }
+fn mpvf {|@a| e:mpv --fs $@a }
+fn anipv {|@a| e:mpv --slang=en,eng --fs --alang=jpn,jp $@a }
+fn termpv {|@a| e:mpv --vo=kitty --vo-kitty-use-shm=yes $@a }
 
 set edit:completion:arg-completer[rfcdate] = $edit:completion:arg-completer[date]
 set edit:completion:arg-completer[emdate] = $edit:completion:arg-completer[date]
-fn rfcdate {|@a| date --iso-8601="seconds" $@a }
-fn emdate {|@a| date -R $@a }
+fn rfcdate {|@a| e:date --iso-8601="seconds" $@a }
+fn emdate {|@a| e:date -R $@a }
 fn xz {|@a| e:xz --threads=0 $@a }
 
 fn ssh {|@rest| e:ssh -o 'VisualHostKey=yes' $@rest}
@@ -199,7 +194,7 @@ if (has-external kitty) {
 }
 
 set edit:completion:arg-completer[ydl] = $edit:completion:arg-completer[yt-dlp]
-fn ydl {|@a| yt-dlp -ic -o '%(title)s.%(ext)s' --add-metadata --user-agent 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html/)' $@a }
+fn ydl {|@a| e:yt-dlp -ic -o '%(title)s.%(ext)s' --add-metadata --user-agent 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html/)' $@a }
 
 fn ls {|@a| e:ls --color=auto -F -H -h $@a }
 
@@ -285,8 +280,8 @@ if (has-external pbzip2) {
 }
 
 # Email
-fn abook { abook -C (path:join $E:XDG_CONFIG_HOME abook abookrc) --datafile (path:join $E:XDG_DATA_HOME abook addressbook) }
-fn mbsync { mbsync -c (path:join $E:XDG_CONFIG_HOME isync mbsyncrc) }
+fn abook { e:abook -C (path:join $E:XDG_CONFIG_HOME abook abookrc) --datafile (path:join $E:XDG_DATA_HOME abook addressbook) }
+fn mbsync { e:mbsync -c (path:join $E:HOME .mbsyncrc) }
 
 set-env FZF_DEFAULT_OPTS "--layout=reverse --height 40%"
 
