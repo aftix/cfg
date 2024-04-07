@@ -42,6 +42,7 @@
   # Make random rpc token for daemon
   home.activation = {
     generateAriaRPC = ''
+      mkdir -p .config/aria2
       dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null |\
       base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > .config/aria2/aria2d.env
 
