@@ -51,6 +51,8 @@
     fontconfig
     element-desktop discord betterdiscordctl
     tofi slurp libnotify
+    aspell aspellDicts.en aspellDicts.en-science aspellDicts.en-computers
+    zenith
     weechat-unwrapped weechatScripts.weechat-notify-send
   ];
 
