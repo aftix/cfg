@@ -53,6 +53,9 @@
 
     packages = with upkgs; [
       nil
+      ffmpeg_5
+      jq
+      imagemagick
       statix
       alejandra
       hyprland
@@ -62,6 +65,7 @@
       hyprcursor
       xdg-desktop-portal-hyprland
       hyprland-protocols
+      clipman
       rustup
       go
       sccache
@@ -82,13 +86,20 @@
       tofi
       slurp
       libnotify
+      wl-clipboard
+      xclip
       aspell
       aspellDicts.en
       aspellDicts.en-science
       aspellDicts.en-computers
       zenith
+      ssh-agents
       weechat-unwrapped
       weechatScripts.weechat-notify-send
+      udiskie
+      pinentry-gtk2
+      yt-dlp
+      mpv
     ];
 
     activation = {
@@ -110,6 +121,7 @@
 
   # Various minor configs
   programs = {
+    yt-dlp.enable = true;
     starship.settings = {
       "$schema" = "https://starship.rs/config-schema.json";
       add_newline = true;
@@ -139,16 +151,20 @@
     xwayland.enable = true;
   };
 
-  systemd.user.startServices = true;
-
   services = {
-    gpg-agent.enable = true;
-    gpg-agent.extraConfig = ''
-      pinentry-program ${config.home.homeDirectory}/.local/bin/pinentry-custom
-    '';
+    clipman.enable = true;
+    gpg-agent = {
+      enable = true;
+      extraConfig = ''
+        pinentry-program ${config.home.homeDirectory}/.local/bin/pinentry-custom
+      '';
+    };
+    udiskie.enable = true;
+    ssh-agent.enable = true;
   };
 
   systemd.user = {
+    startServices = true;
     services.keyrefresh = {
       Unit.Description = "Refresh gpg keys";
       Service = {
@@ -166,58 +182,17 @@
       };
       Install.WantedBy = ["timers.target"];
     };
+
+    targets.hyprland-session = {
+      Unit = {
+        Description = "hyprland target";
+        Requires = ["graphical-session.target"];
+        After = ["graphical-session.target"];
+      };
+    };
   };
 
-  # Fonts
   fonts.fontconfig.enable = true;
-
-  xdg.configFile = {
-    "fontconfig/fonts.conf".text = ''
-      <?xml version="1.0"?>
-      <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
-      <fontconfig>
-      <match target="pattern">
-        <test qual="any" name="family"><string>serif</string></test>
-        <edit name="family" mode="assign" binding="same"><string>Source Han Serif JP</string></edit>
-      </match>
-      <match target="pattern">
-        <test qual="any" name="family"><string>sans-serif</string></test>
-        <edit name="family" mode="assign" binding="same"><string>Source Han Sans JP</string></edit>
-      </match>
-      <match target="pattern">
-        <test qual="any" name="family"><string>monospace</string></test>
-        <edit name="family" mode="assign" binding="same"><string>WenQuanYi Zen Hei Mono</string></edit>
-      </match>
-      </fontconfig>
-    '';
-
-    # tealdeer
-    "tealdeer/config.toml".text = ''
-      [display]
-      use_pager = true
-
-      [updates]
-      auto_update = true
-
-      [style.command_name]
-      foreground = "green"
-
-      [style.example_code]
-      foreground = "blue"
-
-      [style.example_variable]
-      foreground = "white"
-      underline = true
-    '';
-
-    # tofi macchiato
-    "tofi/config".text = ''
-      text-color = #cad3f5
-      prompt-color = #ed8796
-      selection-color = #eed49f
-      background-color = #24273a
-    '';
-  };
 
   programs = {
     # mpv
@@ -306,7 +281,6 @@
     };
 
     mime.enable = true;
-
     mimeApps = {
       enable = true;
       defaultApplications = {
@@ -328,6 +302,55 @@
         "x-scheme-handler/https" = ["firefox.desktop"];
         "x-scheme-handler/ftp" = ["firefox.desktop"];
       };
+    };
+
+    configFile = {
+      # Fontconfig
+      "fontconfig/fonts.conf".text = ''
+        <?xml version="1.0"?>
+        <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+        <fontconfig>
+        <match target="pattern">
+          <test qual="any" name="family"><string>serif</string></test>
+          <edit name="family" mode="assign" binding="same"><string>Source Han Serif JP</string></edit>
+        </match>
+        <match target="pattern">
+          <test qual="any" name="family"><string>sans-serif</string></test>
+          <edit name="family" mode="assign" binding="same"><string>Source Han Sans JP</string></edit>
+        </match>
+        <match target="pattern">
+          <test qual="any" name="family"><string>monospace</string></test>
+          <edit name="family" mode="assign" binding="same"><string>WenQuanYi Zen Hei Mono</string></edit>
+        </match>
+        </fontconfig>
+      '';
+
+      # tealdeer
+      "tealdeer/config.toml".text = ''
+        [display]
+        use_pager = true
+
+        [updates]
+        auto_update = true
+
+        [style.command_name]
+        foreground = "green"
+
+        [style.example_code]
+        foreground = "blue"
+
+        [style.example_variable]
+        foreground = "white"
+        underline = true
+      '';
+
+      # tofi macchiato
+      "tofi/config".text = ''
+        text-color = #cad3f5
+        prompt-color = #ed8796
+        selection-color = #eed49f
+        background-color = #24273a
+      '';
     };
   };
 }
