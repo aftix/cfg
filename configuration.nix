@@ -112,12 +112,16 @@
     dina-font
     proggyfonts
     nerdfonts
+    font-awesome
+    office-code-pro
+    cantarell-fonts
   ];
 
   # Users
   security.sudo = {
     enable = true;
     execWheelOnly = true;
+    extraConfig = "Defaults lecture = never";
   };
 
   users = {
