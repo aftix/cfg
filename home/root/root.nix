@@ -1,13 +1,11 @@
-{
-  home-impermanence,
-  upkgs,
-  spkgs,
-  ...
-}: {
+{home-impermanence, ...}: {
   imports = [home-impermanence ../aftix/helix.nix];
 
-  home.username = "root";
-  home.homeDirectory = "/root";
+  home = {
+    username = "root";
+    homeDirectory = "/root";
+    stateVersion = "23.11"; # DO NOT CHANGE
+  };
 
   programs.starship.settings = {
     "$schema" = "https://starship.rs/config-schema.json";
@@ -15,6 +13,5 @@
     package.disabled = true;
   };
 
-  home.stateVersion = "23.11";
   programs.home-manager.enable = true;
 }
