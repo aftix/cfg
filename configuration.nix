@@ -94,7 +94,6 @@
     kitty-img
     kitty-themes
     home-manager
-    hunspell
     starship
     udisks
     udiskie

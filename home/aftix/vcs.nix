@@ -49,6 +49,17 @@
       };
       ui.pager = "bat -p";
       ui.diff.tool = [ "kitty" "+kitten" "diff" "$left" "$right" ];
+      ui = {
+        pager = "bat -p";
+        diff.tool = [ "kitty" "+kitten" "diff" "$left" "$right" ];
+        default-command = "log";
+      };
+      ui = {
+        pager = "bat -p";
+        diff.tool = [ "kitty" "+kitten" "diff" "$left" "$right" ];
+        diff-editor = ":builtin";
+        default-command = "log";
+      };
       signing = {
         sign-all = true;
         key = "C6F4434A6A4C3A74DC9569C247DB00554BA8E05F";
