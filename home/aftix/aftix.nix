@@ -6,6 +6,7 @@
     ./aria2.nix
     ./dunst.nix
     ./elvish.nix
+    ./kitty.nix
     ./mpd.nix
     ./helix.nix
     ./vcs.nix
@@ -24,7 +25,6 @@
     vault
     gh
     fontconfig
-    kitty kitty-img kitty-themes
     element-desktop discord betterdiscordctl
     tofi slurp libnotify notify-desktop
     weechat-unwrapped weechatScripts.weechat-notify-send
