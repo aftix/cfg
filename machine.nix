@@ -39,5 +39,16 @@
     };
   };
 
+  # Setup bind mounts to media directories (on hdd)
+  fileSystems."/home/aftix/media" = {
+    device = "/mnt/home/aftix/media";
+    options = [ "bind" ];
+  };
+  fileSystems."/home/aftix/.transmission" = {
+    device = "/mnt/home/aftix/transmission";
+    options = [ "bind" ];
+  };
+
+  # Misc
   hardware.opengl.enable = true;
 }
