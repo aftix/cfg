@@ -56,13 +56,13 @@
       spkgs.systemd
       spkgs.dbus
       spkgs.sudo
+      pipewire
+      wireplumber
       pigz
       lzip
       zstd
       pbzip2
       fuse
-      pipewire
-      wireplumber
       curl
       btrfs-progs
       inotify-tools
@@ -71,8 +71,6 @@
       gnupg
       python3
       zsh
-      git
-      jujutsu
       libsForQt5.kwin
       kdePackages.sddm
       catppuccin-sddm-corners
@@ -82,20 +80,18 @@
       bat
       ripgrep
       fzf
-      ffmpeg_5
-      mpv
-      yt-dlp
-      imagemagick
       starship
-      wl-clipboard
-      xclip
-      clipman
+      udisks
     ];
   };
 
   programs = {
     fuse.userAllowOther = true;
     hyprland.enable = true;
+    zsh = {
+      enable = true;
+      interactiveShellInit = builtins.readFile ./_external/.zshrc;
+    };
     nix-ld = {
       enable = true;
       libraries = [];
@@ -144,6 +140,8 @@
 
     # Enable CUPS to print documents.
     printing.enable = true;
+
+    udisks2.enable = true;
 
     # Sound
     pipewire = {

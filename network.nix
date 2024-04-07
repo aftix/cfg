@@ -1,6 +1,5 @@
-{upkgs, ...}: let
-  nordvpn = upkgs.nur.repos.LuisChDev.nordvpn;
-in {
+{upkgs, ...}:
+with upkgs.nur.repos.LuisChDev; {
   networking = {
     nameservers = ["1.1.1.1" "1.0.0.1"];
     firewall = {

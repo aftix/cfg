@@ -1,23 +1,9 @@
 {upkgs, ...}: {
-  programs = {
-    ssh.startAgent = true;
-    zsh = {
-      enable = true;
-      interactiveShellInit = builtins.readFile ./_external/.zshrc;
-    };
-  };
-
   environment.systemPackages = with upkgs; [
-    ssh-agents
-    pinentry-curses
-    pinentry-gtk2
     elvish
     carapace
     home-manager
-    udisks
-    udiskie
   ];
-  services.udisks2.enable = true;
 
   users.users.aftix = {
     isNormalUser = true;
@@ -27,29 +13,9 @@
     uid = 1000;
     hashedPasswordFile = "/state/passwd.aftix";
     packages = with upkgs; [
-      rustup
-      go
-      sccache
-      firefox-bin
-      ungoogled-chromium
-      pipx
-      conda
-      pavucontrol
-      mpc-cli
-      pass
-      xdotool
-      vault
-      gh
-      element-desktop
-      discord
-      betterdiscordctl
-      tofi
-      slurp
-      libnotify
-      notify-desktop
-      weechat-unwrapped
-      weechatScripts.weechat-notify-send
-      python312Packages.aria2p
+      elvish
+      carapace
+      home-manager
     ];
   };
 }
