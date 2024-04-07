@@ -2,7 +2,7 @@
 
 {
   # Too complicated for home manager, just sync with _external configuration
-  xdg.configFile.".config/elvish".source = ./_external.elvish;
+  xdg.configFile."elvish".source = ./_external.elvish;
 
   # This changes often, just symlink it to the repo
   # Currently config.lib.file.mkOutOfStoreSymlink doesn't work on unstable, activation script workaround
