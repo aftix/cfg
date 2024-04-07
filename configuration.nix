@@ -76,13 +76,6 @@
       libsForQt5.kwin
       kdePackages.sddm
       catppuccin-sddm-corners
-      hyprland
-      hyprlock
-      hypridle
-      hyprpaper
-      hyprcursor
-      xdg-desktop-portal-hyprland
-      hyprland-protocols
       helix
       eza
       dust

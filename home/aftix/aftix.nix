@@ -46,6 +46,11 @@
       allowOther = true;
     };
 
+    sessionVariables = {
+      XDG_CURRENT_DESKTOP = "Hyprland";
+      MOZ_USE_XINPUT2 = "1";
+    };
+
     packages = with upkgs; [
       nil
       statix
@@ -53,7 +58,7 @@
       rustup
       go
       sccache
-      firefox-bin
+      (wrapFirefox pkgs.firefox-unwrapped.override {pipewireSupport = true;} {})
       ungoogled-chromium
       pipx
       conda
@@ -111,6 +116,14 @@
         keyserver = "keys.gnupg.net";
       };
     };
+
+    firefox.enable = true;
+    chromium = {
+      enable = true;
+      dictionaries = [upkgs.hunspellDictsChromium.en_US];
+    };
+
+    hyprland.enable = true;
   };
 
   systemd.user.startServices = true;
