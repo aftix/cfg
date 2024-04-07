@@ -1,9 +1,5 @@
-{ upkgs, ... }:
-
-{
-  home.packages = with upkgs; [
-    kitty kitty-img kitty-themes
-  ];
+{upkgs, ...}: {
+  home.packages = with upkgs; [kitty kitty-img kitty-themes];
 
   programs.kitty = {
     enable = true;
