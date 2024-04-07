@@ -6,9 +6,10 @@
     ./aria2.nix
     ./dunst.nix
     ./elvish.nix
+    ./helix.nix
     ./kitty.nix
     ./mpd.nix
-    ./helix.nix
+    ./transmission.nix
     ./vcs.nix
     ./waybar.nix
   ];
@@ -17,13 +18,24 @@
   home.homeDirectory = "/home/aftix";
 
   # Discord, element, and chromium store state in .config for some reason
-  # symlink them from ~/.local/share on boot so ~/.config is a tmpfs
-  home.persistence."${config.home.homeDirectory}/.local/share" = {
+  # symlink them from ~/.local/persist on boot so ~/.config is a tmpfs
+  # Some of the data in transmission's config dir should be in XDG_DATA_HOME
+  # Impermenance is used to persist it
+  home.persistence."${config.home.homeDirectory}/.local/persist" = {
     directories = [
       ".config/discord"
       ".config/BetterDiscord"
       ".config/chromium"
       ".config/Element"
+
+      ".config/transmission/torrents"
+      ".config/transmission/blocklists"
+      ".config/transmission/resume"
+    ];
+    files = [
+      ".config/transmission/dht.dat"
+      ".config/transmission/stats.json"
+      ".config/transmission/bandwidth-groups.json"
     ];
     allowOther = true;
   };
@@ -38,7 +50,7 @@
     gh
     fontconfig
     element-desktop discord betterdiscordctl
-    tofi slurp libnotify notify-desktop
+    tofi slurp libnotify
     weechat-unwrapped weechatScripts.weechat-notify-send
   ];
 
@@ -58,6 +70,9 @@
     homedir = "${config.home.homeDirectory}/.local/share/gnupg";
   };
   services.gpg-agent.enable = true;
+  services.gpg-agent.extraConfig = ''
+    pinentry-program ${config.home.homeDirectory}/.local/bin/pinentry-custom
+  '';
   systemd.user.services.keyrefresh = {
     Unit.Description = "Refresh gpg keys";
     Service = {
