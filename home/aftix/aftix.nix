@@ -55,10 +55,17 @@
       nil
       statix
       alejandra
+      hyprland
+      hyprlock
+      hypridle
+      hyprpaper
+      hyprcursor
+      xdg-desktop-portal-hyprland
+      hyprland-protocols
       rustup
       go
       sccache
-      (wrapFirefox pkgs.firefox-unwrapped.override {pipewireSupport = true;} {})
+      (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})
       ungoogled-chromium
       pipx
       conda
@@ -120,10 +127,15 @@
     firefox.enable = true;
     chromium = {
       enable = true;
+      package = upkgs.ungoogled-chromium;
       dictionaries = [upkgs.hunspellDictsChromium.en_US];
     };
+  };
 
-    hyprland.enable = true;
+  wayland.windowManager.hyprland = {
+    enable = true;
+    systemd.enable = false; # Set this to false to prevent generating hyprland.conf
+    xwayland.enable = true;
   };
 
   systemd.user.startServices = true;

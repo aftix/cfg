@@ -93,6 +93,82 @@
     ];
   };
 
+  programs = {
+    fuse.userAllowOther = true;
+    hyprland.enable = true;
+    nix-ld = {
+      enable = true;
+      libraries = [];
+    };
+  };
+
+  # Locales
+  time.timeZone = "America/Chicago";
+  i18n.defaultLocale = "en_US.UTF-8";
+  console = {
+    font = "Lat2-Terminus16";
+    # keyMap = "us";
+    useXkbConfig = true; # use xkb.options in tty.
+  };
+
+  # Graphical session
+  services = {
+    xserver = {
+      enable = true;
+      displayManager.sddm = {
+        enable = true;
+        wayland.enable = true;
+        theme = "${upkgs.catppuccin-sddm-corners}";
+        autoNumlock = true;
+        settings = {
+          General = {
+            GreeterEnvironment = "QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
+          };
+          Autologin = {
+            Session = "hyprland";
+            User = "aftix";
+          };
+          Wayland = {
+            CompositorCommand = "${upkgs.libsForQt5.kwin}/kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1";
+          };
+        };
+      };
+
+      # Configure keymap in X11
+      xkb = {
+        layout = "us";
+        variant = "dvorak";
+        options = "compose:prsc,caps:escape";
+      };
+    };
+
+    # Enable CUPS to print documents.
+    printing.enable = true;
+
+    # Sound
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+  };
+
+  # Enable bluetooth
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+  systemd.user.services.mpris-proxy = {
+    description = "Mpris proxy";
+    after = ["network.target" "sound.target"];
+    wantedBy = ["default.target"];
+    serviceConfig.ExecStart = "${upkgs.bluez}/bin/mpris-proxy";
+  };
+
+  # Enable sound.
+  security.rtkit.enable = true;
+
   fonts.packages = with upkgs; [
     inconsolata
     dejavu_fonts
