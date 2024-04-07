@@ -60,6 +60,7 @@
     curl
     btrfs-progs
     inotify-tools
+    fuse
     openssh
     ssh-agents
     rsync
@@ -126,6 +127,8 @@
     mutableUsers = false;
     users.root.hashedPasswordFile = "/state/passwd.root";
   };
+
+  programs.fuse.userAllowOther = true;
 
   # Locales
   time.timeZone = "America/Chicago";

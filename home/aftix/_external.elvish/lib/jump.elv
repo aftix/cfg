@@ -150,7 +150,7 @@ set edit:insert:binding[Alt-Ctrl-J] = $jump_unmark~
 #   Alt-x brings up a fuzzy finder to jump to a bookmark
 #   Shift-alt-x lets you insert a bookmark path at the cursor position in the shell buffer
 
-var bfile = (path:join $E:XDG_CONFIG_HOME bookmarks)
+var bfile = (path:join $E:XDG_DATA_HOME bookmarks)
 fn parse_bmarks {
   put [(each {
     |line|
