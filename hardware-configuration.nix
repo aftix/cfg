@@ -4,11 +4,12 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }: {
-  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ];
 
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"];
   boot.initrd.kernelModules = [];
@@ -45,6 +46,11 @@
     options = ["subvol=safe/home"];
   };
 
+  fileSystems."/home/aftix/.config" = {
+    device = "config";
+    fsType = "tmpfs";
+  };
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/6196-424C";
     fsType = "vfat";
@@ -55,12 +61,15 @@
     fsType = "ext4";
   };
 
-  fileSystems."/home/aftix/.config" = {
-    device = "config";
-    fsType = "tmpfs";
+  fileSystems."/home/aftix/.cache" = {
+    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+    fsType = "btrfs";
+    options = ["subvol=local/cache"];
   };
 
-  swapDevices = [{device = "/dev/disk/by-uuid/2c0befe8-a1c3-40f8-80d7-730fa9fb311c";}];
+  swapDevices = [
+    {device = "/dev/disk/by-uuid/2c0befe8-a1c3-40f8-80d7-730fa9fb311c";}
+  ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -68,9 +77,8 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp6s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.tun0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.nordlynx.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
