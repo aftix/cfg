@@ -95,7 +95,8 @@
       # Hyprland - just symlink as config is pretty dynamic
       linkHyp = ''
         export ROOT="${config.home.homeDirectory}/src/cfg/home/aftix"
-        ln -sf "$ROOT/_external.hypr" .config/hypr
+        [ -e .config/hypr ] && rm .config/hypr
+        ln -sf "$ROOT/_external.hypr/" .config/hypr
       '';
 
       # link GH auth into .config
