@@ -56,6 +56,10 @@
       spkgs.systemd
       spkgs.dbus
       spkgs.sudo
+      pigz
+      lzip
+      zstd
+      pbzip2
       fuse
       pipewire
       wireplumber

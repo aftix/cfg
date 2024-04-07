@@ -9,6 +9,7 @@
     ./aria2.nix
     ./dunst.nix
     ./elvish.nix
+    ./email.nix
     ./helix.nix
     ./kitty.nix
     ./mpd.nix
@@ -105,6 +106,10 @@
     gpg = {
       enable = true;
       homedir = "${config.home.homeDirectory}/.local/share/gnupg";
+
+      settings = {
+        keyserver = "keys.gnupg.net";
+      };
     };
   };
 
