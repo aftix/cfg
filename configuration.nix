@@ -81,6 +81,8 @@
     hypridle
     hyprpaper
     hyprcursor
+    hyprland-protocols
+    xdg-desktop-portal-hyprland
     helix
     eza
     dust

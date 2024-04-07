@@ -188,6 +188,7 @@
       R = "rotate";
     };
   };
+  
 
   # GH
   programs.gh = {
@@ -205,6 +206,39 @@
     ln -sf "$ROOT/.local/share/gh/hosts.yml" .config/gh/hosts.yml
   '';
  
+
+  # Setup xdg default programs
+  xdg.enable = true;
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ upkgs.xdg-desktop-portal-hyprland ];
+    configPackages = [ upkgs.xdg-desktop-portal-hyprland ];
+    config.preferred.default = "xdg-desktop-portal-hyprland";
+  };
+  xdg.mime.enable = true;
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "application/pdf" = [ "zathura.desktop" ];
+      "application/x-pdf" = [ "zathura.desktop" ];
+      "application/epub" = [ "zathura.desktop" ];
+      "image/png" = [ "feh.desktop" ];
+      "image/tiff" = [ "feh.desktop" ];
+      "image/jpg" = [ "feh.desktop" ];
+      "image/gif" = [ "mpv.desktop" ];
+      "video/mp4" = [ "mpv.desktop" ];
+      "video/avi" = [ "mpv.desktop" ];
+      "video/mkv" = [ "mpv.desktop" ];
+      "video/webm" = [ "mpv.desktop" ];
+      "audio/flac" = [ "mpv.desktop" ];
+      "audio/ogg" = [ "mpv.desktop" ];
+      "audio/mp3" = [ "mpv.desktop" ];
+      "x-scheme-handler/http" = [ "firefox.desktop" ];
+      "x-scheme-handler/https" = [ "firefox.desktop" ];
+      "x-scheme-handler/ftp" = [ "firefox.desktop" ];
+    };
+  };
+  
   # Home manager
   home.stateVersion = "23.11";
   programs.home-manager.enable = true;
