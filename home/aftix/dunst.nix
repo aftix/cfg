@@ -1,9 +1,5 @@
-{ upkgs, ... }:
-
-{
-  home.packages = with upkgs; [
-    dunst
-  ];
+{upkgs, ...}: {
+  home.packages = with upkgs; [dunst];
 
   services.dunst = {
     enable = true;
@@ -28,7 +24,9 @@
         font = "Inconsolata 8";
         line_height = 0;
         markup = "full";
-        format = "<b>%s</b>\n%b";
+        format = ''
+          <b>%s</b>
+          %b'';
         alignment = "left";
         show_age_threshold = 60;
         word_wrap = true;

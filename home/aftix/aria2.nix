@@ -1,10 +1,10 @@
-{ config, spkgs, upkgs, ... }:
-
 {
-  home.packages = with upkgs; [
-    aria2
-    python312Packages.aria2p
-  ];
+  config,
+  spkgs,
+  upkgs,
+  ...
+}: {
+  home.packages = with upkgs; [aria2 python312Packages.aria2p];
 
   xdg.configFile."aria2/aria2.conf".text = ''
     continue
@@ -34,9 +34,10 @@
     Service = {
       Type = "forking";
       EnvironmentFile = "%h/.config/aria2/aria2d.env";
-      ExecStart = "${upkgs.aria2}/bin/aria2c --conf-path=%h/.config/aria2/aria2d.conf --rpc-secret=\"\${ARIA2_RPC_TOKEN}\"";
+      ExecStart = ''
+        ${upkgs.aria2}/bin/aria2c --conf-path=%h/.config/aria2/aria2d.conf --rpc-secret="''${ARIA2_RPC_TOKEN}"'';
     };
-    Install.WantedBy = [ "default.target" ];
+    Install.WantedBy = ["default.target"];
   };
 
   # Make random rpc token for daemon
