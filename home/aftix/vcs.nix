@@ -1,5 +1,6 @@
 {upkgs, ...}: {
-  # Packages are system-wide
+  home.packages = with upkgs; [git jujutsu];
+
   programs.git = {
     enable = true;
     extraConfig = {
