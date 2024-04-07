@@ -16,6 +16,18 @@
   home.username = "aftix";
   home.homeDirectory = "/home/aftix";
 
+  # Discord, element, and chromium store state in .config for some reason
+  # symlink them from ~/.local/share on boot so ~/.config is a tmpfs
+  home.persistence."${config.home.homeDirectory}/.local/share" = {
+    directories = [
+      ".config/discord"
+      ".config/BetterDiscord"
+      ".config/chromium"
+      ".config/Element"
+    ];
+    allowOther = true;
+  };
+
   home.packages = with upkgs; [
     rustup go sccache
     firefox-bin ungoogled-chromium
@@ -64,12 +76,10 @@
   };
 
   # Hyprland - just symlink as config is pretty dynamic
-  home.activation = {
-    linkHypr = ''
-      export ROOT="${config.home.homeDirectory}/src/cfg/home/aftix"
-      ln -sf "$ROOT/_external.hypr" .config/hypr
-    '';
-  };
+  home.activation.linkHyp = ''
+    export ROOT="${config.home.homeDirectory}/src/cfg/home/aftix"
+    ln -sf "$ROOT/_external.hypr" .config/hypr
+  '';
 
   # Fonts
   fonts.fontconfig.enable = true;
@@ -93,18 +103,23 @@
   '';
 
   # tealdeer
-  xdg.configFile."teeldeer/config.toml".text = builtins.toJSON {
-    display.use_pager = true;
-    updates.auto_update = true;
-    style = {
-      command_name.foreground = "green";
-      example_code.foreground = "blue";
-      example_variable = {
-        foreground = "white";
-        underline = true;
-      };
-    };
-  };
+  xdg.configFile."tealdeer/config.toml".text = ''
+    [display]
+    use_pager = true
+
+    [updates]
+    auto_update = true
+
+    [style.command_name]
+    foreground = "green"
+
+    [style.example_code]
+    foreground = "blue"
+
+    [style.example_variable]
+    foreground = "white"
+    underline = true
+  '';
 
   # tofi macchiato
   xdg.configFile."tofi/config".text = ''
@@ -173,7 +188,23 @@
       R = "rotate";
     };
   };
-  
+
+  # GH
+  programs.gh = {
+    enable = true;
+    settings = {
+      git_protocol = "ssh";
+      prompt = "true";
+      aliases.co = "pr checkout";
+    };
+  };
+  # link GH auth into .config
+  home.activation.ghAuth = ''
+    export ROOT="${config.home.homeDirectory}"
+    mkdir -p .config/gh
+    ln -sf "$ROOT/.local/share/gh/hosts.yml" .config/gh/hosts.yml
+  '';
+ 
   # Home manager
   home.stateVersion = "23.11";
   programs.home-manager.enable = true;
