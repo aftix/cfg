@@ -7,7 +7,7 @@
     ./hardware-configuration.nix
     ./machine.nix
     ./user.nix
-    ./vpn.nix
+    ./network.nix
   ];
 
   nix = {
@@ -43,7 +43,7 @@
       # /persist is backed up (btrfs subvolume under safe/)
       "/persist" = {
         hideMounts = true;
-        directories = ["/var/lib/nixos" "/etc/NetworkManager/system-connections"];
+        directories = ["/var/lib/nixos" "/etc/NetworkManager/system-connections" "/var/lib/nordvpn"];
       };
       # /state is not backup up (btrfs subvolume under local)
       "/state" = {
