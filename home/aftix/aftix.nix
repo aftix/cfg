@@ -58,7 +58,6 @@
       imagemagick
       statix
       alejandra
-      hyprland
       hyprlock
       hypridle
       hyprpaper
@@ -101,22 +100,6 @@
       yt-dlp
       mpv
     ];
-
-    activation = {
-      # Hyprland - just symlink as config is pretty dynamic
-      linkHyp = ''
-        export ROOT="${config.home.homeDirectory}/src/cfg/home/aftix"
-        [ -e .config/hypr ] && rm .config/hypr
-        ln -sf "$ROOT/_external.hypr/" .config/hypr
-      '';
-
-      # link GH auth into .config
-      ghAuth = ''
-        export ROOT="${config.home.homeDirectory}"
-        mkdir -p .config/gh
-        ln -sf "$ROOT/.local/share/gh/hosts.yml" .config/gh/hosts.yml
-      '';
-    };
   };
 
   # Various minor configs
@@ -190,6 +173,15 @@
         After = ["graphical-session.target"];
       };
     };
+
+    tmpfiles.rules = let
+      share = "${config.home.homeDirectory}/.local/share";
+      cfg = "${config.home.homeDirectory}/.config";
+      root = "${config.home.homeDirectory}/src/cfg";
+    in [
+      "L+ \"${cfg}/hypr\" - - - - ${root}/home/aftix/_external.hypr"
+      "L+ \"${cfg}/gh/hosts.yml\" - - - - ${share}/gh/hosts.yml"
+    ];
   };
 
   fonts.fontconfig.enable = true;
