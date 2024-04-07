@@ -44,6 +44,9 @@ fn rebuild_home {
     fail "`home-manager switch` failed"
   }
 
+  # Update the overall system configuration flake with the new aftix input
+  nix flake update aftix
+
   if (== (jj diff --no-pager --git --from @- | wc -l) 0) {
     notify-send "Home rebuild secceeded" --icon=software-update-available
     return
