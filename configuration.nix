@@ -58,6 +58,7 @@
       spkgs.sudo
       pipewire
       wireplumber
+      hyprland
       pigz
       lzip
       zstd

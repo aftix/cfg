@@ -29,25 +29,23 @@
     rpc-listen-all=true
   '';
 
-  systemd.user.services.aria2cd = {
-    Unit.Description = "aria2 Daemon";
-    Service = {
-      Type = "forking";
-      EnvironmentFile = "%h/.config/aria2/aria2d.env";
-      ExecStart = ''
-        ${upkgs.aria2}/bin/aria2c --conf-path=%h/.config/aria2/aria2d.conf --rpc-secret="''${ARIA2_RPC_TOKEN}"'';
+  systemd.user = {
+    services.aria2cd = {
+      Unit.Description = "aria2 Daemon";
+      Service = {
+        Type = "forking";
+        ExecStart = let
+          rpcDir = "${config.home.homeDirectory}/.config/aria2";
+          rpcFile = "${rpcDir}/aria2d.env";
+        in ''
+          "${upkgs.coreutils}/bin/mkdir" -p "${rpcDir}" ; \
+          TOKEN=$("${upkgs.coreutils}/bin/dd" if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | \
+            "${upkgs.coreutils}/bin/base64" | "${upkgs.coreutils}/bin/tr" -d '\n=*')" ; \
+          "${upkgs.coreutils}/bin/echo" "ARIA2_RPC_TOKEN=$TOKEN" > ${rpcFile} ; \
+          "${upkgs.aria2}/bin/aria2c" --conf-path=%h/.config/aria2/aria2d.conf --rpc-secret="$TOKEN"
+        '';
+      };
+      Install.WantedBy = ["default.target"];
     };
-    Install.WantedBy = ["default.target"];
-  };
-
-  # Make random rpc token for daemon
-  home.activation = {
-    generateAriaRPC = ''
-      mkdir -p .config/aria2
-      dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null |\
-      base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > .config/aria2/aria2d.env
-
-      "${spkgs.systemd}/bin/systemctl" --user restart aria2cd 2>dev/null >/dev/null || true
-    '';
   };
 }
