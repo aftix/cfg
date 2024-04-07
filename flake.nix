@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     stablepkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nur.url = "github:nix-community/NUR";
 
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -18,20 +19,17 @@
   outputs = {
     nixpkgs,
     stablepkgs,
+    nur,
     home-manager,
     impermanence,
-    aftix,
     ...
   }: let
     system = "x86_64-linux";
-    lib = nixpkgs.lib // home-manager.lib;
     upkgs = import nixpkgs {
       inherit system;
+      overlays = [nur.overlay];
       config.allowUnfreePredicate = pkg:
-        builtins.elem (nixpkgs.lib.getName pkg) [
-          "discord"
-          "vault"
-        ];
+        builtins.elem (nixpkgs.lib.getName pkg) ["discord" "vault" "nordvpn"];
     };
     spkgs = import stablepkgs {inherit system;};
   in {
