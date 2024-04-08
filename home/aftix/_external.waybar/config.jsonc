@@ -148,7 +148,7 @@
     "custom/nordvpn": {
         "return-type": "json",
         "exec": "~/.config/waybar/scripts/nordvpn.sh",
-        "on-click": "[ -e /proc/sys/net/ipv4/tun0 ] && nmcli c down tun0 || nmcli c up dallas-1",
+        "on-click": "[ -e /proc/sys/net/ipv4/nordlynx ] && nordvpn d || nordvpn c",
         "interval": 5,
         "tooltip-format": "VPN connection status",
     },
