@@ -79,7 +79,6 @@ if (has-external "/Applications/Firefox.app/Contents/MacOS/firefox") {
 }
 
 set-env LESSHISTFILE "-"
-set-env WINEPREFIX (path:join $E:XDG_DATA_HOME wineprefixes default)
 set-env PASSWORD_STORE_DIR (path:join $E:XDG_DATA_HOME password-store)
 set-env GOPATH (path:join $E:XDG_DATA_HOME go)
 set-env WEECHAT_HOME (path:join $E:XDG_DATA_HOME weechat)
@@ -325,7 +324,6 @@ mkdir -p $E:XDG_CONFIG_HOME
 mkdir -p $E:XDG_DATA_HOME
 mkdir -p $E:XDG_CACHE_HOME
 mkdir -p $E:XDG_RUNTIME_DIR
-mkdir -p $E:WINEPREFIX
 mkdir -p $E:PASSWORD_STORE_DIR
 mkdir -p $E:GOPATH
 mkdir -p (path:join $E:HOME .local bin)

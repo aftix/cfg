@@ -13,6 +13,7 @@
     ./helix.nix
     ./kitty.nix
     ./mpd.nix
+    ./scripts.nix
     ./transmission.nix
     ./vcs.nix
     ./waybar.nix
@@ -66,7 +67,19 @@
       hyprland-protocols
       clipman
       rustup
+      cargo-nextest
+      cargo-supply-chain
+      cargo-update
+      cargo-llvm-cov
+      cargo-sort
+      cargo-udeps
+      cargo-crev
+      tokio-console
+      hyperfine
+      markdown-oxide
       go
+      golint
+      delve
       sccache
       (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})
       ungoogled-chromium
@@ -84,6 +97,7 @@
       betterdiscordctl
       tofi
       slurp
+      grim
       libnotify
       wl-clipboard
       xclip
@@ -109,6 +123,11 @@
       "$schema" = "https://starship.rs/config-schema.json";
       add_newline = true;
       package.disabled = true;
+    };
+
+    password-store = {
+      enable = true;
+      settings.PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.local/share/password-store";
     };
 
     gpg = {
@@ -139,7 +158,7 @@
     gpg-agent = {
       enable = true;
       extraConfig = ''
-        pinentry-program ${config.home.homeDirectory}/.local/bin/pinentry-custom
+        pinentry-program ${config.home.homeDirectory}/.config/pinentry-custom
       '';
     };
     udiskie.enable = true;
