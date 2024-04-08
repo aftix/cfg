@@ -8,6 +8,7 @@ fn rebuild {
   tmp pwd = $E:HOME/src/cfg
 
   echo "Rebuilding NixOS..."
+  nix flake lock --update-input aftix
   sudo nixos-rebuild switch --flake . 2>&1 | tee nixos-switch.log | try {
     grep --color '(?<!warning:)error: '
   } catch { }
@@ -45,7 +46,7 @@ fn rebuild_home {
   }
 
   # Update the overall system configuration flake with the new aftix input
-  nix flake update aftix
+  nix flake lock --update-input aftix
 
   if (== (jj diff --no-pager --git --from @- | wc -l) 0) {
     notify-send "Home rebuild secceeded" --icon=software-update-available
