@@ -59,5 +59,8 @@
         }
       ];
     };
+    nixosModules.kitty = import ./home/aftix/kitty.nix;
+    nixosModules.vcs = import ./home/aftix/vcs.nix;
+    nixosModules.helix = import ./home/aftix/helix.nix;
   };
 }
