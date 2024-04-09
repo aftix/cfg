@@ -54,21 +54,13 @@
 
     packages = with upkgs; [
       nil
-      ffmpeg_5
-      jq
-      imagemagick
       statix
-      nodePackages.bash-language-server
       alejandra
-      hyprlock
-      hypridle
-      hyprpaper
-      hyprcursor
-      xdg-desktop-portal-hyprland
-      hyprland-protocols
-      clipman
-      pkg-config
+
+      markdown-oxide
+
       rustup
+      sccache
       cargo-nextest
       cargo-supply-chain
       cargo-update
@@ -77,44 +69,63 @@
       cargo-udeps
       cargo-crev
       tokio-console
-      hyperfine
-      markdown-oxide
       wasm-bindgen-cli
+      pkg-config
+
       go
       golint
       delve
-      sccache
-      (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})
-      ungoogled-chromium
+
       pipx
       conda
-      tealdeer
-      pwvucontrol
+
+      nodePackages.bash-language-server
+
+      ffmpeg_5
+      jq
+      imagemagick
+
+      hyprlock
+      hypridle
+      hyprpaper
+      hyprcursor
+      xdg-desktop-portal-hyprland
+      hyprland-protocols
+      clipman
       pw-volume
-      pass
-      xdotool
-      vault
-      gh
-      fontconfig
-      element-desktop
-      discord
-      betterdiscordctl
       tofi
       slurp
       grim
       libnotify
       wl-clipboard
       xclip
+      pinentry-gtk2
+      pwvucontrol
+
+      (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})
+      ungoogled-chromium
       aspell
       aspellDicts.en
       aspellDicts.en-science
       aspellDicts.en-computers
+
+      pass
+      xdotool
+      hyperfine
+      tealdeer
+      vault
+      gh
+      fontconfig
       zenith
       ssh-agents
       weechat-unwrapped
       weechatScripts.weechat-notify-send
       udiskie
-      pinentry-gtk2
+
+      element-desktop
+      discord
+      betterdiscordctl
+
       yt-dlp
       mpv
     ];

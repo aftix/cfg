@@ -56,25 +56,32 @@
       spkgs.systemd
       spkgs.dbus
       spkgs.sudo
+
       pipewire
       wireplumber
+
       hyprland
+      libsForQt5.kwin
+      kdePackages.sddm
+      catppuccin-sddm-corners
+
       pigz
       lzip
       zstd
       pbzip2
-      fuse
       curl
+
       btrfs-progs
       inotify-tools
+      fuse
+      udisks
+
       openssh
       rsync
       gnupg
+
       python3
-      zsh
-      libsForQt5.kwin
-      kdePackages.sddm
-      catppuccin-sddm-corners
+
       helix
       eza
       dust
@@ -82,7 +89,7 @@
       ripgrep
       fzf
       starship
-      udisks
+      zsh
     ];
   };
 
