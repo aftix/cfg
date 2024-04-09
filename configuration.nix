@@ -49,6 +49,10 @@
       "/state" = {
         hideMounts = true;
         directories = ["/var/log" "/var/lib/bluetooth" "/var/lib/systemd/coredump"];
+        files = [
+          "/var/lib/cups/printers.conf"
+          "/var/lib/cups/subscriptions.conf"
+        ];
       };
     };
 
@@ -56,6 +60,11 @@
       spkgs.systemd
       spkgs.dbus
       spkgs.sudo
+
+      cups
+      sane-airscan
+      avahi
+      nssmdns
 
       pipewire
       wireplumber
@@ -160,6 +169,12 @@
 
     # Enable CUPS to print documents.
     printing.enable = true;
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      nssmdns6 = true;
+      openFirewall = true;
+    };
 
     udisks2.enable = true;
 
@@ -173,10 +188,18 @@
   };
 
   # Enable bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
+  hardware = {
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+    };
+
+    sane = {
+      enable = true;
+      extraBackends = with upkgs; [sane-airscan];
+    };
   };
+
   systemd.user.services.mpris-proxy = {
     description = "Mpris proxy";
     after = ["network.target" "sound.target"];
