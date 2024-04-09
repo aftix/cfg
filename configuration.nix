@@ -70,6 +70,9 @@
       zstd
       pbzip2
       curl
+      mandoc
+      man-pages
+      man-pages-posix
 
       btrfs-progs
       inotify-tools
@@ -91,6 +94,15 @@
       starship
       zsh
     ];
+  };
+
+  documentation = {
+    man = {
+      generateCaches = true;
+      man-db.enable = false;
+      mandoc.enable = true;
+    };
+    dev.enable = true;
   };
 
   programs = {
