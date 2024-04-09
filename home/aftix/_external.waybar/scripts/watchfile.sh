@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/run/current-system/sw/bin/bash
 
 [ -f /var/run/backupdisk.pid ] && echo '{"text": "Backing up disk"}'
 inotifywait -m /var/run --include "backupdisk\\.pid" -e create -e delete 2>/dev/null | while read -r line ; do

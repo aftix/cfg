@@ -58,6 +58,7 @@
       jq
       imagemagick
       statix
+      nodePackages.bash-language-server
       alejandra
       hyprlock
       hypridle
@@ -86,7 +87,8 @@
       pipx
       conda
       tealdeer
-      pavucontrol
+      pwvucontrol
+      pw-volume
       pass
       xdotool
       vault
@@ -158,7 +160,7 @@
     gpg-agent = {
       enable = true;
       extraConfig = ''
-        pinentry-program ${config.home.homeDirectory}/.config/pinentry-custom
+        pinentry-program ${config.home.homeDirectory}/.config/bin/pinentry-custom
       '';
     };
     udiskie.enable = true;
