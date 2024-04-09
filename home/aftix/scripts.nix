@@ -7,7 +7,7 @@
     "bin/pinentry-custom" = {
       executable = true;
       text = ''
-        #!"${upkgs.bash}/bin/bash"
+        #!${upkgs.bash}/bin/bash
 
         if [ -z "$PINENTRY_USER_DATA" ] ; then
           exec "${upkgs.pinentry-gtk2}/bin/pinentry-curses" "$@"
@@ -30,7 +30,7 @@
     "bin/passmenu" = {
       executable = true;
       text = ''
-        #!"${upkgs.bash}/bin/bash"
+        #!${upkgs.bash}/bin/bash
 
         shopt -s nullglob globstar
 
@@ -51,7 +51,7 @@
     "bin/screenshot.sh" = {
       executable = true;
       text = ''
-        #!"${upkgs.bash}/bin/bash"
+        #!${upkgs.bash}/bin/bash
 
         TOFI="${upkgs.tofi}/bin/tofi"
         name="$1" remove="yes"
@@ -82,7 +82,7 @@
     "bin/syncvault" = {
       executable = true;
       text = ''
-        #!"${upkgs.bash}/bin/bash"
+        #!${upkgs.bash}/bin/bash
         shopt -s globstar
         export VAULT_NAMESPACE="admin"
         SED="${upkgs.gnused}/bin/sed"
