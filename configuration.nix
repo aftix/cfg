@@ -95,7 +95,7 @@
     };
     nix-ld = {
       enable = true;
-      libraries = [];
+      libraries = with upkgs; [x264];
     };
   };
 
