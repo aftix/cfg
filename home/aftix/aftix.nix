@@ -67,6 +67,7 @@
       xdg-desktop-portal-hyprland
       hyprland-protocols
       clipman
+      pkg-config
       rustup
       cargo-nextest
       cargo-supply-chain
@@ -78,6 +79,7 @@
       tokio-console
       hyperfine
       markdown-oxide
+      wasm-bindgen-cli
       go
       golint
       delve
