@@ -1,4 +1,4 @@
-// -*- mode: jsonc -*-
+//v -*- mode: jsonc -*-
 {
     "layer": "top",
     "position": "bottom",
@@ -136,7 +136,7 @@
             "car": "",
             "default": ["", "", ""]
         },
-        "on-click": "pavucontrol"
+        "on-click": "pwvucontrol"
     },
     "custom/backup": {
         "return-type": "json",
