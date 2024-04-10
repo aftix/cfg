@@ -76,6 +76,11 @@
       golint
       delve
 
+      mypy
+      python311Packages.flake8
+      python311Packages.python-lsp-server
+      python311Packages.pyls-flake8
+      python311Packages.pylsp-mypy
       pipx
       conda
 
