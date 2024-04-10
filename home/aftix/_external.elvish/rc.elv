@@ -79,12 +79,24 @@ if (has-external "/Applications/Firefox.app/Contents/MacOS/firefox") {
 }
 
 set-env LESSHISTFILE "-"
+
+# Fix bad program default storages
 set-env PASSWORD_STORE_DIR (path:join $E:XDG_DATA_HOME password-store)
 set-env GOPATH (path:join $E:XDG_DATA_HOME go)
+set-env CARGO_HOME (path:join $E:XDG_DATA_HOME cargo)
+set-env ANSIBLE_HOME (path:join $E:XDG_CONFIG_HOME ansible)
+set-env ANSIBLE_CONFIG (path:join $E:XDG_CONFIG_HOME ansibe.cfg)
+set-env ANSIBLE_GALAXY_CACHE_DIR (path:join $E:XDG_CACHE_HOME ansible galaxy_cache)
 set-env WEECHAT_HOME (path:join $E:XDG_DATA_HOME weechat)
 set-env GNUPGHOME (path:join $E:XDG_DATA_HOME gnupg)
 set-env NOTMUCH_CONFIG (path:join $E:XDG_CONFIG_HOME notmuch default config)
-set-env OBJC_DISABLE_INITIALIZE_FORK_SAFETY "YES"
+set-env NODE_REPL_HISTORY (path:join $E:XDG_DATA_HOME node_repl_history)
+set-env NPM_CONFIG_USERCONFIG (path:join $E:XDG_CONFIG_HOME npm npmrc)
+set-env NVM_DIR (path:join $E:XDG_DATA_HOME nvm)
+set-env PYTHON_HISTORY (path:join $E:XDG_CACHE_HOME python history)
+set-env PYTHONPYCACHEPREFIX (path:join $E:XDG_CACHE_HOME python)
+set-env PYTHONUSERBASE (path:join $E:XDG_DATA_HOME python)
+set-env ZDOTDIR (path:join $E:XDG_CONFIG_HOME zsh)
 
 # Locale
 set-env LC_ALL "en_US.UTF-8"
@@ -326,6 +338,7 @@ mkdir -p $E:XDG_CACHE_HOME
 mkdir -p $E:XDG_RUNTIME_DIR
 mkdir -p $E:PASSWORD_STORE_DIR
 mkdir -p $E:GOPATH
+mkdir -p $E:CARGO_HOME
 mkdir -p (path:join $E:HOME .local bin)
 
 use mamba
