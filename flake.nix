@@ -45,6 +45,8 @@
       specialArgs = {
         inherit upkgs;
         inherit spkgs;
+        inherit nixpkgs;
+        inherit stablepkgs;
       };
       modules = [
         impermanence.nixosModules.impermanence
