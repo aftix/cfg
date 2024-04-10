@@ -8,6 +8,7 @@
     ./machine.nix
     ./user.nix
     ./network.nix
+    ./sync.nix
   ];
 
   nix = {

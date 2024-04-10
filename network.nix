@@ -4,8 +4,8 @@ with upkgs.nur.repos.LuisChDev; {
     nameservers = ["1.1.1.1" "1.0.0.1"];
     firewall = {
       checkReversePath = false;
-      allowedTCPPorts = [443];
-      allowedUDPPorts = [1194];
+      allowedTCPPorts = [443 8384 22000];
+      allowedUDPPorts = [1194 22000 21027];
     };
   };
   services.resolved = {
