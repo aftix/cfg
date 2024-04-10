@@ -83,7 +83,7 @@ set-env PASSWORD_STORE_DIR (path:join $E:XDG_DATA_HOME password-store)
 set-env GOPATH (path:join $E:XDG_DATA_HOME go)
 set-env WEECHAT_HOME (path:join $E:XDG_DATA_HOME weechat)
 set-env GNUPGHOME (path:join $E:XDG_DATA_HOME gnupg)
-set-env NOTMUCH_CONFIG (path:join $E:XDG_CONFIG_HOME notmuch config)
+set-env NOTMUCH_CONFIG (path:join $E:XDG_CONFIG_HOME notmuch default config)
 set-env OBJC_DISABLE_INITIALIZE_FORK_SAFETY "YES"
 
 # Locale

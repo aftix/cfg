@@ -62,6 +62,8 @@
       spkgs.dbus
       spkgs.sudo
 
+      nix-index
+
       cups
       sane-airscan
       avahi
