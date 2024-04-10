@@ -7,13 +7,16 @@
         "nixpkgs": [
           "nixpkgs"
         ],
+        "nur": [
+          "nur"
+        ],
         "stablepkgs": [
           "stablepkgs"
         ]
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-Gr8tY9ofw7ZLXc9h+sFsVYgMIwQoUhjARN+gVdR/zOQ=",
+        "narHash": "sha256-1NSuMUmOZGKr4xagXEGtWfZSl20NDLY0plJiJb6JREY=",
         "path": "./home/aftix",
         "type": "path"
       },
