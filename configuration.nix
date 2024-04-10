@@ -1,8 +1,14 @@
 {
   upkgs,
   spkgs,
+  nixpkgs,
+  stablepkgs,
   ...
-}: {
+}: let
+  base = "/etc/nixpkgs/channels";
+  nixpkgsPath = "${base}/nixpkgs";
+  stablepkgsPath = "${base}/nixpkgs-23.11";
+in {
   imports = [
     ./hardware-configuration.nix
     ./machine.nix
@@ -13,8 +19,8 @@
 
   nix = {
     nixPath = [
-      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-      "nixos-config=/home/aftix/src/cfg/configuration.nix"
+      "nixpkgs=${nixpkgsPath}"
+      "stablepkgs=${stablepkgsPath}"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
     settings.experimental-features = ["nix-command" "flakes"];
@@ -209,6 +215,11 @@
     wantedBy = ["default.target"];
     serviceConfig.ExecStart = "${upkgs.bluez}/bin/mpris-proxy";
   };
+
+  systemd.tmpfiles.rules = [
+    "L+ ${nixpkgsPath} - - - - ${nixpkgs}"
+    "L+ ${stablepkgsPath} - - - - ${stablepkgs}"
+  ];
 
   # Enable sound.
   security.rtkit.enable = true;
