@@ -14,6 +14,7 @@
     aftix.url = "path:./home/aftix";
     aftix.inputs.nixpkgs.follows = "nixpkgs";
     aftix.inputs.stablepkgs.follows = "stablepkgs";
+    aftix.inputs.nur.follows = "nur";
   };
 
   outputs = {
@@ -29,7 +30,12 @@
       inherit system;
       overlays = [nur.overlay];
       config.allowUnfreePredicate = pkg:
-        builtins.elem (nixpkgs.lib.getName pkg) ["discord" "vault" "nordvpn"];
+        builtins.elem (nixpkgs.lib.getName pkg) [
+          "discord"
+          "vault"
+          "nordvpn"
+          "pay-by-privacy"
+        ];
     };
     spkgs = import stablepkgs {inherit system;};
   in {
@@ -62,5 +68,6 @@
     nixosModules.kitty = import ./home/aftix/kitty.nix;
     nixosModules.vcs = import ./home/aftix/vcs.nix;
     nixosModules.helix = import ./home/aftix/helix.nix;
+    nixosModules.firefox = import ./home/aftix/firefox.nix;
   };
 }

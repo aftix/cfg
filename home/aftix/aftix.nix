@@ -10,6 +10,7 @@
     ./dunst.nix
     ./elvish.nix
     ./email.nix
+    ./firefox.nix
     ./helix.nix
     ./kitty.nix
     ./mpd.nix
@@ -159,7 +160,6 @@
       };
     };
 
-    firefox.enable = true;
     chromium = {
       enable = true;
       package = upkgs.ungoogled-chromium;
@@ -329,9 +329,6 @@
         "audio/flac" = ["mpv.desktop"];
         "audio/ogg" = ["mpv.desktop"];
         "audio/mp3" = ["mpv.desktop"];
-        "x-scheme-handler/http" = ["firefox.desktop"];
-        "x-scheme-handler/https" = ["firefox.desktop"];
-        "x-scheme-handler/ftp" = ["firefox.desktop"];
       };
     };
 
