@@ -57,6 +57,9 @@
       nil
       statix
       alejandra
+      nix-doc
+      nix-search-cli
+      manix
 
       markdown-oxide
 
@@ -72,6 +75,10 @@
       tokio-console
       wasm-bindgen-cli
       pkg-config
+
+      lldb
+      clang
+      clang-tools
 
       go
       golint
