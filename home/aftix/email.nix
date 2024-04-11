@@ -1,3 +1,4 @@
+# TODO: automatic syncing with systemd-creds --user when sytemd v256 releases
 {
   upkgs,
   config,
@@ -120,6 +121,7 @@ in {
         maildir.path = "gmail";
         imap = {
           host = lib.mkForce "imap.gmail.com";
+          port = lib.mkForce 963;
           tls = {
             enable = true;
             useStartTls = true;
@@ -260,6 +262,7 @@ in {
         maildir.path = "utmail";
         imap = {
           host = lib.mkForce "imap.gmail.com";
+          port = lib.mkForce 963;
           tls = {
             enable = true;
             useStartTls = true;
