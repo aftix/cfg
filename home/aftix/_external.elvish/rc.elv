@@ -171,6 +171,8 @@ fn du {|@a| e:du -h $@a}
 fn ed {|@a| e:ed -vp '*' $@a}
 fn diff {|@a| e:diff --color=auto $@a}
 
+fn fzfe {|name| e:fzf -q $name | xargs $E:EDITOR }
+
 # Programs with specific options
 set edit:completion:arg-completer[sysu] = $edit:completion:arg-completer[systemctl]
 fn sysu {|@a| e:systemctl --user $@a }
