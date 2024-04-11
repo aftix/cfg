@@ -11,7 +11,7 @@
   in {
     enable = true;
     inherit dataDir;
-    musicDirectory = "${config.home.homeDirectory}/music";
+    musicDirectory = "${config.home.homeDirectory}/media/music";
     playlistDirectory = "${dataDir}/playlists";
     dbFile = "${dataDir}/database";
     extraConfig = lib.concatStrings [
@@ -48,6 +48,6 @@
     lyrics_directory = ${config.home.homeDirectory}/.local/share/lyrics
     mpd_host = 127.0.0.1
     mpd_port = 6600
-    mpd_music_dir = ${config.home.homeDirectory}/music
+    mpd_music_dir = ${config.home.homeDirectory}/media/music
   '';
 }
