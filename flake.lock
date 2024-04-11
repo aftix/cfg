@@ -16,7 +16,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-kvtkCD0ENQZ6F14mdLKolb0+VfEZsr+SGRvPbBx/xyI=",
+        "narHash": "sha256-Vw60J3SZN0Pa4F7ZHKjHwSYlykdA7yvnxDih41a90Jo=",
         "path": "./home/aftix",
         "type": "path"
       },
@@ -33,11 +33,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1712390667,
-        "narHash": "sha256-ebq+fJZfobqpsAdGDGpxNWSySbQejRwW9cdiil6krCo=",
+        "lastModified": 1712759992,
+        "narHash": "sha256-2APpO3ZW4idlgtlb8hB04u/rmIcKA8O7pYqxF66xbNY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b787726a8413e11b074cde42704b4af32d95545c",
+        "rev": "31357486b0ef6f4e161e002b6893eeb4fafc3ca9",
         "type": "github"
       },
       "original": {
