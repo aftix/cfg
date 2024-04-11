@@ -14,7 +14,6 @@ fn add_to_path {
   } $my_paths
 }
 
-var cargo_path = (path:clean (path:join $E:HOME .cargo bin))
 var ghcup_path = (path:clean (path:join $E:HOME .ghcup bin))
 var cabal_path = (path:clean (path:join $E:HOME .cabal bin))
 var go_path = (path:clean (path:join $E:HOME .local share go bin))
@@ -23,7 +22,7 @@ var site_perl = "/usr/bin/site_perl"
 var vendor_perl = "/usr/bin/vendor_perl"
 var core_perl = "/usr/bin/core_perl"
 var home_mgr_path = (path:clean (path:join $E:HOME .local state nix profiles home-manager home-path bin))
-add_to_path $cargo_path $ghcup_path $cabal_path $go_path $cfg_bin $site_perl $vendor_perl $core_perl $home_mgr_path
+add_to_path $ghcup_path $cabal_path $go_path $cfg_bin $site_perl $vendor_perl $core_perl $home_mgr_path
 
 if (has-external "/opt/homebrew/bin/brew") {
   add_to_path (/opt/homebrew/bin/brew --prefix)"/bin"
@@ -84,6 +83,7 @@ set-env LESSHISTFILE "-"
 set-env PASSWORD_STORE_DIR (path:join $E:XDG_DATA_HOME password-store)
 set-env GOPATH (path:join $E:XDG_DATA_HOME go)
 set-env CARGO_HOME (path:join $E:XDG_DATA_HOME cargo)
+set-env CARGO_INSTALL_ROOT (path:join $E:XDG_DATA_HOME bin)
 set-env ANSIBLE_HOME (path:join $E:XDG_CONFIG_HOME ansible)
 set-env ANSIBLE_CONFIG (path:join $E:XDG_CONFIG_HOME ansibe.cfg)
 set-env ANSIBLE_GALAXY_CACHE_DIR (path:join $E:XDG_CACHE_HOME ansible galaxy_cache)
@@ -219,20 +219,17 @@ fn la {|@a| e:ls --color=auto -F -H -h -A $@a }
 
 set edit:completion:arg-completer[exal] = $edit:completion:arg-completer[exa]
 set edit:completion:arg-completer[exat] = $edit:completion:arg-completer[exa]
-fn exal {|@a| e:exa -lhb $@a }
-fn exa {|@a| e:exa --icons $@a }
-fn exat {|@a| e:exa --tree -lbh $@a }
+fn ezal {|@a| e:eza -lhb $@a }
+fn eza {|@a| e:eza --icons $@a }
+fn ezat {|@a| e:eza --tree -lbh $@a }
 
 fn tract {|@a| transmission-remote -F '~l:done' $@a }
-# fn tract_complete {|@a| $edit:completion:arg-completer[transmission-remote] transmission-remote -F '~l:done' $@a }
-# set edit:completion:arg-completer[tract] = $tract_complete~
+fn tract_complete {|@a| $edit:completion:arg-completer[transmission-remote] transmission-remote -F '~l:done' $@a }
+set edit:completion:arg-completer[tract] = $tract_complete~
 
 # Shortening names
 fn trem {|@a| transmission-remote $@a}
-# set edit:completion:arg-completer[trem] = $edit:completion:arg-completer[transmission-remote]
-
-set edit:completion:arg-completer[P] = $edit:completion:arg-completer[pacman]
-fn P {|@a| pacman $@a}
+set edit:completion:arg-completer[trem] = $edit:completion:arg-completer[transmission-remote]
 
 set edit:completion:arg-completer[sys] = $edit:completion:arg-completer[systemctl]
 fn sys {|@a| systemctl $@a}
@@ -294,8 +291,8 @@ if (has-external pbzip2) {
 }
 
 # Email
-fn abook { e:abook -C (path:join $E:XDG_CONFIG_HOME abook abookrc) --datafile (path:join $E:XDG_DATA_HOME abook addressbook) }
-fn mbsync { e:mbsync -c (path:join $E:HOME .mbsyncrc) }
+fn abook { |@rest| e:abook -C (path:join $E:XDG_CONFIG_HOME abook abookrc) --datafile (path:join $E:XDG_DATA_HOME abook addressbook) $@rest }
+fn mbsync { |@rest| e:mbsync -c (path:join $E:HOME .mbsyncrc) $@rest }
 
 set-env FZF_DEFAULT_OPTS "--layout=reverse --height 40%"
 
