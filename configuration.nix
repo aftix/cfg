@@ -1,6 +1,5 @@
 {
   upkgs,
-  spkgs,
   nixpkgs,
   stablepkgs,
   ...
@@ -64,9 +63,9 @@ in {
     };
 
     systemPackages = with upkgs; [
-      spkgs.systemd
-      spkgs.dbus
-      spkgs.sudo
+      systemd
+      dbus
+      sudo
 
       nix-index
 
