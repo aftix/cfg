@@ -86,6 +86,7 @@ in {
       lzip
       zstd
       pbzip2
+      killall
       curl
       mandoc
       man-pages
