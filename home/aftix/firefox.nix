@@ -1,5 +1,8 @@
 {upkgs, ...}: {
-  home.packages = with upkgs; [(wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})];
+  home = {
+    packages = with upkgs; [(wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})];
+    sessionVariables.MOZ_USE_XINPUT2 = "1";
+  };
 
   programs.firefox = {
     enable = true;
