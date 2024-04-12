@@ -341,6 +341,7 @@
 
     configFile = {
       # Fontconfig
+      # TODO: make XML generator
       "fontconfig/fonts.conf".text = ''
         <?xml version="1.0"?>
         <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
@@ -361,38 +362,32 @@
       '';
 
       # tealdeer
-      "tealdeer/config.toml".text = ''
-        [display]
-        use_pager = true
-
-        [updates]
-        auto_update = true
-
-        [style.command_name]
-        foreground = "green"
-
-        [style.example_code]
-        foreground = "blue"
-
-        [style.example_variable]
-        foreground = "white"
-        underline = true
-      '';
+      "tealdeer/config.toml".source = (upkgs.formats.toml {}).generate "tealdeer" {
+        display.use_pager = true;
+        updates.auto_update = true;
+        style.command_name.foreground = "green";
+        style.example_code.foreground = "blue";
+        style.example_variable = {
+          foreground = "white";
+          underline = true;
+        };
+      };
 
       # tofi macchiato
-      "tofi/config".text = ''
-        text-color = #cad3f5
-        prompt-color = #ed8796
-        selection-color = #eed49f
-        background-color = #24273a
-      '';
+      "tofi/config".source = (upkgs.formats.keyValue {}).generate "tofi" {
+        text-color = "#cad3f5";
+        prompt-color = "#ed8796";
+        selection-color = "#eed49f";
+        background-color = "#24273a";
+      };
 
-      "npm/npmrc".text = ''
-        prefix=''${XDG_DATA_HOME}/npm
-        cache=''${XDG_CACHE_HOME}/npm
-        init-module=''${XDG_CONFIG_HOME}/npm/config/npm-init.js
-        logs-dir=''${XDG_CACHE_HOME}/npm/logs
-      '';
+      # npm
+      "npm/npmrc".source = (upkgs.formats.keyValue {}).generate "npm" {
+        prefix = "\${XDG_DATA_HOME}/npm";
+        cache = "\${XDG_CACHE_HOME}/npm";
+        init-module = "\${XDG_CONFIG_HOME}/npm/config/npm-init.js";
+        logs-dir = "\${XDG_CACHE_HOME}/npm/logs";
+      };
     };
   };
 }
