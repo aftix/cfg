@@ -12,6 +12,7 @@
     ./email.nix
     ./firefox.nix
     ./helix.nix
+    ./hypr.nix
     ./kitty.nix
     ./mpd.nix
     ./scripts.nix
@@ -46,11 +47,6 @@
         ".config/transmission/bandwidth-groups.json"
       ];
       allowOther = true;
-    };
-
-    sessionVariables = {
-      XDG_CURRENT_DESKTOP = "Hyprland";
-      MOZ_USE_XINPUT2 = "1";
     };
 
     packages = with upkgs; [
@@ -98,23 +94,6 @@
       jq
       imagemagick
 
-      hyprlock
-      hypridle
-      hyprpaper
-      hyprcursor
-      xdg-desktop-portal-hyprland
-      hyprland-protocols
-      clipman
-      pw-volume
-      tofi
-      slurp
-      grim
-      libnotify
-      wl-clipboard
-      xclip
-      pinentry-gtk2
-      pwvucontrol
-
       (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})
       ungoogled-chromium
       aspell
@@ -133,7 +112,6 @@
       ssh-agents
       weechat-unwrapped
       weechatScripts.weechat-notify-send
-      udiskie
 
       element-desktop
       discord
@@ -194,12 +172,28 @@
 
   systemd.user = {
     startServices = true;
-    services.keyrefresh = {
-      Unit.Description = "Refresh gpg keys";
-      Service = {
-        Type = "oneshot";
-        Environment = ''GNUPGHOME="${config.programs.gpg.homedir}"'';
-        ExecStart = "${upkgs.gnupg}/bin/gpg --refresh-keys";
+    services = {
+      linkGh = let
+        cfg = "${config.home.homeDirectory}/.config";
+        share = "${config.home.homeDirectory}/.local/share";
+      in {
+        Unit.Description = "Link gh hosts file";
+        Service = {
+          Type = "oneshot";
+          ExecStart = ''
+            ${upkgs.coreutils}/bin/mkdir -p "${cfg}/gh" ; \
+            ${upkgs.coreutils}/bin/ln -sf "${share}/gh/hosts.yml" "${cfg}/gh/hosts.yml"
+          '';
+        };
+        Install.WantedBy = ["default.target"];
+      };
+      keyrefresh = {
+        Unit.Description = "Refresh gpg keys";
+        Service = {
+          Type = "oneshot";
+          Environment = ''GNUPGHOME="${config.programs.gpg.homedir}"'';
+          ExecStart = "${upkgs.gnupg}/bin/gpg --refresh-keys";
+        };
       };
     };
 
@@ -219,15 +213,6 @@
         After = ["graphical-session.target"];
       };
     };
-
-    tmpfiles.rules = let
-      share = "${config.home.homeDirectory}/.local/share";
-      cfg = "${config.home.homeDirectory}/.config";
-      root = "${config.home.homeDirectory}/src/cfg";
-    in [
-      "L+ \"${cfg}/hypr\" - - - - ${root}/home/aftix/_external.hypr"
-      "L+ \"${cfg}/gh/hosts.yml\" - - - - ${share}/gh/hosts.yml"
-    ];
   };
 
   fonts.fontconfig.enable = true;
