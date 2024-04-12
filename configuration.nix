@@ -147,27 +147,27 @@ in {
 
   # Graphical session
   services = {
-    xserver = {
+    displayManager.sddm = {
       enable = true;
-      displayManager.sddm = {
-        enable = true;
-        wayland.enable = true;
-        theme = "${upkgs.catppuccin-sddm-corners}";
-        autoNumlock = true;
-        settings = {
-          General = {
-            GreeterEnvironment = "QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
-          };
-          Autologin = {
-            Session = "hyprland";
-            User = "aftix";
-          };
-          Wayland = {
-            CompositorCommand = "${upkgs.libsForQt5.kwin}/kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1";
-          };
+      wayland.enable = true;
+      theme = "${upkgs.catppuccin-sddm-corners}";
+      autoNumlock = true;
+      settings = {
+        General = {
+          GreeterEnvironment = "QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
         };
+        Autologin = {
+          Session = "hyprland";
+          User = "aftix";
+        };
+        Wayland = {
+          CompositorCommand = "${upkgs.libsForQt5.kwin}/kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1";
+        };
+        Theme.EnableAvatars = true;
       };
+    };
 
+    xserver = {
       # Configure keymap in X11
       xkb = {
         layout = "us";
