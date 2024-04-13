@@ -22,7 +22,13 @@ in {
       "stablepkgs=${stablepkgsPath}"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
-    settings.experimental-features = ["nix-command" "flakes"];
+
+    settings = {
+      experimental-features = ["nix-command" "flakes"];
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    };
+
     gc = {
       automatic = true;
       persistent = true;
@@ -67,6 +73,7 @@ in {
       dbus
       sudo
 
+      cachix
       nix-index
 
       cups
