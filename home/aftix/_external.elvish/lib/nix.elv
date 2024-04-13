@@ -9,16 +9,17 @@ fn rebuild {
 
   echo "Rebuilding NixOS..."
   nix flake lock --update-input aftix
-  sudo nixos-rebuild switch --flake . 2>&1 | tee nixos-switch.log | try {
-    grep --color '(?<!warning:)error: '
+  try {
+    sudo nixos-rebuild switch --flake . 2>&1 | tee nixos-switch.log | grep --color -P '(?<!warning:)error: '
   } catch { }
 
-  if ?(grep --quiet '(?<!warning:)error: ' nixos-switch.log) {
+  if ?(grep --quiet -P '(?<!warning:)error: ' nixos-switch.log) {
+    notify-send --urgency critical --icon=software-update-available --app-name nixos "NixOS Rebuild failed"
     fail "`nixos-rebuild switch` failed"
   }
 
   if (== (jj diff --no-pager --git --from @- | wc -l) 0) {
-    notify-send "NixOS Rebuild succeeded" --icon=software-update-available
+    notify-send --app-name nixos "NixOS Rebuild succeeded" --icon=software-update-available
     return
   }
 
@@ -29,7 +30,7 @@ fn rebuild {
     jj new
   }
 
-  notify-send "NixOS Rebuild succeeded" --icon=software-update-available
+  notify-send --app-name nixos "NixOS Rebuild succeeded" --icon=software-update-available
 }
 
 # Rebuild home-manager configuration and commit if succeeded
@@ -37,11 +38,12 @@ fn rebuild_home {
   tmp pwd = $E:HOME/src/cfg
 
   echo "Rebuilding Home..."
-  home-manager switch --flake ./home/aftix -b backup 2>&1 | tee home-manager-switch.log | try {
-    grep --color '(?<!warning:)error: '
+  try {
+    home-manager switch --flake ./home/aftix -b backup 2>&1 | tee home-manager-switch.log | grep --color -P '(?<!warning:)error: '
   } catch { }
 
-  if ?(grep --quiet '(?<!warning:)error: ' home-manager-switch.log) {
+  if ?(grep --quiet -P '(?<!warning:)error: ' home-manager-switch.log) {
+    notify-send --urgency critical --app-name "Home Manager" "Home manager Rebuild failed" --icon=software-update-available
     fail "`home-manager switch` failed"
   }
 
@@ -49,7 +51,7 @@ fn rebuild_home {
   nix flake lock --update-input aftix
 
   if (== (jj diff --no-pager --git --from @- | wc -l) 0) {
-    notify-send "Home rebuild secceeded" --icon=software-update-available
+    notify-send --app-name "Home Manager" "Home manager rebuild secceeded" --icon=software-update-available
     return
   }
 
@@ -60,7 +62,7 @@ fn rebuild_home {
     jj new
   }
 
-  notify-send "Home rebuild secceeded" --icon=software-update-available
+  notify-send --app-name "Home Manager" "Home manager rebuild secceeded" --icon=software-update-available
 }
 
 # If there are changes in the configuration, nixos-rebuild switch and commit if succeeded
@@ -82,6 +84,5 @@ fn commit {
     echo "Exiting."
     return
   }
-
   rebuild
 }
