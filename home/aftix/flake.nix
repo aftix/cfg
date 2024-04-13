@@ -34,7 +34,7 @@
       home-impermanence = impermanence.nixosModules.home-manager.impermanence;
     };
   in {
-    formatter = upkgs.nixfmt;
+    formatter."${system}" = upkgs.nixfmt;
     homeConfigurations.aftix = lib.homeManagerConfiguration {
       pkgs = upkgs;
       modules = [./aftix.nix];
