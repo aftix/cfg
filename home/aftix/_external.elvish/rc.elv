@@ -178,6 +178,8 @@ fn fzfe {|name| e:fzf -q $name | xargs $E:EDITOR }
 set edit:completion:arg-completer[sysu] = $edit:completion:arg-completer[systemctl]
 fn sysu {|@a| e:systemctl --user $@a }
 
+set edit:completion:arg-completer[tldr] = $edit:completion:arg-completer[tealdeer]
+
 set edit:completion:arg-completer[k] = $edit:completion:arg-completer[make]
 set edit:completion:arg-completer[kd] = $edit:completion:arg-completer[make]
 fn k {|@rest| e:make -j4 $@rest}
