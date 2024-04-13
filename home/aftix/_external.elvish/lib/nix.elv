@@ -86,3 +86,38 @@ fn commit {
   }
   rebuild
 }
+
+# Run a nix devShell from the current directory
+fn dev {|@rest|
+  var flakeURI = (pwd)""
+  if (> (count $rest) 0) {
+    set flakeURI = $flakeURI'#'$rest[0]
+  }
+
+  var command = "elvish"
+  if (> (count $rest) 1) {
+    set command = $rest[1]
+  }
+
+  nix develop "path:"$flakeURI -c $command 
+}
+
+# Run a nix flake check from the current directory
+fn check {|@rest|
+  var flakeURI = (pwd)""
+  if (> (count $rest) 0) {
+    set flakeURI = $flakeURI'#'$rest[0]
+  }
+
+  nix flake check "path:"$flakeURI
+}
+
+# Format the current flake
+fn fmt {|@rest|
+  var flakeURI = (pwd)""
+  if (> (count $rest) 0) {
+    set flakeURI = $flakeURI'#'$rest[0]
+  }
+
+  nix fmt "path:"$flakeURI
+}
