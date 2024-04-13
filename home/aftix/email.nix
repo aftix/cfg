@@ -121,7 +121,7 @@ in {
         maildir.path = "gmail";
         imap = {
           host = lib.mkForce "imap.gmail.com";
-          port = lib.mkForce 963;
+          port = lib.mkForce 993;
           tls = {
             enable = true;
             useStartTls = true;
@@ -262,7 +262,7 @@ in {
         maildir.path = "utmail";
         imap = {
           host = lib.mkForce "imap.gmail.com";
-          port = lib.mkForce 963;
+          port = lib.mkForce 993;
           tls = {
             enable = true;
             useStartTls = true;
