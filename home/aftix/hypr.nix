@@ -210,6 +210,12 @@
           # Scratch pad
           "$mainMod, Minus, togglespecialworkspace, magic"
           "$mainMod SHIFT, Minus, movetoworkspace, special:magic"
+
+          # Dunst hotkeys
+          "CTRL, Space, exec, dunstctl close"
+          "CTRL SHIFT, Space, exec, dunstctl close-all"
+          "CTRL SHIFT, Period, exec, dunstctl context"
+          "CTRL SHIFT, Grave, exec, dunstctl history-pop"
         ]
         ++
         # Focus movement
