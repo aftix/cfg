@@ -68,9 +68,6 @@
       cargo-sort
       cargo-udeps
       cargo-crev
-      tokio-console
-      wasm-bindgen-cli
-      pkg-config
 
       lldb
       clang

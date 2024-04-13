@@ -132,7 +132,7 @@ in {
     };
     nix-ld = {
       enable = true;
-      libraries = with upkgs; [x264];
+      libraries = [];
     };
   };
 
