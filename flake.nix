@@ -12,9 +12,11 @@
     impermanence.url = "github:nix-community/impermanence";
 
     aftix.url = "path:./home/aftix";
-    aftix.inputs.nixpkgs.follows = "nixpkgs";
-    aftix.inputs.stablepkgs.follows = "stablepkgs";
-    aftix.inputs.nur.follows = "nur";
+    aftix.inputs = {
+      nixpkgs.follows = "nixpkgs";
+      stablepkgs.follows = "stablepkgs";
+      nur.follows = "nur";
+    };
   };
 
   outputs = {
@@ -39,7 +41,7 @@
     };
     spkgs = import stablepkgs {inherit system;};
   in {
-    formatter = upkgs.alejandra;
+    formatter."${system}" = upkgs.alejandra;
     nixosConfigurations.hamilton = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
@@ -67,9 +69,11 @@
         }
       ];
     };
-    nixosModules.kitty = import ./home/aftix/kitty.nix;
-    nixosModules.vcs = import ./home/aftix/vcs.nix;
-    nixosModules.helix = import ./home/aftix/helix.nix;
-    nixosModules.firefox = import ./home/aftix/firefox.nix;
+    nixosModules = {
+      kitty = import ./home/aftix/kitty.nix;
+      vcs = import ./home/aftix/vcs.nix;
+      helix = import ./home/aftix/helix.nix;
+      firefox = import ./home/aftix/firefox.nix;
+    };
   };
 }
