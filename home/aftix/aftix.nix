@@ -350,11 +350,13 @@
       "tealdeer/config.toml".source = (upkgs.formats.toml {}).generate "tealdeer" {
         display.use_pager = true;
         updates.auto_update = true;
-        style.command_name.foreground = "green";
-        style.example_code.foreground = "blue";
-        style.example_variable = {
-          foreground = "white";
-          underline = true;
+        style = {
+          command_name.foreground = "green";
+          example_code.foreground = "blue";
+          example_variable = {
+            foreground = "white";
+            underline = true;
+          };
         };
       };
 
