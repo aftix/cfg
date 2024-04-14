@@ -162,7 +162,7 @@ in {
         "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
         "col.inactive_border" = "rgba(595959aa)";
 
-        layout = "dwindle";
+        layout = "master";
         allow_tearing = false;
       };
 
@@ -225,6 +225,7 @@ in {
           "$mainMod SHIFT, Space, togglefloating,"
           "$mainMod, d, exec, $menu"
           "$mainMod, M, exec, hyprctl keyword general:layout \"master\""
+          "$mainMod CTRL, M, layoutmsg, orientationnext"
           "$mainMod SHIFT, M, exec, hyprctl keyword general:layout \"dwindle\""
           "$mainMod SHIFT, T, togglegroup,"
           "$mainMod, T, changegroupactive, f"
@@ -234,6 +235,15 @@ in {
           "$mainMod, Comma, focusmonitor, -1"
           "$mainMod SHIFT, Period, movewindow, mon:+1"
           "$mainMod SHIFT, Comma, movewindow, mon:-1"
+
+          "$mainMod, BracketRight, layoutmsg, cyclenext"
+          "$mainMod, BracketLeft, layoutmsg, cycleprev"
+          "$mainMod SHIFT, BracketRight, layoutmsg, swapnext"
+          "$mainMod SHIFT, BracketLeft, layoutmsg, swapprev"
+          "$mainMod CTRL, BracketRight, layoutmsg, rollnext"
+          "$mainMod CTRL, BracketLeft, layoutmsg, rollprev"
+          "$mainMod CTRL, Period, layoutmsg, swapwithmaster"
+          "$mainMod ALT, Period, layoutmsg, focusmaster"
 
           # Misc keybinds
           "$mainMod, P, exec, $HOME/.config/bin/passmenu"
@@ -255,9 +265,6 @@ in {
           "CTRL SHIFT, Space, exec, dunstctl close-all"
           "CTRL SHIFT, Period, exec, dunstctl context"
           "CTRL SHIFT, Grave, exec, dunstctl history-pop"
-
-          # Plugin keybinds
-          #"$mainMod, Grave, hyprexpo:expo, toggle"
         ]
         ++
         # Focus movement
