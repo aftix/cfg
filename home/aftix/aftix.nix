@@ -1,17 +1,25 @@
 {
+  lib,
   home-impermanence,
   config,
   upkgs,
   ...
-}: {
+}: let
+  generateMimes = {
+    application,
+    mimetypes,
+  }:
+    lib.mergeAttrsList (map (type: {"${type}" = ["${application}.desktop"];}) mimetypes);
+  registerMimes = applications: lib.mergeAttrsList (map (mimespec: generateMimes mimespec) applications);
+in {
   imports = [
     home-impermanence
     ./aria2.nix
     ./dunst.nix
     ./elvish.nix
     ./email.nix
-    ./firefox.nix
-    ./helix.nix
+    (import ./firefox.nix {inherit registerMimes;})
+    (import ./helix.nix {inherit registerMimes;})
     ./hypr.nix
     ./kitty.nix
     ./mpd.nix
@@ -285,27 +293,49 @@
     mime.enable = true;
     mimeApps = {
       enable = true;
-      defaultApplications = {
-        "application/pdf" = ["zathura.desktop"];
-        "application/x-pdf" = ["zathura.desktop"];
-        "application/epub" = ["zathura.desktop"];
-        "image/png" = ["feh.desktop"];
-        "image/tiff" = ["feh.desktop"];
-        "image/jpg" = ["feh.desktop"];
-        "image/gif" = ["mpv.desktop"];
-        "video/mp4" = ["mpv.desktop"];
-        "video/avi" = ["mpv.desktop"];
-        "video/mkv" = ["mpv.desktop"];
-        "video/webm" = ["mpv.desktop"];
-        "audio/flac" = ["mpv.desktop"];
-        "audio/ogg" = ["mpv.desktop"];
-        "audio/mp3" = ["mpv.desktop"];
-      };
+      defaultApplications = registerMimes [
+        {
+          application = "zathura";
+          mimetypes = [
+            "application/pdf"
+            "application/x-pdf"
+            "application/epub"
+          ];
+        }
+        {
+          application = "feh";
+          mimetypes = [
+            "image/bmp"
+            "image/apng"
+            "image/png"
+            "image/tiff"
+            "image/jpeg"
+            "image/gif"
+            "image/vnd.microsoft.icon"
+            "image/tiff"
+          ];
+        }
+        {
+          application = "mpv";
+          mimetypes = [
+            "image/avif"
+            "video/mp4"
+            "video/avi"
+            "application/x-msvideo"
+            "video/mkv"
+            "video/mpeg"
+            "video/webm"
+            "audio/aac"
+            "audio/flac"
+            "audio/ogg"
+            "audio/mp3"
+          ];
+        }
+      ];
     };
 
     configFile = {
       # Fontconfig
-      # TODO: make XML generator
       "fontconfig/fonts.conf".text = ''
         <?xml version="1.0"?>
         <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
