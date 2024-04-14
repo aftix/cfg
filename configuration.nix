@@ -99,9 +99,9 @@ in {
       python3
 
       helix
+      moar
       eza
       dust
-      bat
       ripgrep
       fzf
       starship

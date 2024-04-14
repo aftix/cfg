@@ -22,7 +22,7 @@
       cursor_blink_interval = -1;
 
       scrollback_lines = 1024;
-      scrollback_pager = "bat --chop-long-lines --pager 'less --RAW-CONTROL-CHARS +'INPUT_LINE_NUMBER";
+      scrollback_pager = "'${upkgs.moar}/bin/moar' -no-linenumbers";
       scrollback_pager_history_size = 0;
 
       url_style = "curly";
@@ -79,7 +79,7 @@
       "kitty_mod+p>h" = "kitten hints --type hash --program -";
       "kitty_mod+p>n" = "kitten hints --type linenum";
 
-      "kitty_mod+slash" = "new_window bat $HOME/.config/kitty/kitty.conf";
+      "kitty_mod+slash" = "new_window '${upkgs.moar}/bin/moar' -no-linenumbers $HOME/.config/kitty/kitty.conf";
 
       "kitty_mod+enter" = "new_window";
       "ctrl+alt+enter" = "launch --cwd=current";
