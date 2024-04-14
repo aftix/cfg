@@ -47,13 +47,11 @@ if (has-external helix) {
 }
 
 set-env PAGER "less"
-if (has-external bat) {
-  set-env PAGER "bat --chop-long-lines"
-  set-env MANPAGER "bat --chop-long-lines -p"
+if (has-external moar) {
+  set-env MOAR "-quit-if-one-screen"
+  set-env PAGER "moar"
+  set-env MANPAGER "moar"
 }
-fn bat {|@all| e:bat --chop-long-lines $@all }
-fn batp {|@all| e:bat --chop-long-lines -p $@all }
-set edit:completion:arg-completer[batp] = $edit:completion:arg-completer[bat]
 
 if (not (has-env XDG_CONFIG_HOME)) {
   set-env XDG_CONFIG_HOME (path:join $E:HOME .config)
