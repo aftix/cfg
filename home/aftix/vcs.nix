@@ -47,7 +47,7 @@
         email = "aftix@aftix.xyz";
       };
       ui = {
-        pager = "bat -p";
+        pager = "moar";
         diff.tool = ["kitty" "+kitten" "diff" "$left" "$right"];
         diff-editor = ":builtin";
         default-command = "log";
