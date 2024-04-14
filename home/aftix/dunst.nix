@@ -1,6 +1,4 @@
 {upkgs, ...}: {
-  home.packages = with upkgs; [dunst];
-
   services.dunst = {
     enable = true;
 

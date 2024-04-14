@@ -71,23 +71,13 @@ in {
     systemPackages = with upkgs; [
       systemd
       dbus
-      sudo
 
       cachix
       nix-index
 
-      cups
-      sane-airscan
-      avahi
-      nssmdns
-
-      pipewire
-      wireplumber
-
       hyprland
-      libsForQt5.kwin
-      kdePackages.sddm
       catppuccin-sddm-corners
+      kdePackages.kwin
 
       pigz
       lzip
@@ -95,14 +85,12 @@ in {
       pbzip2
       killall
       curl
-      mandoc
       man-pages
       man-pages-posix
 
       btrfs-progs
       inotify-tools
       fuse
-      udisks
 
       openssh
       rsync
@@ -117,7 +105,6 @@ in {
       ripgrep
       fzf
       starship
-      zsh
     ];
   };
 
@@ -130,9 +117,12 @@ in {
     dev.enable = true;
   };
 
+  # Progras
   programs = {
     fuse.userAllowOther = true;
+
     hyprland.enable = true;
+
     zsh = {
       enable = true;
       interactiveShellInit = builtins.readFile ./_external/.zshrc;
@@ -152,12 +142,13 @@ in {
     useXkbConfig = true; # use xkb.options in tty.
   };
 
-  # Graphical session
   services = {
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
-      theme = "${upkgs.catppuccin-sddm-corners}";
+
+      theme = "catppuccin-sddm-corners";
+
       autoNumlock = true;
       settings = {
         General = {
@@ -168,7 +159,7 @@ in {
           User = "aftix";
         };
         Wayland = {
-          CompositorCommand = "${upkgs.libsForQt5.kwin}/kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1";
+          CompositorCommand = "kwin";
         };
         Theme.EnableAvatars = true;
       };
