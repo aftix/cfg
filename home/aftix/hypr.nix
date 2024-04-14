@@ -3,7 +3,39 @@
   config,
   lib,
   ...
-}: {
+}: let
+  toCfgInner = tabstop: v: let
+    stringer = x:
+      if builtins.isBool x
+      then
+        if x
+        then "true"
+        else "false"
+      else builtins.toString x;
+  in
+    lib.foldlAttrs (
+      acc: name: value:
+        if builtins.isAttrs value
+        then ''
+          ${acc}${tabstop}${name} {${toCfgInner "${tabstop}  " value}
+          ${tabstop}}
+        ''
+        else if builtins.isList value
+        then
+          (
+            builtins.concatStringsSep "\n" ([acc]
+              ++ (map (
+                  elem: (toCfgInner tabstop {"${name}" = elem;})
+                )
+                value))
+          )
+        else ''
+          ${acc}
+          ${tabstop}${name} = ${stringer value}''
+    ) ""
+    v;
+  toCfg = toCfgInner "";
+in {
   home = {
     # Packages for hypr tools and DE-lite features
     packages = with upkgs; [
@@ -13,7 +45,7 @@
       hyprcursor
       xdg-desktop-portal-hyprland
       hyprland-protocols
-      clipman
+
       pw-volume
       tofi
       slurp
@@ -23,9 +55,13 @@
       xclip
       pinentry-gtk2
       pwvucontrol
-      udiskie
     ];
     sessionVariables.XDG_CURRENT_DESKTOP = "Hyprland";
+  };
+
+  services = {
+    clipman.enable = true;
+    udiskie.enable = true;
   };
 
   wayland.windowManager.hyprland = let
@@ -76,11 +112,14 @@
     enable = true;
     xwayland.enable = true;
 
-    systemd.extraCommands = [
-      "systemctl --user stop hyprland-session.target"
-      "pkill waybar"
-      "systemctl --user start hyprland-session.target"
-    ];
+    systemd = {
+      extraCommands = [
+        "systemctl --user stop hyprland-session.target"
+        "pkill waybar"
+        "systemctl --user start hyprland-session.target"
+      ];
+      enable = true;
+    };
 
     settings = {
       "$terminal" = "${terminal}";
@@ -216,6 +255,9 @@
           "CTRL SHIFT, Space, exec, dunstctl close-all"
           "CTRL SHIFT, Period, exec, dunstctl context"
           "CTRL SHIFT, Grave, exec, dunstctl history-pop"
+
+          # Plugin keybinds
+          #"$mainMod, Grave, hyprexpo:expo, toggle"
         ]
         ++
         # Focus movement
@@ -307,128 +349,105 @@
     ];
   };
 
-  # No home manager options for other tools yet
-  xdg.configFile = let
-    toCfgInner = tabstop: v: let
-      stringer = x:
-        if builtins.isBool x
-        then
-          if x
-          then "true"
-          else "false"
-        else builtins.toString x;
-    in
-      lib.foldlAttrs (
-        acc: name: value:
-          if builtins.isAttrs value
-          then ''
-            ${acc}${tabstop}${name} {${toCfgInner "${tabstop}  " value}
-            ${tabstop}}
-          ''
-          else if builtins.isList value
-          then
-            (
-              builtins.concatStringsSep "\n" ([acc]
-                ++ (map (
-                    elem: (toCfgInner tabstop {"${name}" = elem;})
-                  )
-                  value))
-            )
-          else ''
-            ${acc}
-            ${tabstop}${name} = ${stringer value}''
-      ) ""
-      v;
-    toCfg = toCfgInner "";
-  in {
-    "hypr/hypridle.conf".text = toCfg {
-      general = {
-        lock_cmd = "pidof hyprlock || hyprlock";
-        before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = "hyprctl dispatch dpms on";
-      };
-
-      listener = [
-        {
-          timeout = 600;
-          on-timeout = "loginctl lock-session";
-        }
-        {
-          timeout = 660;
-          on-timeout = "systemctl suspend";
-        }
-        {
-          timeout = 1800;
-          on-timeout = "systemctl suspend";
-        }
-      ];
+  xdg = {
+    portal = {
+      enable = true;
+      extraPortals = [upkgs.xdg-desktop-portal-hyprland];
+      configPackages = [upkgs.xdg-desktop-portal-hyprland];
+      config.preferred.default = "xdg-desktop-portal-hyprland";
     };
 
-    "hypr/hyprlock.conf".text = toCfg {
-      general = {
-        ignore_empty_input = true;
-        grace = 60;
+    # No home manager options for other tools yet
+    configFile = {
+      "hypr/hypridle.conf".text = toCfg {
+        general = {
+          lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+        };
+
+        listener = [
+          {
+            timeout = 600;
+            on-timeout = "loginctl lock-session";
+          }
+          {
+            timeout = 660;
+            on-timeout = "systemctl suspend";
+          }
+          {
+            timeout = 1800;
+            on-timeout = "systemctl suspend";
+          }
+        ];
       };
 
-      background = {
-        monitor = "";
-        color = "rgba(25, 20, 20, 1.0)";
+      "hypr/hyprlock.conf".text = toCfg {
+        general = {
+          ignore_empty_input = true;
+          grace = 60;
+        };
+
+        background = {
+          monitor = "";
+          color = "rgba(25, 20, 20, 1.0)";
+        };
+
+        input-field = {
+          monitor = "";
+          size = "200, 50";
+          outline_thickness = 3;
+          dots_size = 0.33; # Scale of input-field height, 0.2 - 0.8
+          dots_spacing = 0.15; # Scale of dots' absolute size, 0.0 - 1.0
+          dots_center = false;
+          dots_rounding = -1; # -1 default circle, -2 follow input-field rounding
+          outer_color = "rgb(151515)";
+          inner_color = "rgb(200, 200, 200)";
+          font_color = "rgb(10, 10, 10)";
+          fade_on_empty = true;
+          fade_timeout = 1000; # Milliseconds before fade_on_empty is triggered.
+          placeholder_text = "<i>Input Password...</i>"; # Text rendered in the input box when it's empty.
+          hide_input = false;
+          rounding = -1; # -1 means complete rounding (circle/oval)
+          check_color = "rgb(204, 136, 34)";
+          fail_color = "rgb(204, 34, 34)"; # if authentication failed, changes outer_color and fail message color";      	fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>; # can be set to empty
+          fail_transition = 300; # transition time in ms between normal outer_color and fail_color
+          capslock_color = -1;
+          numlock_color = -1;
+          bothlock_color = -1; # when both locks are active. -1 means don't change outer color (same for above)
+          invert_numlock = false; # change color if numlock is off
+
+          position = "0, -20";
+          halign = "center";
+          valign = "center";
+        };
+
+        label = {
+          monitor = "";
+          text = "$USER";
+          color = "rgba(200, 200, 200, 1.0)";
+          font_size = 25;
+          font_family = "Noto Sans";
+
+          position = "0, 80";
+          halign = "center";
+          valign = "center";
+        };
       };
 
-      input-field = {
-        monitor = "";
-        size = "200, 50";
-        outline_thickness = 3;
-        dots_size = 0.33; # Scale of input-field height, 0.2 - 0.8
-        dots_spacing = 0.15; # Scale of dots' absolute size, 0.0 - 1.0
-        dots_center = false;
-        dots_rounding = -1; # -1 default circle, -2 follow input-field rounding
-        outer_color = "rgb(151515)";
-        inner_color = "rgb(200, 200, 200)";
-        font_color = "rgb(10, 10, 10)";
-        fade_on_empty = true;
-        fade_timeout = 1000; # Milliseconds before fade_on_empty is triggered.
-        placeholder_text = "<i>Input Password...</i>"; # Text rendered in the input box when it's empty.
-        hide_input = false;
-        rounding = -1; # -1 means complete rounding (circle/oval)
-        check_color = "rgb(204, 136, 34)";
-        fail_color = "rgb(204, 34, 34)"; # if authentication failed, changes outer_color and fail message color";      	fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>; # can be set to empty
-        fail_transition = 300; # transition time in ms between normal outer_color and fail_color
-        capslock_color = -1;
-        numlock_color = -1;
-        bothlock_color = -1; # when both locks are active. -1 means don't change outer color (same for above)
-        invert_numlock = false; # change color if numlock is off
+      "hypr/hyprpaper.conf".text = toCfg {
+        preload = [
+          "/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
+          "/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
+        ];
 
-        position = "0, -20";
-        halign = "center";
-        valign = "center";
+        wallpaper = [
+          "DP-2,/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
+          "HDMI-A-1,/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
+        ];
+
+        splash = true;
       };
-
-      label = {
-        monitor = "";
-        text = "$USER";
-        color = "rgba(200, 200, 200, 1.0)";
-        font_size = 25;
-        font_family = "Noto Sans";
-
-        position = "0, 80";
-        halign = "center";
-        valign = "center";
-      };
-    };
-
-    "hypr/hyprpaper.conf".text = toCfg {
-      preload = [
-        "/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
-        "/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
-      ];
-
-      wallpaper = [
-        "DP-2,/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
-        "HDMI-A-1,/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
-      ];
-
-      splash = true;
     };
   };
 }

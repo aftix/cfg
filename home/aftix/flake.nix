@@ -37,7 +37,9 @@
     formatter."${system}" = upkgs.nixfmt;
     homeConfigurations.aftix = lib.homeManagerConfiguration {
       pkgs = upkgs;
-      modules = [./aftix.nix];
+      modules = [
+        ./aftix.nix
+      ];
       inherit extraSpecialArgs;
     };
   };
