@@ -91,8 +91,6 @@
       jq
       imagemagick
 
-      (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {})
-      ungoogled-chromium
       aspell
       aspellDicts.en
       aspellDicts.en-science
@@ -104,7 +102,6 @@
       tealdeer
       vault
       gh
-      fontconfig
       zenith
       ssh-agents
       weechat-unwrapped
@@ -113,19 +110,19 @@
       element-desktop
       discord
       betterdiscordctl
-
-      yt-dlp
-      mpv
     ];
   };
 
   # Various minor configs
   programs = {
     yt-dlp.enable = true;
-    starship.settings = {
-      "$schema" = "https://starship.rs/config-schema.json";
-      add_newline = true;
-      package.disabled = true;
+    starship = {
+      enable = true;
+      settings = {
+        "$schema" = "https://starship.rs/config-schema.json";
+        add_newline = true;
+        package.disabled = true;
+      };
     };
 
     password-store = {
@@ -149,12 +146,6 @@
     };
   };
 
-  wayland.windowManager.hyprland = {
-    enable = true;
-    systemd.enable = false; # Set this to false to prevent generating hyprland.conf
-    xwayland.enable = true;
-  };
-
   services = {
     clipman.enable = true;
     gpg-agent = {
@@ -163,7 +154,6 @@
         pinentry-program ${config.home.homeDirectory}/.config/bin/pinentry-custom
       '';
     };
-    udiskie.enable = true;
     ssh-agent.enable = true;
   };
 
@@ -201,14 +191,6 @@
         OnUnitActiveSec = "8h";
       };
       Install.WantedBy = ["timers.target"];
-    };
-
-    targets.hyprland-session = {
-      Unit = {
-        Description = "hyprland target";
-        Requires = ["graphical-session.target"];
-        After = ["graphical-session.target"];
-      };
     };
   };
 
