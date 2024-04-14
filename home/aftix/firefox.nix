@@ -1,4 +1,4 @@
-{upkgs, ...}: {
+{registerMimes, ...}: {upkgs, ...}: {
   home.sessionVariables.MOZ_USE_XINPUT2 = "1";
 
   programs.firefox = {
@@ -331,9 +331,15 @@
     };
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "x-scheme-handler/http" = ["firefox.desktop"];
-    "x-scheme-handler/https" = ["firefox.desktop"];
-    "x-scheme-handler/ftp" = ["firefox.desktop"];
-  };
+  xdg.mimeApps.defaultApplications = registerMimes [
+    {
+      application = "firefox";
+      mimetypes = [
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+        "x-scheme-handler/ftp"
+        "image/svg+xml"
+      ];
+    }
+  ];
 }

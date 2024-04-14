@@ -1,5 +1,8 @@
 {home-impermanence, ...}: {
-  imports = [home-impermanence ../aftix/helix.nix];
+  imports = [
+    home-impermanence
+    (import ../aftix/helix.nix {registerMimes = _: {};})
+  ];
 
   home = {
     username = "root";
