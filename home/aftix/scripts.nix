@@ -89,11 +89,11 @@
 
         cd "${config.home.homeDirectory}/.local/share/password-store" || exit
 
-        for line in "**/*"; do
+        for line in **/*; do
           "${upkgs.gnugrep}/bin/grep" -q '\.git' <<< "$line" && continue
-          name="$("${upkgs.coreutils}/bin/echo" "$line" | "$SED" 's/\.gpg$//')"
+          name="$(echo "$line" | "$SED" 's/\.gpg$//')"
           data="$(gpg --decrypt "$line" 2>/dev/null | "$SED" 's/^@/\\@/')"
-          "${upkgs.vault}" kv put "secret/password-store/$name" "data=$data"
+          "${upkgs.vault}/bin/vault" kv put "secret/password-store/$name" "data=$data"
         done
       '';
     };
