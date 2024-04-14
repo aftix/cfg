@@ -11,14 +11,6 @@
   gpgSigningKey = "53D588312F7FCBE9A76579164C05A0B49FD681B9";
   gpgEncryptionKey = "3D98EDD231B4337B221C92E697C4A20471616623";
 in {
-  home.packages = with upkgs; [
-    abook
-    isync
-    msmtp
-    mutt
-    notmuch
-  ];
-
   accounts.email = {
     maildirBasePath = "${share}/mail";
     accounts = {
