@@ -12,14 +12,16 @@
     lib.mergeAttrsList (map (type: {"${type}" = ["${application}.desktop"];}) mimetypes);
   registerMimes = applications: lib.mergeAttrsList (map (mimespec: generateMimes mimespec) applications);
 in {
+  _module.args.mylib = {inherit registerMimes;};
+
   imports = [
     home-impermanence
     ./aria2.nix
     ./dunst.nix
     ./elvish.nix
     ./email.nix
-    (import ./firefox.nix {inherit registerMimes;})
-    (import ./helix.nix {inherit registerMimes;})
+    ./firefox.nix
+    ./helix.nix
     ./hypr.nix
     ./kitty.nix
     ./mpd.nix
