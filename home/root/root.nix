@@ -1,7 +1,7 @@
 {home-impermanence, ...}: {
   imports = [
     home-impermanence
-    (import ../aftix/helix.nix {registerMimes = _: {};})
+    ../aftix/helix.nix
   ];
 
   home = {

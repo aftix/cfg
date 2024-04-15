@@ -1,4 +1,4 @@
-{registerMimes, ...}: _: {
+{mylib ? {registerMimes = _: {};}, ...}: {
   # Helix installed system wide
 
   programs.helix = {
@@ -43,7 +43,7 @@
     };
   };
 
-  xdg.mimeApps.defaultApplications = registerMimes [
+  xdg.mimeApps.defaultApplications = mylib.registerMimes [
     {
       application = "Helix";
       mimetypes = [
