@@ -1,4 +1,8 @@
-{registerMimes, ...}: {upkgs, ...}: {
+{
+  mylib ? {registerMimes = _: {};},
+  upkgs,
+  ...
+}: {
   home.sessionVariables.MOZ_USE_XINPUT2 = "1";
 
   programs.firefox = {
@@ -331,7 +335,7 @@
     };
   };
 
-  xdg.mimeApps.defaultApplications = registerMimes [
+  xdg.mimeApps.defaultApplications = mylib.registerMimes [
     {
       application = "firefox";
       mimetypes = [
