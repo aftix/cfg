@@ -170,7 +170,18 @@ fn du {|@a| e:du -h $@a}
 fn ed {|@a| e:ed -vp '*' $@a}
 fn diff {|@a| e:diff --color=auto $@a}
 
-fn fzfe {|name| e:fzf -q $name | xargs $E:EDITOR }
+fn fzfe {|@query|
+  var q = ''
+  if (> (count $query) 0) {
+    set q = (e:fzf -q $query[0])
+  } else {
+    set q = (e:fzf)
+  }
+
+  if (!=s '' $q) {
+    (external $E:EDITOR) $q
+  }
+}
 
 # Programs with specific options
 set edit:completion:arg-completer[sysu] = $edit:completion:arg-completer[systemctl]
@@ -354,6 +365,32 @@ fn add_bookmark {|@args| jump:add_bookmark $@args }
 fn remove_bookmark {|@args| jump:remove_bookmark $@args }
 fn jump {|@args| jump:jump $@args }
 fn cd {|@args| jump:jump $@args }
+
+fn fzfd {|@query| 
+  var q = ''
+  if (> (count $query) 0) {
+    set q = (e:fzf --walker dir,follow -q $query[0])
+  } else {
+    set q = (e:fzf --walker dir,follow)
+  }
+
+  if (!=s '' $q) {
+    cd $q
+  }
+}
+
+fn fzfdh {|@query| 
+  var q = ''
+  if (> (count $query) 0) {
+    set q = (e:fzf --walker dir,follow,hidden -q $query[0])
+  } else {
+    set q = (e:fzf --walker dir,follow,hidden)
+  }
+
+  if (!=s '' $q) {
+    cd $q
+  }
+}
 
 eval (starship init elvish)
 iterm2:init
