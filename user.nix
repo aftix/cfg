@@ -8,7 +8,13 @@
   users.users.aftix = {
     isNormalUser = true;
     description = "aftix";
-    extraGroups = ["networkmanager" "wheel" "scanner" "lp"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "scanner"
+      "lp"
+      "dialout"
+    ];
     shell = upkgs.zsh;
     uid = 1000;
     hashedPasswordFile = "/state/passwd.aftix";
