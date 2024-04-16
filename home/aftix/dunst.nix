@@ -1,4 +1,39 @@
-{upkgs, ...}: {
+{
+  mylib,
+  upkgs,
+  config,
+  ...
+}: let
+  docPrefix = config.mydocs.prefix;
+  binds = {
+    mouse_left_click = {
+      tag = "Left Click";
+      content = "Close the clicked notification";
+      value = "close_current";
+    };
+    mouse_middle_click = {
+      tag = "Middle Click";
+      content = "Perform Dunst action on notification";
+      value = "do_action";
+    };
+    mouse_right_click = {
+      tag = "Right Click";
+      content = "Close all active notifications";
+      value = "close_all";
+    };
+  };
+in {
+  mydocs.pages.dunst = with mylib.docs; {
+    _docsName = "dunst \\- A customizable and lightweight notification-daemon";
+    _docsExtraSections = {
+      "Mouse Controls" = mergeTaggedAttrs binds;
+    };
+    _docsSeeAlso = [
+      "dunst(1)"
+      "${docPrefix}-hyprland(7)"
+    ];
+  };
+
   services.dunst = {
     enable = true;
 
@@ -38,7 +73,7 @@
         sticky_history = true;
         history_lenght = 20;
         dmenu = "${upkgs.tofi}/bin/tofi -p dunst:";
-        browser = "${upkgs.firefox-bin}/bin/firefox -new-tab";
+        browser = "$/run/current-system/sw/bin/firefox -new-tab";
         always_run_script = true;
         title = "Dunst";
         class = "Dunst";
