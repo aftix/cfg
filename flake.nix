@@ -74,6 +74,7 @@
       vcs = import ./home/aftix/vcs.nix;
       helix = import ./home/aftix/helix.nix;
       firefox = import ./home/aftix/firefox.nix;
+      myopts = import ./home/aftix/myoptions.nix;
     };
   };
 }
