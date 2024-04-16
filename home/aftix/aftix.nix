@@ -5,12 +5,13 @@
   upkgs,
   ...
 }: let
-  mylib = import ./mylib.nix lib;
+  mylib = import ./mylib.nix {inherit lib config;};
 in {
   _module.args.mylib = mylib;
 
   imports = [
     home-impermanence
+    ./myoptions.nix
     ./aria2.nix
     ./dunst.nix
     ./elvish.nix
@@ -115,6 +116,11 @@ in {
       element-desktop
       discord
       betterdiscordctl
+
+      (import ./documentation.nix {
+        inherit lib mylib config;
+        pkgs = upkgs;
+      })
     ];
   };
 
@@ -382,5 +388,10 @@ in {
         logs-dir = "\${XDG_CACHE_HOME}/npm/logs";
       };
     };
+  };
+
+  mydocs = {
+    enable = true;
+    prefix = "hamilton";
   };
 }
