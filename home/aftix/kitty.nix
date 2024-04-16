@@ -16,7 +16,7 @@
 
       kitty_mod = "ctrl+shift";
       shell = "${upkgs.elvish}/bin/elvish";
-      allow_remote_cotrol = true;
+      allow_remote_control = true;
 
       cursor_shape = "block";
       cursor_blink_interval = -1;
