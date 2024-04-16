@@ -1,41 +1,9 @@
 {
   upkgs,
   config,
-  lib,
+  mylib,
   ...
-}: let
-  toCfgInner = tabstop: v: let
-    stringer = x:
-      if builtins.isBool x
-      then
-        if x
-        then "true"
-        else "false"
-      else builtins.toString x;
-  in
-    lib.foldlAttrs (
-      acc: name: value:
-        if builtins.isAttrs value
-        then ''
-          ${acc}${tabstop}${name} {${toCfgInner "${tabstop}  " value}
-          ${tabstop}}
-        ''
-        else if builtins.isList value
-        then
-          (
-            builtins.concatStringsSep "\n" ([acc]
-              ++ (map (
-                  elem: (toCfgInner tabstop {"${name}" = elem;})
-                )
-                value))
-          )
-        else ''
-          ${acc}
-          ${tabstop}${name} = ${stringer value}''
-    ) ""
-    v;
-  toCfg = toCfgInner "";
-in {
+}: {
   home = {
     # Packages for hypr tools and DE-lite features
     packages = with upkgs; [
@@ -366,7 +334,7 @@ in {
 
     # No home manager options for other tools yet
     configFile = {
-      "hypr/hypridle.conf".text = toCfg {
+      "hypr/hypridle.conf".text = mylib.toHyprCfg {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
           before_sleep_cmd = "loginctl lock-session";
@@ -389,7 +357,7 @@ in {
         ];
       };
 
-      "hypr/hyprlock.conf".text = toCfg {
+      "hypr/hyprlock.conf".text = mylib.toHyprCfg {
         general = {
           ignore_empty_input = true;
           grace = 60;
@@ -442,7 +410,7 @@ in {
         };
       };
 
-      "hypr/hyprpaper.conf".text = toCfg {
+      "hypr/hyprpaper.conf".text = mylib.toHyprCfg {
         preload = [
           "/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
           "/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"

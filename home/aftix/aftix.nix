@@ -5,14 +5,9 @@
   upkgs,
   ...
 }: let
-  generateMimes = {
-    application,
-    mimetypes,
-  }:
-    lib.mergeAttrsList (map (type: {"${type}" = ["${application}.desktop"];}) mimetypes);
-  registerMimes = applications: lib.mergeAttrsList (map (mimespec: generateMimes mimespec) applications);
+  mylib = import ./mylib.nix lib;
 in {
-  _module.args.mylib = {inherit registerMimes;};
+  _module.args.mylib = mylib;
 
   imports = [
     home-impermanence
@@ -295,7 +290,7 @@ in {
     mime.enable = true;
     mimeApps = {
       enable = true;
-      defaultApplications = registerMimes [
+      defaultApplications = mylib.registerMimes [
         {
           application = "zathura";
           mimetypes = [

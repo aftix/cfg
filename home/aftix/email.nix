@@ -645,7 +645,7 @@ in {
       #!/usr/bin/env bash
       CACHE_LIMIT=512000 #KiB
 
-      /run/current-system/sw/bin/cd "$1" 2>/dev/null
+      cd "$1" 2>/dev/null
       [ $? -ne 0 ] && exit
 
       [ $(/run/current-system/sw/bin/du -s . | /run/current-system/sw/bin/cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
