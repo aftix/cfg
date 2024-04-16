@@ -1,7 +1,11 @@
 # Personal code library
 # Import separately from `imports = [ ... ]` and use `_module.args.mylib = ...`
 # to use it in imported modules.
-lib: rec {
+{
+  lib,
+  config,
+  ...
+}: rec {
   # Generate an attribute set of mimetypes usable by xdg.mimeApps
   # Input is an attribute which maps an application to a
   # list of mimetypes. The attribute sets need the attribute "application",
@@ -50,4 +54,57 @@ lib: rec {
       v;
   in
     toCfgInner "";
+
+  # Functions for building man pages
+
+  docs = let
+    inherit (lib.strings) toUpper;
+  in rec {
+    tagged = {
+      tag,
+      content,
+      ...
+    }: ".TP\n\\fB${tag}\\fP\n${content}";
+    mergeTagged = lst: builtins.concatStringsSep "\n" (map (x: tagged x) lst);
+    mergeTaggedAttrs = attrs: mergeTagged (lib.mapAttrsToList (name: value: value) attrs);
+
+    pageTitle = name: let
+      title =
+        if config.mydocs.prefix == name
+        then name
+        else "${config.mydocs.prefix}-${name}";
+    in ".TH \"${toUpper title}\" 7 \"{{date}}\"";
+    section = title: content: ".SH ${title}\n${content}";
+
+    manPage = title: {
+      _docsName,
+      _docsSynopsis ? "",
+      _docsExtraSections ? {},
+      _docsExamples ? "",
+      _docsSeeAlso ? [],
+      ...
+    }:
+      builtins.concatStringsSep "\n" ([
+          (pageTitle title)
+          (section "NAME" _docsName)
+          (
+            if _docsSynopsis != ""
+            then section "SYNOPSIS" _docsSynopsis
+            else ""
+          )
+          (
+            if _docsExamples != ""
+            then section "SYNOPSIS" _docsExamples
+            else ""
+          )
+        ]
+        ++ (lib.mapAttrsToList (title: content: section title content) _docsExtraSections)
+        ++ [
+          (
+            if _docsSeeAlso != []
+            then section "SEE ALSO" (builtins.concatStringsSep ", " _docsSeeAlso)
+            else ""
+          )
+        ]);
+  };
 }
