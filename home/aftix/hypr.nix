@@ -102,7 +102,6 @@
       ];
 
       monitor = [
-        "HDMI-A-1,1920x1080,2560x0,1"
         "DP-2,2560x1440,0x0,1"
         ",preferred,auto,1"
       ];
@@ -277,6 +276,7 @@
     extraConfig = builtins.concatStringsSep "\n" [
       "exec-once = hyprpaper"
       "exec-once = hypridle"
+      "exec = systemctl --user stop hyprland-session.target ; pkill waybar ; systemctl --user start hyprland-session.target"
       (
         mkSubmaps
         {

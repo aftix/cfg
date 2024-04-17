@@ -45,10 +45,7 @@
     nixosConfigurations.hamilton = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
-        inherit upkgs;
-        inherit spkgs;
-        inherit nixpkgs;
-        inherit stablepkgs;
+        inherit upkgs spkgs nixpkgs stablepkgs home-manager;
       };
       modules = [
         impermanence.nixosModules.impermanence
@@ -62,8 +59,7 @@
             users.aftix = import ./home/aftix/aftix.nix;
             extraSpecialArgs = {
               home-impermanence = impermanence.nixosModules.home-manager.impermanence;
-              inherit upkgs;
-              inherit spkgs;
+              inherit upkgs spkgs;
             };
           };
         }
@@ -75,6 +71,7 @@
       helix = import ./home/aftix/helix.nix;
       firefox = import ./home/aftix/firefox.nix;
       myopts = import ./home/aftix/myoptions.nix;
+      mylib = import ./home/aftix/mylib.nix;
     };
   };
 }

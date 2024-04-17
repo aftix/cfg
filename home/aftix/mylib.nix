@@ -18,7 +18,7 @@
     lib.mergeAttrsList (map (type: {"${type}" = ["${application}.desktop"];}) mimetypes);
 
   # Map generateMimes on a list of attribute sets and merge into one attribute set
-  registerMimes = applications: lib.mergeAttrsList (map (mimespec: generateMimes mimespec) applications);
+  registerMimes = applications: lib.mergeAttrsList (map generateMimes applications);
 
   # builtins.toString except stringify bools as "true"/"false" instead of "1"/"0"
   stringify = x:
@@ -65,7 +65,7 @@
       content,
       ...
     }: ".TP\n\\fB${tag}\\fP\n${content}";
-    mergeTagged = lst: builtins.concatStringsSep "\n" (map (x: tagged x) lst);
+    mergeTagged = lst: builtins.concatStringsSep "\n" (map tagged lst);
     mergeTaggedAttrs = attrs: mergeTagged (lib.mapAttrsToList (name: value: value) attrs);
 
     pageTitle = name: let
