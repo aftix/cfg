@@ -112,6 +112,7 @@ in {
       ssh-agents
       weechat-unwrapped
       weechatScripts.weechat-notify-send
+      mpvScripts.mpris
 
       element-desktop
       discord
