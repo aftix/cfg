@@ -60,7 +60,6 @@ in {
       statix
       alejandra
       nix-doc
-      nix-search-cli
       manix
 
       markdown-oxide
@@ -107,12 +106,10 @@ in {
       hyperfine
       tealdeer
       vault
-      gh
       zenith
       ssh-agents
       weechat-unwrapped
       weechatScripts.weechat-notify-send
-      mpvScripts.mpris
 
       element-desktop
       discord
@@ -171,6 +168,7 @@ in {
 
   systemd.user = {
     startServices = true;
+
     services = {
       linkGh = let
         cfg = "${config.home.homeDirectory}/.config";
@@ -209,9 +207,9 @@ in {
   fonts.fontconfig.enable = true;
 
   programs = {
-    # mpv
     mpv = {
       enable = true;
+
       config = {
         slang = "en";
         vo = "gpu";
@@ -224,30 +222,38 @@ in {
         sub-font = "Source Han Serif JP";
         sub-auto = "fuzzy";
       };
+
       profiles = {
         "extension.gif".loop-file = "inf";
+
         "extension.jpg" = {
           pause = true;
           border = false;
           osc = false;
         };
+
         "extension.png" = {
           pause = true;
           border = false;
           osc = false;
         };
       };
+
+      scripts = [
+        upkgs.mpvScripts.mpris
+      ];
     };
 
-    # Zathura
     zathura = {
       enable = true;
+
       options = {
         guioptions = "none";
         statusbar-h-padding = 0;
         statusbar-v-padding = 0;
         page-padding = 1;
       };
+
       mappings = {
         u = "scroll half-up";
         e = "scroll half-down";
@@ -269,9 +275,10 @@ in {
       };
     };
 
-    # GH
+    # Github cli
     gh = {
       enable = true;
+
       settings = {
         git_protocol = "ssh";
         prompt = "true";
@@ -279,7 +286,6 @@ in {
       };
     };
 
-    # Home manager
     home-manager.enable = true;
   };
 
