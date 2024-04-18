@@ -143,8 +143,8 @@ in {
             gmail = {
               channels = {
                 default = {
-                  farPattern = ":gmail-remote:";
-                  nearPattern = ":gmail-local:";
+                  farPattern = "gmail-remote";
+                  nearPattern = "gmail-local";
                   patterns = [
                     "*"
                     "![Gmail]*"
@@ -164,35 +164,39 @@ in {
                   ];
                 };
                 allmail = {
-                  farPattern = ":gmail-remote:\"[Gmail]/All Mail\"";
-                  nearPattern = ":gmail-local:\"All Mail\"";
+                  farPattern = "[Gmail]/All Mail";
+                  nearPattern = "All Mail";
                 };
                 drafts = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Drafts\"";
-                  nearPattern = ":gmail-local:\"Drafts\"";
+                  farPattern = "[Gmail]/Drafts";
+                  nearPattern = "Drafts";
                 };
                 important = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Important\"";
-                  nearPattern = ":gmail-local:\"Important\"";
+                  farPattern = "[Gmail]/Important";
+                  nearPattern = "Important";
                 };
                 sent = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Sent Mail\"";
-                  nearPattern = ":gmail-local:\"Sent Mail\"";
+                  farPattern = "[Gmail]/Sent Mail";
+                  nearPattern = "Sent Mail";
                 };
                 spam = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Spam\"";
-                  nearPattern = ":gmail-local:\"Spam\"";
+                  farPattern = "[Gmail]/Spam";
+                  nearPattern = "Spam";
                 };
                 starred = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Starred\"";
-                  nearPattern = ":gmail-local:\"Starred\"";
+                  farPattern = "[Gmail]/Starred";
+                  nearPattern = "Starred";
                 };
                 trash = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Trash\"";
-                  nearPattern = ":gmail-local:\"Trash\"";
+                  farPattern = "[Gmail]/Trash";
+                  nearPattern = "Trash";
                 };
               };
             };
+          };
+
+          extraConfig.account = {
+            SSLType = "IMAPS";
           };
         };
 
@@ -248,7 +252,7 @@ in {
         address = "wyatt.campbell@utexas.edu";
         userName = "wyatt.campbell@utexas.edu";
         realName = "Wyatt Campbell";
-        passwordCommand = "\"${upkgs.pass}\" mail/utmail";
+        passwordCommand = "\"${upkgs.pass}/bin/pass\" mail/utmail";
         folders.sent = "Sent Mail";
         flavor = "gmail.com";
         maildir.path = "utmail";
@@ -284,8 +288,8 @@ in {
             gmail = {
               channels = {
                 default = {
-                  farPattern = ":gmail-remote:";
-                  nearPattern = ":gmail-local:";
+                  farPattern = "";
+                  nearPattern = "";
                   patterns = [
                     "*"
                     "![Gmail]*"
@@ -305,35 +309,39 @@ in {
                   ];
                 };
                 allmail = {
-                  farPattern = ":gmail-remote:\"[Gmail]/All Mail\"";
-                  nearPattern = ":gmail-local:\"All Mail\"";
+                  farPattern = "[Gmail]/All Mail";
+                  nearPattern = "All Mail";
                 };
                 drafts = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Drafts\"";
-                  nearPattern = ":gmail-local:\"Drafts\"";
+                  farPattern = "[Gmail]/Drafts";
+                  nearPattern = "Drafts";
                 };
                 important = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Important\"";
-                  nearPattern = ":gmail-local:\"Important\"";
+                  farPattern = "[Gmail]/Important";
+                  nearPattern = "Important";
                 };
                 sent = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Sent Mail\"";
-                  nearPattern = ":gmail-local:\"Sent Mail\"";
+                  farPattern = "[Gmail]/Sent Mail";
+                  nearPattern = "Sent Mail";
                 };
                 spam = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Spam\"";
-                  nearPattern = ":gmail-local:\"Spam\"";
+                  farPattern = "[Gmail]/Spam";
+                  nearPattern = "Spam";
                 };
                 starred = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Starred\"";
-                  nearPattern = ":gmail-local:\"Starred\"";
+                  farPattern = "[Gmail]/Starred";
+                  nearPattern = "Starred";
                 };
                 trash = {
-                  farPattern = ":gmail-remote:\"[Gmail]/Trash\"";
-                  nearPattern = ":gmail-local:\"Trash\"";
+                  farPattern = "[Gmail]/Trash";
+                  nearPattern = "Trash";
                 };
               };
             };
+          };
+
+          extraConfig.account = {
+            SSLType = "IMAPS";
           };
         };
 
