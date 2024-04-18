@@ -17,40 +17,14 @@
     waybarDir = "${config.home.homeDirectory}/.config/waybar";
     nord = "/run/current-system/sw/bin/nordvpn";
     dunstctl = "${upkgs.dunst}/bin/dunstctl";
-  in {
-    "waybar/config.jsonc".source = (upkgs.formats.json {}).generate "waybar" {
+    cfg = {
       layer = "top";
       position = "bottom";
       spacing = 4;
 
-      modules-left = [
-        "hyprland/workspaces"
-        "hyprland/submap"
-        "custom/backup"
-      ];
-
-      modules-center = [
-        "hyprland/window"
-      ];
-
-      modules-right = [
-        "mpd"
-        "idle_inhibitor"
-        "pulseaudio"
-        "custom/nordvpn"
-        "network"
-        "cpu"
-        "memory"
-        "temperature"
-        "keyboard-state"
-        "clock"
-        "custom/dunst"
-        "tray"
-      ];
-
       "hyprland/workspaces" = {
+        all-outputs = false;
         disable-scroll = true;
-        all-outputs = true;
         warp-on-scroll = false;
         format = "{name}:{icon}";
         format-icons = {
@@ -77,33 +51,6 @@
         format = "<span style=\"italic\">{}</span>";
         show-empty = false;
         tooltip = false;
-      };
-
-      mpd = {
-        format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
-        format-disconnected = "Disconnected ";
-        format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
-        unknown-tag = "N/A";
-        interval = 5;
-        consume-icons = {
-          "on" = " ";
-        };
-        random-icons = {
-          off = "<span color=\"#f53c3c\"></span> ";
-          on = " ";
-        };
-        repeat-icons = {
-          on = " ";
-        };
-        single-icons = {
-          on = "1 ";
-        };
-        state-icons = {
-          paused = "";
-          playing = "";
-        };
-        tooltip-format = "MPD (connected)";
-        tooltip-format-disconnected = "MPD (disconnected)";
       };
 
       idle_inhibitor = {
@@ -137,15 +84,6 @@
         critical-threshold = 80;
         format = "{temperatureC}°C {icon}";
         format-icons = ["" "" ""];
-      };
-
-      network = {
-        format-wifi = "{essid} ({signalStrength}%) ";
-        format-ethernet = "{ipaddr}/{cidr} ";
-        tooltip-format = "{ifname} via {gwaddr} ";
-        format-linked = "{ifname} (No IP) ";
-        format-disconnected = "Disconnected ⚠";
-        format-alt = "{ifname} = {ipaddr}/{cidr}";
       };
 
       pulseaudio = {
@@ -190,6 +128,103 @@
         restart-interval = 1;
       };
     };
+  in {
+    "waybar/config.jsonc".source = (upkgs.formats.json {}).generate "waybar" [
+      (cfg
+        // {
+          # machine-specific, can not be factored out into machine.nix
+          output = "DP-1";
+
+          modules-left = [
+            "hyprland/workspaces"
+            "hyprland/submap"
+            "custom/backup"
+          ];
+
+          modules-center = [
+            "hyprland/window"
+          ];
+
+          modules-right = [
+            "mpd"
+            "idle_inhibitor"
+            "pulseaudio"
+            "custom/nordvpn"
+            "network"
+            "cpu"
+            "memory"
+            "temperature"
+            "keyboard-state"
+            "clock"
+            "custom/dunst"
+            "tray"
+          ];
+
+          network = {
+            format-wifi = "{essid} ({signalStrength}%) ";
+            format-ethernet = "{ipaddr}/{cidr} ";
+            tooltip-format = "{ifname} via {gwaddr} ";
+            format-linked = "{ifname} (No IP) ";
+            format-disconnected = "Disconnected ⚠";
+            format-alt = "{ifname} = {ipaddr}/{cidr}";
+          };
+
+          mpd = {
+            format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
+            format-disconnected = "Disconnected ";
+            format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
+            unknown-tag = "N/A";
+            interval = 5;
+            consume-icons = {
+              "on" = " ";
+            };
+            random-icons = {
+              off = "<span color=\"#f53c3c\"></span> ";
+              on = " ";
+            };
+            repeat-icons = {
+              on = " ";
+            };
+            single-icons = {
+              on = "1 ";
+            };
+            state-icons = {
+              paused = "";
+              playing = "";
+            };
+            tooltip-format = "MPD (connected)";
+            tooltip-format-disconnected = "MPD (disconnected)";
+          };
+        })
+      (cfg
+        // {
+          # machine-specific, can not be factored out into machine.nix
+          output = "DP-2";
+
+          modules-left = [
+            "hyprland/workspaces"
+            "hyprland/submap"
+            "custom/backup"
+          ];
+
+          modules-center = [
+            "hyprland/window"
+          ];
+
+          modules-right = [
+            "idle_inhibitor"
+            "pulseaudio"
+            "custom/nordvpn"
+            "cpu"
+            "memory"
+            "temperature"
+            "keyboard-state"
+            "clock"
+            "custom/dunst"
+            "tray"
+          ];
+        })
+    ];
 
     "waybar/watchfile.sh" = {
       executable = true;

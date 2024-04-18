@@ -3,6 +3,7 @@ with upkgs.nur.repos.LuisChDev; {
   networking = {
     nameservers = ["1.1.1.1" "1.0.0.1"];
     firewall = {
+      enable = true;
       checkReversePath = false;
       allowedTCPPorts = [443 8384 22000];
       allowedUDPPorts = [1194 22000 21027];
