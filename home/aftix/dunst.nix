@@ -26,11 +26,14 @@ in {
   mydocs.pages.dunst = with mylib.docs; {
     _docsName = "dunst \\- A customizable and lightweight notification-daemon";
     _docsExtraSections = {
-      "Mouse Controls" = mergeTaggedAttrs binds;
+      Interaction = mergeSubsections {"Mouse Controls" = mergeTaggedAttrs binds;};
     };
     _docsSeeAlso = [
-      "dunst(1)"
-      "${docPrefix}-hyprland(7)"
+      {
+        name = "dunst";
+        mansection = 1;
+      }
+      {name = docPrefix + "-hyprland";}
     ];
   };
 
