@@ -41,7 +41,7 @@
     };
     spkgs = import stablepkgs {inherit system;};
   in {
-    formatter."${system}" = upkgs.alejandra;
+    formatter.${system} = upkgs.alejandra;
     nixosConfigurations.hamilton = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
