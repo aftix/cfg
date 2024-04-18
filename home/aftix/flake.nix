@@ -29,12 +29,11 @@
     };
     spkgs = import stablepkgs {inherit system;};
     extraSpecialArgs = {
-      inherit upkgs;
-      inherit spkgs;
+      inherit upkgs spkgs;
       home-impermanence = impermanence.nixosModules.home-manager.impermanence;
     };
   in {
-    formatter."${system}" = upkgs.nixfmt;
+    formatter.${system} = upkgs.alejandra;
     homeConfigurations.aftix = lib.homeManagerConfiguration {
       pkgs = upkgs;
       modules = [

@@ -1,17 +1,19 @@
 {lib, ...}: {
-  boot.initrd = {
-    kernelModules = ["amdgpu"];
+  boot = {
+    initrd = {
+      kernelModules = ["amdgpu"];
 
-    # By default don't store state
-    postDeviceCommands = lib.mkAfter ''
-      mkdir /mnt
-      mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
-      [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
-      rm -rf /mnt/local/root
-      btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
-      umount /mnt
-      rmdir /mnt
-    '';
+      # By default don't store state
+      postDeviceCommands = lib.mkAfter ''
+        mkdir /mnt
+        mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
+        [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
+        rm -rf /mnt/local/root
+        btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
+        umount /mnt
+        rmdir /mnt
+      '';
+    };
   };
 
   fileSystems = {
