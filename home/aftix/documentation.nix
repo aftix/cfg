@@ -42,7 +42,7 @@ in
           if config.mydocs.enable
           then "echo ${escapeShellArg (mylib.docs.manPage "${titlePrefix}" {
             _docsName = "Hamilton \\- Configuration documentation for my NixOS install";
-            _docsSeeAlso = lib.mapAttrsToList (title: _: "${titlePrefix}-${title}(7)") config.mydocs.pages;
+            _docsSeeAlso = lib.mapAttrsToList (title: _: {name = "${titlePrefix}-${title}";}) config.mydocs.pages;
           })} > \"${titlePrefix}.man\""
           else ""
         )
