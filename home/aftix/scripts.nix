@@ -10,19 +10,19 @@
         #!${upkgs.bash}/bin/bash
 
         if [ -z "$PINENTRY_USER_DATA" ] ; then
-          exec "${upkgs.pinentry-gtk2}/bin/pinentry-curses" "$@"
+          exec "${upkgs.pinentry-qt}/bin/pinentry-curses" "$@"
           exit 0
         fi
 
         case $PINENTRY_USER_DATA in
-        gtk)
-          exec "${upkgs.pinentry-gtk2}/bin/pinentry-gtk-2" "$@"
+        qt)
+          exec "${upkgs.pinentry-qt}/bin/pinentry-qt" "$@"
           ;;
         none)
           exit 1
           ;;
         *)
-          exec "${upkgs.pinentry-gtk2}/bin/pinentry-curses" "$@"
+          exec "${upkgs.pinentry-qt}/bin/pinentry-curses" "$@"
         esac
       '';
     };
@@ -44,7 +44,7 @@
 
         [[ -n $password ]] || exit
 
-        PINENTRY_USER_DATA=gtk pass show -c "$password" 2>&1
+        PINENTRY_USER_DATA=qt pass show -c "$password" 2>&1
       '';
     };
 

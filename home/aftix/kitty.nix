@@ -2,6 +2,7 @@
   upkgs,
   lib,
   mylib,
+  config,
   ...
 }: let
   settings = {
@@ -600,8 +601,14 @@ in {
   };
 
   # Extra configuration files for kitty
-  xdg = {
-    configFile."kitty/open-actions.conf".text = ''
+  xdg.configFile = {
+    "kitty/irc.session".text = ''
+      layout stack
+      cd ~
+      launch --title "irc" "${settings.shell.value}" -c "set-env WEECHAT_HOME '${config.home.homeDirectory}/.local/share/weechat' ; weechat"
+    '';
+
+    "kitty/open-actions.conf".text = ''
       protocol file
       fragment_matches [0-9]+
       action launch --type=overlay --cwd=current "$EDITOR" "+$FRAGMENT" "$FILE_PATH"
@@ -619,7 +626,7 @@ in {
       action launch --type=overlay kitty +kitten icat --hold "$FILE_PATH"
     '';
 
-    configFile."kitty/diff.conf".text = ''
+    "kitty/diff.conf".text = ''
       pygments_style monokai
 
       foreground #EDDFAA

@@ -21,7 +21,8 @@
       libnotify
       wl-clipboard
       xclip
-      pinentry-gtk2
+      pinentry-qt
+      kdePackages.polkit-kde-agent-1
       pwvucontrol
     ];
     sessionVariables.XDG_CURRENT_DESKTOP = "Hyprland";
@@ -79,15 +80,7 @@
   in {
     enable = true;
     xwayland.enable = true;
-
-    systemd = {
-      extraCommands = [
-        "systemctl --user stop hyprland-session.target"
-        "pkill waybar"
-        "systemctl --user start hyprland-session.target"
-      ];
-      enable = true;
-    };
+    systemd.enable = true;
 
     settings = {
       "$terminal" = "${terminal}";
@@ -95,7 +88,7 @@
       xwayland.force_zero_scaling = true;
 
       env = [
-        "XCURSOR_SIZE,24"
+        "XCURSOR_SIZE,32"
         "QT_QPA_PLATFORMTHEME,qt5c"
         "HOME,${config.home.homeDirectory}"
         "HYPRCURSOR_THEME,rose-pine-hyprcursor"
@@ -166,11 +159,6 @@
       master.new_is_master = true;
       gestures.workspace_swipe = false;
       misc.force_default_wallpaper = 0;
-
-      windowrulev2 = [
-        "tile,class:(kitty)"
-        "suppressevent maximize, class:.*"
-      ];
 
       "$mainMod" = "SUPER";
 
@@ -265,58 +253,85 @@
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
+
+      exec-once = [
+        "${upkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
+        "hyprpaper"
+        "hypridle"
+        "[workspace 1 silent] firefox"
+        "[workspace 2;group new] $terminal --title irc --session \"$HOME/.config/kitty/irc.session\""
+        "[workspace 2;group set] element-desktop"
+        "[workspace 2] discord"
+      ];
+
+      windowrulev2 = [
+        "tile,class:(kitty)"
+
+        "suppressevent maximize, class:.*"
+
+        "stayfocused, class:^(Pinentry-)"
+        "float, class:^(Pinentry-)"
+        "noborder, class:^(Pinentry-)"
+        "group barred deny, class:^(Pinentry-)"
+
+        "idleinhibit focus, class:(mpv)"
+
+        "group set, class:^(Discord)"
+      ];
+
+      workspace = [
+        "special:scratchpad, on-created-empty:$terminal"
+      ];
+
+      exec = [
+        "systemctl --user stop hyprland-session.target ; pkill waybar ; systemctl --user start hyprland-session.target"
+      ];
     };
 
     # Submaps must be done here for now
-    extraConfig = builtins.concatStringsSep "\n" [
-      "exec-once = hyprpaper"
-      "exec-once = hypridle"
-      "exec = systemctl --user stop hyprland-session.target ; pkill waybar ; systemctl --user start hyprland-session.target"
-      (
-        mkSubmaps
-        {
-          group =
-            [
-              "bindel = ,Comma,movegroupwindow,b"
-              "bindel = ,Period,movegroupwindow,f"
-            ]
-            ++ (map (cmd: "bindel = ${cmd}") (mkMovements {} "" "moveintogroup"));
-          volume =
-            [
-              "bindel=SHIFT, m, exec, pw-volume mute off"
-              "bindel=SHIFT, u, exec, pw-volume change +10%"
-              "bindel=SHIFT, d, exec, pw-volume change -10%"
-            ]
-            ++ (map (cmd: "bindel=, ${cmd}") [
-              "XF86AudioRaiseVolume, exec, pw-volume change +1%"
-              "XF86AudioLowerVolume, exec, pw-volume change -1%"
-              "u, exec, pw-volume change +3%"
-              "d, exec, pw-volume change -3%"
-              "m, exec, pw-volume mute on"
-            ])
-            ++ (map (cmd: "bindl=, ${cmd}") [
-              "XF86AudioMute, exec, pw-volume mute toggle"
-              "XF86AudioPlay, exec, mpc toggle"
-              "XF86AudioPause, exec, mpc pause"
-              "XF86AudioNext, exec, mpc next"
-              "XF86AudioPrev, exec, mpc prev"
-              "t, exec, pw-volume mute toggle"
-            ]);
-          resize = map (cmd: "binde=${cmd}") (mkMovements {
-            left = "-10 0";
-            right = "10 0";
-            up = "0 -10";
-            down = "0 10";
-          } "" "resizeactive");
-          programs = map (cmd: "bind = ${cmd}") [
-            ",w,exec,firefox"
-            "SHIFT,w,exec,chromium"
-            ",d,exec,discord"
-            "SHIFT,d,exec,element-desktop"
-          ];
-        }
-      )
-    ];
+    extraConfig =
+      mkSubmaps
+      {
+        group =
+          [
+            "bindel = ,Comma,movegroupwindow,b"
+            "bindel = ,Period,movegroupwindow,f"
+          ]
+          ++ (map (cmd: "bindel = ${cmd}") (mkMovements {} "" "moveintogroup"));
+        volume =
+          [
+            "bindel=SHIFT, m, exec, pw-volume mute off"
+            "bindel=SHIFT, u, exec, pw-volume change +10%"
+            "bindel=SHIFT, d, exec, pw-volume change -10%"
+          ]
+          ++ (map (cmd: "bindel=, ${cmd}") [
+            "XF86AudioRaiseVolume, exec, pw-volume change +1%"
+            "XF86AudioLowerVolume, exec, pw-volume change -1%"
+            "u, exec, pw-volume change +3%"
+            "d, exec, pw-volume change -3%"
+            "m, exec, pw-volume mute on"
+          ])
+          ++ (map (cmd: "bindl=, ${cmd}") [
+            "XF86AudioMute, exec, pw-volume mute toggle"
+            "XF86AudioPlay, exec, mpc toggle"
+            "XF86AudioPause, exec, mpc pause"
+            "XF86AudioNext, exec, mpc next"
+            "XF86AudioPrev, exec, mpc prev"
+            "t, exec, pw-volume mute toggle"
+          ]);
+        resize = map (cmd: "binde=${cmd}") (mkMovements {
+          left = "-10 0";
+          right = "10 0";
+          up = "0 -10";
+          down = "0 10";
+        } "" "resizeactive");
+        programs = map (cmd: "bind = ${cmd}") [
+          ",w,exec,firefox"
+          "SHIFT,w,exec,chromium"
+          ",d,exec,discord"
+          "SHIFT,d,exec,element-desktop"
+        ];
+      };
   };
 
   xdg = {
