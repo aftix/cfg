@@ -91,6 +91,7 @@ in {
       btrfs-progs
       inotify-tools
       fuse
+      usbutils
 
       openssh
       rsync
