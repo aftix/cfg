@@ -33,23 +33,32 @@ in {
       automatic = true;
       persistent = true;
       dates = "daily";
-      options = "--delete-older-than 30d";
+      options = "--delete-older-than 7d";
     };
   };
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader = {
-    efi.canTouchEfiVariables = true;
-    systemd-boot = {
-      enable = true;
-      consoleMode = "auto";
-      editor = false;
-      memtest86.enable = true;
+  boot = {
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot = {
+        enable = true;
+        consoleMode = "auto";
+        editor = false;
+        memtest86.enable = true;
+      };
+    };
+
+    kernelPackages = upkgs.linuxPackages_latest;
+    kernel.sysctl = {
+      # Enable https://en.wikipedia.org/wiki/Magic_SysRq_key
+      "kernel.sysrq" = 1;
+      # Allow sandboxing on hardened linux for chromium
+      "kernel.unprivileged_userns_clone" = 1;
     };
   };
 
   # Opt-in to state
-
   environment = {
     persistence = {
       # /persist is backed up (btrfs subvolume under safe/)

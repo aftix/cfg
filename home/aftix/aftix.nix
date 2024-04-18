@@ -57,6 +57,8 @@ in {
       allowOther = true;
     };
 
+    sessionVariables.NIXOS_OZONE_WL = "1";
+
     packages = with upkgs; [
       nil
       statix
