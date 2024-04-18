@@ -12,6 +12,7 @@ in {
   imports = [
     home-impermanence
     ./myoptions.nix
+
     ./aria2.nix
     ./dunst.nix
     ./elvish.nix
@@ -20,6 +21,7 @@ in {
     ./helix.nix
     ./hypr.nix
     ./kitty.nix
+    ./machine.nix
     ./mpd.nix
     ./scripts.nix
     ./transmission.nix
