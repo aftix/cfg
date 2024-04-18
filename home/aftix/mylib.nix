@@ -41,7 +41,7 @@
           else if builtins.isList value
           then
             (
-              builtins.concatStringsSep "\n" ([acc]
+              builtins.concatStringsSep "" ([acc]
                 ++ (map (
                     elem: (toCfgInner tabstop {"${name}" = elem;})
                   )
@@ -68,13 +68,36 @@
     mergeTagged = lst: builtins.concatStringsSep "\n" (map tagged lst);
     mergeTaggedAttrs = attrs: mergeTagged (lib.mapAttrsToList (name: value: value) attrs);
 
+    URI = uri: ".UR ${uri}\n.UE\n";
+    mailto = address: ".MT ${mailto}\n.ME\n";
+
+    # For references to other man pages
+    manURI = {
+      name,
+      mansection ? 7,
+    }: ".MR ${name} ${builtins.toString mansection}";
+    mergeManURIs = lst: builtins.concatStringsSep "\n" (map manURI lst);
+
     pageTitle = name: let
       title =
         if config.mydocs.prefix == name
         then name
         else "${config.mydocs.prefix}-${name}";
     in ".TH \"${toUpper title}\" 7 \"{{date}}\"";
+
     section = title: content: ".SH ${title}\n${content}";
+    subsection = title: content: ".SS ${title}\n${content}";
+    mergeSubsections = attrs: builtins.concatStringsSep "\n" (lib.mapAttrsToList (name: value: subsection name value) attrs);
+    paragraph = text: ".PP\n" + text;
+
+    example = caption: content: ''
+      Example: ${caption}
+      .EX
+      .RS 8
+      ${content}
+      .RE
+      .EE
+    '';
 
     manPage = title: {
       _docsName,
@@ -100,11 +123,14 @@
         ]
         ++ (lib.mapAttrsToList (title: content: section title content) _docsExtraSections)
         ++ [
-          (
-            if _docsSeeAlso != []
-            then section "SEE ALSO" (builtins.concatStringsSep ", " _docsSeeAlso)
-            else ""
-          )
+          (section "SEE ALSO" (
+            mergeManURIs
+            (
+              if title != config.mydocs.prefix
+              then _docsSeeAlso ++ [{name = config.mydocs.prefix;}]
+              else _docsSeeAlso
+            )
+          ))
         ]);
   };
 }

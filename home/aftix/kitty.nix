@@ -1,5 +1,514 @@
-{upkgs, ...}: {
-  home.packages = with upkgs; [kitty kitty-img kitty-themes];
+{
+  upkgs,
+  lib,
+  mylib,
+  ...
+}: let
+  settings = {
+    shell = {
+      tag = "shell";
+      content = "elvish";
+      value = "${upkgs.elvish}/bin/elvish";
+    };
+
+    scrollbackPager = {
+      tag = "scrollback pager";
+      content = "moar";
+      value = "'${upkgs.moar}/bin/moar' -no-linenumbers";
+    };
+
+    kittyMod = {
+      tag = "kitty_mod";
+      content = "ctrl + shift \\- Main modifiers used for kitty keyboard shortcuts, referenced as kitty_mod in this manual";
+      value = "ctrl+shift";
+    };
+  };
+
+  binds = {
+    copy = {
+      tag = "kitty_mod + c";
+      content = "Copy selection to clipboard";
+      value = "copy_to_clipboard";
+    };
+    paste = {
+      tag = "kitty_mod + v";
+      content = "Paste from clipboard";
+      value = "paste_from_clipboard";
+    };
+
+    scrollUp = {
+      tag = "kitty_mod + up";
+      content = "Scroll up in by a line";
+      value = "scroll_line_up";
+    };
+    scrollDown = {
+      tag = "kitty_mod + down";
+      content = "Scroll down in by a line";
+      value = "scroll_line_down";
+    };
+    pageUp = {
+      tag = "kitty_mod + page_up";
+      content = "Scroll up in by a page";
+      value = "scroll_page_up";
+    };
+    pageDown = {
+      tag = "kitty_mod + page_down";
+      content = "Scroll down in by a page";
+      value = "scroll_page_down";
+    };
+    scrollHome = {
+      tag = "kitty_mod + home";
+      content = "Scroll to the beginning of the scrollback history";
+      value = "scroll_home";
+    };
+    scrollEnd = {
+      tag = "kitty_mod + end";
+      content = "Scroll to the end of the scrollback history";
+      value = "scroll_end";
+    };
+    scrollShowback = {
+      tag = "kitty_mod + h";
+      content = "Show the scrollback history in the pager";
+      value = "show_scrollback";
+    };
+
+    increaseFontSize = {
+      tag = "kitty_mod + plus";
+      content = "Increase the font size by 2pt";
+      value = "change_font_size all +2.0";
+    };
+    decreaseFontSize = {
+      tag = "kitty_mod+minus";
+      content = "Decrease the font size by 2pt";
+      value = "change_font_size all -2.0";
+    };
+    resetFontSize = {
+      tag = "kitty_mod + backspace";
+      content = "Reset the font size to the default";
+      value = "change_font_size all 0";
+    };
+
+    showConfig = {
+      tag = "kitty_mod + slash";
+      content = "Open the kitty configuration in the pager in a new window";
+      value = "new_window '${upkgs.moar}/bin/moar' -no-linenumbers $HOME/.config/kitty/kitty.conf";
+    };
+
+    opacityMore = {
+      tag = "kitty_mod + a > m";
+      content = "Increase the background opacity by 10%";
+      value = "set_background_opacity +0.1";
+    };
+    opacityLess = {
+      tag = "kitty_mod + a > l";
+      content = "Decrease the background opacity by 10%";
+      value = "set_background_opacity -0.1";
+    };
+    opacityFull = {
+      tag = "kitty_mod + a > 1";
+      content = "Set the background opacity to 100%";
+      value = "set_background_opacity 1";
+    };
+    opacityHigh = {
+      tag = "kitty_mod + a > 2";
+      content = "Set the background opacity to 75%";
+      value = "set_background_opacity 0.75";
+    };
+    opacityMiddle = {
+      tag = "kitty_mod + a > 3";
+      content = "Set the background opacity to 50%";
+      value = "set_background_opacity 0.5";
+    };
+    opacityLow = {
+      tag = "kitty_mod + a > 4";
+      content = "Set the background opacity to 25%";
+      value = "set_background_opacity 0.25";
+    };
+    opacityDefault = {
+      tag = "kitty_mod + a > d";
+      content = "Reset the background opacity to the default";
+      value = "set_background_opacity default";
+    };
+  };
+
+  hintBinds = {
+    kittenUrls = {
+      tag = "kitty_mod + e";
+      content = "Open the hint menu for opening URLs";
+      value = "kitten hints";
+    };
+    kittenPaths = {
+      tag = "kitty_mod + p > f";
+      content = "Open the hint menu for paths";
+      value = "kitten hints --type path --program -";
+    };
+    kittenPathsOpen = {
+      tag = "kitty_mod + p > shift+f";
+      content = "Open the hint menu for opening paths";
+      value = "kitten hints --type path";
+    };
+    kittenLines = {
+      tag = "kitty_mod + p > l";
+      content = "Open the hint menu for lines";
+      value = "kitten hints --type line --program -";
+    };
+    kittenWords = {
+      tag = "kitty_mod + p > w";
+      content = "Open the hint menu for words";
+      value = "kitten hints --type word --program -";
+    };
+    kittenHash = {
+      tag = "kitty_mod + p > h";
+      content = "Open the hint menu for hashes";
+      value = "kitten hints --type hash --program -";
+    };
+    kittenLinenum = {
+      tag = "kitty_mod + p > n";
+      content = "Open the hint menu for line numbers";
+      value = "kitten hints --type linenum";
+    };
+  };
+
+  windowBinds = {
+    launchWindow = {
+      tag = "kitty_mod + enter";
+      content = "Open a new window";
+      value = "new_window";
+    };
+    launchWindowCurrent = {
+      tag = "ctrl + alt + enter";
+      content = "Open a new window, preserving the current working directory";
+      value = "launch --cwd=current";
+    };
+    closeWindow = {
+      tag = "kitty_mod + w";
+      content = "Close the focused window";
+      value = "close_window";
+    };
+    nextWindow = {
+      tag = "kitty_mod + ]";
+      content = "Focus the next window";
+      value = "next_window";
+    };
+    prevWindow = {
+      tag = "kitty_mod + [";
+      content = "Focus the previous window";
+      value = "previous_window";
+    };
+    moveWindow = {
+      tag = "kitty_mod + f";
+      content = "Move the focused window forwards in the window stack";
+      value = "move_window_forward";
+    };
+    moveWindowBack = {
+      tag = "kitty_mod + b";
+      content = "Move the focused window backwards in the window stack";
+      value = "move_window_backward";
+    };
+    moveWindowTop = {
+      tag = "kitty_mod + `";
+      content = "Move the focused window to the top of the window stack";
+      value = "move_window_top";
+    };
+
+    startResize = {
+      tag = "kitty_mod + r";
+      content = "Start resizing the window";
+      value = "start_resizing_window";
+    };
+    firstWindow = {
+      tag = "kitty_mod + 1";
+      content = "Move to the first window";
+      value = "first_window";
+    };
+    secondWindow = {
+      tag = "kitty_mod + 2";
+      content = "Move to the first window";
+      value = "second_window";
+    };
+    thirdWindow = {
+      tag = "kitty_mod + 3";
+      content = "Move to the third window";
+      value = "third_window";
+    };
+    fourthWindow = {
+      tag = "kitty_mod + 4";
+      content = "Move to the fourth window";
+      value = "fourth_window";
+    };
+    fifthWindow = {
+      tag = "kitty_mod + 5";
+      content = "Move to the fifth window";
+      value = "fifth_window";
+    };
+    sixthWindow = {
+      tag = "kitty_mod + 6";
+      content = "Move to the sixth window";
+      value = "sixth_window";
+    };
+    seventhWindow = {
+      tag = "kitty_mod + 7";
+      content = "Move to the seventh window";
+      value = "seventh_window";
+    };
+    eightWindow = {
+      tag = "kitty_mod + 8";
+      content = "Move to the eigth window";
+      value = "eighth_window";
+    };
+    ninthWindow = {
+      tag = "kitty_mod + 9";
+      content = "Move to the nineth window";
+      value = "ninth_window";
+    };
+    tenthWindow = {
+      tag = "kitty_mod + 0";
+      content = "Move to the tenth window";
+      value = "tenth_window";
+    };
+  };
+
+  tabBinds = {
+    nextTab = {
+      tag = "kitty_mod + right";
+      content = "Focus the next tab";
+      value = "next_tab";
+    };
+    prevTab = {
+      tag = "kitty_mod + left";
+      content = "Focus the previous tab";
+      value = "previous_tab";
+    };
+    newTab = {
+      tag = "kitty_mod + t";
+      content = "Launch a new tab at the end of the tab list";
+      value = "new_tab";
+    };
+    newTabNeighbor = {
+      tag = "kitty_mod + n";
+      content = "Launch a new tab and place it after the focused tab";
+      value = "new_tab !neighbor";
+    };
+    closeTab = {
+      tag = "kitty_mod + q";
+      content = "Close the focused tab";
+      value = "close_tab";
+    };
+    moveTab = {
+      tag = "kitty_mod + .";
+      content = "Move the focused tab forward";
+      value = "move_tab_forward";
+    };
+    moveTabBack = {
+      tag = "kitty_mod + ,";
+      content = "Move the focused tab backwards";
+      value = "move_tab_backward";
+    };
+    setTabTitle = {
+      tag = "kitty_mod + alt + t";
+      content = "Set the focused tab's title";
+      value = "set_tab_title";
+    };
+
+    gotoTabPrev = {
+      tag = "ctrl + alt + `";
+      content = "Focus to the previously focused tab";
+      value = "goto_tab -1";
+    };
+    gotoTabFirst = {
+      tag = "ctrl + alt + 1";
+      content = "Focus the first tab";
+      value = "goto_tab 1";
+    };
+    gotoTabSecond = {
+      tag = "ctrl + alt + 2";
+      content = "Focus the second tab";
+      value = "goto_tab 2";
+    };
+    gotoTabThird = {
+      tag = "ctrl + alt + 3";
+      content = "Focus the third tab";
+      value = "goto_tab 3";
+    };
+    gotoTabFourth = {
+      tag = "ctrl + alt + 4";
+      content = "Focus the fourth tab";
+      value = "goto_tab 4";
+    };
+    gotoTabFifth = {
+      tag = "ctrl + alt + 5";
+      content = "Focus the fifth tab";
+      value = "goto_tab 5";
+    };
+    gotoTabSixth = {
+      tag = "ctrl + alt + 6";
+      content = "Focus the sixth tab";
+      value = "goto_tab 6";
+    };
+    gotoTabSeventh = {
+      tag = "ctrl + alt + 7";
+      content = "Focus the seventh tab";
+      value = "goto_tab 7";
+    };
+    gotoTabEighth = {
+      tag = "ctrl + alt + 8";
+      content = "Focus the eigth tab";
+      value = "goto_tab 8";
+    };
+    gotoTabNineth = {
+      tag = "ctrl + alt + 9";
+      content = "Focus the ninth tab";
+      value = "goto_tab 9";
+    };
+    gotoTabTenth = {
+      tag = "ctrl + alt + 0";
+      content = "Focus the tenth tab";
+      value = "goto_tab 10";
+    };
+  };
+
+  layoutBinds = {
+    layoutNext = {
+      tag = "kitty_mod + l";
+      content = "Cycle the window layout forwards";
+      value = "next_layout";
+    };
+    layoutTall = {
+      tag = "ctrl + alt + t";
+      content = "Use the tall window layout";
+      value = "goto_layout tall";
+    };
+    layoutStack = {
+      tag = "ctrl + alt + s";
+      content = "Use the stacking window layout";
+      value = "goto_layout stack";
+    };
+    layoutLast = {
+      tag = "ctrl + alt + p";
+      content = "Use the previously used layout";
+      value = "goto_layout last_used_layout";
+    };
+  };
+
+  mouseBinds = {
+    pasteText = {
+      tag = "middle click";
+      content = "Paste from the primary selection";
+      value = "mouse_map middle release ungrabbed paste_from_selection";
+    };
+    pasteUnconditional = {
+      tag = "shift + middle click";
+      content = "Paste from the primary selection even when grabbed";
+      value = ''
+        mouse_map shift+middle release ungrabbed,grabbed paste_from_selection
+        mouse_map shift+middle press grabbed discard_event
+      '';
+    };
+
+    startSelect = {
+      tag = "left click";
+      content = "Start selecting text";
+      value = "mouse_map left press ungrabbed,grabbed mouse_selection normal";
+    };
+    startRectSelect = {
+      tag = "kitty_mod + left click";
+      content = "Start selecting text in a rectangle";
+      value = "mouse_map kitty_mod+left press ungrabbed,grabbed mouse_selection rectangle";
+    };
+    selectWord = {
+      tag = "double left click";
+      content = "Select a word";
+      value = "mouse_map left doublepress ungrabbed,grabbed mouse_selection word";
+    };
+    selectLine = {
+      tag = "triple left click";
+      content = "Select a line";
+      value = "mouse_map left triplepress ungrabbed,grabbed mouse_selection line";
+    };
+    selectLineFromPoint = {
+      tag = "kitty_mod + triple left click";
+      content = "Select a line starting from the cursor position";
+      value = "mouse_map kitty_mod+left triplepress ungrabbed,grabbed mouse_selection line_from_point";
+    };
+    extendSelection = {
+      tag = "right click";
+      content = "Extend the current selection";
+      value = "mouse_map right press ungrabbed,grabbed mouse_selection extend";
+    };
+
+    showCmd = {
+      tag = "kitty_mod + right click";
+      content = "Show clicked command in pager";
+      value = "mouse_map kitty_mod+right press ungrabbed mouse_show_command_output";
+    };
+
+    openUrl = {
+      tag = "kitty_mod + left click";
+      content = "Open a URL with the default MIME scheme handler";
+      value = "mouse_map kitty_mod+left release grabbed,ungrabbed mouse_handle_click link";
+    };
+  };
+
+  mkKittyBinds = attrs:
+    lib.mergeAttrsList (
+      lib.mapAttrsToList (_: v: let
+        name = builtins.replaceStrings [" "] [""] v.tag;
+      in {"${name}" = v.value;})
+      attrs
+    );
+  inherit (mylib.docs) paragraph example mergeTaggedAttrs mergeSubsections;
+in {
+  home.packages = with upkgs; [kitty-img kitty-themes];
+
+  mydocs.pages.kitty = {
+    _docsName = "kitty \\- The fast, feature rich terminal emulator";
+    _docsExtraSections = {
+      "Shortcut Format" = paragraph ''
+        A '+' between key names indicate the keys are pressed together. A '>' indicates
+        that they key combination to the left must be pressed then released, then the key combination to
+        the right (possible including more '>' characters) must be pressed to activate the keyboard shortcut.
+        All letters are case insensitive.
+
+        ${
+          example
+          "A shortcut that is triggered by pressing control, shift, and p together"
+          "ctrl + shift + p"
+        }
+
+        ${
+          example
+          "A shortcut that is triggered by pressing control, shift, and p together then pressing x"
+          "ctrl + shift + p > x"
+        }
+      '';
+      Miscellaneous = mergeTaggedAttrs settings;
+      Interaction = mergeSubsections {
+        "Keyboard Shortcuts" = builtins.concatStringsSep "\n" [
+          (mergeTaggedAttrs binds)
+          (
+            mergeSubsections {
+              "Hint selection shortcuts" = mergeTaggedAttrs hintBinds;
+              "Window management shortcuts" = mergeTaggedAttrs windowBinds;
+              "Tab management shortcuts" = mergeTaggedAttrs tabBinds;
+              "Layout management shortcuts" = mergeTaggedAttrs layoutBinds;
+            }
+          )
+        ];
+        "Mouse Controls" = mergeTaggedAttrs mouseBinds;
+      };
+    };
+
+    _docsSeeAlso = [
+      {
+        name = "kitty";
+        mansection = 1;
+      }
+      {
+        name = "kitty.conf";
+        mansection = 5;
+      }
+    ];
+  };
 
   programs.kitty = {
     enable = true;
@@ -14,26 +523,23 @@
       italic_font = "auto";
       bold_italic_font = "auto";
 
-      kitty_mod = "ctrl+shift";
-      shell = "${upkgs.elvish}/bin/elvish";
+      kitty_mod = settings.kittyMod.value;
+      shell = settings.shell.value;
       allow_remote_control = true;
 
       cursor_shape = "block";
       cursor_blink_interval = -1;
 
       scrollback_lines = 1024;
-      scrollback_pager = "'${upkgs.moar}/bin/moar' -no-linenumbers";
+      scrollback_pager = settings.scrollbackPager.value;
       scrollback_pager_history_size = 0;
 
       url_style = "curly";
       open_url_with = "default";
       url_prefixes = "http https file ftp";
-      open_url_modifiers = "kitty_mod";
 
       copy_on_select = false;
       strip_trailing_spaces = "smart";
-      rectangle_select_modifiers = "ctrl+shift";
-      terminal_select_modifiers = "shift";
       select_by_word_characters = "@-./_~?&=%+#";
       enabled_layouts = "*";
 
@@ -55,110 +561,42 @@
       dynamic_background_opacity = true;
     };
 
-    keybindings = {
-      "kitty_mod+c" = "copy_to_clipboard";
-      "kitty_mod+v" = "paste_from_clipboard";
+    keybindings = lib.mergeAttrsList (map mkKittyBinds [
+      binds
+      hintBinds
+      windowBinds
+      tabBinds
+      layoutBinds
+    ]);
 
-      "kitty_mod+up" = "scroll_line_up";
-      "kitty_mod+down" = "scroll_line_down";
-      "kitty_mod+page_up" = "scroll_page_up";
-      "kitty_mod+page_down" = "scroll_page_down";
-      "kitty_mod+home" = "scroll_home";
-      "kitty_mod+end" = "scroll_end";
-      "kitty_mod+h" = "show_scrollback";
+    extraConfig =
+      "clear_all_mouse_actions yes\n"
+      + builtins.concatStringsSep "\n" (lib.mapAttrsToList (_: mbind: mbind.value) mouseBinds)
+      + ''
 
-      "kitty_mod+plus" = "change_font_size all +2.0";
-      "kitty_mod+minus" = "change_font_size all -2.0";
-      "kitty_mod+backspace" = "change_font_size all 0";
-
-      "kitty_mod+e" = "kitten hints";
-      "kitty_mod+p>f" = "kitten hints --type path --program -";
-      "kitty_mod+p>shift+f" = "kitten hints --type path";
-      "kitty_mod+p>l" = "kitten hints --type line --program -";
-      "kitty_mod+p>w" = "kitten hints --type word --program -";
-      "kitty_mod+p>h" = "kitten hints --type hash --program -";
-      "kitty_mod+p>n" = "kitten hints --type linenum";
-
-      "kitty_mod+slash" = "new_window '${upkgs.moar}/bin/moar' -no-linenumbers $HOME/.config/kitty/kitty.conf";
-
-      "kitty_mod+enter" = "new_window";
-      "ctrl+alt+enter" = "launch --cwd=current";
-      "kitty_mod+w" = "close_window";
-      "kitty_mod+]" = "next_window";
-      "kitty_mod+[" = "previous_window";
-      "kitty_mod+f" = "move_window_forward";
-      "kitty_mod+b" = "move_window_backward";
-      "kitty_mod+`" = "move_window_top";
-      "kitty_mod+r" = "start_resizing_wondow";
-      "kitty_mod+1" = "first_window";
-      "kitty_mod+2" = "second_window";
-      "kitty_mod+3" = "third_window";
-      "kitty_mod+4" = "fourth_window";
-      "kitty_mod+5" = "fifth_window";
-      "kitty_mod+6" = "sixth_window";
-      "kitty_mod+7" = "seventh_window";
-      "kitty_mod+8" = "eighth_window";
-      "kitty_mod+9" = "ninth_window";
-      "kitty_mod+0" = "tenth_window";
-
-      "kitty_mod+right" = "next_tab";
-      "kitty_mod+left" = "previous_tab";
-      "kitty_mod+t" = "new_tab";
-      "kitty_mod+n" = "new_tab !neighbor";
-      "kitty_mod+q" = "close_tab";
-      "kitty_mod+." = "move_tab_forward";
-      "kitty_mod+," = "move_tab_backward";
-      "kitty_mod+alt+t" = "set_tab_title";
-
-      "ctrl+alt+`" = "goto_tab -1";
-      "ctrl+alt+1" = "goto_tab 1";
-      "ctrl+alt+2" = "goto_tab 2";
-      "ctrl+alt+3" = "goto_tab 3";
-      "ctrl+alt+4" = "goto_tab 4";
-      "ctrl+alt+5" = "goto_tab 5";
-      "ctrl+alt+6" = "goto_tab 6";
-      "ctrl+alt+7" = "goto_tab 7";
-      "ctrl+alt+8" = "goto_tab 8";
-      "ctrl+alt+9" = "goto_tab 9";
-      "ctrl+alt+0" = "goto_tab 10";
-
-      "kitty_mod+l" = "next_layout";
-      "ctrl+alt+t" = "goto_layout tall";
-      "ctrl+alt+s" = "goto_layout stack";
-      "ctrl+alt+p" = "goto_layout last_used_layout";
-
-      "kitty_mod+a>m" = "set_background_opacity +0.1";
-      "kitty_mod+a>l" = "set_background_opacity -0.1";
-      "kitty_mod+a>1" = "set_background_opacity 1";
-      "kitty_mod+a>2" = "set_background_opacity 0.75";
-      "kitty_mod+a>3" = "set_background_opacity 0.5";
-      "kitty_mod+a>4" = "set_background_opacity 0.25";
-      "kitty_mod+a>d" = "set_background_opacity default";
-    };
-
-    extraConfig = ''
-      background            #000000
-      foreground            #ffffff
-      cursor                #bbbbbb
-      selection_background  #b5d5ff
-      color0                #000000
-      color8                #545454
-      color1                #ff5555
-      color9                #ff5555
-      color2                #55ff55
-      color10               #55ff55
-      color3                #ffff55
-      color11               #ffff55
-      color4                #5555ff
-      color12               #5555ff
-      color5                #ff55ff
-      color13               #ff55ff
-      color6                #55ffff
-      color14               #55ffff
-      color7                #bbbbbb
-      color15               #ffffff
-      selection_foreground #000000
-    '';
+        mouse_map kitty_mod+left press grabbed discard_event
+        background            #000000
+        foreground            #ffffff
+        cursor                #bbbbbb
+        selection_background  #b5d5ff
+        color0                #000000
+        color8                #545454
+        color1                #ff5555
+        color9                #ff5555
+        color2                #55ff55
+        color10               #55ff55
+        color3                #ffff55
+        color11               #ffff55
+        color4                #5555ff
+        color12               #5555ff
+        color5                #ff55ff
+        color13               #ff55ff
+        color6                #55ffff
+        color14               #55ffff
+        color7                #bbbbbb
+        color15               #ffffff
+        selection_foreground #000000
+      '';
   };
 
   # Extra configuration files for kitty
