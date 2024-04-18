@@ -101,11 +101,6 @@
         "HYPRCURSOR_THEME,rose-pine-hyprcursor"
       ];
 
-      monitor = [
-        "DP-2,2560x1440,0x0,1"
-        ",preferred,auto,1"
-      ];
-
       input = {
         kb_layout = "us";
         kb_variant = "dvorak";
