@@ -2,11 +2,13 @@
   upkgs,
   nixpkgs,
   stablepkgs,
+  home-manager,
   ...
 }: let
   base = "/etc/nixpkgs/channels";
   nixpkgsPath = "${base}/nixpkgs";
   stablepkgsPath = "${base}/nixpkgs-23.11";
+  homeManagerPath = "${base}/home-manager";
 in {
   imports = [
     ./hardware-configuration.nix
@@ -20,6 +22,7 @@ in {
     nixPath = [
       "nixpkgs=${nixpkgsPath}"
       "stablepkgs=${stablepkgsPath}"
+      "home-manager=${homeManagerPath}"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
 
@@ -233,6 +236,7 @@ in {
   systemd.tmpfiles.rules = [
     "L+ ${nixpkgsPath} - - - - ${nixpkgs}"
     "L+ ${stablepkgsPath} - - - - ${stablepkgs}"
+    "L+ ${homeManagerPath} - - - - ${home-manager}"
   ];
 
   # Enable sound.
