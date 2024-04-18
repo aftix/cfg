@@ -72,6 +72,7 @@
       firefox = import ./home/aftix/firefox.nix;
       myopts = import ./home/aftix/myoptions.nix;
       mylib = import ./home/aftix/mylib.nix;
+      documentation = import ./home/aftix/documentation.nix;
     };
   };
 }
