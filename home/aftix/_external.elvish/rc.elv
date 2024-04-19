@@ -392,5 +392,12 @@ fn fzfdh {|@query|
   }
 }
 
+set edit:before-readline = [
+  {
+    edit:history:fast-forward
+  }
+  $@edit:before-readline
+]
+
 eval (starship init elvish)
 iterm2:init
