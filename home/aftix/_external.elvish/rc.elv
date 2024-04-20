@@ -6,12 +6,12 @@ use os
 # PATH
 fn add_to_path {
   |@my_paths|  
-  each {
+  set paths = [(each {
     |my_path|
     if (not (has-value [(each {|p| ==s $my_path $p} $paths)] 0)) {
-      set paths = [$my_path $@paths]
+      put $my_path
     }
-  } $my_paths
+  } $my_paths) $@paths]
 }
 
 var ghcup_path = (path:clean (path:join $E:HOME .ghcup bin))

@@ -1,5 +1,6 @@
 {
   upkgs,
+  nixpkgs,
   config,
   ...
 }: {
@@ -229,24 +230,27 @@
     "waybar/watchfile.sh" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure
+        #! nix-shell -p bash coreutils gnugrep inotify-tools
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
         function active() {
-          "${upkgs.coreutils}/bin/echo" '{"text": "Backing up disk"}'
+          echo '{"text": "Backing up disk"}'
         }
 
         function offline() {
-          "${upkgs.coreutils}/bin/echo" '{}'
+          echo '{}'
         }
 
         function wait() {
-          "${upkgs.inotify-tools}/bin/inotifyway" -m "$1" --include "$2" -e create -e delete 2>/dev/null
+          inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
         }
 
         [ -f /var/run/backupdisk.pid ] && echo
         wait /var/run "backupdisk\\.pid" | while read -r line ; do
-          "${upkgs.gnugrep}/bin/grep" -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
-          "${upkgs.gnugrep}/bin/grep" -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
+          grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
+          grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
         done
       '';
     };
@@ -254,18 +258,19 @@
     "waybar/dunst.sh" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure
+        #! nix-shell -p bash gnugrep dunst
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
-        DUNSTCTL="${upkgs.dunst}/bin/dunstctl" GREP="${upkgs.gnugrep}/bin/grep"
-
-        COUNT="$("$DUNSTCTL" count waiting)"
+        COUNT="$(dunstctl count waiting)"
         ENABLED=""
         DISABLED=""
         if [ "$COUNT" != 0 ]; then
           DISABLED=" $COUNT"
         fi
 
-        if "$DUNSTCTL" is-paused | "$GREP" -q "false" ; then
+        if dunstctl is-paused | "$GREP" -q "false" ; then
           echo '{"class": "", "text": " '"$ENABLED"' "}'
         else
           echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
@@ -276,7 +281,10 @@
     "waybar/nordvpn.sh" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure
+        #! nix-shell -p bash
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
         if [ -d /proc/sys/net/ipv4/conf/nordlynx ]; then
          echo '{"text": " 󰖂  ", "class": ""}'
