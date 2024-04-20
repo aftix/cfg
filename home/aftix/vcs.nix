@@ -47,7 +47,7 @@
         email = "aftix@aftix.xyz";
       };
       ui = {
-        pager = "moar";
+        pager = "moar -quit-if-one-screen";
         diff.tool = ["kitty" "+kitten" "diff" "$left" "$right"];
         diff-editor = ":builtin";
         default-command = "log";
