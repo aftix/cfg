@@ -359,7 +359,6 @@ use completions/molecule
 use completions/crev
 use jump
 use iterm2
-use nix
 
 fn add_bookmark {|@args| jump:add_bookmark $@args }
 fn remove_bookmark {|@args| jump:remove_bookmark $@args }
@@ -394,10 +393,13 @@ fn fzfdh {|@query|
 
 set edit:before-readline = [
   {
-    edit:history:fast-forward
-  }
+    edit:history:fast-forward }
   $@edit:before-readline
 ]
 
 eval (starship init elvish)
 iterm2:init
+
+if (has-external nh) {
+  e:nh completions --shell elvish | eval (slurp)
+}
