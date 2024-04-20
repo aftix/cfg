@@ -31,13 +31,6 @@ in {
       substituters = ["https://hyprland.cachix.org"];
       trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
-
-    gc = {
-      automatic = true;
-      persistent = true;
-      dates = "daily";
-      options = "--delete-older-than 7d";
-    };
   };
 
   # Use the systemd-boot EFI boot loader.
@@ -136,10 +129,20 @@ in {
 
     hyprland.enable = true;
 
+    nh = {
+      enable = true;
+      flake = "/home/aftix/src/cfg";
+      clean = {
+        enable = true;
+        extraArgs = "--keep-since 7d --keep 10";
+      };
+    };
+
     zsh = {
       enable = true;
       interactiveShellInit = builtins.readFile ./_external/.zshrc;
     };
+
     nix-ld = {
       enable = true;
       libraries = [];
