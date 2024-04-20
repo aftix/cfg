@@ -128,6 +128,7 @@
           enabled = true;
           size = 3;
           passes = 1;
+          xray = true;
 
           vibrancy = 0.1696;
         };
