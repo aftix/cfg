@@ -59,7 +59,7 @@
             users.aftix = import ./home/aftix/aftix.nix;
             extraSpecialArgs = {
               home-impermanence = impermanence.nixosModules.home-manager.impermanence;
-              inherit upkgs spkgs;
+              inherit upkgs spkgs nixpkgs stablepkgs;
             };
           };
         }

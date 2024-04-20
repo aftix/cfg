@@ -1,28 +1,31 @@
 {
-  upkgs,
   config,
+  nixpkgs,
   ...
 }: {
   xdg.configFile = {
     "bin/pinentry-custom" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure --keep PINENTRY_USER_DATA
+        #! nix-shell -p bash pinentry-qt
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
         if [ -z "$PINENTRY_USER_DATA" ] ; then
-          exec "${upkgs.pinentry-qt}/bin/pinentry-curses" "$@"
+          exec pinentry-curses "$@"
           exit 0
         fi
 
         case $PINENTRY_USER_DATA in
         qt)
-          exec "${upkgs.pinentry-qt}/bin/pinentry-qt" "$@"
+          exec pinentry-qt "$@"
           ;;
         none)
           exit 1
           ;;
         *)
-          exec "${upkgs.pinentry-qt}/bin/pinentry-curses" "$@"
+          exec pinentry-curses "$@"
         esac
       '';
     };
@@ -30,7 +33,10 @@
     "bin/passmenu" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure
+        #! nix-shell -p bash tofi pass wl-clipboard
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
         shopt -s nullglob globstar
 
@@ -51,9 +57,11 @@
     "bin/screenshot.sh" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure
+        #! nix-shell -p bash tofi grim slurp systemd curl wl-clipboard
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
-        TOFI="${upkgs.tofi}/bin/tofi"
         name="$1" remove="yes"
         if [ "''${name:=default}" = "default" ] ; then
             name="$(mktemp /tmp/shotXXXXXXXXX.png)"
@@ -64,15 +72,15 @@
         fi
         [[ "$name" =~ \.png$ ]] || name="''${name%.*}.png"
 
-        "${upkgs.grim}/bin/grim" -g "$(${upkgs.slurp}/bin/slurp)" "$name"
+        grim -g "$(slurp)" "$name"
 
         if [ "$2" = "copy" ]; then
-          source <("${upkgs.systemd}/bin/systemctl" --user show-environment)
-          url="$("${upkgs.curl}/bin/curl" --upload-file "$name" https://file.aftix.xyz)"
-          "$TOFI" -p "URL: $url"
-          "${upkgs.coreutils}/bin/echo" -n "$url" | "${upkgs.wl-clipboard}/bin/wl-copy"
+          source <(systemctl --user show-environment)
+          url="$(curl --upload-file "$name" https://file.aftix.xyz)"
+          tofi -p "URL: $url"
+          echo -n "$url" | wl-copy
         else
-          "${upkgs.wl-clipboard}/bin/wl-copy" -t image/png < "$name"
+          wl-copy -t image/png < "$name"
         fi
 
         [ "$remove" = yes ] && rm -f "$name"
@@ -82,18 +90,22 @@
     "bin/syncvault" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env NIXPKGS_ALLOW_UNFREE=1 nix-shell
+        #! nix-shell -i bash --pure --keep NIXPKGS_ALLOW_UNFREE --keep VAULT_ADDR --keep VAULT_TOKEN
+        #! nix-shell -p bash gnused gnugrep gnupg vault
+        #! nix-shell -I nixpkgs=${nixpkgs}
+
         shopt -s globstar
         export VAULT_NAMESPACE="admin"
-        SED="${upkgs.gnused}/bin/sed"
+        export GNUPGHOME="${config.home.homeDirectory}/.local/share/gnupg"
 
         cd "${config.home.homeDirectory}/.local/share/password-store" || exit
 
         for line in **/*; do
-          "${upkgs.gnugrep}/bin/grep" -q '\.git' <<< "$line" && continue
-          name="$(echo "$line" | "$SED" 's/\.gpg$//')"
-          data="$(gpg --decrypt "$line" 2>/dev/null | "$SED" 's/^@/\\@/')"
-          "${upkgs.vault}/bin/vault" kv put "secret/password-store/$name" "data=$data"
+          grep -q '\.git' <<< "$line" && continue
+          name="$(echo "$line" | sed 's/\.gpg$//')"
+          data="$(gpg --decrypt "$line" 2>/dev/null | sed 's/^@/\\@/')"
+          vault kv put "secret/password-store/$name" "data=$data"
         done
       '';
     };
