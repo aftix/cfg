@@ -1,7 +1,7 @@
 {
   config,
   upkgs,
-  spkgs,
+  nixpkgs,
   ...
 }: {
   home.packages = with upkgs; [transmission_4];
@@ -49,23 +49,23 @@
     configFile."transmission/event.sh" = {
       executable = true;
       text = ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure --keep TR_TORRENT_ID --keep TR_TORRENT_NAME
+        #! nix-shell -p bash systemd gawk libnotify
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
-        source <("${spkgs.systemd}/bin/systemctl" --user show-environment)
+        source <(systemctl --user show-environment)
         export DBUS_SESSION_BUS_ADDRESS DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
-        TREM="${upkgs.transmission}/bin/transmission-remote"
-        NOTIFY="${upkgs.libnotify}/bin/notify-send"
-
         PERCENTAGE="$( \
-          "$TREM" 127.0.0.1:9091 -t "$TR_TORRENT_ID" -l | \
-          /run/current-system/sw/bin/awk -v ID="$TR_TORRENT_ID" '$1 == ID {print $2}' 2>&1 \
+          transmission-remote 127.0.0.1:9091 -t "$TR_TORRENT_ID" -l | \
+          awk -v ID="$TR_TORRENT_ID" '$1 == ID {print $2}' 2>&1 \
         )"
 
         if [ "$PERCENTAGE" != "100%" ]; then
-          "$NOTIFY" --app-name "Transmission" --urgency normal "Torrent Added" "Torrent for \"$TR_TORRENT_NAME\" added to transmission"
+          notify-send --app-name "Transmission" --urgency normal "Torrent Added" "Torrent for \"$TR_TORRENT_NAME\" added to transmission"
         else
-          "$NOTIFY" --app-name "Transmission" --urgency normal "Torrent Completed" "Torrent for \"$TR_TORRENT_NAME\" completed"
+          notify-send --app-name "Transmission" --urgency normal "Torrent Completed" "Torrent for \"$TR_TORRENT_NAME\" completed"
         fi
       '';
     };

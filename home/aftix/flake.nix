@@ -29,7 +29,7 @@
     };
     spkgs = import stablepkgs {inherit system;};
     extraSpecialArgs = {
-      inherit upkgs spkgs;
+      inherit upkgs spkgs nixpkgs stablepkgs;
       home-impermanence = impermanence.nixosModules.home-manager.impermanence;
     };
   in {

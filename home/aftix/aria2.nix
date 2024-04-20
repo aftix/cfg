@@ -1,6 +1,7 @@
 {
   config,
   upkgs,
+  nixpkgs,
   ...
 }: {
   home.packages = with upkgs; [aria2 python312Packages.aria2p];
@@ -35,16 +36,15 @@
         rpcDir = "${config.home.homeDirectory}/.config/aria2";
         rpcFile = "${rpcDir}/aria2d.env";
       in ''
-        #!${upkgs.bash}/bin/bash
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure
+        #! nix-shell -p bash coreutils findutils aria2
+        #! nix-shell -I nixpkgs=${nixpkgs}
 
-        DD="${upkgs.coreutils}/bin/dd" MKDIR="${upkgs.coreutils}/bin/mkdir" B64="${upkgs.coreutils}/bin/base64"
-        ECHO="${upkgs.coreutils}/bin/echo" TR="${upkgs.coreutils}/bin/tr" ARIA2C="${upkgs.aria2}/bin/aria2c"
-        XARGS="${upkgs.findutils}/bin/xargs"
-
-        "$MKDIR" -p "${rpcDir}"
-        "$DD" if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | "$B64" | "$TR" -d '\n=*' | "$XARGS" printf "ARIA2_RPC_TOKEN=%s" > "${rpcFile}"
+        mkdir -p "${rpcDir}"
+        dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > "${rpcFile}"
         source "${rpcFile}"
-        "$ARIA2C" --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
+        aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
       '';
     };
   };
