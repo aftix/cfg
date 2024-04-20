@@ -3,6 +3,7 @@
   upkgs,
   config,
   lib,
+  nixpkgs,
   ...
 }: let
   share = "${config.home.homeDirectory}/.local/share";
@@ -650,18 +651,22 @@ in {
   xdg.configFile."neomutt/purgecache.sh" = {
     executable = true;
     text = ''
-      #!/usr/bin/env bash
+      #!/usr/bin/env nix-shell
+      #! nix-shell -i bash --pure
+      #! nix-shell -p bash coreutils findutils
+      #! nix-shell -I nixpkgs=${nixpkgs}
+
       CACHE_LIMIT=512000 #KiB
 
       cd "$1" 2>/dev/null
       [ $? -ne 0 ] && exit
 
-      [ $(/run/current-system/sw/bin/du -s . | /run/current-system/sw/bin/cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
+      [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
       while IFS= read -r i; do
-        /run/current-system/sw/bin/rm "$i"
-        [ $(/run/current-system/sw/bin/du -s . | /run/current-system/sw/bin/cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
+        rm "$i"
+        [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
       done <<EOF
-      $(/run/current-system/sw/bin/find . -type f -exec ls -rt1 {} +)
+      $(find . -type f -exec ls -rt1 {} +)
       EOF
     '';
   };
