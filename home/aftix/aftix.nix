@@ -189,7 +189,10 @@ in {
         Install.WantedBy = ["default.target"];
       };
       keyrefresh = {
-        Unit.Description = "Refresh gpg keys";
+        Unit = {
+          Description = "Refresh gpg keys";
+          Requires = ["network.target"];
+        };
         Service = {
           Type = "oneshot";
           Environment = ''GNUPGHOME="${config.programs.gpg.homedir}"'';
@@ -201,8 +204,9 @@ in {
     timers.keyrefresh = {
       Unit.Description = "Refresh gpg keys every 8 hours";
       Timer = {
-        OnStartupSec = "1m";
-        OnUnitActiveSec = "8h";
+        OnCalendar = "daily";
+        Persistent = true;
+        RandomizedDelaySec = 600;
       };
       Install.WantedBy = ["timers.target"];
     };
