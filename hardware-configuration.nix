@@ -56,15 +56,40 @@
     fsType = "vfat";
   };
 
-  fileSystems."/mnt" = {
-    device = "/dev/disk/by-uuid/3ad15b13-2467-4070-80ac-8b5df38cbbc8";
-    fsType = "ext4";
-  };
-
   fileSystems."/home/aftix/.cache" = {
     device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
     fsType = "btrfs";
     options = ["subvol=local/cache"];
+  };
+
+  fileSystems."/home/aftix/media" = {
+    device = "/dev/disk/by-uuid/3a27894c-d7d2-4bfa-a787-1e4e44c143d1";
+    fsType = "btrfs";
+    options = ["subvol=local/media"];
+  };
+
+  fileSystems."/home/aftix/.transmission" = {
+    device = "/dev/disk/by-uuid/3a27894c-d7d2-4bfa-a787-1e4e44c143d1";
+    fsType = "btrfs";
+    options = ["subvol=local/transmission"];
+  };
+
+  fileSystems."/home/aftix/.rustup" = {
+    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+    fsType = "btrfs";
+    options = ["subvol=local/rustup"];
+  };
+
+  fileSystems."/home/aftix/.npm" = {
+    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+    fsType = "btrfs";
+    options = ["subvol=local/npm"];
+  };
+
+  fileSystems."/home/aftix/.local/share/go/pkg/mod/cache" = {
+    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+    fsType = "btrfs";
+    options = ["subvol=local/gocache"];
   };
 
   swapDevices = [

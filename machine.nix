@@ -25,16 +25,6 @@
 
     "/persist".neededForBoot = true;
     "/state".neededForBoot = true;
-
-    # Setup bind mounts to media directories (on hdd)
-    "/home/aftix/media" = {
-      device = "/mnt/home/aftix/media";
-      options = ["bind"];
-    };
-    "/home/aftix/.transmission" = {
-      device = "/mnt/home/aftix/transmission";
-      options = ["bind"];
-    };
   };
 
   # Configure networking
