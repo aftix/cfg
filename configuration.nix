@@ -11,6 +11,7 @@
   homeManagerPath = "${base}/home-manager";
 in {
   imports = [
+    ./backup.nix
     ./hardware-configuration.nix
     ./machine.nix
     ./user.nix
@@ -65,7 +66,7 @@ in {
       # /state is not backup up (btrfs subvolume under local)
       "/state" = {
         hideMounts = true;
-        directories = ["/var/log" "/var/lib/bluetooth" "/var/lib/systemd/coredump"];
+        directories = ["/var/log" "/var/lib/bluetooth" "/var/lib/systemd/coredump" "/root/.config/rclone"];
         files = [
           "/var/lib/cups/printers.conf"
           "/var/lib/cups/subscriptions.conf"
@@ -229,11 +230,22 @@ in {
     };
   };
 
-  systemd.user.services.mpris-proxy = {
-    description = "Mpris proxy";
-    after = ["network.target" "sound.target"];
-    wantedBy = ["default.target"];
-    serviceConfig.ExecStart = "${upkgs.bluez}/bin/mpris-proxy";
+  systemd = {
+    services.chown-config = {
+      description = "set ownership of .config";
+      wantedBy = ["default.target"];
+      serviceConfig = {
+        ExecStart = "${upkgs.coreutils}/bin/chown -R aftix:users /home/aftix/.config /home/aftix/.rustup /home/aftix/.npm /home/aftix/.local/share/go/pkg/mod/cache";
+        Type = "oneshot";
+      };
+    };
+
+    user.services.mpris-proxy = {
+      description = "Mpris proxy";
+      after = ["network.target" "sound.target"];
+      wantedBy = ["default.target"];
+      serviceConfig.ExecStart = "${upkgs.bluez}/bin/mpris-proxy";
+    };
   };
 
   systemd.tmpfiles.rules = [
