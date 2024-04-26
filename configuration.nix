@@ -46,7 +46,7 @@ in {
       };
     };
 
-    kernelPackages = upkgs.linuxPackages_latest;
+    kernelPackages = upkgs.linuxPackages_6_6_hardened;
     kernel.sysctl = {
       # Enable https://en.wikipedia.org/wiki/Magic_SysRq_key
       "kernel.sysrq" = 1;
@@ -246,13 +246,13 @@ in {
       wantedBy = ["default.target"];
       serviceConfig.ExecStart = "${upkgs.bluez}/bin/mpris-proxy";
     };
-  };
 
-  systemd.tmpfiles.rules = [
-    "L+ ${nixpkgsPath} - - - - ${nixpkgs}"
-    "L+ ${stablepkgsPath} - - - - ${stablepkgs}"
-    "L+ ${homeManagerPath} - - - - ${home-manager}"
-  ];
+    tmpfiles.rules = [
+      "L+ ${nixpkgsPath} - - - - ${nixpkgs}"
+      "L+ ${stablepkgsPath} - - - - ${stablepkgs}"
+      "L+ ${homeManagerPath} - - - - ${home-manager}"
+    ];
+  };
 
   # Enable sound.
   security.rtkit.enable = true;
