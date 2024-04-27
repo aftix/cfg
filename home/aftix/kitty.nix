@@ -444,9 +444,9 @@
     };
 
     openUrl = {
-      tag = "kitty_mod + left click";
+      tag = "ctrl + left click";
       content = "Open a URL with the default MIME scheme handler";
-      value = "mouse_map kitty_mod+left release grabbed,ungrabbed mouse_handle_click link";
+      value = "mouse_map ctrl+left release grabbed,ungrabbed mouse_handle_click link";
     };
   };
 
