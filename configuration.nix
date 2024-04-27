@@ -11,6 +11,7 @@
   homeManagerPath = "${base}/home-manager";
 in {
   imports = [
+    ./apparmor.nix
     ./backup.nix
     ./hardware-configuration.nix
     ./machine.nix
@@ -47,12 +48,8 @@ in {
     };
 
     kernelPackages = upkgs.linuxPackages_6_6_hardened;
-    kernel.sysctl = {
-      # Enable https://en.wikipedia.org/wiki/Magic_SysRq_key
-      "kernel.sysrq" = 1;
-      # Allow sandboxing on hardened linux for chromium
-      "kernel.unprivileged_userns_clone" = 1;
-    };
+    # Enable https://en.wikipedia.org/wiki/Magic_SysRq_key
+    kernel.sysctl."kernel.sysrq" = 1;
   };
 
   # Opt-in to state
@@ -254,8 +251,12 @@ in {
     ];
   };
 
-  # Enable sound.
-  security.rtkit.enable = true;
+  security = {
+    # Enable sound.
+    rtkit.enable = true;
+    # Enable user namespace cloning
+    unprivilegedUsernsClone = true;
+  };
 
   fonts.packages = with upkgs; [
     inconsolata
