@@ -76,7 +76,7 @@ in {
         sticky_history = true;
         history_lenght = 20;
         dmenu = "${upkgs.tofi}/bin/tofi -p dunst:";
-        browser = "$/run/current-system/sw/bin/firefox -new-tab";
+        browser = "/run/current-system/sw/bin/firefox -new-tab";
         always_run_script = true;
         title = "Dunst";
         class = "Dunst";
