@@ -72,13 +72,9 @@ in {
     };
 
     systemPackages = with upkgs; [
-      systemd
-      dbus
-
       cachix
       nix-index
 
-      hyprland
       catppuccin-sddm-corners
       kdePackages.kwin
 
@@ -121,7 +117,6 @@ in {
     dev.enable = true;
   };
 
-  # Progras
   programs = {
     fuse.userAllowOther = true;
 

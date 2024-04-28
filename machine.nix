@@ -18,7 +18,7 @@
 
   fileSystems = {
     "/".options = ["noatime" "nodiratime" "discard=async"];
-    "/persist".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
+    "/persist".options = ["noatime" "nodiratime" "discard=async"];
     "/nix".options = ["noatime" "nodiratime" "discard=async"];
     "/home".options = ["noatime" "nodiratime" "discard=async"];
     "/state".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];

@@ -1,7 +1,26 @@
 {upkgs, ...}:
 with upkgs.nur.repos.LuisChDev; {
+  systemd.network = {
+    enable = true;
+
+    networks."10-enp6s0" = {
+      name = "enp6s0";
+      dns = ["1.1.1.1" "1.0.0.1"];
+      networkConfig = {
+        Description = "Wired LAN";
+
+        DHCP = "no";
+        Address = ["192.168.1.179/24"];
+        Gateway = "192.168.1.1";
+
+        MulticastDNS = true;
+        LinkLocalAddressing = "yes";
+      };
+    };
+  };
+
   networking = {
-    nameservers = ["1.1.1.1" "1.0.0.1"];
+    useDHCP = false;
     firewall = {
       enable = true;
       checkReversePath = false;
@@ -9,6 +28,7 @@ with upkgs.nur.repos.LuisChDev; {
       allowedUDPPorts = [1194 22000 21027];
     };
   };
+
   services.resolved = {
     enable = true;
     dnssec = "true";
