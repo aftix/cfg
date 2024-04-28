@@ -1,8 +1,15 @@
 {
+  upkgs,
   config,
   nixpkgs,
   ...
 }: {
+  home.packages = with upkgs; [
+    grim
+    slurp
+    satty
+  ];
+
   xdg.configFile = {
     "bin/pinentry-custom" = {
       executable = true;
@@ -30,6 +37,19 @@
       '';
     };
 
+    "bin/screenshot" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env ${upkgs.bash}/bin/bash
+
+        source <("${upkgs.systemd}/bin/systemctl" --user show-environment)
+
+        "${upkgs.grim}/bin/grim" -g "$("${upkgs.slurp}/bin/slurp" -o -r -c '#ff0000ff')" - | \
+        "${upkgs.satty}/bin/satty" --filename - --fullscreen --output-filename ~/media/screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png \
+        --early-exit --initial-tool crop --copy-command "${upkgs.wl-clipboard}/bin/wl-copy"
+      '';
+    };
+
     "bin/passmenu" = {
       executable = true;
       text = ''
@@ -51,39 +71,6 @@
         [[ -n $password ]] || exit
 
         PINENTRY_USER_DATA=qt pass show -c "$password" 2>&1
-      '';
-    };
-
-    "bin/screenshot.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env nix-shell
-        #! nix-shell -i bash --pure
-        #! nix-shell -p bash tofi grim slurp systemd curl wl-clipboard
-        #! nix-shell -I nixpkgs=${nixpkgs}
-
-        name="$1" remove="yes"
-        if [ "''${name:=default}" = "default" ] ; then
-            name="$(mktemp /tmp/shotXXXXXXXXX.png)"
-            rm -f "$name"
-        elif [ "$name" = "ask" ] ; then
-          name="$(printf "" | "$TOFI" -p "Screenshot name")"
-          remove="no"
-        fi
-        [[ "$name" =~ \.png$ ]] || name="''${name%.*}.png"
-
-        grim -g "$(slurp)" "$name"
-
-        if [ "$2" = "copy" ]; then
-          source <(systemctl --user show-environment)
-          url="$(curl --upload-file "$name" https://file.aftix.xyz)"
-          tofi -p "URL: $url"
-          echo -n "$url" | wl-copy
-        else
-          wl-copy -t image/png < "$name"
-        fi
-
-        [ "$remove" = yes ] && rm -f "$name"
       '';
     };
 

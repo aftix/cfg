@@ -16,8 +16,6 @@
 
       pw-volume
       tofi
-      slurp
-      grim
       libnotify
       wl-clipboard
       xclip
@@ -198,8 +196,7 @@
 
           # Misc keybinds
           "$mainMod, P, exec, $HOME/.config/bin/passmenu"
-          "$mainMod SHIFT, S, exec, $HOME/.config/bin/screenshot.sh"
-          "$mainMod CTRL, S, exec, $HOME/.config/bin/screenshot.sh default copy"
+          "$mainMod, S, exec, $HOME/.config/bin/screenshot"
 
           # Supmap binds
           "$mainMod ALT, T, submap, group"
