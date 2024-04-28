@@ -206,6 +206,13 @@ in {
       alsa.support32Bit = true;
       pulse.enable = true;
     };
+
+    clamav = {
+      scanner.enable = true;
+      updater.enable = true;
+      fangfrisch.enable = true;
+      daemon.enable = true;
+    };
   };
 
   # Enable bluetooth
