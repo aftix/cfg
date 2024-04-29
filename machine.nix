@@ -25,8 +25,7 @@
     "/home/aftix/.cache".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
     "/home/aftix/media".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
     "/home/aftix/.transmission".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
-    "/home/aftix/.rustup".options = ["noatime" "nodiratime" "discard=async"];
-    "/home/aftix/.npm".options = ["noatime" "nodiratime" "discard=async"];
+    "/home/aftix/.local/share/rustup".options = ["noatime" "nodiratime" "discard=async"];
     "/home/aftix/.local/share/go/pkg/mod/cache".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
 
     "/persist".neededForBoot = true;

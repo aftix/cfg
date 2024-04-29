@@ -69,6 +69,10 @@ if (not (has-env XDG_RUNTIME_DIR)) {
   set-env XDG_RUNTIME_DIR (path:join $path:separator run user $E:EUID)
 }
 
+if (not (has-env XDG_STATE_HOME)) {
+  set-env XDG_STATE_HOME (path:join $E:HOME .local state)
+}
+
 if (has-external "/Applications/Firefox.app/Contents/MacOS/firefox") {
   set-env BROWSER "/Applications/Firefox.app/Contents/MacOS/firefox"
 } else {
@@ -80,6 +84,9 @@ set-env LESSHISTFILE "-"
 # Fix bad program default storages
 set-env PASSWORD_STORE_DIR (path:join $E:XDG_DATA_HOME password-store)
 set-env GOPATH (path:join $E:XDG_DATA_HOME go)
+set-env RUSTUP_HOME (path:join $E:XDG_DATA_HOME rustup)
+set-env PYTHONSTARTUP (path:join $E:XDG_CONFIG_HOME python pythonrc)
+set-env HISTFILE (path:join $E:XDG_STATE_HOME bash history)
 set-env CARGO_HOME (path:join $E:XDG_DATA_HOME cargo)
 set-env CARGO_INSTALL_ROOT (path:join $E:XDG_DATA_HOME bin)
 set-env ANSIBLE_HOME (path:join $E:XDG_CONFIG_HOME ansible)
@@ -92,7 +99,6 @@ set-env NOTMUCH_CONFIG (path:join $E:XDG_CONFIG_HOME notmuch default config)
 set-env NODE_REPL_HISTORY (path:join $E:XDG_DATA_HOME node_repl_history)
 set-env NPM_CONFIG_USERCONFIG (path:join $E:XDG_CONFIG_HOME npm npmrc)
 set-env NVM_DIR (path:join $E:XDG_DATA_HOME nvm)
-set-env PYTHON_HISTORY (path:join $E:XDG_CACHE_HOME python history)
 set-env PYTHONPYCACHEPREFIX (path:join $E:XDG_CACHE_HOME python)
 set-env PYTHONUSERBASE (path:join $E:XDG_DATA_HOME python)
 set-env ZDOTDIR (path:join $E:XDG_CONFIG_HOME zsh)
@@ -347,6 +353,7 @@ mkdir -p $E:XDG_CONFIG_HOME
 mkdir -p $E:XDG_DATA_HOME
 mkdir -p $E:XDG_CACHE_HOME
 mkdir -p $E:XDG_RUNTIME_DIR
+mkdir -p $E:XDG_STATE_HOME
 mkdir -p $E:PASSWORD_STORE_DIR
 mkdir -p $E:GOPATH
 mkdir -p $E:CARGO_HOME

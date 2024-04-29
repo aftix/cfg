@@ -57,7 +57,12 @@ in {
       allowOther = true;
     };
 
-    sessionVariables.NIXOS_OZONE_WL = "1";
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      HISTFILE = "~/.local/state/bash/history";
+      PYTHONSTARTUP = "~/.config/python/pythonrc";
+      RUSTUP_HOME = "~/.local/share/rustup";
+    };
 
     packages = with upkgs; [
       nil
@@ -297,9 +302,24 @@ in {
     home-manager.enable = true;
   };
 
-  # Setup xdg default programs
   xdg = {
     enable = true;
+
+    # Setup XDG_* variables
+    configHome = "${config.home.homeDirectory}/.config";
+    dataHome = "${config.home.homeDirectory}/.local/share";
+    cacheHome = "${config.home.homeDirectory}/.cache";
+    stateHome = "${config.home.homeDirectory}/.local/state";
+
+    userDirs = {
+      enable = true;
+      desktop = null;
+      documents = "${config.home.homeDirectory}/doc";
+      music = "${config.home.homeDirectory}/media/music";
+      pictures = "${config.home.homeDirectory}/media/img";
+      publicShare = "${config.home.homeDirectory}/media/sync";
+      videos = "${config.home.homeDirectory}/media/video";
+    };
 
     portal = {
       enable = true;
@@ -308,6 +328,7 @@ in {
       config.preferred.default = "xdg-desktop-portal-hyprland";
     };
 
+    # Setup xdg default programs
     mime.enable = true;
     mimeApps = {
       enable = true;
@@ -402,6 +423,32 @@ in {
         init-module = "\${XDG_CONFIG_HOME}/npm/config/npm-init.js";
         logs-dir = "\${XDG_CACHE_HOME}/npm/logs";
       };
+
+      # Python
+      "python/pythonrc".text = ''
+        def is_vanilla() -> bool:
+          import sys
+          return not hasattr(__builtins__, '__IPYTHON__') and 'bpython' not in sys.argv[0]
+
+        def setup_history():
+          import os
+          import atexit
+          import readline
+          from pathlib import Path
+
+          if state_home := os.environ.get('XDG_STATE_HOME'):
+              state_home = Path(state_home)
+          else:
+              state_home = Path.home() / '.local' / 'state'
+
+          history: Path = state_home / 'python_history'
+
+          readline.read_history_file(str(history))
+          atexit.register(readline.write_history_file, str(history))
+
+        if is_vanilla():
+          setup_history()
+      '';
     };
   };
 
