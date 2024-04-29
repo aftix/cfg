@@ -63,7 +63,12 @@ in {
       # /state is not backup up (btrfs subvolume under local)
       "/state" = {
         hideMounts = true;
-        directories = ["/var/log" "/var/lib/bluetooth" "/var/lib/systemd/coredump" "/root/.config/rclone"];
+        directories = [
+          "/var/log"
+          "/var/lib/bluetooth"
+          "/var/lib/systemd/coredump"
+          "/root/.config/rclone"
+        ];
         files = [
           "/var/lib/cups/printers.conf"
           "/var/lib/cups/subscriptions.conf"
@@ -287,6 +292,15 @@ in {
   users = {
     mutableUsers = false;
     users.root.hashedPasswordFile = "/state/passwd.root";
+  };
+
+  virtualisation.docker = {
+    autoPrune.enable = true;
+    storageDriver = "btrfs";
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
