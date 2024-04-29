@@ -11,11 +11,14 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
+    stylix.url = "github:danth/stylix";
+
     aftix.url = "path:./home/aftix";
     aftix.inputs = {
       nixpkgs.follows = "nixpkgs";
       stablepkgs.follows = "stablepkgs";
       nur.follows = "nur";
+      stylix.follows = "stylix";
     };
   };
 
@@ -25,6 +28,7 @@
     nur,
     home-manager,
     impermanence,
+    stylix,
     ...
   }: let
     system = "x86_64-linux";
@@ -55,12 +59,14 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.root = import ./home/root/root.nix;
-            users.aftix = import ./home/aftix/aftix.nix;
             extraSpecialArgs = {
               home-impermanence = impermanence.nixosModules.home-manager.impermanence;
+              stylix = stylix.homeManagerModules.stylix;
               inherit upkgs spkgs nixpkgs stablepkgs;
             };
+
+            users.root = import ./home/root/root.nix;
+            users.aftix = import ./home/aftix/aftix.nix;
           };
         }
       ];
@@ -72,6 +78,7 @@
       firefox = import ./home/aftix/firefox.nix;
       myopts = import ./home/aftix/myoptions.nix;
       mylib = import ./home/aftix/mylib.nix;
+      stylix = import ./home/aftix/stylix.nix;
       documentation = import ./home/aftix/documentation.nix;
     };
   };
