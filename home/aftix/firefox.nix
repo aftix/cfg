@@ -82,7 +82,25 @@
           Wikipedia = {
             urls = [
               {
-                template = "https://en.wikipedia.org/wiki/{searchTerms}";
+                template = "https://en.wikipedia.org/w/index.php";
+                params = [
+                  {
+                    name = "search";
+                    value = "{searchTerms}";
+                  }
+                  {
+                    name = "title";
+                    value = "Special:Search";
+                  }
+                  {
+                    name = "fulltext";
+                    value = "1";
+                  }
+                  {
+                    name = "ns0";
+                    value = "1";
+                  }
+                ];
               }
             ];
             definedAliases = ["wiki" "@wiki" "@wikipedia"];
