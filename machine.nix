@@ -21,7 +21,7 @@
     "/persist".options = ["noatime" "nodiratime" "discard=async"];
     "/nix".options = ["noatime" "nodiratime" "discard=async"];
     "/home".options = ["noatime" "nodiratime" "discard=async"];
-    "/state".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
+    "/state".options = ["noatime" "nodiratime" "discard=async"];
     "/home/aftix/.cache".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
     "/home/aftix/media".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
     "/home/aftix/.transmission".options = ["noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
