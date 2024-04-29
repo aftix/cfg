@@ -87,6 +87,7 @@
 
       env = [
         "XCURSOR_SIZE,32"
+        "QT_QPA_PLATFORM,wayland;xcb"
         "QT_QPA_PLATFORMTHEME,qt5c"
         "HOME,${config.home.homeDirectory}"
         "HYPRCURSOR_THEME,rose-pine-hyprcursor"
@@ -112,8 +113,6 @@
         gaps_in = 5;
         gaps_out = 20;
         border_size = 2;
-        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
 
         layout = "master";
         allow_tearing = false;
@@ -134,7 +133,6 @@
         drop_shadow = true;
         shadow_range = 4;
         shadow_render_power = 3;
-        "col.shadow" = "rgba(1a1a1aee)";
       };
 
       animations = {
@@ -342,6 +340,8 @@
 
     # No home manager options for other tools yet
     configFile = {
+      "hypr/wallpaper.jpg".source = ./wallpaper.jpg;
+
       "hypr/hypridle.conf".text = mylib.toHyprCfg {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
@@ -373,7 +373,6 @@
 
         background = {
           monitor = "";
-          color = "rgba(25, 20, 20, 1.0)";
         };
 
         input-field = {
@@ -384,16 +383,11 @@
           dots_spacing = 0.15; # Scale of dots' absolute size, 0.0 - 1.0
           dots_center = false;
           dots_rounding = -1; # -1 default circle, -2 follow input-field rounding
-          outer_color = "rgb(151515)";
-          inner_color = "rgb(200, 200, 200)";
-          font_color = "rgb(10, 10, 10)";
           fade_on_empty = true;
           fade_timeout = 1000; # Milliseconds before fade_on_empty is triggered.
           placeholder_text = "<i>Input Password...</i>"; # Text rendered in the input box when it's empty.
           hide_input = false;
           rounding = -1; # -1 means complete rounding (circle/oval)
-          check_color = "rgb(204, 136, 34)";
-          fail_color = "rgb(204, 34, 34)"; # if authentication failed, changes outer_color and fail message color";      	fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>; # can be set to empty
           fail_transition = 300; # transition time in ms between normal outer_color and fail_color
           capslock_color = -1;
           numlock_color = -1;
@@ -408,7 +402,6 @@
         label = {
           monitor = "";
           text = "$USER";
-          color = "rgba(200, 200, 200, 1.0)";
           font_size = 25;
           font_family = "Noto Sans";
 
@@ -420,13 +413,11 @@
 
       "hypr/hyprpaper.conf".text = mylib.toHyprCfg {
         preload = [
-          "/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
-          "/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
+          "/home/aftix/.config/hypr/wallpaper.jpg"
         ];
 
         wallpaper = [
-          "DP-2,/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
-          "HDMI-A-1,/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
+          ",/home/aftix/.config/hypr/wallpaper.jpg"
         ];
 
         splash = true;
