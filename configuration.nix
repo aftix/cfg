@@ -213,6 +213,8 @@ in {
       fangfrisch.enable = true;
       daemon.enable = true;
     };
+
+    earlyoom.enable = true;
   };
 
   # Enable bluetooth
