@@ -7,6 +7,7 @@
 
   users.users.aftix = {
     isNormalUser = true;
+    hashedPasswordFile = "/state/passwd.aftix";
     description = "aftix";
     extraGroups = [
       "networkmanager"
@@ -15,9 +16,23 @@
       "lp"
       "dialout"
     ];
+
     shell = upkgs.zsh;
+
     uid = 1000;
-    hashedPasswordFile = "/state/passwd.aftix";
+    subUidRanges = [
+      {
+        count = 65536;
+        startUid = 231072;
+      }
+    ];
+    subGidRanges = [
+      {
+        count = 65536;
+        startGid = 231072;
+      }
+    ];
+
     packages = with upkgs; [
       elvish
       carapace
