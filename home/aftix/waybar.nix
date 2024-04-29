@@ -12,6 +12,58 @@
       enable = true;
       target = "hyprland-session.target";
     };
+
+    style = ''
+      #disk,
+      #temperature,
+      #backlight,
+      #network,
+      #pulseaudio,
+      #wireplumber,
+      #custom-media,
+      #tray,
+      #mode,
+      #idle_inhibitor,
+      #power-profiles-daemon,
+      #mpd {
+        padding: 0 10px;
+      }
+
+      #window,
+      #workspaces {
+        margin: 0 4px;
+      }
+
+      .modules-left > widget:first-child > #workspaces {
+        margin-left: 0;
+      }
+
+      #custom-nordvpn,
+      #custom-dunst {
+        padding: 2px 2px;
+        padding-right: 4px;
+      }
+
+      #custom-nordvpn.disconnected,
+      #network.disconnected,
+      #custom-dunst.disabled,
+      #mpd.disconnected {
+        background-color: #f53c3c;
+      }
+
+      #mpd.stopped {
+        background-color: #90b1b1;
+      }
+
+      #mpd.paused {
+        background-color: #51a37a;
+      }
+
+      #idle_inhibitor.activated {
+        background-color: #ecf0f1;
+        color: #${config.lib.stylix.colors.base05};
+      }
+    '';
   };
 
   xdg.configFile = let
@@ -270,7 +322,7 @@
           DISABLED=" $COUNT"
         fi
 
-        if dunstctl is-paused | "$GREP" -q "false" ; then
+        if dunstctl is-paused | grep -q "false" ; then
           echo '{"class": "", "text": " '"$ENABLED"' "}'
         else
           echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
@@ -293,8 +345,5 @@
         fi
       '';
     };
-
-    # Don't need to put the big CSS file in here
-    "waybar/style.css".source = ./_external/waybar/style.css;
   };
 }

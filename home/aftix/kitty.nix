@@ -514,11 +514,6 @@ in {
   programs.kitty = {
     enable = true;
 
-    font = {
-      name = "Inconsolata";
-      size = 18;
-    };
-
     settings = {
       bold_font = "auto";
       italic_font = "auto";
@@ -557,7 +552,6 @@ in {
       focus_follows_mouse = false;
       enable_audio_bell = false;
 
-      background_opacity = "0.75";
       background_image = "none";
       dynamic_background_opacity = true;
     };
@@ -576,27 +570,6 @@ in {
       + ''
 
         mouse_map kitty_mod+left press grabbed discard_event
-        background            #000000
-        foreground            #ffffff
-        cursor                #bbbbbb
-        selection_background  #b5d5ff
-        color0                #000000
-        color8                #545454
-        color1                #ff5555
-        color9                #ff5555
-        color2                #55ff55
-        color10               #55ff55
-        color3                #ffff55
-        color11               #ffff55
-        color4                #5555ff
-        color12               #5555ff
-        color5                #ff55ff
-        color13               #ff55ff
-        color6                #55ffff
-        color14               #55ffff
-        color7                #bbbbbb
-        color15               #ffffff
-        selection_foreground #000000
       '';
   };
 

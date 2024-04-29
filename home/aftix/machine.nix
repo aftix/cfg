@@ -1,4 +1,4 @@
-{mylib, ...}: {
+_: {
   # Configuration for my specific displays
   wayland.windowManager.hyprland.settings = {
     monitor = [
@@ -13,19 +13,5 @@
       "2, persistent:true, monitor:desc:ViewSonic Corporation VX2703 SERIES T8G132800478, default:true"
       "2, layoutopt:orientation:top"
     ];
-  };
-
-  xdg.configFile."hypr/hyprpaper.conf".text = mylib.toHyprCfg {
-    preload = [
-      "/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
-      "/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
-    ];
-
-    wallpaper = [
-      "desc:ASUSTek COMPUTER INC ASUS VG27W 0x0001995C,/home/aftix/.local/share/wallpaper/X0pSg4c.jpg"
-      "desc:ViewSonic Corporation VX2703 SERIES T8G132800478,/home/aftix/.local/share/wallpaper/dzLwX8H.jpg"
-    ];
-
-    splash = true;
   };
 }

@@ -6,7 +6,7 @@
     defaultEditor = true;
     languages = builtins.fromTOML (builtins.readFile ./_external/helix/languages.toml);
     settings = {
-      theme = "ayu_dark";
+      theme = "stylix";
       editor = {
         line-number = "relative";
         auto-completion = true;

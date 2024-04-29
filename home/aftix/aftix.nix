@@ -24,6 +24,7 @@ in {
     ./machine.nix
     ./mpd.nix
     ./scripts.nix
+    ./stylix.nix
     ./transmission.nix
     ./vcs.nix
     ./waybar.nix
