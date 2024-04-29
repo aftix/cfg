@@ -7,14 +7,14 @@ export LC_ALL="en_US.UTF-8"
 zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
 zstyle ':completion:*' menu select
 autoload -U compinit
-compinit
+compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=3"
 
 # history
-HISTFILE=~/.zhistory
-HISTSIZE=10000
-SAVEHIST=10000
+export HISTFILE="$XDG_STATE_HOME"/zsh/.zhistory
+export HISTSIZE=10000
+export SAVEHIST=10000
 setopt append_history
 setopt extended_history
 setopt hist_expire_dups_first
