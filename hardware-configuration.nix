@@ -74,16 +74,10 @@
     options = ["subvol=local/transmission"];
   };
 
-  fileSystems."/home/aftix/.local/share/rustup" = {
+  fileSystems."/home/aftix/.local/state" = {
     device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
     fsType = "btrfs";
-    options = ["subvol=local/rustup"];
-  };
-
-  fileSystems."/home/aftix/.local/share/go/pkg/mod/cache" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=local/gocache"];
+    options = ["subvol=local/xdgstate"];
   };
 
   swapDevices = [
