@@ -241,7 +241,7 @@ in {
       description = "set ownership of .config";
       wantedBy = ["default.target"];
       serviceConfig = {
-        ExecStart = "${upkgs.coreutils}/bin/chown -R aftix:users /home/aftix/.config /home/aftix/.local/share/rustup /home/aftix/.local/share/go/pkg/mod/cache";
+        ExecStart = "${upkgs.coreutils}/bin/chown -R aftix:users /home/aftix/.config";
         Type = "oneshot";
       };
     };
