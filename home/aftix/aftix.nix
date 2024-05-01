@@ -58,11 +58,16 @@ in {
       allowOther = true;
     };
 
-    sessionVariables = {
+    sessionVariables = let
+      hDir = config.home.homeDirectory;
+    in {
       NIXOS_OZONE_WL = "1";
-      HISTFILE = "~/.local/state/bash/history";
-      PYTHONSTARTUP = "~/.config/python/pythonrc";
-      RUSTUP_HOME = "~/.local/share/rustup";
+      LESSHISTFILE = "-";
+      HISTFILE = "${hDir}/.local/state/bash/history";
+      PYTHONSTARTUP = "${hDir}/.config/python/pythonrc";
+      RUSTUP_HOME = "${hDir}/.local/state/rustup";
+      CARGO_HOME = "${hDir}/.local/state/cargo";
+      CARGO_INSTALL_ROOT = "${hDir}/.local/share/bin";
     };
 
     packages = with upkgs; [
