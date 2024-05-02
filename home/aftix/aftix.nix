@@ -1,6 +1,7 @@
 {
   lib,
   home-impermanence,
+  sops-nix,
   config,
   upkgs,
   ...
@@ -11,6 +12,7 @@ in {
 
   imports = [
     home-impermanence
+    sops-nix
     ./myoptions.nix
 
     ./aria2.nix
@@ -30,6 +32,16 @@ in {
     ./waybar.nix
   ];
 
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+
+    age.keyFile = "${config.home.homeDirectory}/.local/persist/.config/sops/age/keys.txt";
+
+    secrets = {
+      "private_keys/aftix".path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+    };
+  };
+
   home = {
     username = "aftix";
     homeDirectory = "/home/aftix";
@@ -45,6 +57,7 @@ in {
         ".config/BetterDiscord"
         ".config/chromium"
         ".config/Element"
+        ".config/sops"
 
         ".config/transmission/torrents"
         ".config/transmission/blocklists"
@@ -62,6 +75,7 @@ in {
       hDir = config.home.homeDirectory;
     in {
       NIXOS_OZONE_WL = "1";
+
       LESSHISTFILE = "-";
       HISTFILE = "${hDir}/.local/state/bash/history";
       PYTHONSTARTUP = "${hDir}/.config/python/pythonrc";
@@ -76,6 +90,8 @@ in {
       alejandra
       nix-doc
       manix
+      sops
+      age
 
       markdown-oxide
 

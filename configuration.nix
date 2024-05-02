@@ -1,4 +1,5 @@
 {
+  config,
   upkgs,
   nixpkgs,
   stablepkgs,
@@ -14,11 +15,15 @@ in {
     ./apparmor.nix
     ./backup.nix
     ./hardware-configuration.nix
-    ./machine.nix
     ./user.nix
     ./network.nix
     ./sync.nix
   ];
+
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age.keyFile = "/home/aftix/.local/persist/.config/sops/age/keys.txt";
+  };
 
   nix = {
     nixPath = [
