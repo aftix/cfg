@@ -54,6 +54,7 @@
     opacity.terminal = 0.5;
 
     targets = {
+      tofi.enable = true;
       helix.enable = false;
       kde.enable = upkgs.system == "x86_64-linux";
       gnome.enable = upkgs.system == "x86_64-linux";
