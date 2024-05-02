@@ -15,7 +15,6 @@
       hyprland-protocols
 
       pw-volume
-      tofi
       libnotify
       wl-clipboard
       xclip
@@ -24,6 +23,18 @@
       pwvucontrol
     ];
     sessionVariables.XDG_CURRENT_DESKTOP = "Hyprland";
+  };
+
+  programs.tofi = {
+    enable = true;
+    settings = {
+      width = 900;
+      height = 300;
+      border-width = 6;
+      corner-radius = 10;
+      require-match = false;
+      auto-accept-single = true;
+    };
   };
 
   services = {
