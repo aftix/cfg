@@ -10,6 +10,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:danth/stylix";
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs = {
@@ -19,6 +20,7 @@
     home-manager,
     impermanence,
     stylix,
+    sops-nix,
     ...
   }: let
     system = "x86_64-linux";
@@ -32,8 +34,9 @@
     spkgs = import stablepkgs {inherit system;};
     extraSpecialArgs = {
       inherit upkgs spkgs nixpkgs stablepkgs;
+      inherit (stylix.homeManagerModules) stylix;
       home-impermanence = impermanence.nixosModules.home-manager.impermanence;
-      stylix = stylix.homeManagerModules.stylix;
+      sops-nix = sops-nix.homeManagerModules.sops;
     };
   in {
     formatter.${system} = upkgs.alejandra;
