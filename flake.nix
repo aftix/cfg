@@ -10,19 +10,8 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     impermanence.url = "github:nix-community/impermanence";
-
     stylix.url = "github:aftix/stylix";
-
     sops-nix.url = "github:Mic92/sops-nix";
-
-    aftix.url = "path:./home/aftix";
-    aftix.inputs = {
-      nixpkgs.follows = "nixpkgs";
-      stablepkgs.follows = "stablepkgs";
-      nur.follows = "nur";
-      stylix.follows = "stylix";
-      sops-nix.follows = "sops-nix";
-    };
   };
 
   outputs = {
@@ -30,12 +19,10 @@
     stablepkgs,
     nur,
     home-manager,
-    impermanence,
-    stylix,
-    sops-nix,
     ...
-  }: let
+  } @ inputs: let
     system = "x86_64-linux";
+
     upkgs = import nixpkgs {
       inherit system;
       overlays = [nur.overlay];
@@ -48,44 +35,74 @@
         ];
     };
     spkgs = import stablepkgs {inherit system;};
+    lib = nixpkgs.lib // home-manager.lib;
+
+    specialArgs = {inherit upkgs spkgs nixpkgs stablepkgs home-manager;};
+    extraSpecialArgs =
+      specialArgs
+      // {
+        home-impermanence = inputs.impermanence.nixosModules.home-manager.impermanence;
+        inherit (inputs.stylix.homeManagerModules) stylix;
+        sops-nix = inputs.sops-nix.homeManagerModules.sops;
+        mylib-builder = import ./home/mylib lib;
+      };
+
+    hostCfgs = {
+      hamilton = ./host/hamilton.nix;
+    };
+    homeCfgs = {
+      aftix = ./home/aftix.nix;
+      root = ./home/root.nix;
+    };
   in {
     formatter.${system} = upkgs.alejandra;
-    nixosConfigurations.hamilton = nixpkgs.lib.nixosSystem {
-      inherit system;
-      specialArgs = {
-        inherit upkgs spkgs nixpkgs stablepkgs home-manager;
-      };
-      modules = [
-        impermanence.nixosModules.impermanence
-        sops-nix.nixosModules.sops
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = {
-              home-impermanence = impermanence.nixosModules.home-manager.impermanence;
-              inherit (stylix.homeManagerModules) stylix;
-              inherit upkgs spkgs nixpkgs stablepkgs;
-              sops-nix = sops-nix.homeManagerModules.sops;
-            };
 
-            users.root = import ./home/root/root.nix;
-            users.aftix = import ./home/aftix/aftix.nix;
-          };
-        }
-      ];
-    };
+    nixosConfigurations =
+      builtins.mapAttrs (
+        host: path:
+          nixpkgs.lib.nixosSystem {
+            inherit system specialArgs;
+
+            modules = [
+              inputs.impermanence.nixosModules.impermanence
+              inputs.sops-nix.nixosModules.sops
+              path
+
+              home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  inherit extraSpecialArgs;
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+
+                  users = builtins.mapAttrs (_: import) homeCfgs;
+                };
+              }
+            ];
+          }
+      )
+      hostCfgs;
+
+    homeConfigurations = builtins.mapAttrs (user: path:
+      lib.homeManagerConfiguration {
+        pkgs = upkgs;
+        inherit extraSpecialArgs;
+
+        modules = [path];
+      })
+    homeCfgs;
+
     nixosModules = {
-      kitty = import ./home/aftix/kitty.nix;
-      vcs = import ./home/aftix/vcs.nix;
-      helix = import ./home/aftix/helix.nix;
-      firefox = import ./home/aftix/firefox.nix;
-      myopts = import ./home/aftix/myoptions.nix;
-      mylib = import ./home/aftix/mylib.nix;
-      stylix = import ./home/aftix/stylix.nix;
-      documentation = import ./home/aftix/documentation.nix;
+      homeCommon = import ./home/common;
+      impermanence = ./home/opt/impermanence.nix;
+      mylib = import ./home/mylib;
+
+      development = import ./home/opt/development.nix;
+      firefox = import ./home/opt/firefox.nix;
+      helix = import ./home/opt/helix.nix;
+      kitty = import ./home/opt/kitty.nix;
+      neoutils = import ./home/opt/neoutils.nix;
+      stylix = import ./home/opt/stylix.nix;
     };
   };
 }
