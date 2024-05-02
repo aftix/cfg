@@ -55,45 +55,39 @@
       text = ''
         #!/usr/bin/env nix-shell
         #! nix-shell -i bash --pure
-        #! nix-shell -p bash tofi pass wl-clipboard
-        #! nix-shell -I nixpkgs=${nixpkgs}
+        #! nix-shell -p bash tofi sops wl-clipboard systemd jq gnused
 
-        shopt -s nullglob globstar
+        shopt -s globstar nullglob
+        source <(systemctl --user show-environment)
 
-        export GNUPGHOME="${config.home.homeDirectory}/.local/share/gnupg" PASSWORD_STORE_DIR="${config.home.homeDirectory}/.local/share/password-store"
-        prefix="${config.home.homeDirectory}/.local/share/password-store"
-        password_files=( "$prefix"/**/*.gpg )
-        password_files=( "''${password_files[@]#"$prefix"/}" )
-        password_files=( "''${password_files[@]%.gpg}" )
+        cd "$HOME/src/cfg" || exit
 
-        password=$(printf '%s\n' "''${password_files[@]}" | tofi --prompt-text "Password" "$@")
+        password="$(sops exec-file --output-type json ./home/aftix/secrets.yaml \
+          "cat '{}' | jq -r 'to_entries[] | select(.key != \"private_keys\") | .key'" |\
+          tofi --prompt-text "Password")"
+        [[ -n "$password" ]] || exit
 
-        [[ -n $password ]] || exit
-
-        PINENTRY_USER_DATA=qt pass show -c "$password" 2>&1
+        sops exec-file --output-type json ./home/aftix/secrets.yaml \
+          "cat '{}' | jq -r '.\"$password\".password? // .\"$password\"'" |\
+          tr -d '\n' | wl-copy --paste-once
       '';
     };
 
     "bin/syncvault" = {
       executable = true;
       text = ''
-        #!/usr/bin/env NIXPKGS_ALLOW_UNFREE=1 nix-shell
-        #! nix-shell -i bash --pure --keep NIXPKGS_ALLOW_UNFREE --keep VAULT_ADDR --keep VAULT_TOKEN
-        #! nix-shell -p bash gnused gnugrep gnupg vault
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i bash --pure --keep VAULT_ADDR --keep VAULT_TOKEN
+        #! nix-shell -p bash gnused gnugrep sops
         #! nix-shell -I nixpkgs=${nixpkgs}
 
         shopt -s globstar
         export VAULT_NAMESPACE="admin"
-        export GNUPGHOME="${config.home.homeDirectory}/.local/share/gnupg"
+        VAULT="${upkgs.vault}/bin/vault"
 
-        cd "${config.home.homeDirectory}/.local/share/password-store" || exit
-
-        for line in **/*; do
-          grep -q '\.git' <<< "$line" && continue
-          name="$(echo "$line" | sed 's/\.gpg$//')"
-          data="$(gpg --decrypt "$line" 2>/dev/null | sed 's/^@/\\@/')"
-          vault kv put "secret/password-store/$name" "data=$data"
-        done
+        cd "${config.home.homeDirectory}/src/cfg" || exit
+        sops exec-file --output-type json secrets.yaml "\"$VAULT\" kv put -mount=secret secrets @{}"
+        sops exec-file --output-type json ./home/aftix/secrets.yaml "\"$VAULT\" kv put -mount=secret user-secrets @{}"
       '';
     };
   };

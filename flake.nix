@@ -13,12 +13,15 @@
 
     stylix.url = "github:danth/stylix";
 
+    sops-nix.url = "github:Mic92/sops-nix";
+
     aftix.url = "path:./home/aftix";
     aftix.inputs = {
       nixpkgs.follows = "nixpkgs";
       stablepkgs.follows = "stablepkgs";
       nur.follows = "nur";
       stylix.follows = "stylix";
+      sops-nix.follows = "sops-nix";
     };
   };
 
@@ -29,6 +32,7 @@
     home-manager,
     impermanence,
     stylix,
+    sops-nix,
     ...
   }: let
     system = "x86_64-linux";
@@ -53,6 +57,7 @@
       };
       modules = [
         impermanence.nixosModules.impermanence
+        sops-nix.nixosModules.sops
         ./configuration.nix
         home-manager.nixosModules.home-manager
         {
@@ -61,8 +66,9 @@
             useUserPackages = true;
             extraSpecialArgs = {
               home-impermanence = impermanence.nixosModules.home-manager.impermanence;
-              stylix = stylix.homeManagerModules.stylix;
+              inherit (stylix.homeManagerModules) stylix;
               inherit upkgs spkgs nixpkgs stablepkgs;
+              sops-nix = sops-nix.homeManagerModules.sops;
             };
 
             users.root = import ./home/root/root.nix;

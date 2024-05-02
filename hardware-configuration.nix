@@ -11,86 +11,119 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = ["kvm-amd"];
-  boot.extraModulePackages = [];
-
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=local/root"];
+  # Configure networking
+  networking = {
+    hostName = "hamilton";
+    networkmanager.enable = true;
+    interfaces = {
+      enp6s0.ipv4.addresses = [
+        {
+          address = "192.168.1.179";
+          prefixLength = 24;
+        }
+      ];
+    };
+    defaultGateway = {
+      address = "192.168.1.1";
+      interface = "enp6s0";
+    };
   };
 
-  fileSystems."/persist" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=safe/persist"];
+  # Misc
+  hardware.opengl.enable = true;
+
+  boot = {
+    initrd = {
+      availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"];
+      kernelModules = ["amdgpu"];
+
+      # By default don't store state
+      postDeviceCommands = lib.mkAfter ''
+        mkdir /mnt
+        mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
+        [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
+        rm -rf /mnt/local/root
+        btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
+        umount /mnt
+        rmdir /mnt
+      '';
+    };
+
+    kernelModules = ["kvm-amd"];
+    extraModulePackages = [];
   };
 
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=local/nix"];
-  };
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+      fsType = "btrfs";
+      options = ["subvol=local/root" "noatime" "nodiratime" "discard=async"];
+    };
 
-  fileSystems."/state" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=local/state"];
-  };
+    "/persist" = {
+      device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+      fsType = "btrfs";
+      neededForBoot = true;
+      options = ["subvol=safe/persist" "noatime" "nodiratime" "discard=async"];
+    };
 
-  fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=safe/home"];
-  };
+    "/nix" = {
+      device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+      fsType = "btrfs";
+      options = ["subvol=local/nix" "noatime" "nodiratime" "discard=async"];
+    };
 
-  fileSystems."/home/aftix/.config" = {
-    device = "config";
-    fsType = "tmpfs";
-  };
+    "/state" = {
+      device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+      fsType = "btrfs";
+      neededForBoot = true;
+      options = ["subvol=local/state" "noatime" "nodiratime" "discard=async"];
+    };
 
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/6196-424C";
-    fsType = "vfat";
-  };
+    "/home" = {
+      device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+      fsType = "btrfs";
+      options = ["subvol=safe/home" "noatime" "nodiratime" "discard=async"];
+    };
 
-  fileSystems."/home/aftix/.cache" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=local/cache"];
-  };
+    "/home/aftix/.config" = {
+      device = "config";
+      fsType = "tmpfs";
+    };
 
-  fileSystems."/home/aftix/media" = {
-    device = "/dev/disk/by-uuid/3a27894c-d7d2-4bfa-a787-1e4e44c143d1";
-    fsType = "btrfs";
-    options = ["subvol=local/media"];
-  };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/6196-424C";
+      fsType = "vfat";
+    };
 
-  fileSystems."/home/aftix/.transmission" = {
-    device = "/dev/disk/by-uuid/3a27894c-d7d2-4bfa-a787-1e4e44c143d1";
-    fsType = "btrfs";
-    options = ["subvol=local/transmission"];
-  };
+    "/home/aftix/.cache" = {
+      device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+      fsType = "btrfs";
+      options = ["subvol=local/cache" "noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
+    };
 
-  fileSystems."/home/aftix/.local/state" = {
-    device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
-    fsType = "btrfs";
-    options = ["subvol=local/xdgstate"];
+    "/home/aftix/media" = {
+      device = "/dev/disk/by-uuid/3a27894c-d7d2-4bfa-a787-1e4e44c143d1";
+      fsType = "btrfs";
+      options = ["subvol=local/media" "noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
+    };
+
+    "/home/aftix/.transmission" = {
+      device = "/dev/disk/by-uuid/3a27894c-d7d2-4bfa-a787-1e4e44c143d1";
+      fsType = "btrfs";
+      options = ["subvol=local/transmission" "noatime" "nodiratime" "nodev" "noexec" "nosuid" "discard=async"];
+    };
+
+    "/home/aftix/.local/state" = {
+      device = "/dev/disk/by-uuid/6ba2e359-fab7-4fc2-b495-ff8a32fca218";
+      fsType = "btrfs";
+      options = ["subvol=local/xdgstate" "noatime" "nodiratime" "discard=async"];
+    };
   };
 
   swapDevices = [
     {device = "/dev/disk/by-uuid/2c0befe8-a1c3-40f8-80d7-730fa9fb311c";}
   ];
-
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp6s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.nordlynx.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
