@@ -61,7 +61,7 @@
 
       #idle_inhibitor.activated {
         background-color: #ecf0f1;
-        color: #${config.lib.stylix.colors.base05};
+        color: black;
       }
     '';
   };

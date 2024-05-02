@@ -430,14 +430,6 @@ in {
         };
       };
 
-      # tofi macchiato
-      "tofi/config".source = (upkgs.formats.keyValue {}).generate "tofi" {
-        text-color = "#cad3f5";
-        prompt-color = "#ed8796";
-        selection-color = "#eed49f";
-        background-color = "#24273a";
-      };
-
       # npm
       "npm/npmrc".source = (upkgs.formats.keyValue {}).generate "npm" {
         prefix = "\${XDG_DATA_HOME}/npm";
