@@ -85,11 +85,10 @@
       '';
   in
     patchTheme {
-      theme = (
+      theme =
         if config.stylix.opacity.terminal == 1.0
         then theme
-        else transparentTheme
-      );
+        else transparentTheme;
       key = "ui.text.focus";
       value = "\"base0E\"";
     };

@@ -1,8 +1,6 @@
 {upkgs, ...}: {
-  environment.systemPackages = with upkgs; [
-    elvish
-    carapace
-    home-manager
+  environment.systemPackages = [
+    upkgs.home-manager
   ];
 
   users.users.aftix = {
@@ -31,12 +29,6 @@
         count = 65536;
         startGid = 231072;
       }
-    ];
-
-    packages = with upkgs; [
-      elvish
-      carapace
-      home-manager
     ];
   };
 }

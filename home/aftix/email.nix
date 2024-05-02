@@ -12,6 +12,12 @@
   gpgSigningKey = "53D588312F7FCBE9A76579164C05A0B49FD681B9";
   gpgEncryptionKey = "3D98EDD231B4337B221C92E697C4A20471616623";
 in {
+  sops.secrets = {
+    "mailbox" = {};
+    "gmailtoken" = {};
+    "utmailtoken" = {};
+  };
+
   accounts.email = {
     maildirBasePath = "${share}/mail";
     accounts = {
@@ -20,7 +26,7 @@ in {
         userName = "aftix@aftix.xyz";
         realName = "aftix";
         aliases = ["webmaster@aftix.xyz" "admin@aftix.xyz"];
-        passwordCommand = "\"${upkgs.pass}/bin/pass\" mailbox";
+        passwordCommand = "'${upkgs.coreutils}/bin/cat' '${config.sops.secrets."mailbox".path}'";
         maildir.path = "personal";
         primary = true;
         imap = {
@@ -108,7 +114,7 @@ in {
         address = "gameraftexploision@gmail.com";
         userName = "gameraftexploision@gmail.com";
         realName = "aftix";
-        passwordCommand = "\"${upkgs.pass}/bin/pass\" mail/gmail";
+        passwordCommand = "'${upkgs.coreutils}/bin/cat' '${config.sops.secrets."gmailtoken".path}'";
         folders.sent = "Sent Mail";
         flavor = "gmail.com";
         maildir.path = "gmail";
@@ -253,7 +259,7 @@ in {
         address = "wyatt.campbell@utexas.edu";
         userName = "wyatt.campbell@utexas.edu";
         realName = "Wyatt Campbell";
-        passwordCommand = "\"${upkgs.pass}/bin/pass\" mail/utmail";
+        passwordCommand = "'${upkgs.coreutils}/bin/cat' '${config.sops.secrets."utmailtoken".path}'";
         folders.sent = "Sent Mail";
         flavor = "gmail.com";
         maildir.path = "utmail";
