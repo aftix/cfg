@@ -1,9 +1,16 @@
 {
   mylib,
+  lib,
+  config,
   upkgs,
   ...
-}: {
-  home.sessionVariables.MOZ_USE_XINPUT2 = "1";
+}: let
+  inherit (lib) mkDefault mkIf;
+in {
+  home.sessionVariables = {
+    MOZ_USE_XINPUT2 = mkIf (upkgs.system == "x86_64-linux") "1";
+    BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/firefox";
+  };
 
   programs.firefox = {
     enable = true;

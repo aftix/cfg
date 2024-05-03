@@ -2,9 +2,18 @@
   upkgs,
   config,
   nixpkgs,
+  lib,
   ...
-}: {
-  home.packages = [upkgs.vault];
+}: let
+  inherit (lib) mkDefault;
+in {
+  home = {
+    packages = [upkgs.vault];
+    sessionVariables = {
+      VAULT_ADDR = mkDefault "https://vault.aftix.com";
+      VAULT_NAMESPACE = mkDefault "admin";
+    };
+  };
 
   xdg.configFile = {
     "bin/syncvault" = {

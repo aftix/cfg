@@ -17,7 +17,6 @@ in {
 
     ./opt/aria2.nix
     ./opt/development.nix
-    ./opt/elvish.nix
     ./opt/helix.nix
     ./opt/neoutils.nix
     ./opt/vault.nix
@@ -49,10 +48,17 @@ in {
       weechat-unwrapped
       weechatScripts.weechat-notify-send
     ];
+
+    sessionVariables = {
+      WEECHAT_HOME = "${config.xdg.dataHome}/weechat";
+    };
   };
 
-  my.docs = {
-    enable = true;
-    prefix = "hamilton";
+  my = {
+    shell.elvish.enable = true;
+    docs = {
+      enable = true;
+      prefix = "hamilton";
+    };
   };
 }

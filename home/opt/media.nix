@@ -51,6 +51,46 @@
     ];
   };
 
+  my.shell = {
+    aliases = [
+      {
+        name = "mpvf";
+        command = "mpv --fs";
+        external = true;
+        completer = "mpv";
+      }
+      {
+        name = "anipv";
+        command = "mpv --slang=en,eng --fs --alang=jpn,jp";
+        external = true;
+        completer = "mpv";
+      }
+      {
+        name = "termpv";
+        command = "mpv --vo=kitty --vo-kitty-use-shm=yes";
+        external = true;
+        completer = "mpv";
+      }
+
+      {
+        name = "ydl";
+        command = "yt-dlp -ic -o '%(title)s.%(ext)s' --add-metadata --user-agent 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html/)'";
+        completer = "yt-dlp";
+      }
+    ];
+
+    elvish.extraFunctions = [
+      {
+        name = "vdesc";
+        arguments = "file";
+        body = ''
+          ffprobe -v quiet -print_format json -show_format $file |\
+          jq ".format.tags.DESCRIPTION" | sed 's/\\n/\n/g'
+        '';
+      }
+    ];
+  };
+
   programs = {
     yt-dlp.enable = true;
 

@@ -13,7 +13,6 @@ in {
     ./opt/impermanence.nix
     ./opt/sops.nix
 
-    ./opt/elvish.nix
     ./opt/helix.nix
     ./opt/neoutils.nix
   ];
@@ -23,4 +22,6 @@ in {
     homeDirectory = "/root";
     stateVersion = "23.11"; # DO NOT CHANGE
   };
+
+  my.shell.elvish.enable = true;
 }
