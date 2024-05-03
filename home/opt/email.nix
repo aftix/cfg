@@ -654,6 +654,19 @@ in {
     abook.enable = true;
   };
 
+  my.shell.aliases = [
+    {
+      name = "abook";
+      command = with config.xdg; "abook -C \"${configHome}/abook/abookrc\" --datafile \"${dataHome}/abook/adressbook\"";
+      external = true;
+    }
+    {
+      name = "mbsync";
+      command = "mbsync -c \"${config.home.homeDirectory}/.mbsyncrc\"";
+      external = true;
+    }
+  ];
+
   xdg.configFile."neomutt/purgecache.sh" = {
     executable = true;
     text = ''

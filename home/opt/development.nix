@@ -4,8 +4,10 @@
   config,
   ...
 }: let
-  cfg = config.my.development;
+  inherit (lib) mkIf mkDefault;
   inherit (lib.options) mkOption;
+  inherit (config.xdg) dataHome cacheHome stateHome;
+  cfg = config.my.development;
 in {
   imports = [./vcs.nix];
 
@@ -84,13 +86,51 @@ in {
         )
       );
 
-      sessionVariables = let
-        hDir = config.home.homeDirectory;
-      in {
-        RUSTUP_HOME = lib.mkIf cfg.rust "${hDir}/.local/state/rustup";
-        CARGO_HOME = lib.mkIf cfg.rust "${hDir}/.local/state/rustup";
-        CARGO_INSTALL_ROOT = lib.mkIf cfg.rust "${hDir}/.local/state/rustup";
+      sessionVariables = {
+        RUSTC_WRAPPER = mkIf cfg.rust (mkDefault "${upkgs.sccache}/bin/sccache");
+        RUSTUP_HOME = mkIf cfg.rust (mkDefault "${stateHome}/rustup");
+        CARGO_HOME = mkIf cfg.rust (mkDefault "${stateHome}/cargo");
+        CARGO_INSTALL_ROOT = mkIf cfg.rust (mkDefault "${dataHome}/bin");
+        GOPATH = mkIf cfg.go (mkDefault "${dataHome}/go");
+        GOCACHE = mkIf cfg.go (mkDefault "${cacheHome}/go/build");
+        GOMODCACHE = mkIf cfg.go (mkDefault "${cacheHome}/go/mod");
       };
+
+      sessionPath =
+        ["${dataHome}/bin"]
+        ++ (
+          if cfg.go
+          then [
+            "${config.home.sessionVariables.GOPATH}/bin"
+          ]
+          else []
+        );
+    };
+
+    my.shell = {
+      elvish.development = true;
+
+      upgradeCommands =
+        if cfg.rust
+        then [
+          "rustup update"
+          "cargo install-update --all"
+        ]
+        else [];
+
+      neededDirs = with config.home.sessionVariables; (
+        ["${dataHome}/bin"]
+        ++ (
+          if cfg.go
+          then [GOPATH GOCACHE GOMODCACHE]
+          else []
+        )
+        ++ (
+          if cfg.rust
+          then [CARGO_HOME]
+          else []
+        )
+      );
     };
 
     programs.gh = {
@@ -107,7 +147,7 @@ in {
       cDir = "${config.home.homeDirectory}/.config";
       share = "${config.home.homeDirectory}/.local/share";
     in
-      lib.mkIf cfg.gh {
+      mkIf cfg.gh {
         Unit.Description = "Link gh hosts file";
         Service = {
           Type = "oneshot";
@@ -119,7 +159,7 @@ in {
         Install.WantedBy = ["default.target"];
       };
 
-    xdg.configFile."npm/npmrc".source = lib.mkIf cfg.typescript ((upkgs.formats.keyValue {}).generate "npm" {
+    xdg.configFile."npm/npmrc".source = mkIf cfg.typescript ((upkgs.formats.keyValue {}).generate "npm" {
       prefix = "\${XDG_DATA_HOME}/npm";
       cache = "\${XDG_CACHE_HOME}/npm";
       init-module = "\${XDG_CONFIG_HOME}/npm/config/npm-init.js";

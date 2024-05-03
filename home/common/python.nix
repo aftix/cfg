@@ -3,7 +3,10 @@
   lib,
   config,
   ...
-}: {
+}: let
+  inherit (lib) mkDefault;
+  inherit (config.xdg) configHome cacheHome dataHome;
+in {
   home = {
     packages = with upkgs; [
       python3
@@ -16,7 +19,19 @@
       micromamba
     ];
 
-    sessionVariables.PYTHONSTARTUP = lib.mkDefault "${config.home.homeDirectory}/.config/python/pythonrc";
+    sessionVariables = {
+      PYTHONSTARTUP = mkDefault "${configHome}/python/pythonrc";
+      PYTHONPYCACHEPREFIX = mkDefault "${cacheHome}/python";
+      PYTHONUSERBASE = mkDefault "${dataHome}/python";
+    };
+  };
+
+  my.shell = {
+    upgradeCommands = ["pipx upgrade-all"];
+    neededDirs = with config.home.sessionVariables; [
+      PYTHONPYCACHEPREFIX
+      PYTHONUSERBASE
+    ];
   };
 
   xdg.configFile."python/pythonrc".text = ''
