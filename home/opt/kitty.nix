@@ -573,6 +573,21 @@ in {
       '';
   };
 
+  my.shell.aliases = [
+    {
+      name = "icat";
+      command = "kitty +kitten icat";
+    }
+    {
+      name = "kdiff";
+      command = "kitty +kitten diff";
+    }
+    {
+      name = "ssh";
+      command = "kitty +kitten ssh -o \"VisualHostKey=yes\"";
+    }
+  ];
+
   # Extra configuration files for kitty
   xdg.configFile = {
     "kitty/irc.session".text = ''

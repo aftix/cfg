@@ -4,10 +4,13 @@
   upkgs,
   nixpkgs,
   ...
-}: {
+}: let
+  inherit (lib) mkDefault mkIf;
+  inherit (config.xdg) configHome dataHome;
+in {
   programs.gpg = {
     enable = true;
-    homedir = lib.mkDefault "${config.home.homeDirectory}/.local/share/gnupg";
+    homedir = mkDefault "${dataHome}/gnupg";
 
     settings = {
       keyserver = "keys.gnupg.net";
@@ -16,8 +19,8 @@
 
   services.gpg-agent = {
     enable = upkgs.system == "x86_64-linux";
-    extraConfig = lib.mkDefault ''
-      pinentry-program ${config.home.homeDirectory}/.config/bin/pinentry-custom
+    extraConfig = mkDefault ''
+      pinentry-program ${configHome}/bin/pinentry-custom
     '';
   };
 
@@ -45,7 +48,7 @@
     };
   };
 
-  xdg.configFile."bin/pinetry-custom" = lib.mkIf (upkgs.system == "x86_64-linux") {
+  xdg.configFile."bin/pinetry-custom" = mkIf (upkgs.system == "x86_64-linux") {
     executable = true;
     text = ''
       #!/usr/bin/env nix-shell

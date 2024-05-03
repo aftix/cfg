@@ -6,6 +6,18 @@
 }: {
   home.packages = with upkgs; [aria2 python312Packages.aria2p];
 
+  my.shell = {
+    aliases = [
+      {
+        name = "aria2p";
+        # TODO: make this work across shells
+        command = "aria2p --secret=$E:ARIA2_RPC_TOKEN";
+        external = true;
+      }
+    ];
+    extraEnvFiles = ["${config.xdg.configHome}/aria2/aria2d.env"];
+  };
+
   xdg.configFile = {
     "aria2/aria2.conf".text = ''
       continue

@@ -1,14 +1,32 @@
 {
+  lib,
   mylib,
   upkgs,
   ...
-}: {
-  home.packages = with upkgs; [
-    nil
-    markdown-oxide
-    gopls
-    nodePackages_latest.bash-language-server
-    nodePackages_latest.typescript-language-server
+}: let
+  inherit (lib) mkDefault;
+in {
+  home = {
+    packages = with upkgs; [
+      nil
+      markdown-oxide
+      gopls
+      nodePackages_latest.bash-language-server
+      nodePackages_latest.typescript-language-server
+    ];
+
+    sessionVariables = {
+      EDITOR = mkDefault "${upkgs.helix}/bin/hx";
+      VISUAL = mkDefault "${upkgs.helix}/bin/hx";
+    };
+  };
+
+  my.shell.aliases = [
+    {
+      name = "helix";
+      command = "${upkgs.helix}/bin/hx";
+      completer = "hx";
+    }
   ];
 
   programs.helix = {
