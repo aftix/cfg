@@ -20,6 +20,27 @@
     ];
   };
 
+  my.shell.aliases = [
+    {
+      name = "trem";
+      command = "transmission-remote";
+      completer = "transmission-remote";
+    }
+    {
+      name = "tract";
+      command = "transmission-remote -F '~l:done'";
+      completer = {
+        name = "tract_complete";
+        arguments = "@a";
+        body = ''
+          if (has-key $edit:completion:arg-completer transmission-remote) {
+            $edit:completion:arg-completer[transmission-remote] transmission-remote -F '~l:done' $@a
+          }
+        '';
+      };
+    }
+  ];
+
   # The nix options for transmission do not work for home manager
   # So I'm defining my own systemd service
   systemd.user.services.transmission = {
