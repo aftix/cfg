@@ -1,6 +1,6 @@
-{upkgs, ...}: {
+{pkgs, ...}: {
   environment = {
-    systemPackages = with upkgs; [
+    systemPackages = with pkgs; [
       libapparmor
       apparmor-pam
       apparmor-utils

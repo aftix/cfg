@@ -1,9 +1,7 @@
 {
   lib,
   config,
-  nixpkgs,
-  stablepkgs,
-  home-manager,
+  inputs,
   ...
 }: let
   inherit (lib.options) mkOption;
@@ -75,8 +73,8 @@ in {
         ++ (toNixPath "home-manager" cfg.home-manager);
 
       systemd.tmpfiles.rules =
-        (toTmpfilesRule nixpkgs cfg.nixpkgs)
-        ++ (toTmpfilesRule stablepkgs cfg.stablepkgs)
-        ++ (toTmpfilesRule home-manager cfg.home-manager);
+        (toTmpfilesRule inputs.nixpkgs cfg.nixpkgs)
+        ++ (toTmpfilesRule inputs.stablepkgs cfg.stablepkgs)
+        ++ (toTmpfilesRule inputs.home-manager cfg.home-manager);
     };
 }

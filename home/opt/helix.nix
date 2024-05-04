@@ -1,13 +1,13 @@
 {
   lib,
   config,
-  upkgs,
+  pkgs,
   ...
 }: let
   inherit (lib) mkDefault;
 in {
   home = {
-    packages = with upkgs; [
+    packages = with pkgs; [
       nil
       markdown-oxide
       gopls
@@ -16,15 +16,15 @@ in {
     ];
 
     sessionVariables = {
-      EDITOR = mkDefault "${upkgs.helix}/bin/hx";
-      VISUAL = mkDefault "${upkgs.helix}/bin/hx";
+      EDITOR = mkDefault "${pkgs.helix}/bin/hx";
+      VISUAL = mkDefault "${pkgs.helix}/bin/hx";
     };
   };
 
   my.shell.aliases = [
     {
       name = "helix";
-      command = "${upkgs.helix}/bin/hx";
+      command = "${pkgs.helix}/bin/hx";
       completer = "hx";
     }
   ];

@@ -1,4 +1,4 @@
-{upkgs, ...}: {
+{pkgs, ...}: {
   services = {
     printing.enable = true;
     avahi = {
@@ -11,6 +11,6 @@
 
   hardware.sane = {
     enable = true;
-    extraBackends = with upkgs; [sane-airscan];
+    extraBackends = with pkgs; [sane-airscan];
   };
 }

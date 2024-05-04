@@ -1,6 +1,6 @@
 {
   config,
-  upkgs,
+  pkgs,
   ...
 }: {
   imports = [
@@ -39,7 +39,7 @@
     homeDirectory = "/home/aftix";
     stateVersion = "23.11"; # DO NOT CHANGE
 
-    packages = with upkgs; [
+    packages = with pkgs; [
       weechat-unwrapped
       weechatScripts.weechat-notify-send
     ];

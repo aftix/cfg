@@ -1,11 +1,11 @@
 {
-  upkgs,
+  pkgs,
   lib,
   ...
 }: let
   inherit (lib) mkDefault;
 in {
-  environment.systemPackages = [upkgs.syncthing];
+  environment.systemPackages = [pkgs.syncthing];
 
   networking.firewall = {
     checkReversePath = false;

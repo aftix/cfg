@@ -1,10 +1,10 @@
-{upkgs, ...}: {
-  home.packages = with upkgs; [pre-commit];
+{pkgs, ...}: {
+  home.packages = with pkgs; [pre-commit];
 
   my.shell.aliases = [
     {
       name = "g";
-      command = "${upkgs.git}/bin/git";
+      command = "${pkgs.git}/bin/git";
       completer = "git";
     }
   ];
@@ -19,7 +19,7 @@
           signingkey = "C6F4434A6A4C3A74DC9569C247DB00554BA8E05F";
           gpgsign = true;
         };
-        gpg.program = "${upkgs.gnupg}/bin/gpg2";
+        gpg.program = "${pkgs.gnupg}/bin/gpg2";
         commit.gpgsign = false;
         pull.rebase = false;
         init.defaultBranch = "master";
@@ -31,8 +31,8 @@
           prompt = false;
           trustExitCode = true;
         };
-        difftool.kitty.cmd = "${upkgs.kitty}/bin/kitty +kitten diff $LOCAL $REMOTE";
-        difftool.kitty-gui = "${upkgs.kitty}/bin/kitty kitty +kitten diff $LOCAL $REMOTE";
+        difftool.kitty.cmd = "${pkgs.kitty}/bin/kitty +kitten diff $LOCAL $REMOTE";
+        difftool.kitty-gui = "${pkgs.kitty}/bin/kitty kitty +kitten diff $LOCAL $REMOTE";
         rerere.enabled = true;
         column.ui = "auto";
         branch.sort = "-committerdate";

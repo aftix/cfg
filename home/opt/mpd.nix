@@ -1,8 +1,3 @@
-{
-  config,
-  lib,
-  upkgs,
-  ...
-}: {
-  home.packages = with upkgs; [mpd mpc-cli ncmpcpp];
+{pkgs, ...}: {
+  home.packages = with pkgs; [mpd mpc-cli ncmpcpp];
 }

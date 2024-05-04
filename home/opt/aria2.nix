@@ -1,10 +1,23 @@
 {
   config,
-  upkgs,
-  nixpkgs,
+  pkgs,
   ...
 }: {
-  home.packages = with upkgs; [aria2 python312Packages.aria2p];
+  nixpkgs.overlays = [
+    (final: prev: {
+      aria2d = pkgs.writeScriptBin "aria2d" (let
+        rpcDir = "${config.xdg.configHome}/aria2";
+        rpcFile = "${rpcDir}/aria2d.env";
+      in ''
+        #!${pkgs.stdenv.shell}
+        mkdir -p "${rpcDir}"
+        dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > "${rpcFile}"
+        source "${rpcFile}"
+        ${pkgs.aria2}/bin/aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
+      '');
+    })
+  ];
+  home.packages = with pkgs; [aria2 aria2d python312Packages.aria2p];
 
   my.shell = {
     aliases = [
@@ -41,24 +54,6 @@
       enable-rpc=true
       rpc-listen-all=true
     '';
-
-    "aria2/aria2d.bash" = {
-      executable = true;
-      text = let
-        rpcDir = "${config.home.homeDirectory}/.config/aria2";
-        rpcFile = "${rpcDir}/aria2d.env";
-      in ''
-        #!/usr/bin/env nix-shell
-        #! nix-shell -i bash --pure
-        #! nix-shell -p bash coreutils findutils aria2
-        #! nix-shell -I nixpkgs=${nixpkgs}
-
-        mkdir -p "${rpcDir}"
-        dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > "${rpcFile}"
-        source "${rpcFile}"
-        aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
-      '';
-    };
   };
 
   systemd.user = {
@@ -66,7 +61,7 @@
       Unit.Description = "aria2 Daemon";
       Service = {
         Type = "forking";
-        ExecStart = "${config.home.homeDirectory}/.config/aria2/aria2d.bash";
+        ExecStart = "${pkgs.aria2d}/bin/aria2d";
       };
       Install.WantedBy = ["default.target"];
     };

@@ -1,10 +1,10 @@
 {
-  upkgs,
+  pkgs,
   lib,
   config,
   ...
 }:
-with upkgs.nur.repos.LuisChDev; {
+with pkgs.nur.repos.LuisChDev; {
   networking.firewall = {
     allowedTCPPorts = [443];
     allowedUDPPorts = [1194];
@@ -24,7 +24,7 @@ with upkgs.nur.repos.LuisChDev; {
     serviceConfig = {
       ExecStart = "${nordvpn}/bin/nordvpnd";
       ExecStartPre = ''
-        ${upkgs.bash}/bin/bash -c '\
+        ${pkgs.bash}/bin/bash -c '\
           mkdir -m 700 -p /var/lib/nordvpn; \
           if [ -z "$(ls -A /var/lib/nordvpn)" ]; then \
             cp -r ${nordvpn}/var/lib/nordvpn/* /var/lib/nordvpn; \

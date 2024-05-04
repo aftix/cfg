@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   lib,
   config,
   ...
@@ -22,7 +22,7 @@ in {
       };
 
       shell =
-        mkPackageOption upkgs "zsh" {
+        mkPackageOption pkgs "zsh" {
         };
 
       uid = mkOption {default = 1000;};
@@ -33,7 +33,7 @@ in {
     root = {
       hashedPasswordFile = mkOption {default = "/state/passwd.aftix";};
       shell =
-        mkPackageOption upkgs "zsh" {
+        mkPackageOption pkgs "zsh" {
         };
     };
   };
