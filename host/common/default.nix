@@ -37,6 +37,7 @@
     nix = {
       nixPath = ["/nix/var/nix/profiles/per-user/root/channels"];
       settings.experimental-features = ["nix-command" "flakes"];
+      optimise.automatic = true;
     };
 
     # Use the systemd-boot EFI boot loader.

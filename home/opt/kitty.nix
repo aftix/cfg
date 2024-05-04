@@ -2,7 +2,6 @@
   upkgs,
   lib,
   config,
-  mylib,
   ...
 }: let
   settings = {
@@ -457,7 +456,7 @@
       in {"${name}" = v.value;})
       attrs
     );
-  inherit (mylib) paragraph example mergeTaggedAttrs mergeSubsections;
+  inherit (config.my.lib) paragraph example mergeTaggedAttrs mergeSubsections;
 in {
   home.packages = with upkgs; [kitty-img kitty-themes];
 

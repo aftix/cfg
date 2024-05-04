@@ -44,7 +44,6 @@
         home-impermanence = inputs.impermanence.nixosModules.home-manager.impermanence;
         inherit (inputs.stylix.homeManagerModules) stylix;
         sops-nix = inputs.sops-nix.homeManagerModules.sops;
-        mylib-builder = import ./home/mylib lib;
       };
 
     hostCfgs = {
@@ -95,7 +94,6 @@
     nixosModules = {
       homeCommon = import ./home/common;
       impermanence = ./home/opt/impermanence.nix;
-      mylib = import ./home/mylib;
 
       development = import ./home/opt/development.nix;
       firefox = import ./home/opt/firefox.nix;
