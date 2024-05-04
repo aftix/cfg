@@ -9,6 +9,8 @@
   inherit (config.xdg) configHome dataHome stateHome;
 in {
   imports = [
+    ./mylib.nix
+
     ./documentation.nix
     ./elvish.nix
     ./gnupg.nix

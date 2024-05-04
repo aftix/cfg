@@ -1,4 +1,4 @@
-{mylib, ...}: {
+{config, ...}: {
   programs.zathura = {
     enable = true;
 
@@ -30,7 +30,7 @@
     };
   };
 
-  xdg.mimeApps.defaultApplications = mylib.registerMimes [
+  xdg.mimeApps.defaultApplications = config.my.lib.registerMimes [
     {
       application = "zathura";
       mimetypes = [

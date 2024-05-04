@@ -1,12 +1,4 @@
-{
-  config,
-  mylib-builder,
-  ...
-}: let
-  mylib = mylib-builder config;
-in {
-  _module.args.mylib = mylib;
-
+_: {
   imports = [
     ./common
 

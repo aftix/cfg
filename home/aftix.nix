@@ -1,13 +1,8 @@
 {
   config,
   upkgs,
-  mylib-builder,
   ...
-}: let
-  mylib = mylib-builder config;
-in {
-  _module.args.mylib = mylib;
-
+}: {
   imports = [
     ./common
     ../hardware/hamilton-home.nix
