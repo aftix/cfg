@@ -33,31 +33,5 @@
         then "true"
         else "false"
       else builtins.toString x;
-
-    toHyprCfg = let
-      toCfgInner = tabstop: v:
-        lib.foldlAttrs (
-          acc: name: value:
-            if builtins.isAttrs value
-            then ''
-              ${acc}${tabstop}${name} {${toCfgInner "${tabstop}  " value}
-              ${tabstop}}
-            ''
-            else if builtins.isList value
-            then
-              (
-                builtins.concatStringsSep "" ([acc]
-                  ++ (map (
-                      elem: (toCfgInner tabstop {"${name}" = elem;})
-                    )
-                    value))
-              )
-            else ''
-              ${acc}
-              ${tabstop}${name} = ${stringify value}''
-        ) ""
-        v;
-    in
-      toCfgInner "";
   };
 }
