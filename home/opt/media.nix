@@ -1,7 +1,6 @@
 {
   config,
   upkgs,
-  mylib,
   lib,
   ...
 }: {
@@ -140,7 +139,7 @@
       mpd_music_dir = "${config.home.homeDirectory}/media/music";
     };
 
-    mimeApps.defaultApplications = mylib.registerMimes [
+    mimeApps.defaultApplications = config.my.lib.registerMimes [
       {
         application = "feh";
         mimetypes = [

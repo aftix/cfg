@@ -1,6 +1,6 @@
 {
   lib,
-  mylib,
+  config,
   upkgs,
   ...
 }: let
@@ -71,7 +71,7 @@ in {
     };
   };
 
-  xdg.mimeApps.defaultApplications = mylib.registerMimes [
+  xdg.mimeApps.defaultApplications = config.my.lib.registerMimes [
     {
       application = "Helix";
       mimetypes = [
