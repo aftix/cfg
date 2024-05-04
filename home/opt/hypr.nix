@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   config,
   lib,
   ...
@@ -112,7 +112,7 @@ in {
 
     home = {
       # Packages for hypr tools and DE-lite features
-      packages = with upkgs; [
+      packages = with pkgs; [
         hyprlock
         hypridle
         hyprpaper
@@ -125,7 +125,6 @@ in {
         wl-clipboard
         xclip
         xdotool
-        pinentry-qt
         kdePackages.polkit-kde-agent-1
         pwvucontrol
         grim
@@ -159,8 +158,8 @@ in {
     };
 
     wayland.windowManager.hyprland = let
-      terminal = "\"${upkgs.kitty}/bin/kitty\"";
-      menu = "\"${upkgs.tofi}/bin/tofi-run\" | \"${upkgs.findutils}/bin/xargs\" \"${upkgs.hyprland}/bin/hyprctl\" dispatch exec";
+      terminal = "\"${pkgs.kitty}/bin/kitty\"";
+      menu = "\"${pkgs.tofi}/bin/tofi-run\" | \"${pkgs.findutils}/bin/xargs\" \"${pkgs.hyprland}/bin/hyprctl\" dispatch exec";
       left = "h";
       right = "l";
       up = "k";
@@ -378,7 +377,7 @@ in {
         ];
 
         exec-once = [
-          "${upkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
+          "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
           "hyprpaper"
           "hypridle"
           "[workspace 1 silent] firefox"
@@ -468,8 +467,8 @@ in {
     xdg = {
       portal = {
         enable = true;
-        extraPortals = [upkgs.xdg-desktop-portal-hyprland];
-        configPackages = [upkgs.xdg-desktop-portal-hyprland];
+        extraPortals = [pkgs.xdg-desktop-portal-hyprland];
+        configPackages = [pkgs.xdg-desktop-portal-hyprland];
         config.preferred.default = "xdg-desktop-portal-hyprland";
       };
 
@@ -582,13 +581,13 @@ in {
         "bin/screenshot" = {
           executable = true;
           text = ''
-            #!/usr/bin/env ${upkgs.bash}/bin/bash
+            #!/usr/bin/env ${pkgs.bash}/bin/bash
 
-            source <("${upkgs.systemd}/bin/systemctl" --user show-environment)
+            source <("${pkgs.systemd}/bin/systemctl" --user show-environment)
 
-            "${upkgs.grim}/bin/grim" -g "$("${upkgs.slurp}/bin/slurp" -o -r -c '#ff0000ff')" - | \
-            "${upkgs.satty}/bin/satty" --filename - --fullscreen --output-filename ~/media/screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png \
-            --early-exit --initial-tool crop --copy-command "${upkgs.wl-clipboard}/bin/wl-copy"
+            "${pkgs.grim}/bin/grim" -g "$("${pkgs.slurp}/bin/slurp" -o -r -c '#ff0000ff')" - | \
+            "${pkgs.satty}/bin/satty" --filename - --fullscreen --output-filename ~/media/screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png \
+            --early-exit --initial-tool crop --copy-command "${pkgs.wl-clipboard}/bin/wl-copy"
           '';
         };
 

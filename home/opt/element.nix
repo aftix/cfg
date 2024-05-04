@@ -1,6 +1,6 @@
 {
   config,
-  upkgs,
+  pkgs,
   lib,
   ...
 }: {
@@ -10,5 +10,5 @@
     ];
   };
 
-  home.packages = [upkgs.element-desktop];
+  home.packages = [pkgs.element-desktop];
 }

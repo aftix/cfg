@@ -1,23 +1,47 @@
 {
   config,
   lib,
-  upkgs,
-  nixpkgs,
+  pkgs,
   ...
 }: {
-  home.packages = with upkgs; [transmission_4];
+  nixpkgs.overlays = [
+    (final: prev: {
+      transmission-notify = pkgs.writeScriptBin "transmission-notify" ''
+        #!${pkgs.stdenv.shell}
+        export PATH="${pkgs.systemd}/bin:$PATH"
+        export PATH="${pkgs.libnotify}/bin:${pkgs.gawk}/bin:${pkgs.transmission_4}/bin:$PATH"
+        source <(systemctl --user show-environment)
+        export DBUS_SESSION_BUS_ADDRESS DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
-  home.persistence.${config.my.impermanence.path} = lib.mkIf config.my.impermanence.enable {
-    directories = [
-      ".config/transmission/torrents"
-      ".config/transmission/blocklists"
-      ".config/transmission/resume"
-    ];
-    files = [
-      ".config/transmission/dht.dat"
-      ".config/transmission/stats.json"
-      ".config/transmission/bandwidth-groups.json"
-    ];
+        PERCENTAGE="$( \
+          transmission-remote 127.0.0.1:9091 -t "$TR_TORRENT_ID" -l | \
+          awk -v ID="$TR_TORRENT_ID" '$1 == ID {print $2}' 2>&1 \
+        )"
+
+        if [ "$PERCENTAGE" != "100%" ]; then
+          notify-send --app-name "Transmission" --urgency normal "Torrent Added" "Torrent for \"$TR_TORRENT_NAME\" added to transmission"
+        else
+          notify-send --app-name "Transmission" --urgency normal "Torrent Completed" "Torrent for \"$TR_TORRENT_NAME\" completed"
+        fi
+      '';
+    })
+  ];
+
+  home = {
+    packages = with pkgs; [transmission_4 transmission-notify];
+
+    persistence.${config.my.impermanence.path} = lib.mkIf config.my.impermanence.enable {
+      directories = [
+        ".config/transmission/torrents"
+        ".config/transmission/blocklists"
+        ".config/transmission/resume"
+      ];
+      files = [
+        ".config/transmission/dht.dat"
+        ".config/transmission/stats.json"
+        ".config/transmission/bandwidth-groups.json"
+      ];
+    };
   };
 
   my.shell.aliases = [
@@ -52,7 +76,7 @@
     Service = {
       Type = "simple";
       ExecStart = ''
-        "${upkgs.transmission}/bin/transmission-daemon" -f --log-error -g "${config.home.homeDirectory}/.config/transmission"'';
+        "${pkgs.transmission}/bin/transmission-daemon" -f --log-error -g "${config.home.homeDirectory}/.config/transmission"'';
       ExecReload = "/run/current-system/sw/bin/kill -s HUP $MAINPID";
       NoNewPrivileges = true;
       MemoryDenyWriteExecute = true;
@@ -76,33 +100,9 @@
 
         trash-original-torrent-files = true;
         script-torrent-added-enabled = true;
-        script-torrent-added-filename = "${config.home.homeDirectory}/.config/transmission/event.sh";
+        script-torrent-added-filename = "${pkgs.transmission-notify}/bin/transmission-notify";
         script-torrent-done-enabled = true;
-        script-torrent-done-filename = "${config.home.homeDirectory}/.config/transmission/event.sh";
+        script-torrent-done-filename = "${pkgs.transmission-notify}/bin/transmission-notify";
       };
-
-    configFile."transmission/event.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env nix-shell
-        #! nix-shell -i bash --pure --keep TR_TORRENT_ID --keep TR_TORRENT_NAME
-        #! nix-shell -p bash systemd gawk libnotify
-        #! nix-shell -I nixpkgs=${nixpkgs}
-
-        source <(systemctl --user show-environment)
-        export DBUS_SESSION_BUS_ADDRESS DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-
-        PERCENTAGE="$( \
-          transmission-remote 127.0.0.1:9091 -t "$TR_TORRENT_ID" -l | \
-          awk -v ID="$TR_TORRENT_ID" '$1 == ID {print $2}' 2>&1 \
-        )"
-
-        if [ "$PERCENTAGE" != "100%" ]; then
-          notify-send --app-name "Transmission" --urgency normal "Torrent Added" "Torrent for \"$TR_TORRENT_NAME\" added to transmission"
-        else
-          notify-send --app-name "Transmission" --urgency normal "Torrent Completed" "Torrent for \"$TR_TORRENT_NAME\" completed"
-        fi
-      '';
-    };
   };
 }

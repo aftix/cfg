@@ -1,10 +1,55 @@
-{
-  upkgs,
-  nixpkgs,
-  config,
-  ...
-}: {
-  home.packages = with upkgs; [waybar];
+{pkgs, ...}: let
+  waybar-dunst = pkgs.writeScriptBin "waybar-dunst" ''
+    #!${pkgs.stdenv.shell}
+    COUNT="$(dunstctl count waiting)"
+    ENABLED=""
+    DISABLED=""
+    if [ "$COUNT" != 0 ]; then
+      DISABLED=" $COUNT"
+    fi
+
+    if dunstctl is-paused | grep -q "false" ; then
+      echo '{"class": "", "text": " '"$ENABLED"' "}'
+    else
+      echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
+    fi
+  '';
+  waybar-nordvpn = pkgs.writeScriptBin "waybar-nordvpn" ''
+    #!${pkgs.stdenv.shell}
+    if [ -d /proc/sys/net/ipv4/conf/nordlynx ]; then
+     echo '{"text": " 󰖂  ", "class": ""}'
+    else
+     echo '{"text": " 󰖂  ", "class": "disconnected"}'
+    fi
+  '';
+  waybar-backup = pkgs.writeScriptBin "waybar-backup" ''
+    #!${pkgs.stdenv.shell}
+    function active() {
+      echo '{"text": "Backing up disk"}'
+    }
+
+    function offline() {
+      echo '{}'
+    }
+
+    function wait() {
+      inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
+    }
+
+    [ -f /var/run/backupdisk.pid ] && echo
+    wait /var/run "backupdisk\\.pid" | while read -r line ; do
+      grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
+      grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
+    done
+
+  '';
+in {
+  nixpkgs.overlays = [
+    (final: prev: {
+      inherit waybar-dunst waybar-nordvpn waybar-backup;
+    })
+  ];
+  home.packages = with pkgs; [waybar waybar-dunst waybar-nordvpn waybar-backup];
 
   programs.waybar = {
     enable = true;
@@ -67,9 +112,8 @@
   };
 
   xdg.configFile = let
-    waybarDir = "${config.home.homeDirectory}/.config/waybar";
     nord = "/run/current-system/sw/bin/nordvpn";
-    dunstctl = "${upkgs.dunst}/bin/dunstctl";
+    dunstctl = "${pkgs.dunst}/bin/dunstctl";
     cfg = {
       layer = "top";
       position = "bottom";
@@ -160,7 +204,7 @@
 
       "custom/backup" = {
         return-type = "json";
-        exec = "${waybarDir}/watchfile.sh";
+        exec = "${pkgs.waybar-backup}/bin/waybar-backup";
         restart-interval = 60;
         format = "{}";
         tooltip-format = "Backup status";
@@ -168,7 +212,7 @@
 
       "custom/nordvpn" = {
         return-type = "json";
-        exec = "${waybarDir}/nordvpn.sh";
+        exec = "${pkgs.waybar-nordvpn}/bin/waybar-nordvpn";
         on-click = "[ -e /proc/sys/net/ipv4/nordlynx ] && \"${nord}\" d || \"${nord}\" c";
         interval = 5;
         tooltip-format = "VPN connection status";
@@ -176,13 +220,13 @@
 
       "custom/dunst" = {
         return-type = "json";
-        exec = "${waybarDir}/dunst.sh";
+        exec = "${pkgs.waybar-dunst}/bin/waybar-dunst";
         on-click = "\"${dunstctl}\" set-paused toggle";
         restart-interval = 1;
       };
     };
   in {
-    "waybar/config.jsonc".source = (upkgs.formats.json {}).generate "waybar" [
+    "waybar/config.jsonc".source = (pkgs.formats.json {}).generate "waybar" [
       (cfg
         // {
           # machine-specific, can not be factored out into machine.nix
@@ -278,72 +322,5 @@
           ];
         })
     ];
-
-    "waybar/watchfile.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env nix-shell
-        #! nix-shell -i bash --pure
-        #! nix-shell -p bash coreutils gnugrep inotify-tools
-        #! nix-shell -I nixpkgs=${nixpkgs}
-
-        function active() {
-          echo '{"text": "Backing up disk"}'
-        }
-
-        function offline() {
-          echo '{}'
-        }
-
-        function wait() {
-          inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
-        }
-
-        [ -f /var/run/backupdisk.pid ] && echo
-        wait /var/run "backupdisk\\.pid" | while read -r line ; do
-          grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
-          grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
-        done
-      '';
-    };
-
-    "waybar/dunst.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env nix-shell
-        #! nix-shell -i bash --pure
-        #! nix-shell -p bash gnugrep dunst
-        #! nix-shell -I nixpkgs=${nixpkgs}
-
-        COUNT="$(dunstctl count waiting)"
-        ENABLED=""
-        DISABLED=""
-        if [ "$COUNT" != 0 ]; then
-          DISABLED=" $COUNT"
-        fi
-
-        if dunstctl is-paused | grep -q "false" ; then
-          echo '{"class": "", "text": " '"$ENABLED"' "}'
-        else
-          echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
-        fi
-      '';
-    };
-
-    "waybar/nordvpn.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env nix-shell
-        #! nix-shell -i bash --pure
-        #! nix-shell -p bash
-        #! nix-shell -I nixpkgs=${nixpkgs}
-
-        if [ -d /proc/sys/net/ipv4/conf/nordlynx ]; then
-         echo '{"text": " 󰖂  ", "class": ""}'
-        else
-         echo '{"text": " 󰖂  ", "class": "disconnected"}'
-        fi
-      '';
-    };
   };
 }

@@ -1,6 +1,11 @@
-{upkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ../hardware/hamilton.nix
+    ../hardware/opt/backup.nix
     ./common
 
     ./opt/bluetooth.nix
@@ -13,10 +18,40 @@
     ./opt/vpn.nix
   ];
 
-  environment.systemPackages = with upkgs; [
-    btrfs-progs
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      btrfs-progs
+    ];
 
+    # opt into state
+    persistence = {
+      # /persist is backed up (btrfs subvolume under safe/)
+      "/persist" = {
+        hideMounts = true;
+        directories = ["/var/lib/nixos" "/etc/NetworkManager/system-connections" "/var/lib/nordvpn"];
+      };
+      # /state is not backup up (btrfs subvolume under local)
+      "/state" = {
+        hideMounts = true;
+        directories = [
+          "/var/log"
+          "/var/lib/bluetooth"
+          "/var/lib/systemd/coredump"
+          "/root/.config/rclone"
+        ];
+        files = [
+          "/var/lib/cups/printers.conf"
+          "/var/lib/cups/subscriptions.conf"
+        ];
+      };
+    };
+  };
+
+  systemd.network.networks."10-enp6s0".networkConfig = {
+    DHCP = lib.mkForce "no";
+    Address = ["192.168.1.179/24"];
+    Gateway = "192.168.1.1";
+  };
   networking.hostName = "hamilton";
 
   documentation.dev.enable = true;
@@ -27,7 +62,54 @@
   services = {
     udisks2.enable = true;
     earlyoom.enable = true;
+    xserver.videoDrivers = ["modesetting"];
   };
+
+  # Hardware specific settings
+  hardware.opengl.enable = true;
+
+  boot.initrd = {
+    kernelModules = ["amdgpu"];
+
+    # By default don't store state
+    postDeviceCommands = lib.mkAfter ''
+      mkdir /mnt
+      mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
+      [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
+      rm -rf /mnt/local/root
+      btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
+      umount /mnt
+      rmdir /mnt
+    '';
+  };
+
+  fileSystems = let
+    noAtime = ["relatime" "nodiratime"];
+    ssd = ["discard=async"] ++ noAtime;
+    noDevSuid = ["nodev" "nosuid"];
+    noExec = ["noexec"] ++ noDevSuid;
+  in {
+    "/".options = ssd;
+    "/nix".options = ssd;
+    "/boot".options = noExec;
+
+    "/persist" = {
+      neededForBoot = true;
+      options = ssd;
+    };
+    "/state" = {
+      neededForBoot = true;
+      options = ssd;
+    };
+
+    "/home".options = ssd ++ noDevSuid;
+    "/home/aftix/.config".options = noDevSuid;
+    "/home/aftix/.cache".options = ssd ++ noExec;
+    "/home/aftix/media".options = noAtime ++ noExec;
+    "/home/aftix/.transmission".options = noAtime ++ noExec;
+    "/home/aftix/.local/state".options = ssd;
+  };
+
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
   #

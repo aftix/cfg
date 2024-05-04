@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  upkgs,
+  pkgs,
   ...
 }: let
   inherit (lib.options) mkOption;
@@ -24,7 +24,7 @@ in {
       description = "Mpris proxy";
       after = ["network.target" "sound.target"];
       wantedBy = ["default.target"];
-      serviceConfig.ExecStart = "${upkgs.bluez}/bin/mpris-proxy";
+      serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
     };
   };
 }

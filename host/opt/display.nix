@@ -1,5 +1,5 @@
-{upkgs, ...}: {
-  environment.systemPackages = with upkgs; [
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
     catppuccin-sddm-corners
     kdePackages.kwin
   ];
@@ -37,7 +37,7 @@
     };
   };
 
-  fonts.packages = with upkgs; [
+  fonts.packages = with pkgs; [
     inconsolata
     dejavu_fonts
     noto-fonts

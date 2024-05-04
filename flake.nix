@@ -23,21 +23,22 @@
   } @ inputs: let
     system = "x86_64-linux";
 
-    upkgs = import nixpkgs {
-      inherit system;
-      overlays = [nur.overlay];
-      config.allowUnfreePredicate = pkg:
-        builtins.elem (nixpkgs.lib.getName pkg) [
-          "discord"
-          "vault"
-          "nordvpn"
-          "pay-by-privacy"
-        ];
+    pkgsCfg = {
+      nixpkgs = {
+        overlays = [nur.overlay];
+        config.allowUnfreePredicate = pkg:
+          builtins.elem (nixpkgs.lib.getName pkg) [
+            "discord"
+            "vault"
+            "nordvpn"
+            "pay-by-privacy"
+          ];
+      };
     };
+    pkgs = import nixpkgs {inherit system;};
     spkgs = import stablepkgs {inherit system;};
-    lib = nixpkgs.lib // home-manager.lib;
 
-    specialArgs = {inherit upkgs spkgs nixpkgs stablepkgs home-manager;};
+    specialArgs = {inherit spkgs inputs;};
     extraSpecialArgs =
       specialArgs
       // {
@@ -54,7 +55,7 @@
       root = ./home/root.nix;
     };
   in {
-    formatter.${system} = upkgs.alejandra;
+    formatter.${system} = pkgs.alejandra;
 
     nixosConfigurations =
       builtins.mapAttrs (
@@ -63,6 +64,7 @@
             inherit system specialArgs;
 
             modules = [
+              pkgsCfg
               inputs.impermanence.nixosModules.impermanence
               inputs.sops-nix.nixosModules.sops
               path
@@ -71,8 +73,11 @@
               {
                 home-manager = {
                   inherit extraSpecialArgs;
-                  useGlobalPkgs = true;
                   useUserPackages = true;
+
+                  sharedModules = [
+                    pkgsCfg
+                  ];
 
                   users = builtins.mapAttrs (_: import) homeCfgs;
                 };
@@ -81,15 +86,6 @@
           }
       )
       hostCfgs;
-
-    homeConfigurations = builtins.mapAttrs (user: path:
-      lib.homeManagerConfiguration {
-        pkgs = upkgs;
-        inherit extraSpecialArgs;
-
-        modules = [path];
-      })
-    homeCfgs;
 
     nixosModules = {
       homeCommon = import ./home/common;

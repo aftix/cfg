@@ -1,10 +1,10 @@
 {
   config,
-  upkgs,
+  pkgs,
   lib,
   ...
 }: {
-  home.packages = with upkgs; [
+  home.packages = with pkgs; [
     feh
     ffmpeg_5
     imagemagick
@@ -125,13 +125,13 @@
       };
 
       scripts = [
-        upkgs.mpvScripts.mpris
+        pkgs.mpvScripts.mpris
       ];
     };
   };
 
   xdg = {
-    configFile."ncmpcpp/config".source = (upkgs.formats.keyValue {}).generate "ncmpcpp" {
+    configFile."ncmpcpp/config".source = (pkgs.formats.keyValue {}).generate "ncmpcpp" {
       ncmpcpp_directory = "${config.home.homeDirectory}/.config/ncmpcpp";
       lyrics_directory = "${config.home.homeDirectory}/.local/share/lyrics";
       mpd_host = "127.0.0.1";

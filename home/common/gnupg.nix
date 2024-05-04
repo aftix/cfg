@@ -1,13 +1,41 @@
 {
   config,
   lib,
-  upkgs,
-  nixpkgs,
+  pkgs,
   ...
 }: let
   inherit (lib) mkDefault mkIf;
-  inherit (config.xdg) configHome dataHome;
+  inherit (config.xdg) dataHome;
 in {
+  nixpkgs.overlays = [
+    (final: prev: {
+      pinentry-custom = pkgs.writeScriptBin "pinentry-custom" ''
+        #!${pkgs.stdenv.shell}
+        if [ -z "$PINENTRY_USER_DATA" ] ; then
+          exec pinentry-curses "$@"
+          exit 0
+        fi
+
+        case $PINENTRY_USER_DATA in
+        qt)
+          exec ${pkgs.pinentry-qt}/bin/pinentry-qt "$@"
+          ;;
+        none)
+          exit 1
+          ;;
+        *)
+          exec ${pkgs.pinentry-qt}/bin/pinentry-curses "$@"
+        esac
+      '';
+    })
+  ];
+
+  home.packages = with pkgs;
+    mkIf (system == "x86_64-linux") [
+      pinentry-qt
+      pinentry-custom
+    ];
+
   programs.gpg = {
     enable = true;
     homedir = mkDefault "${dataHome}/gnupg";
@@ -18,9 +46,9 @@ in {
   };
 
   services.gpg-agent = {
-    enable = upkgs.system == "x86_64-linux";
+    enable = pkgs.system == "x86_64-linux";
     extraConfig = mkDefault ''
-      pinentry-program ${configHome}/bin/pinentry-custom
+      pinentry-program ${pkgs.pinentry-custom}/bin/pinentry-custom
     '';
   };
 
@@ -33,7 +61,7 @@ in {
       Service = {
         Type = "oneshot";
         Environment = ''GNUPGHOME="${config.programs.gpg.homedir}"'';
-        ExecStart = "${upkgs.gnupg}/bin/gpg --refresh-keys";
+        ExecStart = "${pkgs.gnupg}/bin/gpg --refresh-keys";
       };
     };
 
@@ -46,31 +74,5 @@ in {
       };
       Install.WantedBy = ["timers.target"];
     };
-  };
-
-  xdg.configFile."bin/pinetry-custom" = mkIf (upkgs.system == "x86_64-linux") {
-    executable = true;
-    text = ''
-      #!/usr/bin/env nix-shell
-      #! nix-shell -i bash --pure --keep PINENTRY_USER_DATA
-      #! nix-shell -p bash pinentry-qt
-      #! nix-shell -I nixpkgs=${nixpkgs}
-
-      if [ -z "$PINENTRY_USER_DATA" ] ; then
-        exec pinentry-curses "$@"
-        exit 0
-      fi
-
-      case $PINENTRY_USER_DATA in
-      qt)
-        exec pinentry-qt "$@"
-        ;;
-      none)
-        exit 1
-        ;;
-      *)
-        exec pinentry-curses "$@"
-      esac
-    '';
   };
 }

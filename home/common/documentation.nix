@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   lib,
   config,
   ...
@@ -13,7 +13,7 @@
     titlePrefix = cfg.prefix;
     renderedDocs = builtins.mapAttrs manPage cfg.pages;
   in
-    upkgs.stdenv.mkDerivation {
+    pkgs.stdenv.mkDerivation {
       pname = "aftix-docs";
       version = "0.0.1";
 

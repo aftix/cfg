@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  upkgs,
+  pkgs,
   ...
 }: {
   home.persistence.${config.my.impermanence.path} = lib.mkIf config.my.impermanence.enable {
@@ -11,7 +11,7 @@
     ];
   };
 
-  home.packages = with upkgs; [
+  home.packages = with pkgs; [
     discord
     betterdiscordctl
   ];

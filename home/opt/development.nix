@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   lib,
   config,
   ...
@@ -22,7 +22,7 @@ in {
 
   config = {
     home = {
-      packages = with upkgs; (
+      packages = with pkgs; (
         [
           shellcheck
           gnupatch
@@ -48,7 +48,7 @@ in {
                 cargo-crev
               ]
               ++ (
-                if upkgs.system == "x86_64-linux"
+                if pkgs.system == "x86_64-linux"
                 then [cargo-llvm-cov]
                 else []
               ))
@@ -87,7 +87,7 @@ in {
       );
 
       sessionVariables = {
-        RUSTC_WRAPPER = mkIf cfg.rust (mkDefault "${upkgs.sccache}/bin/sccache");
+        RUSTC_WRAPPER = mkIf cfg.rust (mkDefault "${pkgs.sccache}/bin/sccache");
         RUSTUP_HOME = mkIf cfg.rust (mkDefault "${stateHome}/rustup");
         CARGO_HOME = mkIf cfg.rust (mkDefault "${stateHome}/cargo");
         CARGO_INSTALL_ROOT = mkIf cfg.rust (mkDefault "${dataHome}/bin");
@@ -152,14 +152,14 @@ in {
         Service = {
           Type = "oneshot";
           ExecStart = ''
-            ${upkgs.coreutils}/bin/mkdir -p "${cDir}/gh" ; \
-            ${upkgs.coreutils}/bin/ln -sf "${share}/gh/hosts.yml" "${cDir}/gh/hosts.yml"
+            ${pkgs.coreutils}/bin/mkdir -p "${cDir}/gh" ; \
+            ${pkgs.coreutils}/bin/ln -sf "${share}/gh/hosts.yml" "${cDir}/gh/hosts.yml"
           '';
         };
         Install.WantedBy = ["default.target"];
       };
 
-    xdg.configFile."npm/npmrc".source = mkIf cfg.typescript ((upkgs.formats.keyValue {}).generate "npm" {
+    xdg.configFile."npm/npmrc".source = mkIf cfg.typescript ((pkgs.formats.keyValue {}).generate "npm" {
       prefix = "\${XDG_DATA_HOME}/npm";
       cache = "\${XDG_CACHE_HOME}/npm";
       init-module = "\${XDG_CONFIG_HOME}/npm/config/npm-init.js";
