@@ -1,7 +1,7 @@
 {
   lib,
   config,
-  upkgs,
+  pkgs,
   ...
 }: {
   xdg = {
@@ -14,7 +14,7 @@
     stateHome = "${config.home.homeDirectory}/.local/state";
 
     userDirs = {
-      enable = upkgs.system == "x86_64-linux";
+      enable = pkgs.system == "x86_64-linux";
       desktop = null;
       documents = lib.mkDefault "${config.home.homeDirectory}/doc";
       music = lib.mkDefault "${config.home.homeDirectory}/media/music";
@@ -24,7 +24,7 @@
     };
 
     # Setup xdg default programs
-    mime.enable = upkgs.system == "x86_64-linux";
-    mimeApps.enable = upkgs.system == "x86_64-linux";
+    mime.enable = pkgs.system == "x86_64-linux";
+    mimeApps.enable = pkgs.system == "x86_64-linux";
   };
 }

@@ -1,21 +1,21 @@
 {
   lib,
   config,
-  upkgs,
+  pkgs,
   ...
 }: let
   inherit (lib) mkDefault mkIf;
 in {
   home.sessionVariables = {
-    MOZ_USE_XINPUT2 = mkIf (upkgs.system == "x86_64-linux") "1";
+    MOZ_USE_XINPUT2 = mkIf (pkgs.system == "x86_64-linux") "1";
     BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/firefox";
   };
 
   programs.firefox = {
     enable = true;
     package =
-      if upkgs.system == "x86_64-linux"
-      then (with upkgs; (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {}))
+      if pkgs.system == "x86_64-linux"
+      then (with pkgs; (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {}))
       else null;
 
     policies = {
@@ -55,7 +55,7 @@ in {
       bookmarks = [
       ];
 
-      extensions = with upkgs.nur.repos.rycee.firefox-addons; [
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
         multi-account-containers
         clearurls
         darkreader

@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   lib,
   config,
   ...
@@ -8,7 +8,7 @@
   inherit (config.xdg) configHome cacheHome dataHome;
 in {
   home = {
-    packages = with upkgs; [
+    packages = with pkgs; [
       python3
       mypy
       python311Packages.flake8

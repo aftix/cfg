@@ -1,9 +1,8 @@
 # TODO: automatic syncing with systemd-creds --user when sytemd v256 releases
 {
-  upkgs,
+  pkgs,
   config,
   lib,
-  nixpkgs,
   ...
 }: let
   share = "${config.home.homeDirectory}/.local/share";
@@ -12,6 +11,28 @@
   gpgSigningKey = "53D588312F7FCBE9A76579164C05A0B49FD681B9";
   gpgEncryptionKey = "3D98EDD231B4337B221C92E697C4A20471616623";
 in {
+  nixpkgs.overlays = [
+    (final: prev: {
+      mutt-purgecache = pkgs.writeScriptBin "mutt-purgecache" ''
+        #!${pkgs.stdenv.shell}
+        CACHE_LIMIT=512000 #KiB
+
+        cd "$1" 2>/dev/null
+        [ $? -ne 0 ] && exit
+
+        [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
+        while IFS= read -r i; do
+          rm "$i"
+          [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
+        done <<EOF
+        $(find . -type f -exec ls -rt1 {} +)
+        EOF
+      '';
+    })
+  ];
+
+  home.packages = with pkgs; [mutt-purgecache];
+
   sops.secrets = {
     "mailbox" = {};
     "gmailtoken" = {};
@@ -26,7 +47,7 @@ in {
         userName = "aftix@aftix.xyz";
         realName = "aftix";
         aliases = ["webmaster@aftix.xyz" "admin@aftix.xyz"];
-        passwordCommand = "'${upkgs.coreutils}/bin/cat' '${config.sops.secrets."mailbox".path}'";
+        passwordCommand = "'${pkgs.coreutils}/bin/cat' '${config.sops.secrets."mailbox".path}'";
         maildir.path = "personal";
         primary = true;
         imap = {
@@ -99,7 +120,7 @@ in {
           ];
         in {
           enable = true;
-          sendMailCommand = "${upkgs.msmtp}/bin/msmtp -a personal";
+          sendMailCommand = "${pkgs.msmtp}/bin/msmtp -a personal";
           inherit extraMailboxes;
           extraConfig = let
             addMailboxes = builtins.concatStringsSep "\n" (builtins.map (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes));
@@ -114,7 +135,7 @@ in {
         address = "gameraftexploision@gmail.com";
         userName = "gameraftexploision@gmail.com";
         realName = "aftix";
-        passwordCommand = "'${upkgs.coreutils}/bin/cat' '${config.sops.secrets."gmailtoken".path}'";
+        passwordCommand = "'${pkgs.coreutils}/bin/cat' '${config.sops.secrets."gmailtoken".path}'";
         folders.sent = "Sent Mail";
         flavor = "gmail.com";
         maildir.path = "gmail";
@@ -244,7 +265,7 @@ in {
           ];
         in {
           enable = true;
-          sendMailCommand = "${upkgs.msmtp}/bin/msmtp -a gmail";
+          sendMailCommand = "${pkgs.msmtp}/bin/msmtp -a gmail";
           inherit extraMailboxes;
           extraConfig = let
             addMailboxes = builtins.concatStringsSep "\n" (builtins.map (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes));
@@ -259,7 +280,7 @@ in {
         address = "wyatt.campbell@utexas.edu";
         userName = "wyatt.campbell@utexas.edu";
         realName = "Wyatt Campbell";
-        passwordCommand = "'${upkgs.coreutils}/bin/cat' '${config.sops.secrets."utmailtoken".path}'";
+        passwordCommand = "'${pkgs.coreutils}/bin/cat' '${config.sops.secrets."utmailtoken".path}'";
         folders.sent = "Sent Mail";
         flavor = "gmail.com";
         maildir.path = "utmail";
@@ -397,7 +418,7 @@ in {
           ];
         in {
           enable = true;
-          sendMailCommand = "${upkgs.msmtp}/bin/msmtp -a utmail";
+          sendMailCommand = "${pkgs.msmtp}/bin/msmtp -a utmail";
           inherit extraMailboxes;
           extraConfig = let
             addMailboxes = builtins.concatStringsSep "\n" (builtins.map (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes));
@@ -460,22 +481,22 @@ in {
         sidebar_delim_chars = "\"/\"";
         sidebar_indent_string = "\"  \"";
 
-        query_command = "\"'${upkgs.abook}/bin/abook' -C '${cfg}/abook/abookrc' --datafile '${share}/abook/addressbook' --mutt-query '%s'\"";
+        query_command = "\"'${pkgs.abook}/bin/abook' -C '${cfg}/abook/abookrc' --datafile '${share}/abook/addressbook' --mutt-query '%s'\"";
         nm_default_url = "notmuch://${share}/mail";
         nm_query_type = "messages";
 
-        pgp_decode_command = "\"'${upkgs.gnupg}/bin/gpg' --status-fd=2 %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --quiet --batch --output - %f\"";
-        pgp_verify_command = "\"'${upkgs.gnupg}/bin/gpg' --status-fd=2 --no-verbose --quiet --batch --output - --verify %s %f\"";
-        pgp_decrypt_command = "\"'${upkgs.gnupg}/bin/gpg' --status-fd=2 %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --quiet --batch --output - --decrypt %f\"";
-        pgp_sign_command = "\"'${upkgs.gnupg}/bin/gpg' %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --batch --quiet --output - --armor --textmode %?a?--local-user %a? --detach-sign %f\"";
-        pgp_clearsign_command = "\"'${upkgs.gnupg}/bin/gpg' %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --batch --quiet --output - --armor --textmode %?a?--local-user %a? --clearsign %f\"";
-        pgp_encrypt_only_command = "\"'${upkgs.mutt}/bin/pgpewrap' '${upkgs.gnupg}/bin/gpg' --batch --quiet --no-verbose --output - --textmode --armor --encrypt -- --recipient %r -- %f\"";
-        pgp_encrypt_sign_command = "\"'${upkgs.mutt}/bin/pgpewrap' '${upkgs.gnupg}/bin/gpg' %?p?--pinentry-mode loopback --passphrase-fd 0? --batch --quiet --no-verbose --textmode --output - %?a?--local-user %a? --armor --sign --encrypt -- --recipient %r -- %f\"";
-        pgp_import_command = "\"'${upkgs.gnupg}/bin/gpg' --no-verbose --import %f\"";
-        pgp_export_command = "\"'${upkgs.gnupg}/bin/gpg' --no-verbose --armor --export %r\"";
-        pgp_verify_key_command = "\"'${upkgs.gnupg}/bin/gpg' --verbose --batch --fingerprint --check-sigs %r\"";
-        pgp_list_pubring_command = "\"'${upkgs.gnupg}/bin/gpg' --no-verbose --batch --quiet --with-colons --with-fingerprint --with-fingerprint --list-keys %r\"";
-        pgp_list_secring_command = "\"'${upkgs.gnupg}/bin/gpg' --no-verbose --batch --quiet --with-colons --with-fingerprint --with-fingerprint --list-secret-keys %r\"";
+        pgp_decode_command = "\"'${pkgs.gnupg}/bin/gpg' --status-fd=2 %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --quiet --batch --output - %f\"";
+        pgp_verify_command = "\"'${pkgs.gnupg}/bin/gpg' --status-fd=2 --no-verbose --quiet --batch --output - --verify %s %f\"";
+        pgp_decrypt_command = "\"'${pkgs.gnupg}/bin/gpg' --status-fd=2 %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --quiet --batch --output - --decrypt %f\"";
+        pgp_sign_command = "\"'${pkgs.gnupg}/bin/gpg' %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --batch --quiet --output - --armor --textmode %?a?--local-user %a? --detach-sign %f\"";
+        pgp_clearsign_command = "\"'${pkgs.gnupg}/bin/gpg' %?p?--pinentry-mode loopback --passphrase-fd 0? --no-verbose --batch --quiet --output - --armor --textmode %?a?--local-user %a? --clearsign %f\"";
+        pgp_encrypt_only_command = "\"'${pkgs.mutt}/bin/pgpewrap' '${pkgs.gnupg}/bin/gpg' --batch --quiet --no-verbose --output - --textmode --armor --encrypt -- --recipient %r -- %f\"";
+        pgp_encrypt_sign_command = "\"'${pkgs.mutt}/bin/pgpewrap' '${pkgs.gnupg}/bin/gpg' %?p?--pinentry-mode loopback --passphrase-fd 0? --batch --quiet --no-verbose --textmode --output - %?a?--local-user %a? --armor --sign --encrypt -- --recipient %r -- %f\"";
+        pgp_import_command = "\"'${pkgs.gnupg}/bin/gpg' --no-verbose --import %f\"";
+        pgp_export_command = "\"'${pkgs.gnupg}/bin/gpg' --no-verbose --armor --export %r\"";
+        pgp_verify_key_command = "\"'${pkgs.gnupg}/bin/gpg' --verbose --batch --fingerprint --check-sigs %r\"";
+        pgp_list_pubring_command = "\"'${pkgs.gnupg}/bin/gpg' --no-verbose --batch --quiet --with-colons --with-fingerprint --with-fingerprint --list-keys %r\"";
+        pgp_list_secring_command = "\"'${pkgs.gnupg}/bin/gpg' --no-verbose --batch --quiet --with-colons --with-fingerprint --with-fingerprint --list-secret-keys %r\"";
         pgp_sign_as = "\"${gpgSigningKey}\"";
         pgp_good_sign = "\"^\\[GNUPG:\\] GOODSIG\"";
       };
@@ -542,17 +563,17 @@ in {
         {
           map = ["index" "pager"];
           key = "a";
-          action = "<pipe-message>'${upkgs.abook}/bin/abook' -C '${cfg}/abook/abookrc' --datafile '${share}/abook/addressbook' --add-email-quiet<return>";
+          action = "<pipe-message>'${pkgs.abook}/bin/abook' -C '${cfg}/abook/abookrc' --datafile '${share}/abook/addressbook' --add-email-quiet<return>";
         }
         {
           map = ["index" "pager"];
           key = "\\CS";
-          action = "!'${upkgs.isync}/bin/mbsync' -c '${config.home.homeDirectory}/.mbsyncrc' -a<enter>";
+          action = "!'${pkgs.isync}/bin/mbsync' -c '${config.home.homeDirectory}/.mbsyncrc' -a<enter>";
         }
         {
           map = ["index" "pager"];
           key = "\\CI";
-          action = "!'${upkgs.notmuch}/bin/notmuch' new<enter>";
+          action = "!'${pkgs.notmuch}/bin/notmuch' new<enter>";
         }
         {
           map = ["index" "pager"];
@@ -568,13 +589,13 @@ in {
         {
           map = ["pager"];
           key = "V";
-          action = "<pipe-entry>'${upkgs.iconv}/bin/iconv' -c --to-code=UTF8 > '${cache}/neomutt/mail.html'<enter><shell-escape>xdg-open '${cache}/neomutt/mail.html'<enter>";
+          action = "<pipe-entry>'${pkgs.iconv}/bin/iconv' -c --to-code=UTF8 > '${cache}/neomutt/mail.html'<enter><shell-escape>xdg-open '${cache}/neomutt/mail.html'<enter>";
         }
       ];
 
       extraConfig = ''
         set edit_headers
-        my_hdr X-Operating-System: `"${upkgs.coreutils}/bin/uname" -s`, kernel `"${upkgs.coreutils}/bin/uname" -r`
+        my_hdr X-Operating-System: `"${pkgs.coreutils}/bin/uname" -s`, kernel `"${pkgs.coreutils}/bin/uname" -r`
         my_hdr User-Agent: neomutt
 
         set header_cache_compress_method = zstd;
@@ -626,22 +647,22 @@ in {
         crypt-hook postmaster@aftix.xyz ${gpgSigningKey}
 
         # Support for gzip, bzip2, xz, lzip, and pgp/gpg mailboxes
-        open-hook '\.gz$' "'${upkgs.pigz}/bin/pigz' --stdout --decompress '%f' > '%t'"
-        close-hook '\.gz$' "'${upkgs.pigz}/bin/pigz' --stdout '%t' > '%f'"
-        append-hook '\.gz$' "'${upkgs.pigz}/bin/pigz' --stdout '%t' >> '%f'"
-        open-hook '\.bz2$' "'${upkgs.pbzip2}/bin/pbzip2' --stdout --decompress '%f' > '%t'"
-        close-hook '\.bz2$' "'${upkgs.pbzip2}/bin/pbzip2' --stdout '%t' > '%f'"
-        append-hook '\.bz2$' "'${upkgs.pbzip2}/bin/pbzip2' --stdout '%t' >> '%f'"
-        open-hook '\.xz$' "'${upkgs.xz}/bin/xz' --stdout --decompress '%f' > '%t'"
-        close-hook '\.xz$' "'${upkgs.xz}/bin/xz' --stdout '%t' > '%f'"
-        append-hook '\.xz$' "'${upkgs.xz}/bin/xz' --stdout '%t' >> '%f'"
-        open-hook '\.lz$' "'${upkgs.lzip}/bin/lzip' --stdout --decompress '%f' > '%t'"
-        close-hook '\.lz$' "'${upkgs.lzip}/bin/lzip' --stdout '%t' > '%f'"
-        append-hook '\.lz$' "'${upkgs.lzip}/bin/lzip' --stdout '%t' >> '%f'"
-        open-hook '\.pgp$' "'${upkgs.gnupg}/bin/gpg' --decrypt < '%f' > '%t'"
-        close-hook '\.pgp$' "'${upkgs.gnupg}/bin/gpg' --encrypt --recipient ${gpgEncryptionKey} < '%t' > '%f'"
-        open-hook '\.gpg$' "'${upkgs.gnupg}/bin/gpg' --decrypt < '%f' > '%t'"
-        close-hook '\.gpg$' "'${upkgs.gnupg}/bin/gpg' --encrypt --recipient ${gpgEncryptionKey} < '%t' > '%f'"
+        open-hook '\.gz$' "'${pkgs.pigz}/bin/pigz' --stdout --decompress '%f' > '%t'"
+        close-hook '\.gz$' "'${pkgs.pigz}/bin/pigz' --stdout '%t' > '%f'"
+        append-hook '\.gz$' "'${pkgs.pigz}/bin/pigz' --stdout '%t' >> '%f'"
+        open-hook '\.bz2$' "'${pkgs.pbzip2}/bin/pbzip2' --stdout --decompress '%f' > '%t'"
+        close-hook '\.bz2$' "'${pkgs.pbzip2}/bin/pbzip2' --stdout '%t' > '%f'"
+        append-hook '\.bz2$' "'${pkgs.pbzip2}/bin/pbzip2' --stdout '%t' >> '%f'"
+        open-hook '\.xz$' "'${pkgs.xz}/bin/xz' --stdout --decompress '%f' > '%t'"
+        close-hook '\.xz$' "'${pkgs.xz}/bin/xz' --stdout '%t' > '%f'"
+        append-hook '\.xz$' "'${pkgs.xz}/bin/xz' --stdout '%t' >> '%f'"
+        open-hook '\.lz$' "'${pkgs.lzip}/bin/lzip' --stdout --decompress '%f' > '%t'"
+        close-hook '\.lz$' "'${pkgs.lzip}/bin/lzip' --stdout '%t' > '%f'"
+        append-hook '\.lz$' "'${pkgs.lzip}/bin/lzip' --stdout '%t' >> '%f'"
+        open-hook '\.pgp$' "'${pkgs.gnupg}/bin/gpg' --decrypt < '%f' > '%t'"
+        close-hook '\.pgp$' "'${pkgs.gnupg}/bin/gpg' --encrypt --recipient ${gpgEncryptionKey} < '%t' > '%f'"
+        open-hook '\.gpg$' "'${pkgs.gnupg}/bin/gpg' --decrypt < '%f' > '%t'"
+        close-hook '\.gpg$' "'${pkgs.gnupg}/bin/gpg' --encrypt --recipient ${gpgEncryptionKey} < '%t' > '%f'"
 
         set sidebar_format="%B%?F? [%F]?%* %?N?%N/?%S"
       '';
@@ -666,27 +687,4 @@ in {
       external = true;
     }
   ];
-
-  xdg.configFile."neomutt/purgecache.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env nix-shell
-      #! nix-shell -i bash --pure
-      #! nix-shell -p bash coreutils findutils
-      #! nix-shell -I nixpkgs=${nixpkgs}
-
-      CACHE_LIMIT=512000 #KiB
-
-      cd "$1" 2>/dev/null
-      [ $? -ne 0 ] && exit
-
-      [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
-      while IFS= read -r i; do
-        rm "$i"
-        [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
-      done <<EOF
-      $(find . -type f -exec ls -rt1 {} +)
-      EOF
-    '';
-  };
 }

@@ -1,7 +1,7 @@
-{upkgs, ...}: {
-  home.packages = [upkgs.tealdeer];
+{pkgs, ...}: {
+  home.packages = [pkgs.tealdeer];
 
-  xdg.configFile."tealdeer/config.toml".source = (upkgs.formats.toml {}).generate "tealdeer" {
+  xdg.configFile."tealdeer/config.toml".source = (pkgs.formats.toml {}).generate "tealdeer" {
     display.use_pager = true;
     updates.auto_update = true;
     style = {

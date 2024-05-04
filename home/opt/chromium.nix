@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  upkgs,
+  pkgs,
   ...
 }: {
   home.persistence.${config.my.impermanence.path} = lib.mkIf config.my.impermanence.enable {
@@ -12,7 +12,7 @@
 
   programs.chromium = {
     enable = true;
-    package = upkgs.ungoogled-chromium;
-    dictionaries = [upkgs.hunspellDictsChromium.en_US];
+    package = pkgs.ungoogled-chromium;
+    dictionaries = [pkgs.hunspellDictsChromium.en_US];
   };
 }

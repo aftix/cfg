@@ -1,7 +1,7 @@
 {
   lib,
   config,
-  upkgs,
+  pkgs,
   ...
 }: let
   inherit (lib.options) mkOption;
@@ -28,7 +28,8 @@ in {
         description = ''
           List of aliases, each alias being a set of {name, command}
           Can also contain an optional key 'completer' which is used for elvish to set the arg-completer
-          ('completer' will not be quoted)
+            if a string, will insert `set edit:completion:arg-completer[alias] = $edit:completion:arg-completer[completer]`
+            if an attrset, will create a function from the attrset (same syntax as extraFunctions) and set that as completer
           Can also contain an optional key 'external' which will prepend the command with e: in elvish
         '';
       };
@@ -125,7 +126,7 @@ in {
     home = {
       language.base = mkDefault "en_US";
 
-      packages = with upkgs; [
+      packages = with pkgs; [
         aspell
         aspellDicts.en
         aspellDicts.en-science
@@ -147,8 +148,8 @@ in {
         FZF_DEFAULT_OPTS = mkDefault "--layout=reverse --height 40%";
         LESSHISTFILE = mkDefault "-";
         HISTFILE = mkDefault "${stateHome}/bash/history";
-        PAGER = mkDefault "${upkgs.coreutils}/bin/less";
-        MANPAGER = mkDefault "${upkgs.coreutils}/bin/less";
+        PAGER = mkDefault "${pkgs.coreutils}/bin/less";
+        MANPAGER = mkDefault "${pkgs.coreutils}/bin/less";
         CREDENTIALS_DIRECTORY = mkDefault "${dataHome}/systemd-creds";
         ZDOTDIR = mkDefault "${configHome}/zsh";
       };
@@ -321,7 +322,7 @@ in {
       };
     };
 
-    services.ssh-agent.enable = upkgs.system == "x86_64-linux";
+    services.ssh-agent.enable = pkgs.system == "x86_64-linux";
 
     systemd.user = {
       startServices = true;
