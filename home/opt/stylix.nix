@@ -1,17 +1,17 @@
 {
   config,
-  upkgs,
+  pkgs,
   stylix,
   ...
 }: {
-  home.packages = [upkgs.base16-schemes];
+  home.packages = [pkgs.base16-schemes];
 
   imports = [stylix];
 
   stylix = {
     image = ./wallpaper.jpg;
     polarity = "dark";
-    base16Scheme = "${upkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
     override = {
       base03 = "808080";
       base05 = "eeeeee";
@@ -19,22 +19,22 @@
 
     fonts = {
       serif = {
-        package = upkgs.dejavu_fonts;
+        package = pkgs.dejavu_fonts;
         name = "DejaVu Serif";
       };
 
       sansSerif = {
-        package = upkgs.dejavu_fonts;
+        package = pkgs.dejavu_fonts;
         name = "DejaVu Sans";
       };
 
       monospace = {
-        package = upkgs.inconsolata;
+        package = pkgs.inconsolata;
         name = "Inconsolata";
       };
 
       emoji = {
-        package = upkgs.noto-fonts-emoji;
+        package = pkgs.noto-fonts-emoji;
         name = "Noto Color Emoji";
       };
 
@@ -47,7 +47,7 @@
     };
 
     cursor = {
-      package = upkgs.rose-pine-cursor;
+      package = pkgs.rose-pine-cursor;
       name = "BreezeX-RosePine-Linux";
     };
 
@@ -56,8 +56,8 @@
     targets = {
       tofi.enable = true;
       helix.enable = false;
-      kde.enable = upkgs.system == "x86_64-linux";
-      gnome.enable = upkgs.system == "x86_64-linux";
+      kde.enable = pkgs.system == "x86_64-linux";
+      gnome.enable = pkgs.system == "x86_64-linux";
     };
   };
 
@@ -67,7 +67,7 @@
       templateRepo = config.lib.stylix.templates.base16-helix;
     };
 
-    transparentTheme = upkgs.runCommandLocal "helix-transparent.toml" {} ''
+    transparentTheme = pkgs.runCommandLocal "helix-transparent.toml" {} ''
       sed 's/,\? bg = "base00"//g' <${theme} >$out
     '';
 
@@ -76,7 +76,7 @@
       key,
       value,
     }:
-      upkgs.runCommandLocal "helix-patched.toml" {} ''
+      pkgs.runCommandLocal "helix-patched.toml" {} ''
         if grep --quiet '^"${key}"' ${theme} ; then
           sed 's/^"${key}".\+/"${key}" = ${value}/' <${theme} >$out
         else

@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   lib,
   config,
   ...
@@ -8,13 +8,13 @@
     shell = {
       tag = "shell";
       content = "elvish";
-      value = "${upkgs.elvish}/bin/elvish";
+      value = config.programs.kitty.settings.shell;
     };
 
     scrollbackPager = {
       tag = "scrollback pager";
       content = "moar";
-      value = "'${upkgs.moar}/bin/moar' -no-linenumbers";
+      value = config.programs.kitty.settings.scrollback_pager;
     };
 
     kittyMod = {
@@ -91,7 +91,7 @@
     showConfig = {
       tag = "kitty_mod + slash";
       content = "Open the kitty configuration in the pager in a new window";
-      value = "new_window '${upkgs.moar}/bin/moar' -no-linenumbers $HOME/.config/kitty/kitty.conf";
+      value = "new_window '${pkgs.moar}/bin/moar' -no-linenumbers $HOME/.config/kitty/kitty.conf";
     };
 
     opacityMore = {
@@ -458,7 +458,7 @@
     );
   inherit (config.my.lib) paragraph example mergeTaggedAttrs mergeSubsections;
 in {
-  home.packages = with upkgs; [kitty-img kitty-themes];
+  home.packages = with pkgs; [kitty-img kitty-themes];
 
   my.docs.pages.kitty = {
     _docsName = "kitty \\- The fast, feature rich terminal emulator";
@@ -519,14 +519,14 @@ in {
       bold_italic_font = "auto";
 
       kitty_mod = settings.kittyMod.value;
-      shell = settings.shell.value;
+      shell = lib.mkDefault "${pkgs.elvish}/bin/elvish";
       allow_remote_control = true;
 
       cursor_shape = "block";
       cursor_blink_interval = -1;
 
       scrollback_lines = 1024;
-      scrollback_pager = settings.scrollbackPager.value;
+      scrollback_pager = lib.mkDefault "${pkgs.less}/bin/less";
       scrollback_pager_history_size = 0;
 
       url_style = "curly";

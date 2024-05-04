@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   lib,
   ...
 }: {
@@ -17,8 +17,9 @@
   };
 
   config = {
-    environment.systemPackages = with upkgs; [
+    environment.systemPackages = with pkgs; [
       nix-index
+      home-manager
 
       killall
       curl
@@ -53,7 +54,7 @@
       };
 
       # Use hardened linux
-      kernelPackages = upkgs.linuxPackages_6_6_hardened;
+      kernelPackages = pkgs.linuxPackages_6_6_hardened;
       # Enable https://en.wikipedia.org/wiki/Magic_SysRq_key
       kernel.sysctl."kernel.sysrq" = 1;
     };

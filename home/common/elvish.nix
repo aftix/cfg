@@ -1,5 +1,5 @@
 {
-  upkgs,
+  pkgs,
   config,
   lib,
   ...
@@ -9,15 +9,15 @@
   shellCfg = config.my.shell;
   cfg = shellCfg.elvish;
 in {
-  home.packages = lib.mkIf cfg.enable [upkgs.elvish];
+  home.packages = lib.mkIf cfg.enable [pkgs.elvish];
 
   xdg.configFile =
     {
       "elvish/rc.elv".text = let
-        pathsToAdd = builtins.concatStringsSep " " (builtins.map (p: escapeShellArg p) config.home.sessionPath);
+        pathsToAdd = builtins.concatStringsSep " " (builtins.map escapeShellArg config.home.sessionPath);
         homebrewPath = let
           brewPath =
-            if hasPrefix "x86_64" upkgs.system
+            if hasPrefix "x86_64" pkgs.system
             then "/usr/local/bin/brew"
             else "/opt/homebrew/bin/brew";
         in
@@ -55,7 +55,7 @@ in {
         setXdgBases = let
           base = setEnvVars xdgBases;
         in
-          if upkgs.system == "x86_64-linux"
+          if pkgs.system == "x86_64-linux"
           then ''
             ${base}
             if (not (has-env XDG_RUNTIME_DIR)) {

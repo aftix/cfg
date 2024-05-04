@@ -1,12 +1,12 @@
 {
-  upkgs,
+  pkgs,
   lib,
   ...
 }: let
   inherit (lib) mkDefault mkOverride;
 in {
   home = {
-    packages = with upkgs; [
+    packages = with pkgs; [
       hyperfine
       zenith
       moar
@@ -22,20 +22,22 @@ in {
     ];
 
     sessionVariables = {
-      PAGER = mkOverride 900 "${upkgs.moar}/bin/moar";
-      MANPAGER = mkOverride 900 "${upkgs.moar}/bin/moar";
+      PAGER = mkOverride 900 "${pkgs.moar}/bin/moar";
+      MANPAGER = mkOverride 900 "${pkgs.moar}/bin/moar";
       MOAR = mkDefault "-quit-if-one-screen";
     };
   };
 
+  programs.kitty.settings.scrollback_pager = "'${pkgs.moar}/bin/moar' -no-linenumbers";
+
   my.shell.aliases = [
     {
       name = "gzip";
-      command = "${upkgs.pigz}/bin/pigz";
+      command = "${pkgs.pigz}/bin/pigz";
     }
     {
       name = "bzip2";
-      command = "${upkgs.pbzip2}/bin/pbzip2";
+      command = "${pkgs.pbzip2}/bin/pbzip2";
     }
 
     {
