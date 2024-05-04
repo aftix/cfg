@@ -1,9 +1,10 @@
 {
   upkgs,
   config,
-  mylib,
   ...
-}: {
+}: let
+  inherit (config.my.lib) toHyprCfg;
+in {
   imports = [./waybar.nix];
 
   home = {
@@ -365,7 +366,7 @@
     configFile = {
       "hypr/wallpaper.jpg".source = ./wallpaper.jpg;
 
-      "hypr/hypridle.conf".text = mylib.toHyprCfg {
+      "hypr/hypridle.conf".text = toHyprCfg {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
           before_sleep_cmd = "loginctl lock-session";
@@ -388,7 +389,7 @@
         ];
       };
 
-      "hypr/hyprlock.conf".text = mylib.toHyprCfg {
+      "hypr/hyprlock.conf".text = toHyprCfg {
         general = {
           ignore_empty_input = true;
           grace = 60;
@@ -434,7 +435,7 @@
         };
       };
 
-      "hypr/hyprpaper.conf".text = mylib.toHyprCfg {
+      "hypr/hyprpaper.conf".text = toHyprCfg {
         preload = [
           "/home/aftix/.config/hypr/wallpaper.jpg"
         ];

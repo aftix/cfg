@@ -1,16 +1,17 @@
 {
   upkgs,
   lib,
-  mylib,
   config,
   ...
 }: let
   cfg = config.my.docs;
 
   builder = let
+    inherit (lib.attrsets) mapAttrsToList;
     inherit (lib.strings) escapeShellArg;
+    inherit (config.my.lib) manPage;
     titlePrefix = cfg.prefix;
-    renderedDocs = builtins.mapAttrs mylib.manPage cfg.pages;
+    renderedDocs = builtins.mapAttrs manPage cfg.pages;
   in
     upkgs.stdenv.mkDerivation {
       pname = "aftix-docs";
@@ -38,13 +39,13 @@
       installPhase = builtins.concatStringsSep "\n" ([
           "mkdir -p \"$out/share/man/man7\""
         ]
-        ++ (lib.mapAttrsToList (title: docs: "echo ${escapeShellArg docs} > \"${titlePrefix}-${title}.man\"") renderedDocs)
+        ++ (mapAttrsToList (title: docs: "echo ${escapeShellArg docs} > \"${titlePrefix}-${title}.man\"") renderedDocs)
         ++ [
           (
             if cfg.enable
-            then "echo ${escapeShellArg (mylib.manPage "${titlePrefix}" {
+            then "echo ${escapeShellArg (manPage "${titlePrefix}" {
               _docsName = "${titlePrefix} \\- Configuration documentation for my NixOS install";
-              _docsSeeAlso = lib.mapAttrsToList (title: _: {name = "${titlePrefix}-${title}";}) cfg.pages;
+              _docsSeeAlso = mapAttrsToList (title: _: {name = "${titlePrefix}-${title}";}) cfg.pages;
             })} > \"${titlePrefix}.man\""
             else ""
           )
@@ -65,8 +66,8 @@
         ]);
     };
 in {
-  options = {
-    my.docs = let
+  options.my = {
+    docs = let
       inherit (lib.options) mkOption mkEnableOption;
     in {
       pages = mkOption {
@@ -112,5 +113,85 @@ in {
     };
   };
 
-  config.home.packages = lib.mkIf cfg.enable [builder];
+  config = {
+    home.packages = lib.mkIf cfg.enable [builder];
+
+    my.lib = let
+      inherit (lib.strings) toUpper;
+      inherit (lib.attrsets) mapAttrsToList;
+    in rec {
+      tagged = {
+        tag,
+        content,
+        ...
+      }: ".TP\n\\fB${tag}\\fP\n${content}";
+      mergeTagged = lst: builtins.concatStringsSep "\n" (map tagged lst);
+      mergeTaggedAttrs = attrs: mergeTagged (mapAttrsToList (name: value: value) attrs);
+
+      URI = uri: ".UR ${uri}\n.UE\n";
+      mailto = address: ".MT ${mailto}\n.ME\n";
+
+      # For references to other man pages
+      manURI = {
+        name,
+        mansection ? 7,
+      }: ".MR ${name} ${builtins.toString mansection}";
+      mergeManURIs = lst: builtins.concatStringsSep "\n" (map manURI lst);
+
+      pageTitle = name: let
+        title =
+          if cfg.prefix == name
+          then name
+          else "${cfg.prefix}-${name}";
+      in ".TH \"${toUpper title}\" 7 \"{{date}}\"";
+
+      section = title: content: ".SH ${title}\n${content}";
+      subsection = title: content: ".SS ${title}\n${content}";
+      mergeSubsections = attrs: builtins.concatStringsSep "\n" (mapAttrsToList (name: value: subsection name value) attrs);
+      paragraph = text: ".PP\n" + text;
+
+      example = caption: content: ''
+        Example: ${caption}
+        .EX
+        .RS 8
+        ${content}
+        .RE
+        .EE
+      '';
+
+      manPage = title: {
+        _docsName,
+        _docsSynopsis ? "",
+        _docsExtraSections ? {},
+        _docsExamples ? "",
+        _docsSeeAlso ? [],
+        ...
+      }:
+        builtins.concatStringsSep "\n" ([
+            (pageTitle title)
+            (section "NAME" _docsName)
+            (
+              if _docsSynopsis != ""
+              then section "SYNOPSIS" _docsSynopsis
+              else ""
+            )
+            (
+              if _docsExamples != ""
+              then section "SYNOPSIS" _docsExamples
+              else ""
+            )
+          ]
+          ++ (mapAttrsToList (title: content: section title content) _docsExtraSections)
+          ++ [
+            (section "SEE ALSO" (
+              mergeManURIs
+              (
+                if title != cfg.prefix
+                then _docsSeeAlso ++ [{name = cfg.prefix;}]
+                else _docsSeeAlso
+              )
+            ))
+          ]);
+    };
+  };
 }

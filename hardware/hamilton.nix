@@ -31,6 +31,8 @@
     extraModulePackages = [];
   };
 
+  services.xserver.videoDrivers = ["modesetting"];
+
   # Opt-in to state
   environment = {
     persistence = {

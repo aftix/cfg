@@ -1,5 +1,4 @@
 {
-  mylib,
   lib,
   config,
   upkgs,
@@ -363,7 +362,7 @@ in {
     };
   };
 
-  xdg.mimeApps.defaultApplications = mylib.registerMimes [
+  xdg.mimeApps.defaultApplications = config.my.lib.registerMimes [
     {
       application = "firefox";
       mimetypes = [
