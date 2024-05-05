@@ -12,6 +12,8 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
+    flake-utils.url = "github:numtide/flake-utils";
+
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:aftix/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -22,6 +24,7 @@
     stablepkgs,
     nur,
     home-manager,
+    flake-utils,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -38,8 +41,8 @@
           ];
       };
     };
-    pkgs = import nixpkgs {inherit system;};
-    spkgs = import stablepkgs {inherit system;};
+
+    spkgs = stablepkgs.legacyPackages.${system};
 
     specialArgs = {inherit spkgs inputs;};
     extraSpecialArgs =
@@ -50,46 +53,73 @@
         sops-nix = inputs.sops-nix.homeManagerModules.sops;
       };
 
-    hostCfgs = {
-      hamilton = ./host/hamilton.nix;
-    };
-    homeCfgs = {
-      aftix = ./home/aftix.nix;
-      root = ./home/root.nix;
-    };
-  in {
-    formatter.${system} = pkgs.alejandra;
+    mkHostCfg = name: users: let
+      inherit (nixpkgs) lib;
+      workDir = ./.;
+    in
+      lib.nixosSystem {
+        inherit specialArgs;
 
-    nixosConfigurations =
-      builtins.mapAttrs (
-        host: path:
-          nixpkgs.lib.nixosSystem {
-            inherit system specialArgs;
+        modules = [
+          pkgsCfg
+          inputs.disko.nixosModules.disko
+          inputs.impermanence.nixosModules.impermanence
+          inputs.sops-nix.nixosModules.sops
+          "${workDir}/host/${name}.nix"
 
-            modules = [
-              pkgsCfg
-              inputs.disko.nixosModules.disko
-              inputs.impermanence.nixosModules.impermanence
-              inputs.sops-nix.nixosModules.sops
-              path
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              inherit extraSpecialArgs;
+              useUserPackages = true;
 
-              home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  inherit extraSpecialArgs;
-                  useUserPackages = true;
+              sharedModules = [
+                pkgsCfg
+              ];
 
-                  sharedModules = [
-                    pkgsCfg
-                  ];
-
-                  users = builtins.mapAttrs (_: import) homeCfgs;
-                };
-              }
-            ];
+              users = lib.mergeAttrsList (builtins.map (user: {${user} = import "${workDir}/home/${user}.nix";}) users);
+            };
           }
-      )
-      hostCfgs;
+        ];
+      };
+  in {
+    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
+
+    nixosConfigurations = {
+      hamilton = mkHostCfg "hamilton" ["root" "aftix"];
+
+      "iso-minimal-${system}" = nixpkgs.lib.nixosSystem {
+        inherit specialArgs;
+
+        modules = [
+          {nixpkgs.hostPlatform = system;}
+          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+          "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+          pkgsCfg
+          inputs.disko.nixosModules.disko
+          inputs.impermanence.nixosModules.impermanence
+          inputs.sops-nix.nixosModules.sops
+          ./host/iso-minimal.nix
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              inherit extraSpecialArgs;
+              useUserPackages = true;
+
+              sharedModules = [
+                pkgsCfg
+              ];
+
+              users = {
+                root = ./home/root.nix;
+                nixos = ./home/nixos.nix;
+              };
+            };
+          }
+        ];
+      };
+    };
 
     nixosModules = {
       homeCommon = import ./home/common;
