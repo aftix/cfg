@@ -11,6 +11,53 @@
 in {
   home.packages = lib.mkIf cfg.enable [pkgs.elvish];
 
+  my.docs.pages.elvish = let
+    inherit (config.my.lib) mergeTagged;
+  in {
+    _docsName = "Extra shell functions and modules for elvish";
+    _docsExtraSections =
+      {
+        Functions = mergeTagged (builtins.map ({
+            name,
+            body,
+            docs ? "",
+            ...
+          }: {
+            tag = name;
+            content =
+              if docs == ""
+              then body
+              else docs;
+          })
+          cfg.extraFunctions);
+      }
+      // (
+        if cfg.development
+        then {
+          Aliases = mergeTagged [
+            {
+              tag = "k";
+              content = "make -j(nproc)";
+            }
+            {
+              tag = "kd";
+              content = "make -j(nproc) DEBUG=yes";
+            }
+          ];
+        }
+        else {}
+      );
+
+    _docsSeeAlso = let
+      inherit (config.my.docs) prefix;
+    in [
+      {
+        name = prefix + "-shell";
+        mansection = 7;
+      }
+    ];
+  };
+
   xdg.configFile =
     {
       "elvish/rc.elv".text = let
@@ -148,6 +195,7 @@ in {
             command,
             completer ? "",
             external ? false,
+            ...
           }: let
             cmd =
               if external
@@ -185,6 +233,7 @@ in {
               name,
               arguments ? "",
               body,
+              ...
             }: let
               args =
                 if arguments != ""
