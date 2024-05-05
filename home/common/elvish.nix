@@ -300,9 +300,9 @@ in {
 
         ${starshipInit}
         iterm2:init
-        if (has-external nh) {
-          e:nh completions --shell elvish | eval (slurp)
-        }
+
+        # Extra completions
+        ${builtins.concatStringsSep "\n" cfg.extraCompletions}
 
         # Extra config
         ${cfg.extraConfig}

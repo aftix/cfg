@@ -103,6 +103,14 @@ in {
           '';
         };
 
+        extraCompletions = mkOption {
+          default = [];
+          description = ''
+            A list of extra completions to include. Each completion is a string.
+            Every item gets converted into elvish verbatim, before extraConfig
+          '';
+        };
+
         extraConfig = mkOption {
           default = "";
           description = "Newline delimited string that will be inserted verbatim at the end of rc.elv";
@@ -258,56 +266,62 @@ in {
       ];
       neededDirs = [config.home.sessionVariables.CREDENTIALS_DIRECTORY];
 
-      elvish.extraFunctions = [
-        {
-          name = "fzfd";
-          arguments = "@query";
-          body = ''
-            var q = ""
-            if (> (count $query) 0) {
-              set q = (e:fzf --walker dir,follow -q $query[0])
-            } else {
-              set q = (e:fzf --walker dir,follow)
-            }
+      elvish = {
+        extraCompletions = [
+          "e:nh completions --shell elvish | eval (slurp)"
+        ];
 
-            if (!=s "" $q) {
-              cd $q
-            }
-          '';
-        }
-        {
-          name = "fzfdh";
-          arguments = "@query";
-          body = ''
-            var q = ""
-            if (> (count $query) 0) {
-              set q = (e:fzf --walker dir,follow,hidden -q $query[0])
-            } else {
-              set q = (e:fzf --walker dir,follow,hidden)
-            }
+        extraFunctions = [
+          {
+            name = "fzfd";
+            arguments = "@query";
+            body = ''
+              var q = ""
+              if (> (count $query) 0) {
+                set q = (e:fzf --walker dir,follow -q $query[0])
+              } else {
+                set q = (e:fzf --walker dir,follow)
+              }
 
-            if (!=s "" $q) {
-              cd $q
-            }
-          '';
-        }
-        {
-          name = "fzfe";
-          arguments = "@query";
-          body = ''
-            var q = ""
-            if (> (count $query) 0) {
-              set q = (e:fzf -q $query[0])
-            } else {
-              set q = (e:fzf)
-            }
+              if (!=s "" $q) {
+                cd $q
+              }
+            '';
+          }
+          {
+            name = "fzfdh";
+            arguments = "@query";
+            body = ''
+              var q = ""
+              if (> (count $query) 0) {
+                set q = (e:fzf --walker dir,follow,hidden -q $query[0])
+              } else {
+                set q = (e:fzf --walker dir,follow,hidden)
+              }
 
-            if (!=s "" $q) {
-              (external $E:EDITOR) $q
-            }
-          '';
-        }
-      ];
+              if (!=s "" $q) {
+                cd $q
+              }
+            '';
+          }
+          {
+            name = "fzfe";
+            arguments = "@query";
+            body = ''
+              var q = ""
+              if (> (count $query) 0) {
+                set q = (e:fzf -q $query[0])
+              } else {
+                set q = (e:fzf)
+              }
+
+              if (!=s "" $q) {
+                (external $E:EDITOR) $q
+              }
+            '';
+          }
+        ];
+      };
     };
 
     programs = {
