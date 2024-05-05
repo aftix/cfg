@@ -4,7 +4,7 @@
   config,
   ...
 }: let
-  inherit (lib) mkIf mkDefault;
+  inherit (lib) mkIf mkDefault mkMerge;
   inherit (lib.options) mkOption;
   inherit (config.xdg) dataHome cacheHome stateHome;
   cfg = config.my.development;
@@ -86,15 +86,19 @@ in {
         )
       );
 
-      sessionVariables = {
-        RUSTC_WRAPPER = mkIf cfg.rust (mkDefault "${pkgs.sccache}/bin/sccache");
-        RUSTUP_HOME = mkIf cfg.rust (mkDefault "${stateHome}/rustup");
-        CARGO_HOME = mkIf cfg.rust (mkDefault "${stateHome}/cargo");
-        CARGO_INSTALL_ROOT = mkIf cfg.rust (mkDefault "${dataHome}/bin");
-        GOPATH = mkIf cfg.go (mkDefault "${dataHome}/go");
-        GOCACHE = mkIf cfg.go (mkDefault "${cacheHome}/go/build");
-        GOMODCACHE = mkIf cfg.go (mkDefault "${cacheHome}/go/mod");
-      };
+      sessionVariables = mkMerge [
+        (mkIf cfg.rust {
+          RUSTC_WRAPPER = mkDefault "${pkgs.sccache}/bin/sccache";
+          RUSTUP_HOME = mkDefault "${stateHome}/rustup";
+          CARGO_HOME = mkDefault "${stateHome}/cargo";
+          CARGO_INSTALL_ROOT = mkDefault "${dataHome}/bin";
+        })
+        (mkIf cfg.go {
+          GOPATH = mkDefault "${dataHome}/go";
+          GOCACHE = mkDefault "${cacheHome}/go/build";
+          GOMODCACHE = mkDefault "${cacheHome}/go/mod";
+        })
+      ];
 
       sessionPath =
         ["${dataHome}/bin"]
@@ -143,27 +147,35 @@ in {
       };
     };
 
-    systemd.user.services.linkGh = let
-      cDir = "${config.home.homeDirectory}/.config";
-      share = "${config.home.homeDirectory}/.local/share";
-    in
-      mkIf cfg.gh {
-        Unit.Description = "Link gh hosts file";
-        Service = {
-          Type = "oneshot";
-          ExecStart = ''
-            ${pkgs.coreutils}/bin/mkdir -p "${cDir}/gh" ; \
-            ${pkgs.coreutils}/bin/ln -sf "${share}/gh/hosts.yml" "${cDir}/gh/hosts.yml"
-          '';
-        };
-        Install.WantedBy = ["default.target"];
-      };
+    systemd.user.services = mkMerge [
+      (mkIf cfg.gh {
+        linkGh = let
+          cDir = "${config.home.homeDirectory}/.config";
+          share = "${config.home.homeDirectory}/.local/share";
+        in
+          mkIf cfg.gh {
+            Unit.Description = "Link gh hosts file";
+            Service = {
+              Type = "oneshot";
+              ExecStart = ''
+                ${pkgs.coreutils}/bin/mkdir -p "${cDir}/gh" ; \
+                ${pkgs.coreutils}/bin/ln -sf "${share}/gh/hosts.yml" "${cDir}/gh/hosts.yml"
+              '';
+            };
+            Install.WantedBy = ["default.target"];
+          };
+      })
+    ];
 
-    xdg.configFile."npm/npmrc".source = mkIf cfg.typescript ((pkgs.formats.keyValue {}).generate "npm" {
-      prefix = "\${XDG_DATA_HOME}/npm";
-      cache = "\${XDG_CACHE_HOME}/npm";
-      init-module = "\${XDG_CONFIG_HOME}/npm/config/npm-init.js";
-      logs-dir = "\${XDG_CACHE_HOME}/npm/logs";
-    });
+    xdg.configFile = mkMerge [
+      (mkIf cfg.typescript {
+        "npm/npmrc".source = (pkgs.formats.keyValue {}).generate "npm" {
+          prefix = "\${XDG_DATA_HOME}/npm";
+          cache = "\${XDG_CACHE_HOME}/npm";
+          init-module = "\${XDG_CONFIG_HOME}/npm/config/npm-init.js";
+          logs-dir = "\${XDG_CACHE_HOME}/npm/logs";
+        };
+      })
+    ];
   };
 }
