@@ -8,12 +8,16 @@
     ./channels.nix
     ./network.nix
     ./nh.nix
-    ./users.nix
+    ./root.nix
   ];
 
-  options.my.flake = lib.options.mkOption {
-    default = "/home/aftix/src/cfg";
-    description = "Location of NixOS configuration flake";
+  options.my = {
+    flake = lib.options.mkOption {
+      default = "/home/aftix/src/cfg";
+      description = "Location of NixOS configuration flake";
+    };
+
+    users.aftix.enable = lib.options.mkEnableOption "aftix";
   };
 
   config = {
@@ -59,7 +63,15 @@
       kernel.sysctl."kernel.sysrq" = 1;
     };
 
-    security.unprivilegedUsernsClone = lib.mkDefault true;
+    security = {
+      unprivilegedUsernsClone = lib.mkDefault true;
+
+      sudo = {
+        enable = true;
+        execWheelOnly = true;
+        extraConfig = "Defaults lecture = never";
+      };
+    };
 
     documentation.man = {
       enable = true;
@@ -69,9 +81,13 @@
     programs = {
       fuse.userAllowOther = true;
       nix-ld.enable = true;
-      zsh.interactiveShellInit = builtins.readFile ../../_external/.zshrc;
+      zsh = {
+        enable = true;
+        interactiveShellInit = builtins.readFile ../../_external/.zshrc;
+      };
     };
 
+    users.mutableUsers = false;
     i18n.defaultLocale = "en_US.UTF-8";
     console.font = "Lat2-Terminus16";
   };
