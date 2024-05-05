@@ -84,6 +84,19 @@ in {
                             ]
                             ++ cfg.rootDrive.mountOptions;
                         };
+                        "local/${username}/trash" = {
+                          mountpoint = "${home}/.local/share/Trash";
+                          mountOptions =
+                            [
+                              "nodev"
+                              "nosuid"
+                              "noexec"
+                              "mode=0750"
+                              "uid=${builtins.toString uid}"
+                              "gid=${builtins.toString gid}"
+                            ]
+                            ++ cfg.rootDrive.mountOptions;
+                        };
                       })
                       cfg.rootDrive.xdgSubvolumeUsers)
                     ++ [
