@@ -5,9 +5,11 @@
 }: {
   imports = [
     ../hardware/hamilton.nix
+    ../hardware/disko/hamilton.nix
     ../hardware/opt/backup.nix
     ./common
 
+    ./opt/aftix.nix
     ./opt/bluetooth.nix
     ./opt/clamav.nix
     ./opt/cups.nix
@@ -17,6 +19,30 @@
     ./opt/syncthing.nix
     ./opt/vpn.nix
   ];
+
+  my.disko = {
+    rootDrive = {
+      name = "nvme0n1";
+      mountOptions = ["discard=async" "relatime" "nodiratime"];
+
+      xdgSubvolumeUsers = ["aftix"];
+    };
+
+    massDrive = {
+      name = "sda";
+
+      subvolumes = [
+        {
+          name = "media";
+          mountpoint = "/home/aftix/media";
+        }
+        {
+          name = "transmission";
+          mountpoint = "/home/aftix/.transmission";
+        }
+      ];
+    };
+  };
 
   environment = {
     systemPackages = with pkgs; [
@@ -52,12 +78,13 @@
     Address = ["192.168.1.179/24"];
     Gateway = "192.168.1.1";
   };
-  networking.hostName = "hamilton";
+  networking = {
+    hostName = "hamilton";
+    useDHCP = false;
+  };
 
   documentation.dev.enable = true;
   time.timeZone = "America/Chicago";
-
-  programs.zsh.enable = true;
 
   services = {
     udisks2.enable = true;
@@ -83,31 +110,9 @@
     '';
   };
 
-  fileSystems = let
-    noAtime = ["relatime" "nodiratime"];
-    ssd = ["discard=async"] ++ noAtime;
-    noDevSuid = ["nodev" "nosuid"];
-    noExec = ["noexec"] ++ noDevSuid;
-  in {
-    "/".options = ssd;
-    "/nix".options = ssd;
-    "/boot".options = noExec;
-
-    "/persist" = {
-      neededForBoot = true;
-      options = ssd;
-    };
-    "/state" = {
-      neededForBoot = true;
-      options = ssd;
-    };
-
-    "/home".options = ssd ++ noDevSuid;
-    "/home/aftix/.config".options = noDevSuid;
-    "/home/aftix/.cache".options = ssd ++ noExec;
-    "/home/aftix/media".options = noAtime ++ noExec;
-    "/home/aftix/.transmission".options = noAtime ++ noExec;
-    "/home/aftix/.local/state".options = ssd;
+  fileSystems = {
+    "/persist".neededForBoot = true;
+    "/state".neededForBoot = true;
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

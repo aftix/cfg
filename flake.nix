@@ -9,6 +9,9 @@
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:aftix/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -65,6 +68,7 @@
 
             modules = [
               pkgsCfg
+              inputs.disko.nixosModules.disko
               inputs.impermanence.nixosModules.impermanence
               inputs.sops-nix.nixosModules.sops
               path
