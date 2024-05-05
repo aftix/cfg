@@ -126,7 +126,7 @@ in {
         ...
       }: ".TP\n\\fB${tag}\\fP\n${content}";
       mergeTagged = lst: builtins.concatStringsSep "\n" (map tagged lst);
-      mergeTaggedAttrs = attrs: mergeTagged (mapAttrsToList (name: value: value) attrs);
+      mergeTaggedAttrs = attrs: mergeTagged (mapAttrsToList (_: value: value) attrs);
 
       URI = uri: ".UR ${uri}\n.UE\n";
       mailto = address: ".MT ${mailto}\n.ME\n";
@@ -147,7 +147,7 @@ in {
 
       section = title: content: ".SH ${title}\n${content}";
       subsection = title: content: ".SS ${title}\n${content}";
-      mergeSubsections = attrs: builtins.concatStringsSep "\n" (mapAttrsToList (name: value: subsection name value) attrs);
+      mergeSubsections = attrs: builtins.concatStringsSep "\n" (mapAttrsToList subsection attrs);
       paragraph = text: ".PP\n" + text;
 
       example = caption: content: ''
@@ -181,7 +181,7 @@ in {
               else ""
             )
           ]
-          ++ (mapAttrsToList (title: content: section title content) _docsExtraSections)
+          ++ (mapAttrsToList section _docsExtraSections)
           ++ [
             (section "SEE ALSO" (
               mergeManURIs
