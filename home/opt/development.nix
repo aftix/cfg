@@ -48,7 +48,7 @@ in {
                 cargo-crev
               ]
               ++ (
-                if pkgs.system == "x86_64-linux"
+                if lib.strings.hasSuffix "-linux" pkgs.system
                 then [cargo-llvm-cov]
                 else []
               ))

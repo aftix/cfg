@@ -38,8 +38,8 @@ in {
     };
 
     transforms = mkOption {
-      default = {};
       type = uniq attrs;
+      readOnly = true;
     };
   };
 

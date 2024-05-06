@@ -14,7 +14,8 @@
     stateHome = "${config.home.homeDirectory}/.local/state";
 
     userDirs = {
-      enable = pkgs.system == "x86_64-linux";
+      enable = lib.strings.hasSuffix "-linux" pkgs.system;
+
       desktop = null;
       documents = lib.mkDefault "${config.home.homeDirectory}/doc";
       music = lib.mkDefault "${config.home.homeDirectory}/media/music";
@@ -24,7 +25,7 @@
     };
 
     # Setup xdg default programs
-    mime.enable = pkgs.system == "x86_64-linux";
-    mimeApps.enable = pkgs.system == "x86_64-linux";
+    mime.enable = lib.strings.hasSuffix "-linux" pkgs.system;
+    mimeApps.enable = lib.strings.hasSuffix "-linux" pkgs.system;
   };
 }

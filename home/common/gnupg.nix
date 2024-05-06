@@ -8,9 +8,9 @@
   inherit (config.xdg) dataHome;
 in {
   nixpkgs.overlays = [
-    (final: prev: {
-      pinentry-custom = pkgs.writeScriptBin "pinentry-custom" ''
-        #!${pkgs.stdenv.shell}
+    (_: prev: {
+      pinentry-custom = prev.writeScriptBin "pinentry-custom" ''
+        #!${prev.stdenv.shell}
         if [ -z "$PINENTRY_USER_DATA" ] ; then
           exec pinentry-curses "$@"
           exit 0
@@ -18,20 +18,20 @@ in {
 
         case $PINENTRY_USER_DATA in
         qt)
-          exec ${pkgs.pinentry-qt}/bin/pinentry-qt "$@"
+          exec ${prev.pinentry-qt}/bin/pinentry-qt "$@"
           ;;
         none)
           exit 1
           ;;
         *)
-          exec ${pkgs.pinentry-qt}/bin/pinentry-curses "$@"
+          exec ${prev.pinentry-qt}/bin/pinentry-curses "$@"
         esac
       '';
     })
   ];
 
   home.packages = with pkgs;
-    mkIf (system == "x86_64-linux") [
+    mkIf (lib.strings.hasSuffix "-linux" pkgs.system) [
       pinentry-qt
       pinentry-custom
     ];
@@ -46,7 +46,7 @@ in {
   };
 
   services.gpg-agent = {
-    enable = pkgs.system == "x86_64-linux";
+    enable = lib.strings.hasSuffix "-linux" pkgs.system;
     extraConfig = mkDefault ''
       pinentry-program ${pkgs.pinentry-custom}/bin/pinentry-custom
     '';
