@@ -1,10 +1,26 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  hyprPkgs,
+  ...
+}: let
+  inherit (lib) mkDefault;
+in {
   environment.systemPackages = with pkgs; [
     catppuccin-sddm-corners
     kdePackages.kwin
   ];
 
-  programs.hyprland.enable = true;
+  nix.settings = {
+    substituters = ["https://hyprland.cachix.org"];
+    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+  };
+
+  programs.hyprland = {
+    enable = mkDefault true;
+    #    package = hyprPkgs.hyprland;
+  };
+
   console.useXkbConfig = true;
 
   services = {
@@ -12,7 +28,7 @@
       enable = true;
       wayland.enable = true;
 
-      theme = "catppuccin-sddm-corners";
+      theme = mkDefault "catppuccin-sddm-corners";
 
       autoNumlock = true;
       settings = {
@@ -20,8 +36,8 @@
           GreeterEnvironment = "QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
         };
         Autologin = {
-          Session = "hyprland";
-          User = "aftix";
+          Session = mkDefault "hyprland";
+          User = mkDefault "aftix";
         };
         Wayland = {
           CompositorCommand = "kwin";
@@ -31,9 +47,9 @@
     };
 
     xserver.xkb = {
-      layout = "us";
-      variant = "dvorak";
-      options = "compose:prsc,caps:escape";
+      layout = mkDefault "us";
+      variant = mkDefault "dvorak";
+      options = mkDefault "compose:prsc,caps:escape";
     };
   };
 
