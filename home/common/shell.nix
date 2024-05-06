@@ -1,9 +1,11 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }: let
   inherit (lib.options) mkOption;
+  cfg = config.my.shell;
 in {
   options.my.shell = {
     aliases = mkOption {
@@ -18,7 +20,7 @@ in {
         Can also contain an optional key 'external' which will prepend the command with e: in elvish
 
         Can also contain an optional key 'docs' which will be substituted into the manual page for the host
-          instead of the command
+          instead of the command. Set this to any non-string non-null value to skip documenting the alias
       '';
     };
 
@@ -123,6 +125,8 @@ in {
   };
 
   config = {
+    home.packages = [pkgs.stty];
+
     programs.starship = {
       enable = true;
       settings = {
@@ -150,10 +154,10 @@ in {
                 then command
                 else docs;
             })
-            config.my.shell.aliases);
+            (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.aliases));
         };
         _docsSeeAlso =
-          if config.my.shell.elvish.enable
+          if cfg.elvish.enable
           then [
             {
               name = config.my.docs.prefix + "-elvish";
@@ -210,11 +214,18 @@ in {
             command = "date -R";
             external = true;
           }
+          {
+            name = "diff";
+            command = "diff --color=auto";
+            external = true;
+            docs = false;
+          }
 
           {
             name = "ls";
             command = "ls --color=auto -F -H -h";
             external = true;
+            docs = false;
           }
           {
             name = "ll";
@@ -237,28 +248,28 @@ in {
             name = "cp";
             command = "cp -iv";
             external = true;
+            docs = false;
           }
           {
             name = "df";
             command = "df -h";
             external = true;
+            docs = false;
           }
           {
             name = "du";
             command = "du -h";
             external = true;
+            docs = false;
           }
           {
             name = "mv";
             command = "mv -iv";
             external = true;
-          }
-          {
-            name = "diff";
-            command = "diff --color=auto";
-            external = true;
+            docs = false;
           }
         ];
+
         neededDirs = [config.home.sessionVariables.CREDENTIALS_DIRECTORY];
 
         elvish = {
