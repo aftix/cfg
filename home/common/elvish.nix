@@ -4,8 +4,8 @@
   lib,
   ...
 }: let
-  inherit (lib.attrsets) mapAttrsToList mergeAttrsList;
-  inherit (lib.strings) escapeShellArg hasPrefix;
+  inherit (lib.attrsets) mapAttrsToList mergeAttrsList optionalAttrs;
+  inherit (lib.strings) escapeShellArg hasPrefix optionalString;
   shellCfg = config.my.shell;
   cfg = shellCfg.elvish;
 in {
@@ -31,22 +31,20 @@ in {
           })
           (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.extraFunctions));
       }
-      // (
-        if cfg.development
-        then {
-          Aliases = mergeTagged [
-            {
-              tag = "k";
-              content = "make -j(nproc)";
-            }
-            {
-              tag = "kd";
-              content = "make -j(nproc) DEBUG=yes";
-            }
-          ];
-        }
-        else {}
-      );
+      // optionalAttrs
+      shellCfg.development
+      {
+        Aliases = mergeTagged [
+          {
+            tag = "k";
+            content = "make -j(nproc)";
+          }
+          {
+            tag = "kd";
+            content = "make -j(nproc) DEBUG=yes";
+          }
+        ];
+      };
 
     _docsSeeAlso = let
       inherit (config.my.docs) prefix;
@@ -81,19 +79,14 @@ in {
           builtins.concatStringsSep "\n" (
             mapAttrsToList (name: val: "set-env ${escapeShellArg name} ${escapeShellArg val}") vars
           );
-        xdgBases = with config.xdg; {
-          XDG_CONFIG_HOME = configHome;
-          XDG_DATA_HOME = dataHome;
-          XDG_CACHE_HOME = cacheHome;
-          XDG_STATE_HOME = stateHome;
-        };
-        createXdgBases = builtins.concatStringsSep "\n" (mapAttrsToList (_: val: ''
-            mkdir -p ${escapeShellArg val}
-          '')
-          xdgBases);
 
         setXdgBases = let
-          base = setEnvVars xdgBases;
+          base = setEnvVars (with config.xdg; {
+            XDG_CONFIG_HOME = configHome;
+            XDG_DATA_HOME = dataHome;
+            XDG_CACHE_HOME = cacheHome;
+            XDG_STATE_HOME = stateHome;
+          });
         in
           if lib.strings.hasSuffix "-linux" pkgs.system
           then ''
@@ -107,7 +100,7 @@ in {
         setLocaleVars = setEnvVars shellCfg.shellLocale;
 
         createExtraDirs = builtins.concatStringsSep "\n" (builtins.map
-          (path: "mkdir -p ${escapeShellArg path}")
+          (path: "mkdir -p " + escapeShellArg path)
           shellCfg.neededDirs);
         sourceExtraEnv = builtins.concatStringsSep "\n" (builtins.map (
             path: let
@@ -192,7 +185,7 @@ in {
           }: let
             cmd =
               if external
-              then "e:${command}"
+              then "e:" + command
               else command;
             completion =
               if builtins.isAttrs completer
@@ -241,7 +234,7 @@ in {
           cfg.extraFunctions);
 
         devInit =
-          if cfg.development
+          if shellCfg.development
           then ''
             # Setup development aliases
 
@@ -283,9 +276,6 @@ in {
 
         # Add home.sessionVariables to elvish interactive environment
         ${setSessionVars}
-
-        # Create XDG base directories
-        ${createXdgBases}
 
         # Create extra directories
         ${createExtraDirs}
@@ -331,9 +321,7 @@ in {
         fn cd {|@args| jump:jump $@args }
 
         ${
-          if config.services.ssh-agent.enable
-          then "set-env SSH_AUTH_SOCK (path:join $E:XDG_RUNTIME_DIR ssh-agent)"
-          else ""
+          optionalString config.services.ssh-agent.enable "set-env SSH_AUTH_SOCK (path:join $E:XDG_RUNTIME_DIR ssh-agent)"
         }
 
         fn upgrade {

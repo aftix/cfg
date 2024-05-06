@@ -11,6 +11,7 @@ in {
   imports = [
     ./mylib.nix
 
+    ./bash.nix
     ./documentation.nix
     ./elvish.nix
     ./gnupg.nix
@@ -18,6 +19,7 @@ in {
     ./shell.nix
     ./tldr.nix
     ./xdg.nix
+    ./zsh.nix
   ];
 
   options.my.registerMimes = mkOption {default = true;};
@@ -54,7 +56,6 @@ in {
         CREDENTIALS_DIRECTORY = mkDefault "${dataHome}/systemd-creds";
         HISTFILE = mkDefault "${stateHome}/bash/history";
         LESSHISTFILE = mkDefault "-";
-        ZDOTDIR = mkDefault "${configHome}/zsh";
 
         EDITOR = mkDefault "micro";
         MANPAGER = mkDefault "${pkgs.coreutils}/bin/less";
