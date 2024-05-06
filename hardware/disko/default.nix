@@ -4,8 +4,8 @@ in {
   options.my.disko = {
     rootDrive = {
       name = mkOption {
-        default = null;
         type = with lib.types; uniq str;
+        readOnly = true;
         description = "Name of the drive from lsblk (e.g. sda, nvme0n1)";
       };
 
@@ -22,14 +22,12 @@ in {
 
     massDrive = {
       name = mkOption {
-        default = null;
-        type = with lib.types; uniq str;
+        readOnly = true;
         description = "Name of the drive from lsblk (e.g. sda, nvme0n1)";
       };
 
       device = mkOption {
-        default = null;
-        type = with lib.types; nullOr (uniq path);
+        readOnly = true;
         description = "Optional name of a mass storage drive";
         example = "/dev/sda";
       };

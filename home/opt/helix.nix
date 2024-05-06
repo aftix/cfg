@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkDefault;
+  inherit (lib) mkOverride;
 in {
   home = {
     packages = with pkgs; [
@@ -16,8 +16,8 @@ in {
     ];
 
     sessionVariables = {
-      EDITOR = mkDefault "${pkgs.helix}/bin/hx";
-      VISUAL = mkDefault "${pkgs.helix}/bin/hx";
+      EDITOR = mkOverride 900 "${pkgs.helix}/bin/hx";
+      VISUAL = mkOverride 900 "${pkgs.helix}/bin/hx";
     };
   };
 

@@ -4,16 +4,16 @@
   ...
 }: {
   nixpkgs.overlays = [
-    (final: prev: {
-      aria2d = pkgs.writeScriptBin "aria2d" (let
+    (_: prev: {
+      aria2d = prev.writeScriptBin "aria2d" (let
         rpcDir = "${config.xdg.configHome}/aria2";
         rpcFile = "${rpcDir}/aria2d.env";
       in ''
-        #!${pkgs.stdenv.shell}
+        #!${prev.stdenv.shell}
         mkdir -p "${rpcDir}"
         dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > "${rpcFile}"
         source "${rpcFile}"
-        ${pkgs.aria2}/bin/aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
+        ${prev.aria2}/bin/aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
       '');
     })
   ];
