@@ -97,6 +97,18 @@
         sops-nix = inputs.sops-nix.homeManagerModules.sops;
       };
 
+    commonModules = [
+      pkgsCfg
+      home-manager.nixosModules.home-manager
+      inputs.sops-nix.nixosModules.sops
+      inputs.nix-index-database.nixosModules.nix-index
+    ];
+
+    commonHmModules = [
+      pkgsCfg
+      inputs.nix-index-database.hmModules.nix-index
+    ];
+
     mkHostCfg = name: users: let
       inherit (nixpkgs) lib;
       workDir = ./.;
@@ -104,72 +116,104 @@
       lib.nixosSystem {
         inherit specialArgs;
 
-        modules = [
-          pkgsCfg
+        modules =
+          commonModules
+          ++ [
+            inputs.disko.nixosModules.disko
+            inputs.impermanence.nixosModules.impermanence
 
-          inputs.disko.nixosModules.disko
-          inputs.impermanence.nixosModules.impermanence
-          inputs.sops-nix.nixosModules.sops
-          inputs.nix-index-database.nixosModules.nix-index
+            "${workDir}/host/${name}.nix"
 
-          "${workDir}/host/${name}.nix"
+            {
+              home-manager = {
+                inherit extraSpecialArgs;
+                useUserPackages = true;
 
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              inherit extraSpecialArgs;
-              useUserPackages = true;
+                sharedModules = commonHmModules;
 
-              sharedModules = [
-                pkgsCfg
-                inputs.nix-index-database.hmModules.nix-index
-              ];
-
-              users = lib.mergeAttrsList (builtins.map (user: {${user} = import "${workDir}/home/${user}.nix";}) users);
-            };
-          }
-        ];
+                users = lib.mergeAttrsList (builtins.map (user: {${user} = import "${workDir}/home/${user}.nix";}) users);
+              };
+            }
+          ];
       };
   in {
     inherit overlay;
 
     formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
 
-    nixosConfigurations = {
-      hamilton = mkHostCfg "hamilton" ["root" "aftix"];
+    nixosConfigurations =
+      {
+        hamilton = mkHostCfg "hamilton" ["root" "aftix"];
+      }
+      // (let
+        inherit (nixpkgs.lib) nixosSystem;
+        inherit (nixpkgs.lib.strings) hasSuffix;
+      in
+        flake-utils.lib.eachSystem
+        (builtins.filter (hasSuffix "-linux") flake-utils.lib.allSystems) (
+          isoSystem: {
+            "iso-minimal" = nixosSystem {
+              inherit specialArgs;
 
-      "iso-minimal-${system}" = nixpkgs.lib.nixosSystem {
-        inherit specialArgs;
+              modules =
+                commonModules
+                ++ [
+                  {nixpkgs.hostPlatform = isoSystem;}
+                  "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                  "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+                  inputs.disko.nixosModules.disko
+                  inputs.impermanence.nixosModules.impermanence
+                  ./host/iso-minimal.nix
 
-        modules = [
-          {nixpkgs.hostPlatform = system;}
-          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-          "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-          pkgsCfg
-          inputs.disko.nixosModules.disko
-          inputs.impermanence.nixosModules.impermanence
-          inputs.sops-nix.nixosModules.sops
-          ./host/iso-minimal.nix
+                  {
+                    home-manager = {
+                      inherit extraSpecialArgs;
+                      useUserPackages = true;
 
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              inherit extraSpecialArgs;
-              useUserPackages = true;
+                      sharedModules = commonHmModules;
 
-              sharedModules = [
+                      users = {
+                        root = ./home/root.nix;
+                        nixos = ./home/nixos.nix;
+                      };
+                    };
+                  }
+                ];
+            };
+
+            "iso-graphical" = nixpkgs.lib.nixosSystem {
+              inherit specialArgs;
+
+              modules = [
+                {nixpkgs.hostPlatform = isoSystem;}
+                "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
                 pkgsCfg
-              ];
+                inputs.disko.nixosModules.disko
+                inputs.impermanence.nixosModules.impermanence
+                inputs.sops-nix.nixosModules.sops
+                ./host/iso-graphical.nix
 
-              users = {
-                root = ./home/root.nix;
-                nixos = ./home/nixos.nix;
-              };
+                home-manager.nixosModules.home-manager
+                {
+                  home-manager = {
+                    inherit extraSpecialArgs;
+                    useUserPackages = true;
+
+                    sharedModules = [
+                      pkgsCfg
+                    ];
+
+                    users = {
+                      root = ./home/root.nix;
+                      nixos = ./home/nixos-graphical.nix;
+                    };
+                  };
+                }
+              ];
             };
           }
-        ];
-      };
-    };
+        ));
 
     nixosModules = {
       homeCommon = import ./home/common;
