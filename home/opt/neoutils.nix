@@ -42,16 +42,19 @@ in {
       {
         name = "gzip";
         command = "${pkgs.pigz}/bin/pigz";
+        docs = false;
       }
       {
         name = "bzip2";
         command = "${pkgs.pbzip2}/bin/pbzip2";
+        docs = false;
       }
 
       {
         name = "eza";
         command = "eza --icons";
         external = true;
+        docs = false;
       }
       {
         name = "ezal";
