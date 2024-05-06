@@ -6,20 +6,37 @@
     stablepkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     nur.url = "github:nix-community/NUR";
 
-    home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    nix-index-database.url = "github:nix-community/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:aftix/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
+
+    hyprland.url = "github:hyprwm/Hyprland/v0.40.0?submodules=1";
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+
+    waybar = {
+      url = "github:Alexays/Waybar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -36,6 +53,7 @@
       nixpkgs = {
         overlays = [
           nur.overlay
+          inputs.waybar.overlays.default
           (_: prev: {
             coreutils-full = prev.uutils-coreutils-noprefix;
 
@@ -57,7 +75,13 @@
 
     spkgs = stablepkgs.legacyPackages.${system};
 
-    specialArgs = {inherit spkgs inputs;};
+    specialArgs = {
+      inherit spkgs inputs;
+      hyprPkgs = {
+        inherit (inputs.hyprland.packages.${system}) hyprland hyprland-protocols xdg-desktop-portal-hyprland;
+        inherit (inputs.hyprland-plugins.packages.${system}) hyprbars hyprexpo;
+      };
+    };
     extraSpecialArgs =
       specialArgs
       // {
