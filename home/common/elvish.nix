@@ -29,7 +29,7 @@ in {
               then body
               else docs;
           })
-          cfg.extraFunctions);
+          (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.extraFunctions));
       }
       // (
         if cfg.development
@@ -310,7 +310,7 @@ in {
         # Import modules
         ${importMods}
 
-        # Disable ^S and ^q
+        # Disable ^S and ^Q
         stty -ixon
 
         ${fixGpg}
