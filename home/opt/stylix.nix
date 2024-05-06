@@ -56,6 +56,7 @@
     targets = {
       tofi.enable = true;
       helix.enable = false;
+      xresources.enable = false;
       kde.enable = pkgs.system == "x86_64-linux";
       gnome.enable = pkgs.system == "x86_64-linux";
     };

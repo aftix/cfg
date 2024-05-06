@@ -31,7 +31,17 @@
 
     pkgsCfg = {
       nixpkgs = {
-        overlays = [nur.overlay];
+        overlays = [
+          nur.overlay
+          (_: prev: {
+            coreutils-full = prev.uutils-coreutils-noprefix;
+
+            stty = prev.writeScriptBin "stty" ''
+              #!${prev.stdenv.shell}
+              ${prev.busybox}/bin/stty $@
+            '';
+          })
+        ];
         config.allowUnfreePredicate = pkg:
           builtins.elem (nixpkgs.lib.getName pkg) [
             "discord"
