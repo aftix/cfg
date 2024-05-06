@@ -14,6 +14,9 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:aftix/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -72,9 +75,12 @@
 
         modules = [
           pkgsCfg
+
           inputs.disko.nixosModules.disko
           inputs.impermanence.nixosModules.impermanence
           inputs.sops-nix.nixosModules.sops
+          inputs.nix-index-database.nixosModules.nix-index
+
           "${workDir}/host/${name}.nix"
 
           home-manager.nixosModules.home-manager
@@ -85,6 +91,7 @@
 
               sharedModules = [
                 pkgsCfg
+                inputs.nix-index-database.hmModules.nix-index
               ];
 
               users = lib.mergeAttrsList (builtins.map (user: {${user} = import "${workDir}/home/${user}.nix";}) users);

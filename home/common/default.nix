@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib.options) mkOption;
-  inherit (lib) mkDefault;
+  inherit (lib) mkDefault mkForce;
   inherit (config.xdg) configHome dataHome stateHome;
 in {
   imports = [
@@ -23,6 +23,8 @@ in {
   options.my.registerMimes = mkOption {default = true;};
 
   config = {
+    nix.settings.use-xdg-base-directories = true;
+
     home = {
       language.base = mkDefault "en_US";
 
@@ -46,12 +48,14 @@ in {
 
       sessionVariables = {
         FZF_DEFAULT_OPTS = mkDefault "--layout=reverse --height 40%";
-        LESSHISTFILE = mkDefault "-";
+
+        CREDENTIALS_DIRECTORY = mkDefault "${dataHome}/systemd-creds";
         HISTFILE = mkDefault "${stateHome}/bash/history";
+        LESSHISTFILE = mkDefault "-";
+        ZDOTDIR = mkDefault "${configHome}/zsh";
+
         PAGER = mkDefault "${pkgs.coreutils}/bin/less";
         MANPAGER = mkDefault "${pkgs.coreutils}/bin/less";
-        CREDENTIALS_DIRECTORY = mkDefault "${dataHome}/systemd-creds";
-        ZDOTDIR = mkDefault "${configHome}/zsh";
       };
 
       sessionPath = [
@@ -60,7 +64,16 @@ in {
       ];
     };
 
-    programs.home-manager.enable = true;
+    gtk.gtk2.configLocation = "${configHome}/gtk-2.0/gtkrc";
+    xresources.properties = mkForce null;
+
+    programs = {
+      home-manager.enable = true;
+
+      nix-index-database.comma.enable = true;
+      command-not-found.enable = false;
+    };
+
     services.ssh-agent.enable = pkgs.system == "x86_64-linux";
     systemd.user.startServices = true;
   };

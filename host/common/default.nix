@@ -22,7 +22,6 @@
 
   config = {
     environment.systemPackages = with pkgs; [
-      nix-index
       home-manager
 
       killall
@@ -41,7 +40,12 @@
 
     nix = {
       nixPath = ["/nix/var/nix/profiles/per-user/root/channels"];
-      settings.experimental-features = ["nix-command" "flakes"];
+
+      settings = {
+        experimental-features = ["nix-command" "flakes"];
+        use-xdg-base-directories = true;
+      };
+
       optimise.automatic = true;
     };
 
@@ -85,6 +89,9 @@
         enable = true;
         interactiveShellInit = builtins.readFile ../../_external/.zshrc;
       };
+
+      nix-index-database.comma.enable = true;
+      command-not-found.enable = false;
     };
 
     users.mutableUsers = false;
