@@ -15,6 +15,7 @@ in {
         dust
         ripgrep
         rsync
+        fd
 
         pigz
         lzip
