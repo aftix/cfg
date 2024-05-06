@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  hyprPkgs,
   ...
 }: let
   inherit (lib.options) mkOption;
@@ -113,12 +114,10 @@ in {
     home = {
       # Packages for hypr tools and DE-lite features
       packages = with pkgs; [
+        hyprcursor
         hyprlock
         hypridle
         hyprpaper
-        hyprcursor
-        xdg-desktop-portal-hyprland
-        hyprland-protocols
 
         pw-volume
         libnotify
@@ -206,6 +205,12 @@ in {
       xwayland.enable = true;
       systemd.enable = true;
 
+      package = hyprPkgs.hyprland;
+      plugins = with hyprPkgs; [
+        hyprbars
+        hyprexpo
+      ];
+
       settings = {
         "$terminal" = "${terminal}";
         "$menu" = "${menu}";
@@ -280,6 +285,14 @@ in {
           preserve_split = true;
         };
 
+        plugin.hyprbars = {
+          bar_height = 20;
+          hyprbars-button = [
+            "rgb(ff4040), 10, 󰖭, hyprctl dispatch killactive"
+            "rgb(eeee11), 10, , hyprctl dispatch fullscreen 1"
+          ];
+        };
+
         master.new_is_master = true;
         gestures.workspace_swipe = false;
         misc.force_default_wallpaper = 0;
@@ -318,6 +331,9 @@ in {
             "$mainMod CTRL, BracketLeft, layoutmsg, rollprev"
             "$mainMod CTRL, Period, layoutmsg, swapwithmaster"
             "$mainMod ALT, Period, layoutmsg, focusmaster"
+
+            # Plugin binds
+            "$mainMod, grave, hyprexpo:expo, toggle"
 
             # Misc keybinds
             "$mainMod, P, exec, $HOME/.config/bin/passmenu"
@@ -400,6 +416,8 @@ in {
           "idleinhibit focus, class:(mpv)"
 
           "group set, class:^(Discord)"
+
+          "plugin:hyprbars:nobar, floating:0"
         ];
 
         workspace =
