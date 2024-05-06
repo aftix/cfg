@@ -5,6 +5,9 @@
 }: {
   imports = [
     ./common
+
+    ./opt/display.nix
+    ./opt/sound.nix
   ];
 
   users.users.root.hashedPasswordFile = null;
@@ -21,6 +24,11 @@
   };
 
   console.keyMap = "dvorak";
+
+  services = {
+    udisks2.enable = true;
+    earlyoom.enable = true;
+  };
 
   networking = {
     hostName = "custom-install-iso-minimal";
