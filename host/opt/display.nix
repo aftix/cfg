@@ -18,7 +18,7 @@ in {
 
   programs.hyprland = {
     enable = mkDefault true;
-    #    package = hyprPkgs.hyprland;
+    package = hyprPkgs.hyprland;
   };
 
   console.useXkbConfig = true;
