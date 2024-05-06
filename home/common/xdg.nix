@@ -3,29 +3,43 @@
   config,
   pkgs,
   ...
-}: {
+}: let
+  inherit (lib) mkDefault;
+  inherit (lib.strings) hasSuffix;
+  inherit (config.home) homeDirectory;
+in {
   xdg = {
     enable = true;
 
     # Setup XDG_* variables
-    configHome = "${config.home.homeDirectory}/.config";
-    dataHome = "${config.home.homeDirectory}/.local/share";
-    cacheHome = "${config.home.homeDirectory}/.cache";
-    stateHome = "${config.home.homeDirectory}/.local/state";
+    configHome = homeDirectory + "/.config";
+    dataHome = homeDirectory + "/.local/share";
+    cacheHome = homeDirectory + "/.cache";
+    stateHome = homeDirectory + "/.local/state";
 
     userDirs = {
-      enable = lib.strings.hasSuffix "-linux" pkgs.system;
+      enable = hasSuffix "-linux" pkgs.system;
+      createDirectories = true;
 
-      desktop = null;
-      documents = lib.mkDefault "${config.home.homeDirectory}/doc";
-      music = lib.mkDefault "${config.home.homeDirectory}/media/music";
-      pictures = lib.mkDefault "${config.home.homeDirectory}/media/img";
-      publicShare = lib.mkDefault "${config.home.homeDirectory}/media/sync";
-      videos = lib.mkDefault "${config.home.homeDirectory}/media/video";
+      desktop = mkDefault null;
+      templates = mkDefault null;
+
+      documents = mkDefault "${homeDirectory}/doc";
+      music = mkDefault "${homeDirectory}/media/music";
+      pictures = mkDefault "${homeDirectory}/media/img";
+      publicShare = mkDefault "${homeDirectory}/media/sync";
+      videos = mkDefault "${homeDirectory}/media/video";
     };
 
     # Setup xdg default programs
-    mime.enable = lib.strings.hasSuffix "-linux" pkgs.system;
-    mimeApps.enable = lib.strings.hasSuffix "-linux" pkgs.system;
+    mime.enable = hasSuffix "-linux" pkgs.system;
+    mimeApps.enable = hasSuffix "-linux" pkgs.system;
   };
+
+  my.shell.neededDirs = with config.xdg; [
+    configHome
+    dataHome
+    cacheHome
+    stateHome
+  ];
 }

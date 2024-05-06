@@ -112,7 +112,7 @@ in {
     };
 
     my.shell = {
-      elvish.development = true;
+      development = true;
 
       upgradeCommands =
         if cfg.rust
