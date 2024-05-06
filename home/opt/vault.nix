@@ -7,13 +7,13 @@
   inherit (lib) mkDefault;
 in {
   nixpkgs.overlays = [
-    (final: prev: {
-      syncvault = pkgs.writeScriptBin "syncvault" ''
-        #!${pkgs.stdenv.shell}
+    (_: prev: {
+      syncvault = prev.writeScriptBin "syncvault" ''
+        #!${prev.stdenv.shell}
         shopt -s globstar
         export VAULT_NAMESPACE="admin"
-        export PATH="${pkgs.vault}/bin:${pkgs.sops}/bin:$PATH"
-        VAULT="${pkgs.vault}/bin/vault"
+        export PATH="${prev.vault}/bin:${prev.sops}/bin:$PATH"
+        VAULT="${prev.vault}/bin/vault"
 
         cd "${config.home.homeDirectory}/src/cfg" || exit
         sops exec-file --output-type json secrets.yaml "\"$VAULT\" kv put -mount=secret secrets @{}"

@@ -45,7 +45,7 @@
   '';
 in {
   nixpkgs.overlays = [
-    (final: prev: {
+    (_: _: {
       inherit waybar-dunst waybar-nordvpn waybar-backup;
     })
   ];

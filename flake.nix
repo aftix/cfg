@@ -49,19 +49,26 @@
   } @ inputs: let
     system = "x86_64-linux";
 
+    overlay = _: prev: {
+      coreutils-full = prev.uutils-coreutils-noprefix;
+
+      stty = prev.writeScriptBin "stty" (let
+        pkg =
+          if prev.lib.strings.hasSuffix "-linux" prev.system
+          then prev.busybox
+          else prev.coreutils;
+      in ''
+        #!${prev.stdenv.shell}
+        ${pkg}/bin/stty $@
+      '');
+    };
+
     pkgsCfg = {
       nixpkgs = {
         overlays = [
           nur.overlay
           inputs.waybar.overlays.default
-          (_: prev: {
-            coreutils-full = prev.uutils-coreutils-noprefix;
-
-            stty = prev.writeScriptBin "stty" ''
-              #!${prev.stdenv.shell}
-              ${prev.busybox}/bin/stty $@
-            '';
-          })
+          overlay
         ];
         config.allowUnfreePredicate = pkg:
           builtins.elem (nixpkgs.lib.getName pkg) [
@@ -124,6 +131,8 @@
         ];
       };
   in {
+    inherit overlay;
+
     formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
 
     nixosConfigurations = {

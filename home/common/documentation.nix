@@ -107,6 +107,7 @@ in {
       version = mkOption {
         default = "0.0.1";
         description = "Version number of documentation";
+        type = with lib.types; uniq str;
         readOnly = true;
       };
       enable = mkEnableOption "my.docs";

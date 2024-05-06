@@ -125,7 +125,7 @@ in {
   };
 
   config = {
-    home.packages = [pkgs.stty];
+    home.packages = with pkgs; [stty];
 
     programs.starship = {
       enable = true;

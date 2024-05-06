@@ -71,16 +71,9 @@ in {
           if shellCfg.addHomebrewPath
           then ''
             # Add homebrew prefix to path
-            add_to_path (${brewPath} --prefix)\"/bin\"
+            add_to_path (${brewPath} --prefix)'/bin'
             # Add homebrew environmental variables
-            eval (^
-              brew shellenv |^
-              grep -v "PATH" |^
-              each {|l| re:replace '^export' 'set-env' $l} |^
-              each {|l| re:replace '=' ' ' $l} |^
-              each {|l| re:replace '$;' \'\' $l} |^
-              to-terminated " "^
-            )
+            eval (brew shellenv | grep -v "PATH" | each {|l| re:replace 'export' 'set-env' $l} | each {|l| re:replace '=' ' ' $l} | each {|l| re:replace '$;' "" $l} | to-terminated " ")
           ''
           else "";
 
@@ -102,7 +95,7 @@ in {
         setXdgBases = let
           base = setEnvVars xdgBases;
         in
-          if pkgs.system == "x86_64-linux"
+          if lib.strings.hasSuffix "-linux" pkgs.system
           then ''
             ${base}
             if (not (has-env XDG_RUNTIME_DIR)) {

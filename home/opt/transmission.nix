@@ -5,11 +5,11 @@
   ...
 }: {
   nixpkgs.overlays = [
-    (final: prev: {
-      transmission-notify = pkgs.writeScriptBin "transmission-notify" ''
-        #!${pkgs.stdenv.shell}
-        export PATH="${pkgs.systemd}/bin:$PATH"
-        export PATH="${pkgs.libnotify}/bin:${pkgs.gawk}/bin:${pkgs.transmission_4}/bin:$PATH"
+    (_: prev: {
+      transmission-notify = prev.writeScriptBin "transmission-notify" ''
+        #!${prev.stdenv.shell}
+        export PATH="${prev.systemd}/bin:$PATH"
+        export PATH="${prev.libnotify}/bin:${prev.gawk}/bin:${prev.transmission_4}/bin:$PATH"
         source <(systemctl --user show-environment)
         export DBUS_SESSION_BUS_ADDRESS DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
