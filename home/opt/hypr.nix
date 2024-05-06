@@ -213,6 +213,7 @@ in {
 
         env = [
           "XCURSOR_SIZE,32"
+          "XCURSOR_PATH,/run/current-system/sw/share/icons:${config.xdg.dataHome}/icons"
           "QT_QPA_PLATFORM,wayland;xcb"
           "QT_QPA_PLATFORMTHEME,qt5c"
           "HOME,${config.home.homeDirectory}"
