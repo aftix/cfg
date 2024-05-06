@@ -50,11 +50,7 @@
   };
 
   my = {
-    shell.elvish = {
-      enable = true;
-      development = true;
-    };
-
+    shell.elvish.enable = true;
     docs = {
       enable = true;
       prefix = "hamilton";

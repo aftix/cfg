@@ -21,23 +21,27 @@
   };
 
   config = {
-    environment.systemPackages = with pkgs; [
-      home-manager
-      cachix
+    environment = {
+      systemPackages = with pkgs; [
+        home-manager
+        cachix
 
-      killall
-      curl
-      man-pages
-      man-pages-posix
+        killall
+        curl
+        man-pages
+        man-pages-posix
 
-      fuse
-      inotify-tools
-      usbutils
+        fuse
+        inotify-tools
+        usbutils
 
-      openssh
+        openssh
 
-      python3
-    ];
+        python3
+      ];
+
+      pathsToLink = ["/share/zsh" "/share/bash-completion"];
+    };
 
     nix = {
       nixPath = ["/nix/var/nix/profiles/per-user/root/channels"];
@@ -95,10 +99,7 @@
     programs = {
       fuse.userAllowOther = true;
       nix-ld.enable = true;
-      zsh = {
-        enable = true;
-        interactiveShellInit = builtins.readFile ../../_external/.zshrc;
-      };
+      zsh.enable = true;
 
       nix-index-database.comma.enable = true;
       command-not-found.enable = false;

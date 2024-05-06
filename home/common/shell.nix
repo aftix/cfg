@@ -24,6 +24,11 @@ in {
       '';
     };
 
+    development = mkOption {
+      default = false;
+      description = "enable development aliases in shell rcs";
+    };
+
     extraEnvFiles = mkOption {
       default = [];
       description = ''
@@ -67,10 +72,6 @@ in {
       enable = mkOption {
         default = true;
         type = with lib.types; uniq bool;
-      };
-      development = mkOption {
-        default = false;
-        description = "enable development aliases in rc.elv";
       };
 
       extraMods = mkOption {
