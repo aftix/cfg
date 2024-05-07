@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   nixpkgs.overlays = [
-    (_: prev: {
+    (_: _: {
       my-snapshot = pkgs.writeScriptBin "snapshot.bash" ''
         #!${pkgs.stdenv.shell}
         shopt -s nullglob globstar
