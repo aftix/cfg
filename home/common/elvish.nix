@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib.attrsets) mapAttrsToList mergeAttrsList optionalAttrs;
-  inherit (lib.strings) escapeShellArg hasPrefix optionalString;
+  inherit (lib.strings) escapeShellArg hasPrefix optionalString concatMapStringsSep;
   shellCfg = config.my.shell;
   cfg = shellCfg.elvish;
 in {
@@ -59,7 +59,7 @@ in {
   xdg.configFile =
     {
       "elvish/rc.elv".text = let
-        pathsToAdd = builtins.concatStringsSep " " (builtins.map escapeShellArg config.home.sessionPath);
+        pathsToAdd = concatMapStringsSep " " escapeShellArg config.home.sessionPath;
         homebrewPath = let
           brewPath =
             if hasPrefix "x86_64" pkgs.system
@@ -99,10 +99,12 @@ in {
         setSessionVars = setEnvVars config.home.sessionVariables;
         setLocaleVars = setEnvVars shellCfg.shellLocale;
 
-        createExtraDirs = builtins.concatStringsSep "\n" (builtins.map
+        createExtraDirs =
+          concatMapStringsSep "\n"
           (path: "mkdir -p " + escapeShellArg path)
-          shellCfg.neededDirs);
-        sourceExtraEnv = builtins.concatStringsSep "\n" (builtins.map (
+          shellCfg.neededDirs;
+        sourceExtraEnv =
+          concatMapStringsSep "\n" (
             path: let
               p = escapeShellArg path;
             in ''
@@ -120,7 +122,7 @@ in {
               }
             ''
           )
-          shellCfg.extraEnvFiles);
+          shellCfg.extraEnvFiles;
 
         historyHook =
           if cfg.fastForwardHook
@@ -134,7 +136,8 @@ in {
           ''
           else "";
 
-        importMods = builtins.concatStringsSep "\n" (builtins.map (
+        importMods =
+          concatMapStringsSep "\n" (
             {
               name,
               enable ? true,
@@ -144,7 +147,7 @@ in {
               then "use " + name
               else ""
           )
-          cfg.extraMods);
+          cfg.extraMods;
 
         fixGpg =
           if shellCfg.gpgTtyFix
@@ -176,7 +179,8 @@ in {
           ''
           else "";
 
-        aliases = builtins.concatStringsSep "\n" (builtins.map ({
+        aliases =
+          concatMapStringsSep "\n" ({
             name,
             command,
             completer ? "",
@@ -212,9 +216,10 @@ in {
             fn ${name} {|@rest| ${cmd} $@rest}
             ${completion}
           '')
-          shellCfg.aliases);
+          shellCfg.aliases;
 
-        functions = builtins.concatStringsSep "\n" (builtins.map (
+        functions =
+          concatMapStringsSep "\n" (
             {
               name,
               arguments ? "",
@@ -231,7 +236,7 @@ in {
               }
             ''
           )
-          cfg.extraFunctions);
+          cfg.extraFunctions;
 
         devInit =
           if shellCfg.development

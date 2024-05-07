@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (lib.options) mkOption;
+  inherit (lib.lists) optional;
   cfg = config.my.channels;
 in {
   options.my.channels = {
@@ -57,14 +58,14 @@ in {
       if attrs.relativePath
       then "${cfg.basePath}/${attrs.path}"
       else attrs.path;
+
     toNixPath = name: attrs:
-      if attrs.enable
-      then ["${name}=${toDir attrs}"]
-      else [];
+      optional attrs.enable
+      "${name}=${toDir attrs}";
+
     toTmpfilesRule = mod: attrs:
-      if attrs.enable
-      then ["L+ ${toDir attrs} - - - - ${mod}"]
-      else [];
+      optional attrs.enable
+      "L+ ${toDir attrs} - - - - ${mod}";
   in
     lib.mkIf cfg.enable {
       nix.nixPath =
