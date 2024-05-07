@@ -456,6 +456,7 @@
       in {"${name}" = v.value;})
       attrs
     );
+
   inherit (config.my.lib) paragraph example mergeTaggedAttrs mergeSubsections;
 in {
   home.packages = with pkgs; [kitty-img kitty-themes];
