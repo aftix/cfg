@@ -6,6 +6,7 @@
 }: let
   inherit (lib.options) mkOption;
   inherit (lib) mkIf mkDefault mkOverride;
+  inherit (lib.lists) optionals;
   myCfg = config.my.users.aftix;
   cfg = config.users.users.aftix;
 in {
@@ -40,11 +41,8 @@ in {
         [
           "wheel"
         ]
-        ++ (
-          if myCfg.enable
-          then myCfg.extraGroups
-          else []
-        );
+        ++ optionals myCfg.enable
+        myCfg.extraGroups;
 
       subUidRanges = mkIf myCfg.mkSubUidRanges [
         {

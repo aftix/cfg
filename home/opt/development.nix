@@ -5,6 +5,8 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkMerge;
+  inherit (lib.strings) hasSuffix;
+  inherit (lib.lists) optional optionals;
   inherit (lib.options) mkOption;
   inherit (config.xdg) dataHome cacheHome stateHome;
   cfg = config.my.development;
@@ -22,69 +24,50 @@ in {
 
   config = {
     home = {
-      packages = with pkgs; (
+      packages = with pkgs;
         [
           shellcheck
           gnupatch
           gnumake
           gawk
         ]
-        ++ (
-          if cfg.nix
-          then [statix alejandra]
-          else []
-        )
-        ++ (
-          if cfg.rust
-          then
-            ([
-                rustup
-                sccache
-                cargo-nextest
-                cargo-supply-chain
-                cargo-update
-                cargo-sort
-                cargo-udeps
-                cargo-crev
-              ]
-              ++ (
-                if lib.strings.hasSuffix "-linux" pkgs.system
-                then [cargo-llvm-cov]
-                else []
-              ))
-          else []
-        )
-        ++ (
-          if cfg.go
-          then [
-            go
-            golint
-            delve
-            golangci-lint
-          ]
-          else []
-        )
-        ++ (
-          if cfg.cpp
-          then [
-            lldb
-            clang
-            clang-tools
-          ]
-          else []
-        )
-        ++ (
-          if cfg.typescript
-          then [
-            nodePackages_latest.nodejs
-            nodePackages_latest.eslint
-            nodePackages_latest.yarn
-            nodePackages_latest.prettier
-            nodePackages_latest.typescript
-          ]
-          else []
-        )
-      );
+        ++ optionals cfg.nix
+        [statix alejandra]
+        ++ optionals cfg.rust
+        [
+          rustup
+          sccache
+          cargo-nextest
+          cargo-supply-chain
+          cargo-update
+          cargo-sort
+          cargo-udeps
+          cargo-crev
+        ]
+        ++ optional
+        (hasSuffix "-linux" pkgs.system && cfg.rust)
+        cargo-llvm-cov
+        ++ optionals cfg.go
+        [
+          go
+          golint
+          delve
+          golangci-lint
+        ]
+        ++ optionals cfg.cpp
+        [
+          lldb
+          clang
+          clang-tools
+        ]
+        ++ optionals cfg.typescript
+        [
+          nodePackages_latest.nodejs
+          nodePackages_latest.eslint
+          nodePackages_latest.yarn
+          nodePackages_latest.prettier
+          nodePackages_latest.typescript
+        ];
 
       sessionVariables = mkMerge [
         (mkIf cfg.rust {
@@ -93,6 +76,7 @@ in {
           CARGO_HOME = mkDefault "${stateHome}/cargo";
           CARGO_INSTALL_ROOT = mkDefault "${dataHome}/bin";
         })
+
         (mkIf cfg.go {
           GOPATH = mkDefault "${dataHome}/go";
           GOCACHE = mkDefault "${cacheHome}/go/build";
@@ -102,38 +86,26 @@ in {
 
       sessionPath =
         ["${dataHome}/bin"]
-        ++ (
-          if cfg.go
-          then [
-            "${config.home.sessionVariables.GOPATH}/bin"
-          ]
-          else []
-        );
+        ++ optional cfg.go
+        "${config.home.sessionVariables.GOPATH}/bin";
     };
 
     my.shell = {
       development = true;
 
       upgradeCommands =
-        if cfg.rust
-        then [
+        optionals cfg.rust
+        [
           "rustup update"
           "cargo install-update --all"
-        ]
-        else [];
+        ];
 
       neededDirs = with config.home.sessionVariables; (
         ["${dataHome}/bin"]
-        ++ (
-          if cfg.go
-          then [GOPATH GOCACHE GOMODCACHE]
-          else []
-        )
-        ++ (
-          if cfg.rust
-          then [CARGO_HOME]
-          else []
-        )
+        ++ optionals cfg.go
+        [GOPATH GOCACHE GOMODCACHE]
+        ++ optional cfg.rust
+        CARGO_HOME
       );
     };
 

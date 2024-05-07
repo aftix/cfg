@@ -10,6 +10,8 @@
   cache = "${config.home.homeDirectory}/.cache";
   gpgSigningKey = "53D588312F7FCBE9A76579164C05A0B49FD681B9";
   gpgEncryptionKey = "3D98EDD231B4337B221C92E697C4A20471616623";
+
+  inherit (lib.strings) concatMapStringsSep;
 in {
   nixpkgs.overlays = [
     (_: prev: {
@@ -123,7 +125,7 @@ in {
           sendMailCommand = "${pkgs.msmtp}/bin/msmtp -a personal";
           inherit extraMailboxes;
           extraConfig = let
-            addMailboxes = builtins.concatStringsSep "\n" (builtins.map (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes));
+            addMailboxes = concatMapStringsSep "\n" (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes);
           in ''
             set hostname="aftix.xyz"
             ${addMailboxes}
@@ -268,7 +270,7 @@ in {
           sendMailCommand = "${pkgs.msmtp}/bin/msmtp -a gmail";
           inherit extraMailboxes;
           extraConfig = let
-            addMailboxes = builtins.concatStringsSep "\n" (builtins.map (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes));
+            addMailboxes = concatMapStringsSep "\n" (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes);
           in ''
             set hostname="gmail.com"
             ${addMailboxes}
@@ -421,7 +423,7 @@ in {
           sendMailCommand = "${pkgs.msmtp}/bin/msmtp -a utmail";
           inherit extraMailboxes;
           extraConfig = let
-            addMailboxes = builtins.concatStringsSep "\n" (builtins.map (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes));
+            addMailboxes = concatMapStringsSep "\n" (mbox: "mailboxes \"+${mbox}\"") (standardMailboxes ++ extraMailboxes);
           in ''
             set hostname="gmail.com"
             ${addMailboxes}

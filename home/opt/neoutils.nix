@@ -4,6 +4,7 @@
   ...
 }: let
   inherit (lib) mkDefault mkOverride;
+  inherit (lib.lists) optional;
 in {
   home = {
     packages = with pkgs;
@@ -22,11 +23,8 @@ in {
         zstd
         pbzip2
       ]
-      ++ (
-        if lib.strings.hasSuffix "-linux" pkgs.system
-        then [trashy]
-        else []
-      );
+      ++ optional (lib.strings.hasSuffix "-linux" pkgs.system)
+      trashy;
 
     sessionVariables = {
       PAGER = mkOverride 900 "${pkgs.moar}/bin/moar";

@@ -4,6 +4,7 @@
   pkgs,
   ...
 }: let
+  inherit (lib.lists) optional;
   inherit (lib.options) mkOption;
   cfg = config.my.shell;
 in {
@@ -158,14 +159,11 @@ in {
             (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.aliases));
         };
         _docsSeeAlso =
-          if cfg.elvish.enable
-          then [
-            {
-              name = config.my.docs.prefix + "-elvish";
-              mansection = 7;
-            }
-          ]
-          else [];
+          optional cfg.elvish.enable
+          {
+            name = config.my.docs.prefix + "-elvish";
+            mansection = 7;
+          };
       };
 
       shell = {

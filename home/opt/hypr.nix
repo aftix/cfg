@@ -6,6 +6,7 @@
   ...
 }: let
   inherit (lib.options) mkOption;
+  inherit (lib.strings) optionalString concatMapStringsSep;
   inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
   cfg = config.my.hyprland;
 in {
@@ -66,13 +67,11 @@ in {
             transform ? "",
           }: let
             description =
-              if desc != ""
-              then "desc:" + desc
-              else "";
+              optionalString (desc != "") "desc:" + desc;
             orientation =
-              if transform != ""
-              then ",transform," + transform
-              else "";
+              optionalString (transform != "")
+              ",transform,"
+              + transform;
           in "${description},${mode},${position},${scale}${orientation}"
         );
 
@@ -94,12 +93,12 @@ in {
                 ''
                 else if builtins.isList value
                 then
-                  (
-                    builtins.concatStringsSep "" ([acc]
-                      ++ (map (
-                          elem: (toCfgInner tabstop {"${name}" = elem;})
-                        )
-                        value))
+                  acc
+                  + (
+                    concatMapStringsSep "" (
+                      elem: (toCfgInner tabstop {"${name}" = elem;})
+                    )
+                    value
                   )
                 else ''
                   ${acc}

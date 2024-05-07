@@ -4,6 +4,9 @@
   config,
   ...
 }: let
+  inherit (lib.lists) optional;
+  inherit (lib.strings) optionalString concatMapStringsSep;
+
   cfg = config.my.docs;
 
   builder = let
@@ -40,16 +43,14 @@
           "mkdir -p \"$out/share/man/man7\""
         ]
         ++ (mapAttrsToList (title: docs: "echo ${escapeShellArg docs} > \"${titlePrefix}-${title}.man\"") renderedDocs)
-        ++ [
-          (
-            if cfg.enable
-            then "echo ${escapeShellArg (manPage "${titlePrefix}" {
-              _docsName = "${titlePrefix} \\- Configuration documentation for my NixOS install";
+        ++ optional cfg.enable (
+          let
+            page = escapeShellArg (manPage titlePrefix {
+              _docsName = titlePrefix + " \\- Configuration documentation for my NixOS install";
               _docsSeeAlso = mapAttrsToList (title: _: {name = "${titlePrefix}-${title}";}) cfg.pages;
-            })} > \"${titlePrefix}.man\""
-            else ""
-          )
-        ]
+            });
+          in "echo ${page} > \"${titlePrefix}.man\""
+        )
         ++ [
           ''
             DATE="$(date +%Y-%m-%d)"
@@ -126,18 +127,18 @@ in {
         content,
         ...
       }: ".TP\n\\fB${tag}\\fP\n${content}";
-      mergeTagged = lst: builtins.concatStringsSep "\n" (map tagged lst);
+      mergeTagged = concatMapStringsSep "\n" tagged;
       mergeTaggedAttrs = attrs: mergeTagged (mapAttrsToList (_: value: value) attrs);
 
       URI = uri: ".UR ${uri}\n.UE\n";
-      mailto = address: ".MT ${mailto}\n.ME\n";
+      mailto = address: ".MT ${address}\n.ME\n";
 
       # For references to other man pages
       manURI = {
         name,
         mansection ? 7,
       }: ".MR ${name} ${builtins.toString mansection}";
-      mergeManURIs = lst: builtins.concatStringsSep "\n" (map manURI lst);
+      mergeManURIs = concatMapStringsSep "\n" manURI;
 
       pageTitle = name: let
         title =
@@ -172,14 +173,12 @@ in {
             (pageTitle title)
             (section "NAME" _docsName)
             (
-              if _docsSynopsis != ""
-              then section "SYNOPSIS" _docsSynopsis
-              else ""
+              optionalString (_docsSynopsis != "")
+              (section "SYNOPSIS" _docsSynopsis)
             )
             (
-              if _docsExamples != ""
-              then section "SYNOPSIS" _docsExamples
-              else ""
+              optionalString (_docsExamples != "")
+              (section "SYNOPSIS" _docsExamples)
             )
           ]
           ++ (mapAttrsToList section _docsExtraSections)
@@ -187,9 +186,7 @@ in {
             (section "SEE ALSO" (
               mergeManURIs
               (
-                if title != cfg.prefix
-                then _docsSeeAlso ++ [{name = cfg.prefix;}]
-                else _docsSeeAlso
+                _docsSeeAlso ++ optional (title != cfg.prefix) {name = cfg.prefix;}
               )
             ))
           ]);
