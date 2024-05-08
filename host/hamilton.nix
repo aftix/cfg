@@ -6,10 +6,10 @@
   imports = [
     ../hardware/hamilton.nix
     ../hardware/disko/hamilton.nix
-    ../hardware/opt/backup.nix
     ./common
 
     ./opt/aftix.nix
+    ./opt/backup.nix
     ./opt/bluetooth.nix
     ./opt/clamav.nix
     ./opt/cups.nix
@@ -20,28 +20,37 @@
     ./opt/vpn.nix
   ];
 
-  my.disko = {
-    rootDrive = {
-      name = "nvme0n1";
-      mountOptions = ["discard=async" "relatime" "nodiratime"];
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age.keyFile = "/home/aftix/.local/persist/.config/sops/age/keys.txt";
+  };
 
-      xdgSubvolumeUsers = ["aftix"];
+  my = {
+    disko = {
+      rootDrive = {
+        name = "nvme0n1";
+        mountOptions = ["discard=async" "relatime" "nodiratime"];
+
+        xdgSubvolumeUsers = ["aftix"];
+      };
+
+      massDrive = {
+        name = "sda";
+
+        subvolumes = [
+          {
+            name = "media";
+            mountpoint = "/home/aftix/media";
+          }
+          {
+            name = "transmission";
+            mountpoint = "/home/aftix/.transmission";
+          }
+        ];
+      };
     };
 
-    massDrive = {
-      name = "sda";
-
-      subvolumes = [
-        {
-          name = "media";
-          mountpoint = "/home/aftix/media";
-        }
-        {
-          name = "transmission";
-          mountpoint = "/home/aftix/.transmission";
-        }
-      ];
-    };
+    backup.bucket = "aftix-hamilton-backup";
   };
 
   environment = {
