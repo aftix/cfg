@@ -36,7 +36,7 @@
       inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
     }
 
-    [ -f /var/run/backupdisk.pid ] && echo
+    [ -f /var/run/backupdisk.pid ] && active || offline
     wait /var/run "backupdisk\\.pid" | while read -r line ; do
       grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
       grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
