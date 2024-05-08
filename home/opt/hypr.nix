@@ -6,7 +6,7 @@
   ...
 }: let
   inherit (lib.options) mkOption;
-  inherit (lib.strings) optionalString concatMapStringsSep;
+  inherit (lib.strings) optionalString concatMapStringsSep escapeShellArg;
   inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
   cfg = config.my.hyprland;
 in {
@@ -45,6 +45,49 @@ in {
   };
 
   config = {
+    nixpkgs.overlays = [
+      (_: prev: {
+        passmenu = prev.writeScriptBin "passmenu" ''
+          #!${prev.bash}/bin/bash
+          export PATH="${prev.wl-clipboard}/bin:${prev.jq}/bin:${prev.sops}/bin:$PATH"
+          export PATH="${prev.libnotify}/bin:${prev.tofi}/bin:${prev.systemd}/bin:$PATH"
+          shopt -s globstar nullglob
+          source <(systemctl --user show-environment | grep -v PATH=)
+
+          pushd "$HOME/src/cfg" &>/dev/null || exit 1
+
+          password="$(sops exec-file --output-type json ./home/secrets.yaml \
+            "cat '{}' | jq -r 'to_entries[] | select(.key != \"private_keys\") | .key'" |\
+            tofi --prompt-text "Password")"
+          [[ -n "$password" ]] || exit
+
+          sops exec-file --output-type json ./home/secrets.yaml \
+            "cat '{}' | jq -r '.\"$password\".password? // .\"$password\"'" |\
+            tr -d '\n' | wl-copy -n --paste-once
+
+          notify-send "Hyprland" "Copied password '$password' into clipboard."
+          popd &>/dev/null || exit
+        '';
+
+        screenshot = prev.writeScriptBin "screenshot" ''
+          #!${prev.bash}/bin/bash
+          export PATH="${prev.wl-clipboard}/bin:${prev.grim}/bin:${prev.slurp}/bin:$PATH"
+          export PATH="${prev.libnotify}/bin:${prev.tofi}/bin:${prev.systemd}/bin:${prev.satty}/bin:$PATH"
+          shopt -s globstar nullglob
+          source <(systemctl --user show-environment | grep -v PATH=)
+
+          grim -g "$(slurp -o -r -c '#ff0000ff')" - | \
+          satty --filename - --fullscreen --output-filename ~/media/screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png \
+          --early-exit --initial-tool crop --copy-command wl-copy
+        '';
+
+        zenith-popup = prev.writeScriptBin "zenith-popup" ''
+          #!${prev.stdenv.shell}
+          [ -n "$1" ] && "$1" -e ${escapeShellArg prev.zenith}/bin/zenith
+        '';
+      })
+    ];
+
     my = {
       hyprland.transforms = {
         normal = "0";
@@ -125,9 +168,10 @@ in {
         xdotool
         kdePackages.polkit-kde-agent-1
         pwvucontrol
-        grim
-        slurp
-        satty
+
+        screenshot
+        passmenu
+        zenith-popup
       ];
 
       sessionVariables = {
@@ -304,6 +348,7 @@ in {
             "$mainMod ALT, Return, exec, $terminal"
             "$mainMod SHIFT, q, killactive,"
             "$mainMod, E, exec, loginctl lock-session"
+            "$mainMod CTRL, E, exec,hyprctl reload"
             "$mainMod SHIFT, E, exit,"
             "$mainMod, Space, focuswindow, floating"
             "$mainMod, Tab, focuscurrentorlast,"
@@ -335,8 +380,11 @@ in {
             "$mainMod, grave, hyprexpo:expo, toggle"
 
             # Misc keybinds
-            "$mainMod, P, exec, $HOME/.config/bin/passmenu"
-            "$mainMod, S, exec, $HOME/.config/bin/screenshot"
+            "$mainMod, P, exec, ${pkgs.passmenu}/bin/passmenu"
+            "$mainMod, S, exec, ${pkgs.screenshot}/bin/screenshot"
+            "$mainMod SHIFT, S, exec, [float;group barred deny] ${pkgs.zenith-popup}/bin/zenith-popup $terminal"
+            "$mainMod, C, exec, ${pkgs.clipman}/bin/clipman pick --tool CUSTOM -T ${pkgs.tofi}/bin/tofi"
+            "$mainMod SHIFT, C, exec, ${pkgs.clipman}/bin/clipman clear --tool CUSTOM -T \"${pkgs.tofi}/bin/tofi --auto-accept-single=false\""
 
             # Supmap binds
             "$mainMod ALT, T, submap, group"
@@ -594,43 +642,6 @@ in {
           </match>
           </fontconfig>
         '';
-
-        # scripts
-        "bin/screenshot" = {
-          executable = true;
-          text = ''
-            #!/usr/bin/env ${pkgs.bash}/bin/bash
-
-            source <("${pkgs.systemd}/bin/systemctl" --user show-environment)
-
-            "${pkgs.grim}/bin/grim" -g "$("${pkgs.slurp}/bin/slurp" -o -r -c '#ff0000ff')" - | \
-            "${pkgs.satty}/bin/satty" --filename - --fullscreen --output-filename ~/media/screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png \
-            --early-exit --initial-tool crop --copy-command "${pkgs.wl-clipboard}/bin/wl-copy"
-          '';
-        };
-
-        "bin/passmenu" = {
-          executable = true;
-          text = ''
-            #!/usr/bin/env nix-shell
-            #! nix-shell -i bash --pure
-            #! nix-shell -p bash tofi sops wl-clipboard systemd jq gnused
-
-            shopt -s globstar nullglob
-            source <(systemctl --user show-environment)
-
-            cd "$HOME/src/cfg" || exit
-
-            password="$(sops exec-file --output-type json ./home/aftix/secrets.yaml \
-              "cat '{}' | jq -r 'to_entries[] | select(.key != \"private_keys\") | .key'" |\
-              tofi --prompt-text "Password")"
-            [[ -n "$password" ]] || exit
-
-            sops exec-file --output-type json ./home/aftix/secrets.yaml \
-              "cat '{}' | jq -r '.\"$password\".password? // .\"$password\"'" |\
-              tr -d '\n' | wl-copy --paste-once
-          '';
-        };
       };
     };
   };
