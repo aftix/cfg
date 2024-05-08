@@ -10,7 +10,7 @@
         #!${prev.stdenv.shell}
         export PATH="${prev.systemd}/bin:$PATH"
         export PATH="${prev.libnotify}/bin:${prev.gawk}/bin:${prev.transmission_4}/bin:$PATH"
-        source <(systemctl --user show-environment)
+        source <(systemctl --user show-environment | grep -v PATH)
         export DBUS_SESSION_BUS_ADDRESS DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
         PERCENTAGE="$( \
