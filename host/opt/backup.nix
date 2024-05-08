@@ -23,8 +23,8 @@ in {
 
   config = {
     nixpkgs.overlays = [
-      (_: _: {
-        my-snapshot = pkgs.writeScriptBin "snapshot.bash" ''
+      (_: prev: {
+        my-snapshot = prev.writeScriptBin "snapshot.bash" ''
           #!${pkgs.stdenv.shell}
           shopt -s nullglob globstar
           export PATH="${pkgs.util-linux}/bin:${pkgs.gnugrep}/bin:$PATH"
@@ -35,6 +35,16 @@ in {
             exit 1
           fi
 
+          function cleanup() {
+            [[ -f "$NOSLEEP" ]] && rm "$NOSLEEP" || :
+            if [[ -f "$PIDFILE" ]]; then
+              exec 4>&- || :
+              rm "$PIDFILE" || :
+            fi
+          }
+          trap cleanup EXIT
+
+          NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
           MNT="$(mktemp -d)"
           PIDFILE="/var/run/backupdisk.pid"
           TS="$(date +%Y-%m-%d)"
@@ -87,11 +97,9 @@ in {
           umount "$MNT/backup"
           rmdir "$MNT/backup" "$MNT/nix" "$MNT"
 
-          exec 4>&-
-          rm "$PIDFILE" || :
         '';
 
-        my-backup = pkgs.writeScriptBin "backup.bash" ''
+        my-backup = prev.writeScriptBin "backup.bash" ''
           #!${pkgs.stdenv.shell}
           shopt -s nullglob globstar
           export PATH="${pkgs.util-linux}/bin:${pkgs.gnugrep}/bin:$PATH"
@@ -102,6 +110,16 @@ in {
             exit 1
           fi
 
+          function cleanup() {
+            [[ -f "$NOSLEEP" ]] && rm "$NOSLEEP" || :
+            if [[ -f "$PIDFILE" ]]; then
+              exec 4>&- || :
+              rm "$PIDFILE" || :
+            fi
+          }
+          trap cleanup EXIT
+
+          NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
           MNT="$(mktemp -d)"
           BUCKET=${escapeShellArg cfg.bucket}
           DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
@@ -121,16 +139,13 @@ in {
             NAME="$(basename "$snap")"
             grep --quiet "\\." <<< "$NAME" && continue
 
-            ${pkgs.rclone}/bin/rclone --config ${config.sops.templates."rclone.conf".path}  \
+            rclone --config ${config.sops.templates."rclone.conf".path}  \
               sync "$snap" "backblaze:$BUCKET/LATEST/$NAME" --links -P --backup-dir \
-              "backblaze:$BUCKET/$DATE/$NAME"
+              "backblaze:$BUCKET/$DATE/$NAME" || :
           done
 
           umount "$MNT"
           rmdir "$MNT"
-
-          exec 4>&-
-          rm "$PIDFILE" || :
         '';
       })
     ];
@@ -190,6 +205,7 @@ in {
             Type = "oneshot";
             RestartSec = "5min";
           };
+          requires = ["network.target"];
         };
 
         backup = {
