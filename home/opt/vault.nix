@@ -9,15 +9,16 @@ in {
   nixpkgs.overlays = [
     (_: prev: {
       syncvault = prev.writeScriptBin "syncvault" ''
-        #!${prev.stdenv.shell}
+        #!${prev.bash}/bin/bash
         shopt -s globstar
         export VAULT_NAMESPACE="admin"
         export PATH="${prev.vault}/bin:${prev.sops}/bin:$PATH"
         VAULT="${prev.vault}/bin/vault"
 
-        cd "${config.home.homeDirectory}/src/cfg" || exit
-        sops exec-file --output-type json secrets.yaml "\"$VAULT\" kv put -mount=secret secrets @{}"
-        sops exec-file --output-type json ./home/aftix/secrets.yaml "\"$VAULT\" kv put -mount=secret user-secrets @{}"
+        pushd "${config.home.homeDirectory}/src/cfg" &>/dev/null || exit 1
+        sops exec-file --output-type json ./host/secrets.yaml "\"$VAULT\" kv put -mount=secret secrets @{}"
+        sops exec-file --output-type json ./home/secrets.yaml "\"$VAULT\" kv put -mount=secret user-secrets @{}"
+        popd &>/dev/null || exit
       '';
     })
   ];
