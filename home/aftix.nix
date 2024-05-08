@@ -86,8 +86,6 @@ in {
     };
     Service = {
       Type = "oneshot";
-      StartLimitIntervalSec = "15s";
-      StartLimitBurst = "10";
       Restart = "on-failure";
       RestartSec = "1s";
       ExecStart = "${pkgs.link-gh-hosts}/bin/link-gh-hosts";
