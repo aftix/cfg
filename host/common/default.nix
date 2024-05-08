@@ -9,6 +9,7 @@
     ./network.nix
     ./nh.nix
     ./root.nix
+    ./sleep.nix
   ];
 
   options.my = {
