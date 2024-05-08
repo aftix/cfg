@@ -36,9 +36,9 @@ in {
   home.packages = with pkgs; [mutt-purgecache];
 
   sops.secrets = {
-    "mailbox" = {};
-    "gmailtoken" = {};
-    "utmailtoken" = {};
+    mailbox = {};
+    gmailtoken = {};
+    utmailtoken = {};
   };
 
   accounts.email = {

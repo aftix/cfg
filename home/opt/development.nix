@@ -119,26 +119,6 @@ in {
       };
     };
 
-    systemd.user.services = mkMerge [
-      (mkIf cfg.gh {
-        linkGh = let
-          cDir = "${config.home.homeDirectory}/.config";
-          share = "${config.home.homeDirectory}/.local/share";
-        in
-          mkIf cfg.gh {
-            Unit.Description = "Link gh hosts file";
-            Service = {
-              Type = "oneshot";
-              ExecStart = ''
-                ${pkgs.coreutils}/bin/mkdir -p "${cDir}/gh" ; \
-                ${pkgs.coreutils}/bin/ln -sf "${share}/gh/hosts.yml" "${cDir}/gh/hosts.yml"
-              '';
-            };
-            Install.WantedBy = ["default.target"];
-          };
-      })
-    ];
-
     xdg.configFile = mkMerge [
       (mkIf cfg.typescript {
         "npm/npmrc".source = (pkgs.formats.keyValue {}).generate "npm" {
