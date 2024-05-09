@@ -15,6 +15,7 @@
     ./opt/cups.nix
     ./opt/display.nix
     ./opt/docker.nix
+    ./opt/network.nix
     ./opt/sound.nix
     ./opt/syncthing.nix
     ./opt/vpn.nix
@@ -51,6 +52,7 @@
     };
 
     backup.bucket = "aftix-hamilton-backup";
+    uefi = true;
   };
 
   environment = {

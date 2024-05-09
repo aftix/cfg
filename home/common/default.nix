@@ -72,12 +72,7 @@ in {
     gtk.gtk2.configLocation = "${configHome}/gtk-2.0/gtkrc";
     xresources.properties = mkForce null;
 
-    programs = {
-      home-manager.enable = true;
-
-      nix-index-database.comma.enable = true;
-      command-not-found.enable = false;
-    };
+    programs.home-manager.enable = true;
 
     services.ssh-agent.enable = lib.strings.hasSuffix "-linux" pkgs.system;
     systemd.user.startServices = true;
