@@ -1,0 +1,30 @@
+name: deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy-fermi:
+    name: Deploy fermi NixOS server
+    runs-on: ubuntu-lastest
+    if: ${{ github.ref == 'refs/head/main' }}
+    concurrency:
+      group: deploy-fermi-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Create ssh key from repository secrets
+        run: |
+          install -m 600 -D /dev/stdin ~/.ssh/id_ed25519 <<< "${{ secrets.PRIVATE_KEY }}"
+    
+      - name: Add VPS fingerprint to known ssh hosts
+        run: ssh-keyscan -H 170.130.165.174 > ~/.ssh/known_hosts
+
+      - name: Deploy fermi
+        run: >
+          nix run 'github:serokell/deploy-rs' '.#fermi'
