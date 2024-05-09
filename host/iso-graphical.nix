@@ -23,8 +23,6 @@
     };
   };
 
-  console.keyMap = "dvorak";
-
   services = {
     udisks2.enable = true;
     earlyoom.enable = true;

@@ -1,24 +1,28 @@
 {
   pkgs,
+  config,
   lib,
   ...
-}: {
+}: let
+  inherit (lib.options) mkOption mkEnableOption;
+in {
   imports = [
     ./apparmor.nix
     ./channels.nix
-    ./network.nix
     ./nh.nix
     ./root.nix
     ./sleep.nix
   ];
 
   options.my = {
-    flake = lib.options.mkOption {
+    flake = mkOption {
       default = "/home/aftix/src/cfg";
       description = "Location of NixOS configuration flake";
     };
 
-    users.aftix.enable = lib.options.mkEnableOption "aftix";
+    users.aftix.enable = mkEnableOption "aftix";
+
+    uefi = mkEnableOption "uefi";
   };
 
   config = {
@@ -59,6 +63,7 @@
           "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         ];
+        trusted-users = ["@wheel"];
       };
 
       optimise.automatic = true;
@@ -66,7 +71,7 @@
 
     # Use the systemd-boot EFI boot loader.
     boot = {
-      loader = {
+      loader = lib.mkIf config.my.uefi {
         efi.canTouchEfiVariables = true;
         systemd-boot = {
           enable = true;
@@ -101,9 +106,6 @@
       fuse.userAllowOther = true;
       nix-ld.enable = true;
       zsh.enable = true;
-
-      nix-index-database.comma.enable = true;
-      command-not-found.enable = false;
     };
 
     users.mutableUsers = false;
