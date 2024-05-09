@@ -11,7 +11,6 @@
   cfg = config.users.users.aftix;
 in {
   options.my.users.aftix = {
-    hashedPasswordFile = mkOption {default = "/state/passwd.aftix";};
     extraGroups = mkOption {
       default = [
         "networkmanager"
