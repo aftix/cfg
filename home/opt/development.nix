@@ -30,6 +30,7 @@ in {
           gnupatch
           gnumake
           gawk
+          just
         ]
         ++ optionals cfg.nix
         [statix alejandra]
