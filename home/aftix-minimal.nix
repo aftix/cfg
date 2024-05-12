@@ -1,4 +1,4 @@
-_: {
+{lib, ...}: {
   imports = [
     ./common
 
@@ -7,6 +7,7 @@ _: {
     ./opt/development.nix
     ./opt/helix.nix
     ./opt/neoutils.nix
+    ./opt/stylix.nix
   ];
 
   home = {
@@ -14,6 +15,8 @@ _: {
     homeDirectory = "/home/aftix";
     stateVersion = "23.11"; # DO NOT CHANGE
   };
+
+  xdg.userDirs.createDirectories = lib.mkForce false;
 
   my = {
     shell.elvish.enable = false;

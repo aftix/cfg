@@ -109,7 +109,13 @@ in {
     };
 
     users.mutableUsers = false;
-    i18n.defaultLocale = "en_US.UTF-8";
+    i18n = rec {
+      defaultLocale = "en_US.UTF-8";
+      extraLocaleSettings = {
+        LC_ALL = "C.UTF-8";
+        LANGUAGE = defaultLocale;
+      };
+    };
     console.font = "Lat2-Terminus16";
   };
 }
