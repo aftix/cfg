@@ -10,11 +10,11 @@ creation_rules:
     - age:
       - *aftix
       - *hamilton
-  - path_regex: home/.*secrets\.yaml$
+  - path_regex: home/.*secrets.yaml$
     key_groups:
     - age:
       - *fermi
-  - path_regex: srv_secrets\.yaml$
+  - path_regex: srv_secrets.yaml$
     key_groups:
     - age:
       - *fermi

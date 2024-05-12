@@ -26,7 +26,7 @@
     };
 
     impermanence.url = "github:nix-community/impermanence";
-    stylix.url = "github:aftix/stylix";
+    stylix.url = "github:danth/stylix";
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
