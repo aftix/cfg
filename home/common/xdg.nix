@@ -19,7 +19,7 @@ in {
 
     userDirs = {
       enable = hasSuffix "-linux" pkgs.system;
-      createDirectories = true;
+      createDirectories = mkDefault true;
 
       desktop = mkDefault null;
       templates = mkDefault null;
