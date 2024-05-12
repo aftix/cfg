@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-fermi:
     name: Deploy fermi NixOS server
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/head/main' }}
     concurrency:
       group: deploy-fermi-${{ github.ref }}

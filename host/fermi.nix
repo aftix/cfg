@@ -9,6 +9,7 @@ in {
     ./opt/clamav.nix
     ./opt/docker.nix
     ./opt/openssh.nix
+    ./opt/www
   ];
 
   sops = {
@@ -20,6 +21,13 @@ in {
     flake = "/home/aftix/cfg";
 
     users.aftix.extraGroups = [];
+
+    www = {
+      adventofcode = true;
+      aftgraphs = true;
+      blog = true;
+      searx.enable = true;
+    };
   };
 
   security.sudo.extraRules = [
@@ -70,7 +78,11 @@ in {
     groups.docker = {};
   };
 
+  programs.dconf.enable = true;
+
   networking = {
+    hostName = "fermi";
+
     dhcpcd = {
       IPv6rs = true;
       persistent = true;

@@ -459,7 +459,14 @@
 
   inherit (config.my.lib) paragraph example mergeTaggedAttrs mergeSubsections;
 in {
-  home.packages = with pkgs; [kitty-img kitty-themes];
+  home = {
+    packages = with pkgs; [kitty-img kitty-themes];
+
+    sessionVariables = rec {
+      TERM = "kitty";
+      TERMINAL = TERM;
+    };
+  };
 
   my.docs.pages.kitty = {
     _docsName = "kitty \\- The fast, feature rich terminal emulator";
