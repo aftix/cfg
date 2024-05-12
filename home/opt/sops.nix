@@ -43,9 +43,9 @@ in {
         fi
 
         if [[ -n "$2" ]]; then
-          sops --set '["$1"] {"password": "$PASS", "username": "$2"}'
+          sops --set '["$1"] {"password": "$PASS", "username": "$2"}' ./home/secrets.yaml
         else
-          sops --set '["$1"] "$PASS"'
+          sops --set '["$1"] "$PASS"' ./home/secrets.yaml
         fi
 
         popd &>/dev/null || exit

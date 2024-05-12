@@ -69,6 +69,10 @@ in {
       enableReload = true;
 
       additionalModules = with pkgs.nginxModules; [fancyindex];
+
+      appendHttpConfig = ''
+        limit_req_zone $binary_remote_addr zone=put_request_by_addr:20m rate=100r/s;
+      '';
     };
 
     systemd.tmpfiles.rules = [
