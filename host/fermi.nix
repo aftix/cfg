@@ -10,6 +10,7 @@ in {
     ./opt/docker.nix
     ./opt/openssh.nix
     ./opt/www
+    ./opt/znc.nix
   ];
 
   sops = {
