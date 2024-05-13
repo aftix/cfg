@@ -1,5 +1,6 @@
 
 hostname := `hostname`
+arch := `uname -m`
 
 default:
     @just --list
@@ -27,5 +28,9 @@ rekey:
     @sops updatekeys -y host/srv_secrets.yaml
     @sops updatekeys -y home/secrets.yaml
 
-iso variant="minimal" arch="x86_64-linux":
-    @nix build ".#nixosConfigurations.iso-{{variant}}-{{arch}}.config.system.build.isoImage"
+iso variant="minimal" arch=arch:
+    @nix build ".#nixosConfigurations.iso-{{variant}}-{{arch}}-linux.config.system.build.isoImage"
+
+vm variant="minimal" arch=arch:
+    @just iso {{variant}} {{arch}}
+    @find result/iso -type f -name "*.iso" | head -n1 | xargs nix run 'nixpkgs#qemu_kvm' -- -boot d -smbios type=0,uefi=on -m 2G -cdrom
