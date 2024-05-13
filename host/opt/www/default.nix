@@ -10,6 +10,7 @@ in {
   imports = [
     ./blog.nix
     ./searx.nix
+    ./znc.nix
   ];
 
   options.my.www = {
