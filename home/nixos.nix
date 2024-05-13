@@ -1,4 +1,4 @@
-_: {
+{lib, ...}: {
   imports = [
     ./common
 
@@ -8,6 +8,8 @@ _: {
     ./opt/helix.nix
     ./opt/neoutils.nix
   ];
+
+  xdg.userDirs.createDirectories = lib.mkForce false;
 
   my = {
     docs = {

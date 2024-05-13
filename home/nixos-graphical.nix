@@ -1,4 +1,4 @@
-_: {
+{lib, ...}: {
   imports = [
     ./common
 
@@ -16,6 +16,8 @@ _: {
     ./opt/media.nix
     ./opt/stylix.nix
   ];
+
+  xdg.userDirs.createDirectories = lib.mkForce false;
 
   my = {
     shell.elvish.enable = true;
