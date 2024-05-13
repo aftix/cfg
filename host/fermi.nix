@@ -10,7 +10,6 @@ in {
     ./opt/docker.nix
     ./opt/openssh.nix
     ./opt/www
-    ./opt/znc.nix
   ];
 
   sops = {
@@ -29,6 +28,8 @@ in {
       blog = true;
       searx.enable = true;
     };
+
+    znc.enable = true;
   };
 
   security.sudo.extraRules = [
