@@ -47,28 +47,6 @@ in {
   config = {
     nixpkgs.overlays = [
       (_: prev: {
-        passmenu = prev.writeScriptBin "passmenu" ''
-          #!${prev.bash}/bin/bash
-          export PATH="${prev.wl-clipboard}/bin:${prev.jq}/bin:${prev.sops}/bin:$PATH"
-          export PATH="${prev.libnotify}/bin:${prev.tofi}/bin:${prev.systemd}/bin:$PATH"
-          shopt -s globstar nullglob
-          source <(systemctl --user show-environment | grep -v PATH=)
-
-          pushd "$HOME/src/cfg" &>/dev/null || exit 1
-
-          password="$(sops exec-file --output-type json ./home/secrets.yaml \
-            "cat '{}' | jq -r 'to_entries[] | select(.key != \"private_keys\") | .key'" |\
-            tofi --prompt-text "Password")"
-          [[ -n "$password" ]] || exit
-
-          sops exec-file --output-type json ./home/secrets.yaml \
-            "cat '{}' | jq -r '.\"$password\".password? // .\"$password\"'" |\
-            tr -d '\n' | wl-copy -n --paste-once
-
-          notify-send "Hyprland" "Copied password '$password' into clipboard."
-          popd &>/dev/null || exit
-        '';
-
         screenshot = prev.writeScriptBin "screenshot" ''
           #!${prev.bash}/bin/bash
           export PATH="${prev.wl-clipboard}/bin:${prev.grim}/bin:${prev.slurp}/bin:$PATH"
@@ -168,9 +146,9 @@ in {
         xdotool
         kdePackages.polkit-kde-agent-1
         pwvucontrol
+        keepassxc
 
         screenshot
-        passmenu
         zenith-popup
       ];
 
@@ -380,7 +358,7 @@ in {
             "$mainMod, grave, hyprexpo:expo, toggle"
 
             # Misc keybinds
-            "$mainMod, P, exec, ${pkgs.passmenu}/bin/passmenu"
+            "$mainMod, P, exec, keepassxc"
             "$mainMod, S, exec, ${pkgs.screenshot}/bin/screenshot"
             "$mainMod SHIFT, S, exec, [float;group barred deny] ${pkgs.zenith-popup}/bin/zenith-popup $terminal"
             "$mainMod, C, exec, ${pkgs.clipman}/bin/clipman pick --tool CUSTOM -T ${pkgs.tofi}/bin/tofi"
