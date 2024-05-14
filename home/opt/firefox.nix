@@ -60,6 +60,7 @@ in {
         multi-account-containers
         clearurls
         darkreader
+        keepassxc-browser
         privacy-badger
         privacy-possum
         pay-by-privacy
