@@ -18,7 +18,6 @@ in {
     ./opt/development.nix
     ./opt/helix.nix
     ./opt/neoutils.nix
-    ./opt/vault.nix
 
     ./opt/chromium.nix
     ./opt/firefox.nix
@@ -92,6 +91,10 @@ in {
     };
     Install.WantedBy = ["default.target"];
   };
+
+  home.persistence.${config.my.impermanence.path}.directories = [
+    ".config/keepassxc"
+  ];
 
   my = {
     shell.elvish.enable = true;
