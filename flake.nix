@@ -38,7 +38,7 @@
 
     hyprland.url = "github:hyprwm/Hyprland/v0.40.0?submodules=1";
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
+      url = "github:hyprwm/hyprland-plugins/dcbdc9a08d1df753d6799bab823486f1fff5b8e6";
       inputs.hyprland.follows = "hyprland";
     };
 
@@ -60,18 +60,20 @@
   } @ inputs: let
     system = "x86_64-linux";
 
-    overlay = _: prev: {
+    overlay = final: prev: {
       coreutils-full = prev.uutils-coreutils-noprefix;
 
-      stty = prev.writeScriptBin "stty" (let
-        pkg =
+      stty = prev.writeShellApplication {
+        name = "stty";
+        runtimeInputs =
           if prev.lib.strings.hasSuffix "-linux" prev.system
-          then prev.busybox
-          else prev.coreutils;
-      in ''
-        #!${prev.stdenv.shell}
-        ${pkg}/bin/stty $@
-      '');
+          then [final.busybox]
+          else [prev.coreutils];
+
+        text = ''
+          stty "$@"
+        '';
+      };
     };
 
     pkgsCfg = {
