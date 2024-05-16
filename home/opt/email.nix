@@ -14,22 +14,24 @@
   inherit (lib.strings) concatMapStringsSep;
 in {
   nixpkgs.overlays = [
-    (_: prev: {
-      mutt-purgecache = prev.writeScriptBin "mutt-purgecache" ''
-        #!${prev.stdenv.shell}
-        CACHE_LIMIT=512000 #KiB
+    (final: _: {
+      mutt-purgecache = final.writeShellApplication {
+        name = "mutt-purgecache";
+        runtimeInputs = with final; [findutils];
+        text = ''
+          CACHE_LIMIT=512000 #KiB
 
-        cd "$1" 2>/dev/null
-        [ $? -ne 0 ] && exit
+          cd "$1" 2>/dev/null || exit
 
-        [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
-        while IFS= read -r i; do
-          rm "$i"
-          [ $(du -s . | cut -f1 -d$'\t') -lt $CACHE_LIMIT ] && exit
-        done <<EOF
-        $(find . -type f -exec ls -rt1 {} +)
-        EOF
-      '';
+          [ "$(du -s . | cut -f1 -d$'\t')" -lt $CACHE_LIMIT ] && exit
+          while IFS= read -r i; do
+            rm "$i"
+            [ "$(du -s . | cut -f1 -d$'\t')" -lt $CACHE_LIMIT ] && exit
+          done <<EOF
+          $(find . -type f -exec ls -rt1 {} +)
+          EOF
+        '';
+      };
     })
   ];
 

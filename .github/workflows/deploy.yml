@@ -28,24 +28,3 @@ jobs:
       - name: Deploy fermi
         run: >
           nix run 'github:serokell/deploy-rs' '.#fermi'
-
-  iso:
-    name: Create nixos isos
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [x86_64]
-        variant:
-          - minimal
-          - graphical
-    steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
-      - name: Generate ISO file
-        run:
-          nix run 'nixpkgs#just' iso "${{ matrix.variant }}" "${{ matrix.arch }}"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: nixos-aftix-${{ matrix.variant }}-${{ matrix.arch }}-linux.iso
-          path: result/iso/*.iso
