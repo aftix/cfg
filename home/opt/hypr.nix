@@ -46,23 +46,28 @@ in {
 
   config = {
     nixpkgs.overlays = [
-      (_: prev: {
-        screenshot = prev.writeScriptBin "screenshot" ''
-          #!${prev.bash}/bin/bash
-          export PATH="${prev.wl-clipboard}/bin:${prev.grim}/bin:${prev.slurp}/bin:$PATH"
-          export PATH="${prev.libnotify}/bin:${prev.tofi}/bin:${prev.systemd}/bin:${prev.satty}/bin:$PATH"
-          shopt -s globstar nullglob
-          source <(systemctl --user show-environment | grep -v PATH=)
+      (final: _: {
+        screenshot = final.writeShellApplication {
+          name = "screenshot";
+          runtimeInputs = with final; [wl-clipboard grim slurp libnotify tofi systemd satty];
+          text = ''
+            shopt -s globstar nullglob
+            # shellcheck source=/dev/null
+            source <(systemctl --user show-environment | grep -v PATH=)
 
-          grim -g "$(slurp -o -r -c '#ff0000ff')" - | \
-          satty --filename - --fullscreen --output-filename ~/media/screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png \
-          --early-exit --initial-tool crop --copy-command wl-copy
-        '';
+            grim -g "$(slurp -o -r -c '#ff0000ff')" - | \
+            satty --filename - --fullscreen --output-filename ~/media/screenshots/satty-"$(date '+%Y%m%d-%H:%M:%S')".png \
+            --early-exit --initial-tool crop --copy-command wl-copy
+          '';
+        };
 
-        zenith-popup = prev.writeScriptBin "zenith-popup" ''
-          #!${prev.stdenv.shell}
-          [ -n "$1" ] && "$1" -e ${escapeShellArg prev.zenith}/bin/zenith
-        '';
+        zenith-popup = final.writeShellApplication {
+          name = "zenith-popup";
+          runtimeInputs = with final; [zenith];
+          text = ''
+            [ -n "$1" ] && "$1" -e ${escapeShellArg final.zenith}/bin/zenith
+          '';
+        };
       })
     ];
 

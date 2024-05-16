@@ -36,7 +36,7 @@ in {
   ];
 
   nixpkgs.overlays = [
-    (_: prev: let
+    (final: _: let
       hostTemplate = escapeShellArg (builtins.toJSON {
         "github.com" = {
           users.aftix.oauth_token = "PLACEHOLDER";
@@ -50,13 +50,16 @@ in {
 
       cfg = escapeShellArg configHome;
     in {
-      link-gh-hosts = prev.writeScriptBin "link-gh-hosts" ''
-        #!${prev.stdenv.shell}
-        [[ -f ${secretPath} ]] || exit 1
-        TOKEN="$(cat ${secretPath})"
-        echo ${hostTemplate} > ${cfg}/gh/hosts.yml
-        ${pkgs.gnused}/bin/sed -i"" -e "s/PLACEHOLDER/$TOKEN/g" ${cfg}/gh/hosts.yml
-      '';
+      link-gh-hosts = final.writeShellApplication {
+        name = "link-gh-hosts";
+        runtimeInputs = with final; [gnused];
+        text = ''
+          [[ -f ${secretPath} ]] || exit 1
+          TOKEN="$(cat ${secretPath})"
+          echo ${hostTemplate} > ${cfg}/gh/hosts.yml
+          sed -i"" -e "s/PLACEHOLDER/$TOKEN/g" ${cfg}/gh/hosts.yml
+        '';
+      };
     })
   ];
 

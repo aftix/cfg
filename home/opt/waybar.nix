@@ -1,55 +1,72 @@
 {pkgs, ...}: let
-  waybar-dunst = pkgs.writeScriptBin "waybar-dunst" ''
-    #!${pkgs.stdenv.shell}
-    COUNT="$(dunstctl count waiting)"
-    ENABLED=""
-    DISABLED=""
-    if [ "$COUNT" != 0 ]; then
-      DISABLED=" $COUNT"
-    fi
+  waybar-dunst = final:
+    final.writeShellApplication {
+      name = "waybar-dunst";
+      runtimeInputs = with final; [dunst gnugrep];
+      text = ''
+        COUNT="$(dunstctl count waiting)"
+        ENABLED=""
+        DISABLED=""
+        if [ "$COUNT" != 0 ]; then
+          DISABLED=" $COUNT"
+        fi
 
-    if dunstctl is-paused | grep -q "false" ; then
-      echo '{"class": "", "text": " '"$ENABLED"' "}'
-    else
-      echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
-    fi
-  '';
-  waybar-nordvpn = pkgs.writeScriptBin "waybar-nordvpn" ''
-    #!${pkgs.stdenv.shell}
-    if [ -d /proc/sys/net/ipv4/conf/nordlynx ]; then
-     echo '{"text": " 󰖂  ", "class": ""}'
-    else
-     echo '{"text": " 󰖂  ", "class": "disconnected"}'
-    fi
-  '';
-  waybar-backup = pkgs.writeScriptBin "waybar-backup" ''
-    #!${pkgs.stdenv.shell}
-    function active() {
-      echo '{"text": "Backing up disk"}'
-    }
+        if dunstctl is-paused | grep -q "false" ; then
+          echo '{"class": "", "text": " '"$ENABLED"' "}'
+        else
+          echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
+        fi
+      '';
+    };
+  waybar-nordvpn = final:
+    final.writeShellApplication {
+      name = "waybar-nordvpn";
+      text = ''
+        if [ -d /proc/sys/net/ipv4/conf/nordlynx ]; then
+         echo '{"text": " 󰖂  ", "class": ""}'
+        else
+         echo '{"text": " 󰖂  ", "class": "disconnected"}'
+        fi
+      '';
+    };
+  waybar-backup = final:
+    final.writeShellApplication {
+      name = "waybar-backup";
+      runtimeInputs = with final; [inotify-tools gnugrep];
+      text = ''
+        function active() {
+          echo '{"text": "Backing up disk"}'
+        }
 
-    function offline() {
-      echo '{}'
-    }
+        function offline() {
+          echo '{}'
+        }
 
-    function wait() {
-      inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
-    }
+        function wait() {
+          inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
+        }
 
-    [ -f /var/run/backupdisk.pid ] && active || offline
-    wait /var/run "backupdisk\\.pid" | while read -r line ; do
-      grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
-      grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
-    done
+        if [ -f /var/run/backupdisk.pid ]; then
+          active
+        else
+          offline
+        fi
 
-  '';
+        wait /var/run "backupdisk\\.pid" | while read -r line ; do
+          grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
+          grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
+        done
+      '';
+    };
 in {
   nixpkgs.overlays = [
-    (_: _: {
-      inherit waybar-dunst waybar-nordvpn waybar-backup;
+    (final: _: {
+      waybar-dunst = waybar-dunst final;
+      waybar-nordvpn = waybar-nordvpn final;
+      waybar-backup = waybar-backup final;
     })
   ];
-  home.packages = with pkgs; [waybar waybar-dunst waybar-nordvpn waybar-backup];
+  home.packages = with pkgs; [waybar pkgs.waybar-dunst pkgs.waybar-nordvpn pkgs.waybar-backup];
 
   programs.waybar = {
     enable = true;

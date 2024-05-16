@@ -1,19 +1,25 @@
 {pkgs, ...}: {
   nixpkgs.overlays = [
-    (_: prev: {
-      check-prevent-sleep = prev.writeScriptBin "check-prevent-sleep" ''
-        #!${prev.stdenv.shell}
-        mkdir -p /var/run/prevent-sleep.d
-        chmod 0777 /var/run/prevent-sleep.d
-        COUNT="$(find /var/run/prevent-sleep.d/ -type f | wc -l)"
-        [ "$COUNT" = "0" ] || exit 1
-      '';
+    (final: _: {
+      check-prevent-sleep = final.writeShellApplication {
+        name = "check-prevent-sleep";
+        runtimeInputs = with final; [findutils coreutils-full];
+        text = ''
+          mkdir -p /var/run/prevent-sleep.d
+          chmod 0777 /var/run/prevent-sleep.d
+          COUNT="$(find /var/run/prevent-sleep.d/ -type f | wc -l)"
+          [ "$COUNT" = "0" ] || exit 1
+        '';
+      };
 
-      setup-prevent-sleep = prev.writeScriptBin "setup-prevent-sleep" ''
-        #!${prev.stdenv.shell}
-        mkdir -p /var/run/prevent-sleep.d || :
-        chmod 0777 /var/run/prevent-sleep.d || :
-      '';
+      setup-prevent-sleep = final.writeShellApplication {
+        name = "setup-prevent-sleep";
+        runtimeInputs = with final; [coreutils-full];
+        text = ''
+          mkdir -p /var/run/prevent-sleep.d || :
+          chmod 0777 /var/run/prevent-sleep.d || :
+        '';
+      };
     })
   ];
 

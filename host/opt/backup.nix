@@ -23,130 +23,132 @@ in {
 
   config = {
     nixpkgs.overlays = [
-      (_: prev: {
-        my-snapshot = prev.writeScriptBin "snapshot.bash" ''
-          #!${pkgs.stdenv.shell}
-          shopt -s nullglob globstar
-          export PATH="${pkgs.util-linux}/bin:${pkgs.gnugrep}/bin:$PATH"
-          export PATH="${pkgs.btrfs-progs}/bin:${pkgs.rclone}/bin:${pkgs.mktemp}/bin:$PATH"
+      (final: _: {
+        my-snapshot = final.writeShellApplication {
+          name = "snapshot.bash";
+          runtimeInputs = with final; [util-linux gnugrep btrfs-progs rclone mktemp];
+          text = ''
+            shopt -s nullglob globstar
 
-          if [ "$(id -u)" != 0 ]; then
-            echo "Error: Must run ''${0} as root" >&2
-            exit 1
-          fi
-
-          function cleanup() {
-            [[ -f "$NOSLEEP" ]] && rm "$NOSLEEP" || :
-            if [[ -f "$PIDFILE" ]]; then
-              exec 4>&- || :
-              rm "$PIDFILE" || :
-            fi
-          }
-          trap cleanup EXIT
-
-          NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
-          MNT="$(mktemp -d)"
-          PIDFILE="/var/run/backupdisk.pid"
-          TS="$(date +%Y-%m-%d)"
-          CUTOFF_DATE="$(date -d ${escapeShellArg cfg.deleteOlderThan} +%s)"
-
-          touch "$PIDFILE"
-          exec 4<"$PIDFILE"
-          flock 4
-
-          echo "$$" > "$PIDFILE"
-
-          mkdir "$MNT/nix" "$MNT/backup"
-
-          mount ${escapeShellArg cfg.localDrive} "$MNT/nix"
-          mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT/backup"
-
-          SNAPSHOT_DIR="$MNT/backup/"${escapeShellArg cfg.snapshotPrefix}
-          mkdir -p "$MNT/nix/safe" "$SNAPSHOT_DIR" "$MNT/nix/tmp" "$MNT/backup/tmp"
-
-          for vol in "$MNT/nix/safe/"* ; do
-            [[ "$vol" == "$MNT/nix/safe/*" ]] && break
-            NAME="$(basename "$vol")"
-            [[ -e "$SNAPSHOT_DIR/$NAME.$TS" ]] && continue
-
-            rm -rf "$MNT/nix/tmp/$NAME"
-            btrfs subvolume snapshot -r "$vol" "$MNT/nix/tmp/$NAME"
-
-            if [[ -d "$SNAPSHOT_DIR/$NAME" ]]; then
-              btrfs send -p "$MNT/nix/tmp/$NAME" "$SNAPSHOT_DIR/$NAME" | btrfs receive -m "$MNT/backup/tmp"
-              btrfs subvolume delete "$MNT/backup/safe/$NAME"
-            else
-              btrfs send "$MNT/nix/tmp/$NAME" | btrfs receive "$MNT/backup/tmp"
+            if [ "$(id -u)" != 0 ]; then
+              echo "Error: Must run ''${0} as root" >&2
+              exit 1
             fi
 
-            btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME"
-            btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME.$TS"
-            btrfs subvolume delete "$MNT/nix/tmp/$NAME"
-          done
+            function cleanup() {
+              [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
+              if [[ -f "$PIDFILE" ]]; then
+                exec 4>&- || :
+                rm "$PIDFILE" || :
+              fi
+            }
+            trap cleanup EXIT
 
-          rmdir "$MNT/nix/tmp"
-          umount "$MNT/nix"
+            NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
+            MNT="$(mktemp -d)"
+            PIDFILE="/var/run/backupdisk.pid"
+            TS="$(date +%Y-%m-%d)"
+            CUTOFF_DATE="$(date -d ${escapeShellArg cfg.deleteOlderThan} +%s)"
 
-          for snap in "$SNAPSHOT_DIR/"*; do
-            [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
-            [[ -d "$snap" ]] || continue
-            MTIME="$(date -r "$snap" +%s)"
-            (( MTIME <= CUTOFF_DATE )) && btrfs subvolume delete "$snap"
-          done
+            touch "$PIDFILE"
+            exec 4<"$PIDFILE"
+            flock 4
 
-          umount "$MNT/backup"
-          rmdir "$MNT/backup" "$MNT/nix" "$MNT"
+            echo "$$" > "$PIDFILE"
 
-        '';
+            mkdir "$MNT/nix" "$MNT/backup"
 
-        my-backup = prev.writeScriptBin "backup.bash" ''
-          #!${pkgs.stdenv.shell}
-          shopt -s nullglob globstar
-          export PATH="${pkgs.util-linux}/bin:${pkgs.gnugrep}/bin:$PATH"
-          export PATH="${pkgs.rclone}/bin:${pkgs.mktemp}/bin:$PATH"
+            mount ${escapeShellArg cfg.localDrive} "$MNT/nix"
+            mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT/backup"
 
-          if [ "$(id -u)" != 0 ]; then
-            echo "Error: Must run ''${0} as root" >&2
-            exit 1
-          fi
+            SNAPSHOT_DIR="$MNT/backup/"${escapeShellArg cfg.snapshotPrefix}
+            mkdir -p "$MNT/nix/safe" "$SNAPSHOT_DIR" "$MNT/nix/tmp" "$MNT/backup/tmp"
 
-          function cleanup() {
-            [[ -f "$NOSLEEP" ]] && rm "$NOSLEEP" || :
-            if [[ -f "$PIDFILE" ]]; then
-              exec 4>&- || :
-              rm "$PIDFILE" || :
+            for vol in "$MNT/nix/safe/"* ; do
+              [[ "$vol" == "$MNT/nix/safe/*" ]] && break
+              NAME="$(basename "$vol")"
+              [[ -e "$SNAPSHOT_DIR/$NAME.$TS" ]] && continue
+
+              rm -rf "$MNT/nix/tmp/$NAME"
+              btrfs subvolume snapshot -r "$vol" "$MNT/nix/tmp/$NAME"
+
+              if [[ -d "$SNAPSHOT_DIR/$NAME" ]]; then
+                btrfs send -p "$MNT/nix/tmp/$NAME" "$SNAPSHOT_DIR/$NAME" | btrfs receive -m "$MNT/backup/tmp"
+                btrfs subvolume delete "$MNT/backup/safe/$NAME"
+              else
+                btrfs send "$MNT/nix/tmp/$NAME" | btrfs receive "$MNT/backup/tmp"
+              fi
+
+              btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME"
+              btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME.$TS"
+              btrfs subvolume delete "$MNT/nix/tmp/$NAME"
+            done
+
+            rmdir "$MNT/nix/tmp"
+            umount "$MNT/nix"
+
+            for snap in "$SNAPSHOT_DIR/"*; do
+              [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
+              [[ -d "$snap" ]] || continue
+              MTIME="$(date -r "$snap" +%s)"
+              (( MTIME <= CUTOFF_DATE )) && btrfs subvolume delete "$snap"
+            done
+
+            umount "$MNT/backup"
+            rmdir "$MNT/backup" "$MNT/nix" "$MNT"
+
+          '';
+        };
+
+        my-backup = final.writeShellApplication {
+          name = "backup.bash";
+          runtimeInputs = with final; [util-linux gnugrep rclone mktemp];
+          text = ''
+            shopt -s nullglob globstar
+
+            if [ "$(id -u)" != 0 ]; then
+              echo "Error: Must run ''${0} as root" >&2
+              exit 1
             fi
-          }
-          trap cleanup EXIT
 
-          NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
-          MNT="$(mktemp -d)"
-          BUCKET=${escapeShellArg cfg.bucket}
-          DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
-          PIDFILE="/var/run/backupdisk.pid"
-          SNAPSHOT_DIR="$MNT/"${escapeShellArg cfg.snapshotPrefix}
+            function cleanup() {
+              [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
+              if [[ -f "$PIDFILE" ]]; then
+                exec 4>&- || :
+                rm "$PIDFILE" || :
+              fi
+            }
+            trap cleanup EXIT
 
-          touch "$PIDFILE"
-          exec 4<"$PIDFILE"
-          flock 4
+            NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
+            MNT="$(mktemp -d)"
+            BUCKET=${escapeShellArg cfg.bucket}
+            DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
+            PIDFILE="/var/run/backupdisk.pid"
+            SNAPSHOT_DIR="$MNT/"${escapeShellArg cfg.snapshotPrefix}
 
-          mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT"
-          mkdir -p "$MNT/safe"
+            touch "$PIDFILE"
+            exec 4<"$PIDFILE"
+            flock 4
 
-          for snap in "$SNAPSHOT_DIR/"*; do
-            [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
-            [[ -d "$snap" ]] || continue
-            NAME="$(basename "$snap")"
-            grep --quiet "\\." <<< "$NAME" && continue
+            mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT"
+            mkdir -p "$MNT/safe"
 
-            rclone --config ${config.sops.templates."rclone.conf".path}  \
-              sync "$snap" "backblaze:$BUCKET/LATEST/$NAME" --links -P --backup-dir \
-              "backblaze:$BUCKET/$DATE/$NAME" || :
-          done
+            for snap in "$SNAPSHOT_DIR/"*; do
+              [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
+              [[ -d "$snap" ]] || continue
+              NAME="$(basename "$snap")"
+              grep --quiet "\\." <<< "$NAME" && continue
 
-          umount "$MNT"
-          rmdir "$MNT"
-        '';
+              rclone --config ${config.sops.templates."rclone.conf".path}  \
+                sync "$snap" "backblaze:$BUCKET/LATEST/$NAME" --links -P --backup-dir \
+                "backblaze:$BUCKET/$DATE/$NAME" || :
+            done
+
+            umount "$MNT"
+            rmdir "$MNT"
+          '';
+        };
       })
     ];
 
