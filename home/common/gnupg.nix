@@ -8,25 +8,28 @@
   inherit (config.xdg) dataHome;
 in {
   nixpkgs.overlays = [
-    (_: prev: {
-      pinentry-custom = prev.writeScriptBin "pinentry-custom" ''
-        #!${prev.stdenv.shell}
-        if [ -z "$PINENTRY_USER_DATA" ] ; then
-          exec pinentry-curses "$@"
-          exit 0
-        fi
+    (final: _: {
+      pinentry-custom = final.writeShellApplication {
+        name = "pinentry-custom";
+        runtimeInputs = with final; [pinentry-qt];
+        text = ''
+          if [ -z "$PINENTRY_USER_DATA" ] ; then
+            exec pinentry-curses "$@"
+            exit 0
+          fi
 
-        case $PINENTRY_USER_DATA in
-        qt)
-          exec ${prev.pinentry-qt}/bin/pinentry-qt "$@"
-          ;;
-        none)
-          exit 1
-          ;;
-        *)
-          exec ${prev.pinentry-qt}/bin/pinentry-curses "$@"
-        esac
-      '';
+          case $PINENTRY_USER_DATA in
+          qt)
+            exec pinentry-qt "$@"
+            ;;
+          none)
+            exit 1
+            ;;
+          *)
+            exec pinentry-curses "$@"
+          esac
+        '';
+      };
     })
   ];
 
