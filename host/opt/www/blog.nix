@@ -29,34 +29,31 @@ in {
       forceSSL = true;
       useACMEHost = cfg.hostname;
 
-      locations =
-        {
-          "/".tryFiles = "$uri $uri/ =404";
+      locations = {
+        "/".tryFiles = "$uri $uri/ =404";
 
-          "/searx/${cfg.searx.subdomain}".return = mkIf cfg.searx.enable "https://${cfg.searx.subdomain}.${cfg.hostname}/static/?$args";
-          "/searx".return = mkIf cfg.searx.enable "https://${cfg.searx.subdomain}.${cfg.hostname}/?$args";
+        "/searx/".return = mkIf cfg.searx.enable "https://${cfg.searx.subdomain}.${cfg.hostname}/?$args";
 
-          "/advent2023/" = mkIf cfg.adventofcode {
-            alias = "${cfg.root}/advent2023/";
-            extraConfig = ''
-              fancyindex on;
-              fancyindex_exact_size off;
-              fancyindex_localtime on;
-            '';
-          };
+        "/advent2023/" = mkIf cfg.adventofcode {
+          alias = "${cfg.root}/advent2023/";
+          extraConfig = ''
+            fancyindex on;
+            fancyindex_exact_size off;
+            fancyindex_localtime on;
+          '';
+        };
 
-          "/aftgraphs/" = mkIf cfg.aftgraphs {
-            alias = "${cfg.root}/simulations/";
-            extraConfig = ''
-              fancyindex on;
-              fancyindex_exact_size off;
-              fancyindex_localtime on;
-              add_header "Cross-Origin-Opener-Policy" "same-origin";
-              add_header "Cross-Origin-Embedder-Policy" "require-corp";
-            '';
-          };
-        }
-        // cfg.acme-location-block;
+        "/aftgraphs/" = mkIf cfg.aftgraphs {
+          alias = "${cfg.root}/simulations/";
+          extraConfig = ''
+            fancyindex on;
+            fancyindex_exact_size off;
+            fancyindex_localtime on;
+            add_header "Cross-Origin-Opener-Policy" "same-origin";
+            add_header "Cross-Origin-Embedder-Policy" "require-corp";
+          '';
+        };
+      };
     };
   };
 }
