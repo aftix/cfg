@@ -19,6 +19,15 @@ in {
       type = lib.types.str;
     };
 
+    ip = mkOption {
+      default = "";
+      type = lib.types.str;
+    };
+    ipv6 = mkOption {
+      default = "";
+      type = lib.types.str;
+    };
+
     root = mkOption {
       default = "/srv";
       type = lib.types.str;
@@ -34,26 +43,33 @@ in {
       type = lib.types.str;
     };
 
-    acme-location-block = mkOption {
-      default = {
-        "^~ /.well-known/acme-challenge".extraConfig = ''
-          location ^~ /.well-known/acme-challenge/ {
-            default_type "text/plain";
-            root ${cfg.root}/acme;
-          }
-        '';
-      };
-      readOnly = true;
+    keys = mkOption {
+      default = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMmFgG1EuQDoJb8pQcxnhjqbncrpJGZ3iNon/gu0bXiE aftix@aftix.xyz"
+      ];
     };
   };
 
   config = {
+    sops.secrets = {
+      porkbun_api_key = {
+        inherit (cfg) group;
+        owner = cfg.user;
+      };
+      porkbun_secret_api_key = {
+        inherit (cfg) group;
+        owner = cfg.user;
+      };
+    };
+
     users = {
       users.${cfg.user} = {
         inherit (cfg) group;
         password = "";
-        shell = "/run/current-system/sw/bin/nologin";
+        shell = pkgs.bash;
         isSystemUser = true;
+        home = cfg.root;
+        openssh.authorizedKeys.keys = cfg.keys;
       };
 
       groups.${cfg.group} = {};
@@ -64,33 +80,46 @@ in {
       allowedUDPPorts = [80 443];
     };
 
-    services.nginx = {
-      inherit (cfg) user group;
-      enable = true;
-      enableReload = true;
+    services = {
+      nginx = {
+        inherit (cfg) user group;
+        enable = true;
+        enableReload = true;
 
-      additionalModules = with pkgs.nginxModules; [fancyindex];
+        additionalModules = with pkgs.nginxModules; [fancyindex];
 
-      appendHttpConfig = ''
-        limit_req_zone $binary_remote_addr zone=put_request_by_addr:20m rate=100r/s;
-      '';
+        appendHttpConfig = ''
+          limit_req_zone $binary_remote_addr zone=put_request_by_addr:20m rate=100r/s;
+        '';
+      };
+
+      openssh.settings.AllowUsers = [cfg.user];
     };
 
     systemd.tmpfiles.rules = [
       "d ${cfg.root} 0775 ${cfg.user} ${cfg.group} -"
-      "d ${cfg.root}/acme 0775 ${cfg.user} ${cfg.group} -"
     ];
 
     security.acme = {
       acceptTerms = true;
+
       defaults = {
         email = "aftix@aftix.xyz";
-        webroot = cfg.root + "/acme";
+        dnsProvider = "porkbun";
+        group = cfg.group;
+        credentialFiles = {
+          PORKBUN_SECRET_API_KEY_FILE = config.sops.secrets.porkbun_secret_api_key.path;
+          PORKBUN_API_KEY_FILE = config.sops.secrets.porkbun_api_key.path;
+        };
       };
 
       certs.${cfg.hostname} = {
         inherit (cfg) group;
-        extraDomainNames = ["www.${cfg.hostname}"];
+        extraDomainNames = [
+          "www.${cfg.hostname}"
+          "auth.${cfg.hostname}"
+          "www.auth.${cfg.hostname}"
+        ];
       };
     };
   };

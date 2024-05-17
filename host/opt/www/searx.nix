@@ -7,7 +7,7 @@
   inherit (lib.options) mkOption mkEnableOption;
   wwwCfg = config.my.www;
   cfg = wwwCfg.searx;
-  socket = "/run/uwsgi/app/searx/socket";
+  socket = "/run/uwsgi/searx.socket";
 in {
   options.my.www.searx = {
     enable = mkEnableOption "searx";
@@ -35,9 +35,7 @@ in {
     systemd.tmpfiles.rules = let
       inherit (config.services.searx.uwsgiConfig) immediate-uid immediate-gid;
     in [
-      "d /run/uwsgi 0775 ${immediate-uid} ${immediate-gid} -"
-      "d /run/uwsgi/app 0775 ${immediate-uid} ${immediate-gid} -"
-      "d /run/uwsgi/app/searx 0775 ${immediate-uid} ${immediate-gid} -"
+      "d ${builtins.baseNameOf socket} 0775 ${immediate-uid} ${immediate-gid} -"
     ];
 
     environment.etc."nginx/uwsgi_params".text = ''
@@ -63,22 +61,19 @@ in {
 
     services = {
       nginx.virtualHosts."${cfg.subdomain}.${wwwCfg.hostname}" = {
-        root = "${config.services.searx.package}/share";
         serverName = "${cfg.subdomain}.${wwwCfg.hostname} www.${cfg.subdomain}.${wwwCfg.hostname}";
         kTLS = true;
         forceSSL = true;
         useACMEHost = wwwCfg.hostname;
 
-        locations =
-          {
-            "/".extraConfig = ''
-              include uwsgi_params;
-              uwsgi_pass unix:${socket};
-            '';
+        locations = {
+          "/".extraConfig = ''
+            include uwsgi_params;
+            uwsgi_pass unix:${socket};
+          '';
 
-            "/static/".alias = "${config.services.searx.package}/share/static";
-          }
-          // wwwCfg.acme-location-block;
+          "/static/".alias = "${config.services.searx.package}/share/static/";
+        };
       };
 
       redis.servers.searx.user = mkForce config.services.searx.uwsgiConfig.immediate-uid;
@@ -96,12 +91,11 @@ in {
         environmentFile = config.sops.templates."searx.env".path;
 
         settings = {
-          use_default_settings = mkForce false;
           instance_name = "searx";
           contact_url = "mailto:aftix@aftix.xyz";
           server = {
             secret_key = "@SEARX_SECRET_KEY@";
-            base_url = "${cfg.subdomain}.${wwwCfg.hostname}";
+            base_url = "/";
             image_proxy = true;
           };
         };
