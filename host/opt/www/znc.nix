@@ -34,55 +34,67 @@ in {
       };
     };
 
+    networking.firewall = {
+      allowedTCPPorts = [6697];
+      allowedUDPPorts = [6697];
+    };
+
+    security.acme.certs.${hostname}.extraDomainNames = [
+      "${subdomain}.${hostname}"
+      "www.${subdomain}.${hostname}"
+    ];
+
     systemd = {
-      services = {
-        znc-init = {
-          description = "Initialize znc settings";
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            User = cfg.user;
-            Group = cfg.group;
-            RuntimeDirectory = cfg.dataDir;
-            RuntimeDirectoryMode = "750";
-            NoNewPrivileges = true;
-            ProtectSystem = "strict";
-            ReadWritePaths = cfg.dataDir;
-            ProtectHome = true;
-            StateDirectory = cfg.dataDir;
-            StateDirectoryMode = "755";
-            PrivateTmp = true;
-            ProtectHostname = true;
-            ProtectClock = true;
-            ProtectKernelTunables = true;
-            ProtectKernelModules = true;
-            ProtectKernelLogs = true;
-            ProtectControlGroups = true;
-            RestrictNamespaces = true;
-            RestrictRealtime = true;
-            RestrictSUIDSGID = true;
-            RemoveIPC = true;
-            PrivateNetwork = true;
+      tmpfiles.rules = [
+        "d ${cfg.dataDir} 0750 ${cfg.user} ${cfg.group} -"
+        "d ${cfg.dataDir}/configs 0750 ${cfg.user} ${cfg.group} -"
+      ];
+
+      services.znc = {
+        after = ["acme-${hostname}.service"];
+        preStart = let
+          inherit (lib.strings) optionalString;
+          modules = pkgs.buildEnv {
+            name = "znc-modules";
+            paths = config.services.znc.modulePackages;
           };
-          script = let
-            passwordSecretPath = escapeShellArg config.sops.secrets.znc_password.path;
-            passwordSaltSecretPath = escapeShellArg config.sops.secrets.znc_passwordsalt.path;
-            twitchOauthSecretPath = escapeShellArg config.sops.secrets.znc_twitchoauth.path;
-          in ''
-            cd ${cfg.dataDir}/configs || exit 1
+          passwordSecretPath = escapeShellArg config.sops.secrets.znc_password.path;
+          passwordSaltSecretPath = escapeShellArg config.sops.secrets.znc_passwordsalt.path;
+          twitchOauthSecretPath = escapeShellArg config.sops.secrets.znc_twitchoauth.path;
+        in
+          lib.mkForce ''
+            mkdir -p ${cfg.dataDir}/configs
+
+            # If mutable, regenerate conf file every time.
+            ${optionalString (!cfg.mutable) ''
+              echo "znc is set to be system-managed. Now deleting old znc.conf file to be regenerated."
+              rm -f ${cfg.dataDir}/configs/znc.conf
+            ''}
+
+            # Ensure essential files exist.
+            if [[ ! -f ${cfg.dataDir}/configs/znc.conf ]]; then
+                echo "No znc.conf file found in ${cfg.dataDir}. Creating one now."
+                cp --no-preserve=ownership --no-clobber ${cfg.configFile} ${cfg.dataDir}/configs/znc.conf
+                chmod u+rw ${cfg.dataDir}/configs/znc.conf
+            fi
+
+            if [[ ! -f ${cfg.dataDir}/znc.pem ]]; then
+              echo "No znc.pem file found in ${cfg.dataDir}. Creating one now."
+              ${pkgs.znc}/bin/znc --makepem --datadir ${cfg.dataDir}
+            fi
+
+            # Symlink modules
+            rm ${cfg.dataDir}/modules || true
+            ln -fs ${modules}/lib/znc ${cfg.dataDir}/modules
+
+            # Insert secrets
             [[ -f ${passwordSecretPath} ]] || exit 1
             [[ -f ${passwordSaltSecretPath} ]] || exit 1
             [[ -f ${twitchOauthSecretPath} ]] || exit 1
-            ${pkgs.gnused}/bin/sed -i"" -e "s/PASSWORD/$(cat ${passwordSecretPath})/g" znc.conf
-            ${pkgs.gnused}/bin/sed -i"" -e "s/PASSWORD/$(cat ${passwordSaltSecretPath})/g" znc.conf
-            ${pkgs.gnused}/bin/sed -i"" -e "s/PASSWORD/$(cat ${twitchOauthSecretPath})/g" znc.conf
+            mv ${cfg.dataDir}/configs/znc.conf ${cfg.dataDir}/configs/znc.conf.old
+            ${pkgs.gnused}/bin/sed -e "s/__PASSWORD__/$(cat ${passwordSecretPath})/g" -e "s/__SALT__/$(cat ${passwordSaltSecretPath})/g" -e "s/__TWITCHOAUTH__/$(cat ${twitchOauthSecretPath})/g" ${cfg.dataDir}/configs/znc.conf.old > ${cfg.dataDir}/configs/znc.conf
+            rm ${cfg.dataDir}/configs/znc.conf.old
           '';
-        };
-
-        znc = {
-          requires = ["znc-init.service"];
-          after = ["znc-init.service"];
-        };
       };
     };
 
@@ -94,31 +106,29 @@ in {
           forceSSL = true;
           useACMEHost = hostname;
 
-          locations =
-            {
-              "/" = {
-                proxyPass = "http://[[::1]]:7001/";
-                extraConfig = ''
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                '';
-              };
-            }
-            // config.my.www.acme-location-block;
+          locations."/" = {
+            proxyPass = "http://[::1]:7000/";
+            extraConfig = ''
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            '';
+          };
         };
 
         streamConfig = ''
           upstream znc {
-            server [::1]::7000;
+            server [::1]:7001;
           }
 
           server {
-            listen 0.0.0.0:6697 http2 ssl;
-            listen [::0]:6697 http2 ssl;
+            listen 6697 ssl;
+            listen [::]:6697 ssl;
 
-            ssl_certificate ${config.security.acme.certs.${hostname}.directory}/fullchain.pem;
-            ssl_certificate_key ${config.security.acme.certs.${hostname}.directory}/key.pem;
-            ssl_trusted_certificate ${config.security.acme.certs.${hostname}.directory}/chain.pem;
+            ssl_protocols TLSv1.2 TLSv1.3;
+            ssl_ciphers  ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA384:DHE-DSS-AES256-GCM-SHA384:DHE-DSS-AES256-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256;
+            ssl_certificate /var/lib/acme/${hostname}/fullchain.pem;
+            ssl_certificate_key /var/lib/acme/${hostname}/key.pem;
+            ssl_trusted_certificate /var/lib/acme/${hostname}/chain.pem;
             ssl_conf_command Options KTLS;
 
             proxy_pass znc;
@@ -160,7 +170,8 @@ in {
               AllowWeb = false;
               IPv4 = false;
               IPv6 = true;
-              Port = 7000;
+              Port = 7001;
+              Host = "::1";
               URIPrefix = "/";
             };
 
@@ -169,9 +180,12 @@ in {
               AllowWeb = true;
               IPv4 = false;
               IPv6 = true;
-              Port = 7001;
+              Host = "::1";
+              Port = 7000;
               URIPrefix = "/";
             };
+
+            l = lib.mkForce null;
           };
 
           User.aftix = {
@@ -191,7 +205,7 @@ in {
             JoinTries = 10;
             MaxJoins = 0;
             MaxNetworks = 1;
-            LoadModul = [
+            LoadModule = [
               "chansaver"
               "controlpanel"
               "dcc"
@@ -216,7 +230,6 @@ in {
                   "keepnick"
                   "savebuff"
                   "clientbuffer"
-                  "autoadd"
                   "route_replies"
                 ];
                 FloodBurst = 9;
@@ -227,12 +240,6 @@ in {
                 TrustPKI = true;
               };
             in {
-              oftc =
-                {
-                  Server = "irc.oftc.net + 6697";
-                }
-                // network;
-
               esper =
                 {
                   Server = "irc.esper.net +6697";
@@ -248,21 +255,21 @@ in {
 
               snoonet =
                 {
-                  Server = "irc.snoonet.org 6667";
+                  Server = "irc.snoonet.org +6697";
                 }
                 // network;
 
               twitch =
                 {
-                  Server = "irc.chat.twitch.tv 6667 TWITCHOAUTH";
+                  Server = "irc.chat.twitch.tv +6697 __TWITCHOAUTH__";
                 }
                 // network;
             };
 
             Pass.password = {
-              Hash = "PASSWORD";
+              Hash = "__PASSWORD__";
               Method = "SHA256";
-              Salt = "PASSWORDSALT";
+              Salt = "__SALT__";
             };
           };
         };
