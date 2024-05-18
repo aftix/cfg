@@ -10,6 +10,7 @@ in {
   imports = [
     ./blog.nix
     ./coffeepaste.nix
+    ./rss.nix
     ./searx.nix
     ./znc.nix
   ];
@@ -69,7 +70,7 @@ in {
         password = "";
         shell = pkgs.bash;
         isSystemUser = true;
-        home = cfg.root;
+        home = lib.mkOverride 990 cfg.root;
         openssh.authorizedKeys.keys = cfg.keys;
       };
 
