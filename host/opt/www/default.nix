@@ -8,6 +8,7 @@
   cfg = config.my.www;
 in {
   imports = [
+    ./barcodebuddy.nix
     ./blog.nix
     ./coffeepaste.nix
     ./grocy.nix
