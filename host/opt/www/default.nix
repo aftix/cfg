@@ -10,6 +10,7 @@ in {
   imports = [
     ./blog.nix
     ./coffeepaste.nix
+    ./grocy.nix
     ./rss.nix
     ./searx.nix
     ./znc.nix
