@@ -49,6 +49,7 @@ in {
 
   services = {
     openssh.settings.AllowUsers = ["aftix"];
+    coffeepaste.enable = true;
   };
 
   users = {
