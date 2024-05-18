@@ -16,7 +16,7 @@
       availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"];
       kernelModules = [];
     };
-    kernelModules = ["kvm_amd"];
+    kernelModules = ["kvm-amd"];
     extraModulePackages = [];
   };
 

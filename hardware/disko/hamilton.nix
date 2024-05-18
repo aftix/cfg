@@ -56,8 +56,6 @@ in {
 
                   subvolumes = mergeAttrsList ((builtins.map (username: let
                         home = "/home/" + username;
-                        inherit (config.users.users.${username}) uid group;
-                        inherit (config.users.groups.${group}) gid;
                       in {
                         "local/${username}/state" = {
                           mountpoint = "${home}/.local/state";
@@ -65,9 +63,6 @@ in {
                             [
                               "nodev"
                               "nosuid"
-                              "mode=0750"
-                              "uid=${builtins.toString uid}"
-                              "gid=${builtins.toString gid}"
                             ]
                             ++ cfg.rootDrive.mountOptions;
                         };
@@ -78,9 +73,6 @@ in {
                               "nodev"
                               "nosuid"
                               "noexec"
-                              "mode=0750"
-                              "uid=${builtins.toString uid}"
-                              "gid=${builtins.toString gid}"
                             ]
                             ++ cfg.rootDrive.mountOptions;
                         };
@@ -91,9 +83,6 @@ in {
                               "nodev"
                               "nosuid"
                               "noexec"
-                              "mode=0750"
-                              "uid=${builtins.toString uid}"
-                              "gid=${builtins.toString gid}"
                             ]
                             ++ cfg.rootDrive.mountOptions;
                         };
