@@ -30,7 +30,7 @@
     disko = {
       rootDrive = {
         name = "nvme0n1";
-        mountOptions = ["discard=async" "relatime" "nodiratime"];
+        mountOptions = ["discard=async"];
 
         xdgSubvolumeUsers = ["aftix"];
       };
@@ -106,24 +106,28 @@
   # Hardware specific settings
   hardware.opengl.enable = true;
 
-  boot.initrd = {
-    kernelModules = ["amdgpu"];
+  boot = {
+    initrd = {
+      kernelModules = ["amdgpu"];
 
-    # By default don't store state
-    postDeviceCommands = lib.mkAfter ''
-      mkdir /mnt
-      mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
-      [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
-      rm -rf /mnt/local/root
-      btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
-      umount /mnt
-      rmdir /mnt
-    '';
+      # By default don't store state
+      postDeviceCommands = lib.mkAfter ''
+        mkdir /mnt
+        mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
+        [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
+        rm -rf /mnt/local/root
+        btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
+        umount /mnt
+        rmdir /mnt
+      '';
+    };
+    kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
   };
 
   fileSystems = {
     "/persist".neededForBoot = true;
     "/state".neededForBoot = true;
+    "/home".neededForBoot = true;
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
