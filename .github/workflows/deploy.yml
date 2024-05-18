@@ -27,4 +27,4 @@ jobs:
 
       - name: Deploy fermi
         run: >
-          nix run 'github:serokell/deploy-rs' '.#fermi'
+          nix run 'github:serokell/deploy-rs' '.#fermi' -- --ssh-user aftix -- --impure

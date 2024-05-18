@@ -9,6 +9,7 @@
 in {
   imports = [
     ./blog.nix
+    ./coffeepaste.nix
     ./searx.nix
     ./znc.nix
   ];
@@ -115,11 +116,7 @@ in {
 
       certs.${cfg.hostname} = {
         inherit (cfg) group;
-        extraDomainNames = [
-          "www.${cfg.hostname}"
-          "auth.${cfg.hostname}"
-          "www.auth.${cfg.hostname}"
-        ];
+        extraDomainNames = ["www.${cfg.hostname}"];
       };
     };
   };

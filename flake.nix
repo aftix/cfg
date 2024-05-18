@@ -46,6 +46,11 @@
       url = "github:Alexays/Waybar";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    coffeepaste = {
+      url = "sourcehut:~mort/coffeepaste";
+      flake = false;
+    };
   };
 
   outputs = {

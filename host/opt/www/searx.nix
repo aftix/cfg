@@ -35,7 +35,7 @@ in {
     systemd.tmpfiles.rules = let
       inherit (config.services.searx.uwsgiConfig) immediate-uid immediate-gid;
     in [
-      "d ${builtins.baseNameOf socket} 0775 ${immediate-uid} ${immediate-gid} -"
+      "d ${builtins.dirOf socket} 0775 ${immediate-uid} ${immediate-gid} -"
     ];
 
     environment.etc."nginx/uwsgi_params".text = ''

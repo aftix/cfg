@@ -9,6 +9,7 @@ in {
   imports = [
     ./apparmor.nix
     ./channels.nix
+    ./coffeepaste.nix
     ./nh.nix
     ./root.nix
     ./sleep.nix
