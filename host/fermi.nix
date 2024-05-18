@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  lib,
+  config,
+  ...
+}: let
   inherit (lib) mkForce;
 in {
   imports = [
@@ -15,6 +19,9 @@ in {
   sops = {
     defaultSopsFile = ./srv_secrets.yaml;
     age.keyFile = "/state/age/keys.txt";
+
+    secrets."freshrss_password" = {
+    };
   };
 
   my = {
@@ -50,6 +57,7 @@ in {
   services = {
     openssh.settings.AllowUsers = ["aftix"];
     coffeepaste.enable = true;
+    freshrss.enable = true;
   };
 
   users = {
