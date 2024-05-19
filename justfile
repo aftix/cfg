@@ -5,20 +5,20 @@ arch := `uname -m`
 default:
     @just --list
 
-build host=hostname:
-    @nix build ".#nixosConfigurations.{{host}}.config.system.build.toplevel"
+build host=hostname *FLAGS="":
+    @nix build ".#nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
 
-switch:
-    @nh os switch
+switch *FLAGS:
+    @nh os switch {{FLAGS}}
 
-boot:
-    @nh os boot
+boot *FLAGS:
+    @nh os boot {{FLAGS}}
 
-test:
-    @nh os test
+test *FLAGS:
+    @nh os test {{FLAGS}}
 
-check:
-    @nix flake check
+check *FLAGS:
+    @nix flake check {{FLAGS}}
 
 deploy node="fermi":
     @nix run 'github:serokell/deploy-rs' '.#{{node}}' -- -- --impure
@@ -28,9 +28,13 @@ rekey:
     @sops updatekeys -y host/srv_secrets.yaml
     @sops updatekeys -y home/secrets.yaml
 
-iso variant="minimal" arch=arch:
-    @nix build ".#nixosConfigurations.iso-{{variant}}-{{arch}}-linux.config.system.build.isoImage"
+iso variant="minimal" arch=arch *FLAGS="":
+    @nix build ".#nixosConfigurations.iso-{{variant}}-{{arch}}-linux.config.system.build.isoImage" {{FLAGS}}
 
-vm variant="minimal" arch=arch:
+vm variant="minimal" arch=arch *FLAGS="":
     @just iso {{variant}} {{arch}}
-    @find result/iso -type f -name "*.iso" | head -n1 | xargs nix run 'nixpkgs#qemu_kvm' -- -boot d -smbios type=0,uefi=on -m 2G -cdrom
+    @find result/iso -type f -name "*.iso" | head -n1 | xargs -I% nix run 'nixpkgs#qemu_kvm' -- -boot d -smbios type=0,uefi=on -m 2G -cdrom % {{FLAGS}}
+
+serialvm variant="minimal" arch=arch *FLAGS="":
+    @just iso {{variant}} {{arch}}
+    @find result/iso -type f -name "*.iso" | head -n1 | xargs -I% nix run 'nixpkgs#qemu_kvm' -- -boot d -smbios type=0,uefi=on -m 2G -nographic -serial mon:stdio -cdrom % {{FLAGS}}

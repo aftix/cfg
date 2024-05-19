@@ -26,5 +26,10 @@ jobs:
         run: ssh-keyscan -H 170.130.165.174 > ~/.ssh/known_hosts
 
       - name: Deploy fermi
-        run: >
+        run: |
           nix run 'github:serokell/deploy-rs' '.#fermi' -- --ssh-user aftix -- --impure
+          ssh aftix@170.130.165.174 'sh -ls' <<< "$SCRIPT"
+        env:
+          SCRIPT: >-
+            cd $HOME/cfg ;
+            git pull --rebase
