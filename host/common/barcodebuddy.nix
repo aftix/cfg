@@ -7,6 +7,7 @@
 }: let
   inherit (lib) mkDefault mkIf;
   inherit (lib.options) mkOption mkEnableOption;
+  inherit (lib.attrsets) filterAttrs;
   cfg = config.services.barcodebuddy;
 in {
   options.services.barcodebuddy = {
@@ -35,6 +36,7 @@ in {
         "php_admin_flag[log_errors]" = true;
         "listen.owner" = cfg.user;
         "listen.group" = cfg.group;
+        "listen.mode" = "0600";
         "catch_workers_output" = true;
         "pm.max_children" = "10";
         "pm.start_servers" = "2";
@@ -120,34 +122,40 @@ in {
         "d '${cfg.dataDir}' - '${cfg.user}' '${cfg.group}' - -"
       ];
 
-      services.barcodebuddy-wss = mkIf cfg.enableWebsockets {
-        wants = ["network.target"];
-        after = ["network.target"];
-        wantedBy = ["multi-user.target"];
-        unitConfig.Description = "Barcodebuddy for grocy - websocket server";
+      services = {
+        phpfpm-barcodebuddy.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {
+          workdir = pkgs.barcodebuddy;
+          datadir = cfg.dataDir;
+        });
 
-        serviceConfig = {
-          User = cfg.user;
-          Group = cfg.group;
-          WorkingDirectory = pkgs.barcodebuddy;
-          ProtectSystem = "strict";
-          PrivateTmp = true;
-          PrivateDevices = true;
-          ProtectHome = "read-only";
-          NoNewPrivileges = true;
-          ReadWritePaths = cfg.dataDir;
-          MemoryDenyWriteExecute = true;
+        barcodebuddy-wss = mkIf cfg.enableWebsockets {
+          wants = ["network.target"];
+          after = ["network.target"];
+          wantedBy = ["multi-user.target"];
+          unitConfig.Description = "Barcodebuddy for grocy - websocket server";
+
+          serviceConfig =
+            (filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) config.my.systemdHardening)
+            // {
+              User = cfg.user;
+              Group = cfg.group;
+              WorkingDirectory = pkgs.barcodebuddy;
+
+              PrivateTmp = true;
+              ReadWritePaths = cfg.dataDir;
+              MemoryDenyWriteExecute = false;
+            };
+
+          script = let
+            inherit (lib.strings) escapeShellArg;
+          in ''
+            export BBUDDY_CONFIG_PATH=${escapeShellArg cfg.dataDir}/config.php
+            export BBUDDY_LEGACY_DATABASE_PATH=${escapeShellArg cfg.dataDir}/barcodebuddy_legacy.db
+            export BBUDDY_DATABASE_PATH=${escapeShellArg cfg.dataDir}/barcodebuddy.db
+            export BBUDDY_AUTHDB_PATH=${escapeShellArg cfg.dataDir}/auth.db
+            ${config.services.phpfpm.pools.barcodebuddy.phpPackage}/bin/php wsserver.php
+          '';
         };
-
-        script = let
-          inherit (lib.strings) escapeShellArg;
-        in ''
-          export BBUDDY_CONFIG_PATH=${escapeShellArg cfg.dataDir}/config.php
-          export BBUDDY_LEGACY_DATABASE_PATH=${escapeShellArg cfg.dataDir}/barcodebuddy_legacy.db
-          export BBUDDY_DATABASE_PATH=${escapeShellArg cfg.dataDir}/barcodebuddy.db
-          export BBUDDY_AUTHDB_PATH=${escapeShellArg cfg.dataDir}/auth.db
-          ${config.services.phpfpm.pools.barcodebuddy.phpPackage}/bin/php wsserver.php
-        '';
       };
     };
 

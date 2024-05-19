@@ -4,6 +4,7 @@
   lib,
   ...
 }: let
+  inherit (lib) mkDefault mkForce;
   inherit (lib.options) mkOption mkEnableOption;
 in {
   imports = [
@@ -25,6 +26,93 @@ in {
     users.aftix.enable = mkEnableOption "aftix";
 
     uefi = mkEnableOption "uefi";
+
+    systemdCapabilities = mkOption {
+      readOnly = false;
+      default = builtins.map (s: "~CAP_" + s) [
+        "SYS_TIME"
+        "SYS_PACCT"
+        "KILL"
+        "WAKE_ALARM"
+        "FOWNER"
+        "IPC_OWNER"
+        "BPF"
+        "LINUX_IMMUTABLE"
+        "IPC_LOCK"
+        "SYS_MODULE"
+        "SYS_TTY_CONFIG"
+        "SYS_BOOT"
+        "SYS_CHROOT"
+        "BLOCK_SUSPEND"
+        "LEASE"
+        "FSETID"
+        "SETFCAP"
+        "SETPCAP"
+        "SYS_PTRACE"
+        "SYS_NICE"
+        "SYS_RESOURCE"
+        "NET_ADMIN"
+        "CHOWN"
+        "SETUID"
+        "SETGID"
+      ];
+    };
+
+    systemdHardening = mkOption {
+      readOnly = true;
+      default = {
+        CapabilityBoundingSet =
+          mkDefault config.my.systemdCapabilities;
+        IPAddressAllow = mkDefault "localhost";
+        IPAddressDeny = mkDefault "any";
+        LockPersonality = mkDefault true;
+        MemoryDenyWriteExecute = mkDefault true;
+        NoNewPrivileges = mkDefault true;
+        PrivateDevices = mkDefault true;
+        PrivateTmp = mkDefault true;
+        PrivateUsers = mkDefault true;
+        ProtectHome = mkDefault "read-only";
+        ProtectHostname = mkDefault true;
+        ProtectKernelModules = mkDefault true;
+        ProtectKernelTunables = mkDefault true;
+        ProtectProc = mkDefault "invisible";
+        ProtectSystem = mkDefault "strict";
+        RemoveIPC = mkDefault true;
+        RestrictNamespaces = mkDefault "";
+        RestrictRealtime = mkDefault true;
+        RestrictSUIDSGID = mkDefault true;
+        SystemCallArchitectures = mkDefault "native";
+        UMask = mkDefault "0027";
+      };
+    };
+
+    hardenPHPFPM = mkOption {
+      readOnly = true;
+      default = {
+        workdir,
+        datadir,
+      }: {
+        WorkingDirectory = workdir;
+        MemoryDenyWriteExecute = false;
+        ReadWritePaths = [datadir "/run/phpfpm"];
+
+        IPAddressAllow = mkDefault "localhost";
+        IPAddressDeny = mkDefault "any";
+        LockPersonality = mkDefault true;
+        NoNewPrivileges = mkDefault true;
+        ProcSubset = mkDefault "pid";
+        ProtectHostname = mkDefault true;
+        ProtectKernelModules = mkDefault true;
+        ProtectKernelTunables = mkDefault true;
+        ProtectProc = mkDefault "invisible";
+        RemoveIPC = mkDefault true;
+        RestrictNamespaces = mkDefault true;
+        RestrictRealtime = mkDefault true;
+        RestrictSUIDSGID = mkDefault true;
+        SystemCallArchitectures = mkDefault "native";
+        UMask = mkForce "0027";
+      };
+    };
   };
 
   config = {
