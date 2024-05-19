@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkDefault mkIf;
+  inherit (lib) mkDefault mkIf mkForce;
   inherit (lib.options) mkOption mkEnableOption;
   wwwCfg = config.my.www;
   cfg = wwwCfg.grocy;
@@ -33,6 +33,7 @@ in {
         "php_admin_flag[log_errors]" = true;
         "listen.owner" = cfg.user;
         "listen.group" = cfg.group;
+        "listen.mode" = "0600";
         "catch_workers_output" = true;
         "pm.max_children" = "32";
         "pm.start_servers" = "2";
@@ -134,12 +135,29 @@ in {
           "storage"
         ]);
 
-      services.grocy-setup = {
-        wantedBy = ["multi-user.target"];
-        before = ["phpfpm-grocy.service"];
-        script = ''
-          rm -rf ${lib.strings.escapeShellArg cfg.dataDir}/viewcache/*
-        '';
+      services = {
+        grocy-setup = {
+          wantedBy = ["multi-user.target"];
+          before = ["phpfpm-grocy.service"];
+          serviceConfig =
+            config.my.systemdHardening
+            // {
+              User = mkForce cfg.user;
+              Group = mkForce cfg.group;
+              WorkingDirectory = cfg.dataDir;
+              ReadWritePaths = cfg.dataDir + "/viewcache";
+
+              PrivateNetwork = true;
+            };
+          script = ''
+            rm -rf ${lib.strings.escapeShellArg cfg.dataDir}/viewcache/*
+          '';
+        };
+
+        phpfpm-grocy.serviceConfig = config.my.hardenPHPFPM {
+          workdir = config.services.grocy.package;
+          datadir = cfg.dataDir;
+        };
       };
     };
 
