@@ -4,6 +4,7 @@
   ...
 }: let
   inherit (lib) mkIf mkOverride mkForce;
+  inherit (lib.attrsets) filterAttrs;
   inherit (lib.options) mkOption;
   inherit (config.services.freshrss) enable;
   cfg = config.my.www;
@@ -24,9 +25,20 @@ in {
       "www.${cfg.rssSubdomain}.${cfg.hostname}"
     ];
 
-    systemd.services.freshrss-config.serviceConfig = {
-      User = mkForce cfg.user;
-      Group = mkForce cfg.group;
+    systemd.services = {
+      freshrss-config.serviceConfig = {
+        User = mkForce cfg.user;
+        Group = mkForce cfg.group;
+        WorkingDirectory = config.services.freshrss.package;
+
+        PrivateNetwork = true;
+        UMask = mkForce "0027";
+      };
+
+      phpfpm-freshrss.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {
+        workdir = config.services.freshrss.package;
+        datadir = config.services.freshrss.dataDir;
+      });
     };
 
     services = {
