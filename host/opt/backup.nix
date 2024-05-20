@@ -37,24 +37,15 @@ in {
 
             function cleanup() {
               [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
-              if [[ -f "$PIDFILE" ]]; then
-                exec 4>&- || :
-                rm "$PIDFILE" || :
-              fi
+              [[ -f /var/run/backupdisk.pid ]] && (rm /var/run/backupdisk.pid || :)
             }
             trap cleanup EXIT
+            echo "$$" > /var/run/backupdisk.pid
 
             NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
             MNT="$(mktemp -d)"
-            PIDFILE="/var/run/backupdisk.pid"
             TS="$(date +%Y-%m-%d)"
-            CUTOFF_DATE="$(date -d ${escapeShellArg cfg.deleteOlderThan} +%s)"
-
-            touch "$PIDFILE"
-            exec 4<"$PIDFILE"
-            flock 4
-
-            echo "$$" > "$PIDFILE"
+            CUTOFF_DATE="$(${pkgs.coreutils}/bin/date -d ${escapeShellArg cfg.deleteOlderThan} +%s)"
 
             mkdir "$MNT/nix" "$MNT/backup"
 
@@ -69,16 +60,15 @@ in {
               NAME="$(basename "$vol")"
               [[ -e "$SNAPSHOT_DIR/$NAME.$TS" ]] && continue
 
-              rm -rf "$MNT/nix/tmp/$NAME"
+              [[ -d "$MNT/nix/tmp/$NAME" ]] && (btrfs subvolume delete "$MNT/nix/tmp/$NAME" || :)
+              [[ -e "$MNT/nix/tmp/$NAME" ]] && rm -rf "$MNT/nix/tmp/$NAME"
               btrfs subvolume snapshot -r "$vol" "$MNT/nix/tmp/$NAME"
 
               if [[ -d "$SNAPSHOT_DIR/$NAME" ]]; then
-                btrfs send -p "$MNT/nix/tmp/$NAME" "$SNAPSHOT_DIR/$NAME" | btrfs receive -m "$MNT/backup/tmp"
                 btrfs subvolume delete "$MNT/backup/safe/$NAME"
-              else
-                btrfs send "$MNT/nix/tmp/$NAME" | btrfs receive "$MNT/backup/tmp"
               fi
 
+              btrfs send "$MNT/nix/tmp/$NAME" | btrfs receive -m "$MNT/backup" "$MNT/backup/tmp"
               btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME"
               btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME.$TS"
               btrfs subvolume delete "$MNT/nix/tmp/$NAME"
@@ -96,7 +86,6 @@ in {
 
             umount "$MNT/backup"
             rmdir "$MNT/backup" "$MNT/nix" "$MNT"
-
           '';
         };
 
@@ -113,23 +102,16 @@ in {
 
             function cleanup() {
               [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
-              if [[ -f "$PIDFILE" ]]; then
-                exec 4>&- || :
-                rm "$PIDFILE" || :
-              fi
+              [[ -f /var/run/backupdisk.pid ]] && (rm /var/run/backupdisk.pid || :)
             }
             trap cleanup EXIT
+            echo "$$" > /var/run/backupdisk.pid
 
             NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
             MNT="$(mktemp -d)"
             BUCKET=${escapeShellArg cfg.bucket}
             DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
-            PIDFILE="/var/run/backupdisk.pid"
             SNAPSHOT_DIR="$MNT/"${escapeShellArg cfg.snapshotPrefix}
-
-            touch "$PIDFILE"
-            exec 4<"$PIDFILE"
-            flock 4
 
             mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT"
             mkdir -p "$MNT/safe"
@@ -152,18 +134,11 @@ in {
       })
     ];
 
-    environment.systemPackages = with pkgs; [
-      rclone
-      my-snapshot
-      my-backup
-    ];
-
     sops = {
       secrets = {
         backblaze_key_id = {};
         backblaze_application_key = {};
       };
-
       templates."rclone.conf".content = let
         inherit (config.sops.placeholder) backblaze_key_id backblaze_application_key;
       in ''
@@ -201,24 +176,32 @@ in {
       services = {
         btrfs-snapshots = {
           description = "Create incremental BtrFS snapshots";
-          script = "${pkgs.my-snapshot}/bin/snapshot.bash";
+          after = ["network-online.target"];
+          requires = ["network-online.target"];
+
+          script = ''
+            ${pkgs.daemonize}/bin/daemonize -l /var/run/backupdisk -e /var/log/snapshotdisk.err -o /var/log/snapshotdisk ${pkgs.my-snapshot}/bin/snapshot.bash
+          '';
           path = [pkgs.nix];
           serviceConfig = {
-            Type = "oneshot";
+            Type = "simple";
             RestartSec = "5min";
           };
-          requires = ["network.target"];
         };
 
         backup = {
           description = "Incremental backup to the cloud";
-          script = "${pkgs.my-backup}/bin/backup.bash";
+          after = ["network-online.target" "btrfs-snapshots.service"];
+          requires = ["network-online.target" "btrfs-snapshots.service"];
+
+          script = ''
+            ${pkgs.daemonize}/bin/daemonize -l /var/run/backupdisk -e /var/log/backupdisk.err -o /var/log/backupdisk ${pkgs.my-backup}/bin/backup.bash
+          '';
           path = [pkgs.nix];
           serviceConfig = {
-            Type = "oneshot";
+            Type = "simple";
             RestartSec = "5min";
           };
-          requires = ["network.target" "btrfs-snapshots.service"];
         };
       };
     };
