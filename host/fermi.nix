@@ -6,6 +6,7 @@ in {
     ./common
 
     ./opt/aftix.nix
+    ./opt/basicbackup.nix
     ./opt/clamav.nix
     ./opt/docker.nix
     ./opt/openssh.nix
@@ -37,6 +38,20 @@ in {
     };
 
     znc.enable = true;
+
+    backup = {
+      bucket = "fermi-backup";
+      directories = [
+        "/var/lib"
+        "/var/log"
+        "/srv"
+        "/home"
+        "/state"
+      ];
+      excludes = [
+        "/var/lib/coffeepaste/**"
+      ];
+    };
   };
 
   security.sudo.extraRules = [
