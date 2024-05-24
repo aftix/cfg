@@ -428,6 +428,7 @@ in {
           "hyprpaper"
           "hypridle"
           "[workspace 1 silent] firefox"
+          "[workspace 9 silent] keepassxc"
           "[workspace 2;group new] $terminal --title irc --session \"$HOME/.config/kitty/irc.session\""
           "[workspace 2;group set] element-desktop"
           "[workspace 2] discord"
