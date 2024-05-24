@@ -2,7 +2,9 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib.strings) optionalString;
+in {
   imports = [
     ../hardware/hamilton.nix
     ../hardware/disko/hamilton.nix
@@ -101,6 +103,81 @@
     udisks2.enable = true;
     earlyoom.enable = true;
     xserver.videoDrivers = ["modesetting"];
+
+    pipewire.wireplumber.configPackages = let
+      genLua = {
+        monitor ? "alsa",
+        type ? "node",
+        name,
+        description ? "",
+        nick ? "",
+        disabled ? false,
+      }: ''
+        monitor.${monitor}.rules = [
+          matches = [
+            {
+              ${type}.name = "${name}"
+            }
+          ]
+          actions = {
+            update-props = {
+              ${optionalString (nick != "") (type + ".nick = \"${nick}\"")}
+              ${optionalString (description != "") (type + ".description = \"${description}\"")}
+              ${optionalString disabled (type + ".disabled = true")}
+            }
+          }
+        ]
+      '';
+
+      writeConf = name: attrs: pkgs.writeTextDir "share/wireplumber/wireplumber.conf.d/${name}.conf" (genLua attrs);
+    in [
+      (writeConf "51-navi-disable" {
+        type = "device";
+        name = "alsa_card.pci-0000_0c_00.1";
+        disabled = true;
+      })
+
+      (writeConf "52-starship-rename" {
+        type = "device";
+        name = "alsa_card.pci-0000_0e_00.4";
+        description = "Built-in Audio";
+        nick = "built-in";
+      })
+
+      (writeConf "53-soundcore-nick" {
+        monitor = "bluez5";
+        type = "device";
+        name = "bluez_card.E8_EE_CC_3A_C5_87";
+        nick = "headphones";
+      })
+
+      (writeConf "54-navi-device-disable" {
+        name = "alsa_output.pci-0000_0c_00.1.hdmi-stereo-extra2";
+        disabled = true;
+      })
+
+      (writeConf "55-starship-jack-rename" {
+        name = "alsa_output.pci-0000_0e_00.4.iec958-stereo";
+        description = "Built-in Audio Output";
+        nick = "built-in output";
+      })
+
+      (writeConf "56-starship-mic-rename" {
+        name = "alsa_input.pci-0000_0e_00.4.analog-stereo";
+        description = "Built-in Audio Input";
+        nick = "built-in input";
+      })
+
+      (writeConf "57-soundcore-node-nick" {
+        name = "bluez_output.E8_EE_CC_3A_C5_87.1";
+        nick = "headphones";
+      })
+
+      (writeConf "58-soundcore-input-disable" {
+        name = "bluez_input.E8:EE:CC:3A:C5:87";
+        disabled = true;
+      })
+    ];
   };
 
   # Hardware specific settings
