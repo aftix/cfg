@@ -7,7 +7,6 @@
   inherit (lib) mkDefault;
 in {
   environment.systemPackages = with pkgs; [
-    catppuccin-sddm-corners
     kdePackages.kwin
   ];
 
@@ -27,9 +26,6 @@ in {
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
-
-      theme = mkDefault "catppuccin-sddm-corners";
-
       autoNumlock = true;
       settings = {
         General = {
