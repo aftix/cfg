@@ -94,7 +94,16 @@ in {
         path = [pkgs.nix];
 
         script = ''
-          ${pkgs.daemonize}/bin/daemonize -l /var/run/backupdisk -e /var/log/backup.err -o /var/log/backup ${pkgs.my-basic-backup}/bin/backup.bash
+          cd / || exit 1
+          LOCKFILE="/var/run/backupdisk"
+          LOCKFD=99
+          _lock() { ${pkgs.flock}/bin/flock -"$1" "$LOCKFD"; }
+          _no_more_locking() { _lock u ; _lock xn && rm -f "$LOCKFILE"; }
+          _prepare_locking() { eval "exec $LOCKFD>\"$LOCKFILE\""; trap _no_more_locking EXIT; }
+          _prepare_locking
+
+          _lock xn || exit 1
+          ${pkgs.my-basic-backup}/bin/backup.bash >/var/log/backup 2>/var/log/backup.err
         '';
         serviceConfig = {
           Type = "simple";
