@@ -95,7 +95,6 @@
         config.allowUnfreePredicate = pkg:
           builtins.elem (nixpkgs.lib.getName pkg) [
             "discord"
-            "nordvpn"
             "pay-by-privacy"
           ];
       };

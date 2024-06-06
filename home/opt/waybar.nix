@@ -18,11 +18,11 @@
         fi
       '';
     };
-  waybar-nordvpn = final:
+  waybar-mullvad = final:
     final.writeShellApplication {
-      name = "waybar-nordvpn";
+      name = "waybar-mullvad";
       text = ''
-        if [ -d /proc/sys/net/ipv4/conf/nordlynx ]; then
+        if [ -d /proc/sys/net/ipv4/conf/wg0-mullvad ]; then
          echo '{"text": " 󰖂  ", "class": ""}'
         else
          echo '{"text": " 󰖂  ", "class": "disconnected"}'
@@ -62,11 +62,11 @@ in {
   nixpkgs.overlays = [
     (final: _: {
       waybar-dunst = waybar-dunst final;
-      waybar-nordvpn = waybar-nordvpn final;
+      waybar-mullvad = waybar-mullvad final;
       waybar-backup = waybar-backup final;
     })
   ];
-  home.packages = with pkgs; [waybar pkgs.waybar-dunst pkgs.waybar-nordvpn pkgs.waybar-backup];
+  home.packages = with pkgs; [waybar pkgs.waybar-dunst pkgs.waybar-mullvad pkgs.waybar-backup];
 
   programs.waybar = {
     enable = true;
@@ -100,13 +100,13 @@ in {
         margin-left: 0;
       }
 
-      #custom-nordvpn,
+      #custom-mullvad,
       #custom-dunst {
         padding: 2px 2px;
         padding-right: 4px;
       }
 
-      #custom-nordvpn.disconnected,
+      #custom-mullvad.disconnected,
       #network.disconnected,
       #custom-dunst.disabled,
       #mpd.disconnected {
@@ -129,7 +129,7 @@ in {
   };
 
   xdg.configFile = let
-    nord = "/run/current-system/sw/bin/nordvpn";
+    mullvad = "/run/current-system/sw/bin/mullvad";
     dunstctl = "${pkgs.dunst}/bin/dunstctl";
     cfg = {
       layer = "top";
@@ -227,11 +227,11 @@ in {
         tooltip-format = "Backup status";
       };
 
-      "custom/nordvpn" = {
+      "custom/mullvad" = {
         return-type = "json";
-        exec = "${pkgs.waybar-nordvpn}/bin/waybar-nordvpn";
-        on-click = "[ -e /proc/sys/net/ipv4/nordlynx ] && \"${nord}\" d || \"${nord}\" c";
-        interval = 5;
+        exec = "${pkgs.waybar-mullvad}/bin/waybar-mullvad";
+        on-click = "if [ -e /proc/sys/net/ipv4/wg0-mullvad ]; then ${mullvad} disconnect ; else  ${mullvad} connect ; fi";
+        interval = 1;
         tooltip-format = "VPN connection status";
       };
 
@@ -263,7 +263,7 @@ in {
             "mpd"
             "idle_inhibitor"
             "pulseaudio"
-            "custom/nordvpn"
+            "custom/mullvad"
             "network"
             "cpu"
             "memory"
@@ -328,7 +328,7 @@ in {
           modules-right = [
             "idle_inhibitor"
             "pulseaudio"
-            "custom/nordvpn"
+            "custom/mullvad"
             "cpu"
             "memory"
             "temperature"
