@@ -20,7 +20,6 @@ in {
     ./opt/network.nix
     ./opt/sound.nix
     ./opt/syncthing.nix
-    ./opt/vpn.nix
   ];
 
   sops = {
@@ -67,7 +66,12 @@ in {
       # /persist is backed up (btrfs subvolume under safe/)
       "/persist" = {
         hideMounts = true;
-        directories = ["/var/lib/nixos" "/etc/NetworkManager/system-connections" "/var/lib/nordvpn"];
+        directories = [
+          "/var/lib/nixos"
+          "/etc/NetworkManager/system-connections"
+          "/etc/mullvad-vpn"
+          "/var/cache/mullvad-vpn"
+        ];
       };
       # /state is not backup up (btrfs subvolume under local)
       "/state" = {
@@ -100,9 +104,8 @@ in {
   time.timeZone = "America/Chicago";
 
   services = {
-    udisks2.enable = true;
     earlyoom.enable = true;
-    xserver.videoDrivers = ["modesetting"];
+    mullvad-vpn.enable = true;
 
     pipewire.wireplumber.configPackages = let
       genLua = {
@@ -178,6 +181,9 @@ in {
         disabled = true;
       })
     ];
+
+    udisks2.enable = true;
+    xserver.videoDrivers = ["modesetting"];
   };
 
   # Hardware specific settings
