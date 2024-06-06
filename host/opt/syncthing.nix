@@ -8,7 +8,7 @@ in {
   environment.systemPackages = [pkgs.syncthing];
 
   networking.firewall = {
-    checkReversePath = false;
+    checkReversePath = mkDefault false;
     allowedTCPPorts = [8384 22000];
     allowedUDPPorts = [22000 21027];
   };

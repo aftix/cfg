@@ -41,7 +41,7 @@ in {
       networkmanager.enable = lib.mkDefault true;
       firewall = {
         enable = true;
-        checkReversePath = false;
+        checkReversePath = lib.mkDefault false;
       };
     };
 
