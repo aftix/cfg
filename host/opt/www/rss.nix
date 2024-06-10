@@ -1,12 +1,13 @@
 {
   lib,
   config,
+  inputs,
   ...
 }: let
   inherit (lib) mkIf mkOverride mkForce;
   inherit (lib.attrsets) filterAttrs;
   inherit (lib.options) mkOption;
-  inherit (config.services.freshrss) enable;
+  inherit (config.services.freshrss) enable dataDir;
   cfg = config.my.www;
 in {
   options.my.www.rssSubdomain = mkOption {
@@ -26,6 +27,51 @@ in {
     ];
 
     systemd.services = {
+      freshrss-extensions = {
+        wants = ["freshrss-config.service"];
+        after = ["freshrss-config.service"];
+        wantedBy = ["multi-user.target"];
+        unitConfig.Description = "Create extension directory for freshrss";
+
+        serviceConfig = {
+          User = cfg.user;
+          Group = cfg.group;
+          WorkingDirectory = dataDir;
+          ReadWritePaths = dataDir;
+          Type = "oneshot";
+
+          CapabilityBoundingSet = config.my.systemdCapabilities;
+          LockPersonality = true;
+          MemoryDenyWriteExecute = true;
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          PrivateNetwork = true;
+          PrivateTmp = true;
+          PrivateUsers = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectProc = "invisible";
+          ProtectSystem = "strict";
+          RemoveIPC = true;
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          SystemCallArchitectures = "native";
+          UMask = "0027";
+        };
+
+        script = ''
+          chmod -R u+w ./extensions
+          rm -rf ./extensions
+          mkdir extensions
+          cp -LR "${inputs.freshrss-ext}/xExtension-"* ./extensions/.
+          cp -LR "${inputs.freshrss-cntools}/xExtension-"* ./extensions/.
+          chmod -R u+w ./extensions
+        '';
+      };
+
       freshrss-config.serviceConfig = {
         User = mkForce cfg.user;
         Group = mkForce cfg.group;
