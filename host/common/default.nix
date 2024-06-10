@@ -173,8 +173,7 @@ in {
         };
       };
 
-      # Use hardened linux
-      kernelPackages = pkgs.linuxPackages_6_9_hardened;
+      kernelPackages = pkgs.linuxPackages_latest;
       # Enable https://en.wikipedia.org/wiki/Magic_SysRq_key
       kernel.sysctl."kernel.sysrq" = 1;
     };
