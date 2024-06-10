@@ -55,6 +55,14 @@
       url = "github:Forceu/barcodebuddy/v1.8.1.7";
       flake = false;
     };
+    freshrss-ext = {
+      url = "github:FreshRSS/Extensions";
+      flake = false;
+    };
+    freshrss-cntools = {
+      url = "github:cn-tools/cntools_FreshRssExtensions";
+      flake = false;
+    };
   };
 
   outputs = {

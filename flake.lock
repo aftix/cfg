@@ -253,6 +253,38 @@
         "type": "github"
       }
     },
+    "freshrss-cntools": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1717440218,
+        "narHash": "sha256-F5LrU1nhuAQ3IN/+UlyxPXVhRNVvlFnggwVJOwmZA18=",
+        "owner": "cn-tools",
+        "repo": "cntools_FreshRssExtensions",
+        "rev": "d0bd817d8d72f3e197fffe1e9edf739a3178ac95",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cn-tools",
+        "repo": "cntools_FreshRssExtensions",
+        "type": "github"
+      }
+    },
+    "freshrss-ext": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1717413579,
+        "narHash": "sha256-G6lXHY5XGiWeS2oDbuLNAR2TDM+rfJdGfZyW4bunzn8=",
+        "owner": "FreshRSS",
+        "repo": "Extensions",
+        "rev": "e779fd1c82183dc6517d6a01740e52ff57244e47",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FreshRSS",
+        "repo": "Extensions",
+        "type": "github"
+      }
+    },
     "fromYaml": {
       "flake": false,
       "locked": {
@@ -605,6 +637,8 @@
         "deploy-rs": "deploy-rs",
         "disko": "disko",
         "flake-utils": "flake-utils",
+        "freshrss-cntools": "freshrss-cntools",
+        "freshrss-ext": "freshrss-ext",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "hyprland-plugins": "hyprland-plugins",
