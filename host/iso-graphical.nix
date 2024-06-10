@@ -1,8 +1,11 @@
 {
   pkgs,
   lib,
+  config,
   ...
-}: {
+}: let
+  inherit (lib) mkForce;
+in {
   imports = [
     ./common
 
@@ -11,6 +14,8 @@
   ];
 
   users.users.root.hashedPasswordFile = null;
+
+  boot.kernelPackages = mkForce config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   environment = {
     systemPackages = with pkgs; [
@@ -26,10 +31,12 @@
   services = {
     udisks2.enable = true;
     earlyoom.enable = true;
+
+    greetd.settings = {
+      initial_session.user = mkForce "nixos";
+      default_session.user = mkForce "nixos";
+    };
   };
 
-  networking = {
-    hostName = "custom-install-iso-minimal";
-    wireless.enable = lib.mkForce false;
-  };
+  networking.hostName = "custom-install-iso";
 }
