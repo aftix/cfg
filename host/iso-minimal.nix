@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   lib,
   ...
 }: {
@@ -8,6 +9,8 @@
   ];
 
   users.users.root.hashedPasswordFile = null;
+
+  boot.kernelPackages = lib.mkForce config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   environment = {
     systemPackages = with pkgs; [
@@ -22,8 +25,5 @@
 
   console.keyMap = "dvorak";
 
-  networking = {
-    hostName = "custom-install-iso-minimal";
-    wireless.enable = lib.mkForce false;
-  };
+  networking.hostName = "custom-install-iso-minimal";
 }
