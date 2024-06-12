@@ -108,8 +108,13 @@ in {
   documentation.dev.enable = true;
   time.timeZone = "America/Chicago";
 
+  systemd.oomd = {
+    enableRootSlice = true;
+    enableSystemSlice = true;
+    enableUserSlices = true;
+  };
+
   services = {
-    earlyoom.enable = true;
     mullvad-vpn.enable = true;
 
     pipewire.wireplumber.configPackages = let
