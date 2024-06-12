@@ -6,9 +6,10 @@
 }: let
   inherit (lib.options) mkOption mkEnableOption;
   inherit (lib.strings) escapeShellArg;
+
   cfg = config.services.znc;
-  hostname = config.my.www.hostname;
-  subdomain = config.my.znc.subdomain;
+  inherit (config.my.www) hostname;
+  inherit (config.my.znc) subdomain;
 in {
   options.my.znc = {
     enable = mkEnableOption "znc";
