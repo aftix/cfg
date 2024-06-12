@@ -28,9 +28,14 @@ in {
     };
   };
 
+  systemd.oomd = {
+    enableRootSlice = true;
+    enableSystemSlice = true;
+    enableUserSlices = true;
+  };
+
   services = {
     udisks2.enable = true;
-    earlyoom.enable = true;
 
     greetd.settings = {
       initial_session.user = mkForce "nixos";
