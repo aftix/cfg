@@ -110,7 +110,7 @@ in {
       defaults = {
         email = "aftix@aftix.xyz";
         dnsProvider = "porkbun";
-        group = cfg.group;
+        inherit (cfg) group;
         credentialFiles = {
           PORKBUN_SECRET_API_KEY_FILE = config.sops.secrets.porkbun_secret_api_key.path;
           PORKBUN_API_KEY_FILE = config.sops.secrets.porkbun_api_key.path;
