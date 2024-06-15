@@ -11,7 +11,7 @@ in {
       nil
       markdown-oxide
       gopls
-      nodePackages_latest.bash-language-server
+      bash-language-server
       nodePackages_latest.typescript-language-server
     ];
 
