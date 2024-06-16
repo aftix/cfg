@@ -97,6 +97,7 @@ in {
 
   home.persistence.${config.my.impermanence.path}.directories = [
     ".config/keepassxc"
+    ".config/Yubico"
   ];
 
   my = {
