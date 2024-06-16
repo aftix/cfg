@@ -48,8 +48,9 @@ in {
     };
   };
 
-  services.gpg-agent = {
+  services.gpg-agent = rec {
     enable = lib.strings.hasSuffix "-linux" pkgs.system;
+    enableSshSupport = enable;
     extraConfig = mkDefault ''
       pinentry-program ${pkgs.pinentry-custom}/bin/pinentry-custom
     '';
