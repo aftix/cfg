@@ -64,6 +64,11 @@ in {
   environment = {
     systemPackages = with pkgs; [
       btrfs-progs
+
+      pam_u2f
+      yubico-pam
+      yubikey-personalization
+      yubikey-manager
     ];
 
     # opt into state
@@ -93,6 +98,14 @@ in {
         ];
       };
     };
+  };
+
+  security.pam.services = {
+    greetd.u2fAuth = true;
+    login.u2fAuth = true;
+    su.u2fAuth = true;
+    sudo.u2fAuth = true;
+    swaylock.u2fAuth = true;
   };
 
   systemd.network.networks."10-enp6s0".networkConfig = {
@@ -193,6 +206,7 @@ in {
     ];
 
     udisks2.enable = true;
+    udev.packages = [pkgs.yubikey-personalization];
     xserver.videoDrivers = ["modesetting"];
   };
 
