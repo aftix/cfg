@@ -13,7 +13,7 @@ in {
         name = "pinentry-custom";
         runtimeInputs = with final; [pinentry-qt];
         text = ''
-          if [ -z "$PINENTRY_USER_DATA" ] ; then
+          if [ -z "''${PINENTRY_USER_DATA-}" ] ; then
             exec pinentry-curses "$@"
             exit 0
           fi
