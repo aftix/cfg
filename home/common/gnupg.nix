@@ -46,6 +46,9 @@ in {
     settings = {
       keyserver = "keys.gnupg.net";
     };
+    scdaemonSettings = {
+      disable-ccid = true;
+    };
   };
 
   services.gpg-agent = rec {
