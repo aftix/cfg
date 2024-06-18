@@ -205,6 +205,7 @@ in {
       })
     ];
 
+    pcscd.enable = true;
     udisks2.enable = true;
     udev.packages = [pkgs.yubikey-personalization];
     xserver.videoDrivers = ["modesetting"];
