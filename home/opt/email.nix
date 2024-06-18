@@ -691,4 +691,22 @@ in {
       external = true;
     }
   ];
+
+  systemd.user = {
+    services.mbsync = {
+      Unit.Description = "Sync mail using mbsync";
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.isync}/bin/mbsync -a";
+      };
+    };
+
+    timers.mbsync = {
+      Unit.Description = "Sync mail using mbsync on a schedule";
+      Timer = {
+        Persistent = true;
+        OnCalendar = "hourly";
+      };
+    };
+  };
 }

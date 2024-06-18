@@ -60,14 +60,12 @@
     '';
   };
 
-  systemd.user = {
-    services.aria2cd = {
-      Unit.Description = "aria2 Daemon";
-      Service = {
-        Type = "forking";
-        ExecStart = "${pkgs.aria2d}/bin/aria2d";
-      };
-      Install.WantedBy = ["default.target"];
+  systemd.user.services.aria2cd = {
+    Unit.Description = "aria2 Daemon";
+    Service = {
+      Type = "forking";
+      ExecStart = "${pkgs.aria2d}/bin/aria2d";
     };
+    Install.WantedBy = ["default.target"];
   };
 }
