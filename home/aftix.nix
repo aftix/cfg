@@ -107,4 +107,6 @@ in {
       prefix = "hamilton";
     };
   };
+
+  programs.gpg.settings.default-key = "294D241578ED5CD1";
 }
