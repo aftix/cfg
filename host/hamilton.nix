@@ -212,7 +212,7 @@ in {
   };
 
   # Hardware specific settings
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   boot.initrd = {
     kernelModules = ["amdgpu"];
