@@ -104,6 +104,7 @@
           builtins.elem (nixpkgs.lib.getName pkg) [
             "discord"
             "pay-by-privacy"
+            "aspell-dict-en-science"
           ];
       };
     };
