@@ -64,6 +64,7 @@ in {
         privacy-badger
         privacy-possum
         pay-by-privacy
+        sponsorblock
         return-youtube-dislikes
         ublock-origin
       ];
