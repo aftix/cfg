@@ -40,9 +40,9 @@
       };
     };
 
-    hyprland.url = "github:hyprwm/Hyprland/v0.40.0?submodules=1";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland/?rev=9e781040d9067c2711ec2e9f5b47b76ef70762b3&submodules=1";
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/dcbdc9a08d1df753d6799bab823486f1fff5b8e6";
+      url = "github:hyprwm/hyprland-plugins/v0.41.1";
       inputs.hyprland.follows = "hyprland";
     };
 
