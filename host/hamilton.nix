@@ -93,6 +93,7 @@ in {
           "/root/.config/rclone"
         ];
         files = [
+          "/etc/machine-id"
           "/var/lib/cups/printers.conf"
           "/var/lib/cups/subscriptions.conf"
         ];
