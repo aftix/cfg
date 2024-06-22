@@ -19,6 +19,10 @@
     deploy-rs.url = "github:serokell/deploy-rs";
 
     flake-utils.url = "github:numtide/flake-utils";
+    srvos = {
+      url = "github:numtide/srvos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -131,6 +135,8 @@
       home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.sops
       inputs.nix-index-database.nixosModules.nix-index
+      inputs.srvos.nixosModules.mixins-nix-experimental
+      inputs.srvos.nixosModules.mixins-trusted-nix-caches
       {
         programs = {
           nix-index-database.comma.enable = true;
@@ -266,6 +272,9 @@
           modules =
             commonModules
             ++ [
+              inputs.srvos.nixosModules.common
+              inputs.srvos.nixosModules.server
+              inputs.srvos.nixosModules.mixins-nginx
               ./host/fermi.nix
 
               {
