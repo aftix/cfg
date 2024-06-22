@@ -188,9 +188,13 @@ in {
       };
     };
 
-    documentation.man = {
-      enable = true;
-      generateCaches = true;
+    documentation = {
+      man = {
+        enable = true;
+        generateCaches = true;
+      };
+
+      nixos.enable = true;
     };
 
     programs = {
