@@ -449,6 +449,12 @@ in {
           "group set, class:^(Discord)"
 
           "plugin:hyprbars:nobar, floating:0"
+
+          "tag +filepicker, initialTitle:^(blob:.+)$"
+          "tag +filepicker, initialTitle:^(Save [A-Z][^ ]*)$"
+
+          "float, tag:filepicker"
+          "group barred deny, tag:filepicker"
         ];
 
         workspace =
