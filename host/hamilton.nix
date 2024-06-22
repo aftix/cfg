@@ -13,7 +13,6 @@ in {
     ./opt/aftix.nix
     ./opt/backup.nix
     ./opt/bluetooth.nix
-    ./opt/clamav.nix
     ./opt/cups.nix
     ./opt/display.nix
     ./opt/docker.nix
