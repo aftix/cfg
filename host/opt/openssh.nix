@@ -38,13 +38,17 @@ in {
           PasswordAuthentication = false;
         };
 
-        extraConfig = ''
-          ClientAliveInterval 900
-          ClientAliveCountMax 0
-          IgnoreRhosts yes
-          HostbasedAuthentication no
-          Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO
-        '';
+        extraConfig =
+          /*
+          ssh
+          */
+          ''
+            ClientAliveInterval 900
+            ClientAliveCountMax 0
+            IgnoreRhosts yes
+            HostbasedAuthentication no
+            Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO
+          '';
       };
     };
   };

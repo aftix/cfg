@@ -75,57 +75,61 @@ in {
       target = "hyprland-session.target";
     };
 
-    style = ''
-      #disk,
-      #temperature,
-      #backlight,
-      #network,
-      #pulseaudio,
-      #wireplumber,
-      #custom-media,
-      #tray,
-      #mode,
-      #idle_inhibitor,
-      #power-profiles-daemon,
-      #mpd {
-        padding: 0 10px;
-      }
+    style =
+      /*
+      css
+      */
+      ''
+        #disk,
+        #temperature,
+        #backlight,
+        #network,
+        #pulseaudio,
+        #wireplumber,
+        #custom-media,
+        #tray,
+        #mode,
+        #idle_inhibitor,
+        #power-profiles-daemon,
+        #mpd {
+          padding: 0 10px;
+        }
 
-      #window,
-      #workspaces {
-        margin: 0 4px;
-      }
+        #window,
+        #workspaces {
+          margin: 0 4px;
+        }
 
-      .modules-left > widget:first-child > #workspaces {
-        margin-left: 0;
-      }
+        .modules-left > widget:first-child > #workspaces {
+          margin-left: 0;
+        }
 
-      #custom-mullvad,
-      #custom-dunst {
-        padding: 2px 2px;
-        padding-right: 4px;
-      }
+        #custom-mullvad,
+        #custom-dunst {
+          padding: 2px 2px;
+          padding-right: 4px;
+        }
 
-      #custom-mullvad.disconnected,
-      #network.disconnected,
-      #custom-dunst.disabled,
-      #mpd.disconnected {
-        background-color: #f53c3c;
-      }
+        #custom-mullvad.disconnected,
+        #network.disconnected,
+        #custom-dunst.disabled,
+        #mpd.disconnected {
+          background-color: #f53c3c;
+        }
 
-      #mpd.stopped {
-        background-color: #90b1b1;
-      }
+        #mpd.stopped {
+          background-color: #90b1b1;
+        }
 
-      #mpd.paused {
-        background-color: #51a37a;
-      }
+        #mpd.paused {
+          background-color: #51a37a;
+        }
 
-      #idle_inhibitor.activated {
-        background-color: #ecf0f1;
-        color: black;
-      }
-    '';
+        #idle_inhibitor.activated {
+          background-color: #ecf0f1;
+          color: black;
+        }
+      '';
   };
 
   xdg.configFile = let

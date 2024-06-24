@@ -63,7 +63,11 @@ in {
           passwordSaltSecretPath = escapeShellArg config.sops.secrets.znc_passwordsalt.path;
           twitchOauthSecretPath = escapeShellArg config.sops.secrets.znc_twitchoauth.path;
         in
-          lib.mkForce ''
+          lib.mkForce
+          /*
+          bash
+          */
+          ''
             mkdir -p ${cfg.dataDir}/configs
 
             # If mutable, regenerate conf file every time.

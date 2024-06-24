@@ -22,6 +22,9 @@ in {
           else "/opt/homebrew/bin/brew";
       in
         optionalString cfg.addHomebrewPath
+        /*
+        bash
+        */
         ''
           # Add homebrew prefix to path
           export PATH="$(${brewPath} --prefix)/bin:$PATH"
@@ -31,20 +34,24 @@ in {
         '';
 
       envFiles = concatMapStringsSep "\n" (path: let p = escapeShellArg path; in "[[ -f ${p} ]] && source ${p}") cfg.extraEnvFiles;
-    in ''
-      ${
-        optionalString config.services.ssh-agent.enable
-        "export SSH_AUTH_SOCK=\"$XDG_RUNTIME_DIR/ssh-agent\""
-      }
+    in
+      /*
+      bash
+      */
+      ''
+        ${
+          optionalString config.services.ssh-agent.enable
+          "export SSH_AUTH_SOCK=\"$XDG_RUNTIME_DIR/ssh-agent\""
+        }
 
-      ${envFiles}
+        ${envFiles}
 
-      ${homebrewPath}
+        ${homebrewPath}
 
-      upgrade () {
-      ${builtins.concatStringsSep "\n" cfg.upgradeCommands}
-      }
-    '';
+        upgrade () {
+        ${builtins.concatStringsSep "\n" cfg.upgradeCommands}
+        }
+      '';
 
     initExtra = let
       neededDirs = concatMapStringsSep "\n" (path: "mkdir -p " + escapeShellArg path) cfg.neededDirs;
@@ -65,20 +72,24 @@ in {
         '';
 
       starshipInit = optionalString config.programs.starship.enable "source <(starship init bash)";
-    in ''
-      ${neededDirs}
+    in
+      /*
+      bash
+      */
+      ''
+        ${neededDirs}
 
-      ${fixGpg}
-      ${fixXterm}
+        ${fixGpg}
+        ${fixXterm}
 
-      # Disable ^S and ^Q
-      stty -ixon
+        # Disable ^S and ^Q
+        stty -ixon
 
-      # Load carapace completions
-      which carapace >/dev/null 2>&1 && source <(carapace _carapace bash)
+        # Load carapace completions
+        which carapace >/dev/null 2>&1 && source <(carapace _carapace bash)
 
-      ${starshipInit}
-    '';
+        ${starshipInit}
+      '';
 
     shellAliases = mergeAttrsList (
       builtins.map ({

@@ -66,14 +66,16 @@ in {
             then "/usr/local/bin/brew"
             else "/opt/homebrew/bin/brew";
         in
-          if shellCfg.addHomebrewPath
-          then ''
+          optionalString shellCfg.addHomebrewPath
+          /*
+          elvish
+          */
+          ''
             # Add homebrew prefix to path
             add_to_path (${brewPath} --prefix)'/bin'
             # Add homebrew environmental variables
             eval (brew shellenv | grep -v "PATH" | each {|l| re:replace 'export' 'set-env' $l} | each {|l| re:replace '=' ' ' $l} | each {|l| re:replace '$;' "" $l} | to-terminated " ")
-          ''
-          else "";
+          '';
 
         setEnvVars = vars:
           builtins.concatStringsSep "\n" (
@@ -89,12 +91,16 @@ in {
           });
         in
           if lib.strings.hasSuffix "-linux" pkgs.system
-          then ''
-            ${base}
-            if (not (has-env XDG_RUNTIME_DIR)) {
-              set-env XDG_RUNTIME_DIR /run/user/$E:EUID
-            }
-          ''
+          then
+            /*
+            elvish
+            */
+            ''
+              ${base}
+              if (not (has-env XDG_RUNTIME_DIR)) {
+                set-env XDG_RUNTIME_DIR /run/user/$E:EUID
+              }
+            ''
           else base;
         setSessionVars = setEnvVars config.home.sessionVariables;
         setLocaleVars = setEnvVars shellCfg.shellLocale;
@@ -125,16 +131,18 @@ in {
           shellCfg.extraEnvFiles;
 
         historyHook =
-          if cfg.fastForwardHook
-          then ''
+          optionalString cfg.fastForwardHook
+          /*
+          elvish
+          */
+          ''
             # Before every command prompt is presented, fast forward the shell command history from other sessions
             set edit:before-readline = [
               {
                 edit:history:fast-forward }
               $@edit:before-readline
             ]
-          ''
-          else "";
+          '';
 
         importMods =
           concatMapStringsSep "\n" (
@@ -143,22 +151,25 @@ in {
               enable ? true,
               ...
             }:
-              if enable
-              then "use " + name
-              else ""
+              optionalString enable ("use " + name)
           )
           cfg.extraMods;
 
         fixGpg =
-          if shellCfg.gpgTtyFix
-          then ''
+          optionalString shellCfg.gpgTtyFix
+          /*
+          elvish
+          */
+          ''
             # Fix gpg pinentry
             set-env GPG_TTY (tty)
-          ''
-          else "";
+          '';
         fixXterm =
-          if shellCfg.xtermFix
-          then ''
+          optionalString shellCfg.xtermFix
+          /*
+          elvish
+          */
+          ''
             # Fix xterm variants for ssh, etc
             if (re:match '^xterm-' $E:TERM) {
               set-env TERM "xterm"
@@ -166,57 +177,64 @@ in {
               set-env TERM "xterm"
             }
             set-env TERMINAL $E:TERM
-          ''
-          else "";
+          '';
 
         condaMod =
-          if cfg.conda.enable
-          then ''
+          optionalString cfg.conda.enable
+          /*
+          elvish
+          */
+          ''
             # Add conda elvish module
             use mamba
             set mamba:cmd = ${cfg.conda.condaCmd}
             set mamba:root = ${escapeShellArg cfg.conda.condaRoot}
-          ''
-          else "";
+          '';
 
-        aliases =
-          concatMapStringsSep "\n" ({
-            name,
-            command,
-            completer ? "",
-            external ? false,
-            ...
-          }: let
-            cmd =
-              if external
-              then "e:" + command
-              else command;
-            completion =
-              if builtins.isAttrs completer
-              then let
-                arguments =
-                  if builtins.hasAttr "arguments" completer
-                  then "|${completer.arguments}|"
-                  else "";
-              in
-                ''
-                  fn ${completer.name} {${arguments}
-                    ${completer.body}
-                  }
-                  set edit:completion:arg-completer[${escapeShellArg name}] = $''
-                + "${completer.name}~"
-              else if completer != ""
-              then ''
+        aliases = concatMapStringsSep "\n" ({
+          name,
+          command,
+          completer ? "",
+          external ? false,
+          ...
+        }: let
+          cmd =
+            (optionalString external "e:") + command;
+          completion =
+            if builtins.isAttrs completer
+            then let
+              arguments =
+                optionalString (builtins.hasAttr "arguments" completer)
+                "|${completer.arguments}|";
+            in
+              /*
+              elvish
+              */
+              ''
+                fn ${completer.name} {${arguments}
+                  ${completer.body}
+                }
+                set edit:completion:arg-completer[${escapeShellArg name}] = $''
+              + "${completer.name}~"
+            else
+              optionalString (completer != "")
+              /*
+              elvish
+              */
+              ''
                 if (has-key $edit:completion:arg-completer ${completer}) {
                   set edit:completion:arg-completer[${escapeShellArg name}] = $edit:completion:arg-completer[${completer}]
                 }
-              ''
-              else "";
-          in ''
+              '';
+        in
+          /*
+          elvish
+          */
+          ''
             fn ${name} {|@rest| ${cmd} $@rest}
             ${completion}
           '')
-          shellCfg.aliases;
+        shellCfg.aliases;
 
         functions =
           concatMapStringsSep "\n" (
@@ -227,121 +245,132 @@ in {
               ...
             }: let
               args =
-                if arguments != ""
-                then "|${arguments}|"
-                else "";
-            in ''
-              fn ${name} {${args}
-                ${body}
-              }
-            ''
+                optionalString (arguments != "")
+                "|${arguments}|";
+            in
+              /*
+              elvish
+              */
+              ''
+                fn ${name} {${args}
+                  ${body}
+                }
+              ''
           )
           cfg.extraFunctions;
 
         devInit =
-          if shellCfg.development
-          then ''
+          optionalString shellCfg.development
+          /*
+          elvish
+          */
+          ''
             # Setup development aliases
 
             set edit:completion:arg-completer[k] = $edit:completion:arg-completer[make]
             set edit:completion:arg-completer[kd] = $edit:completion:arg-completer[make]
             fn k {|@rest| e:make -j(nproc) $@rest}
             fn kd {|@rest| e:make DEBUG=yes -j(nproc) $@rest}
-          ''
-          else "";
+          '';
         starshipInit =
-          if config.programs.starship.enable
-          then "eval (e:starship init elvish)"
-          else "";
-      in ''
-        # File generated my Home Manager. DO NOT EDIT
-        use re
-        use str
-        use path
-        use os
+          optionalString config.programs.starship.enable
+          /*
+          elvish
+          */
+          "eval (e:starship init elvish)";
+      in
+        /*
+        elvish
+        */
+        ''
+          # File generated my Home Manager. DO NOT EDIT
+          use re
+          use str
+          use path
+          use os
 
-        fn add_to_path {
-          |@my_paths|
-          set paths = [(each {
-            |my_path|
-            if (not (has-value [(each {|p| ==s $my_path $p} $paths)] 0)) {
-              put $my_path
-            }
-          } $my_paths) $@paths]
-        }
-        # Add home.sessionPath paths to the PATH variable
-        add_to_path ${pathsToAdd}
-        ${homebrewPath}
+          fn add_to_path {
+            |@my_paths|
+            set paths = [(each {
+              |my_path|
+              if (not (has-value [(each {|p| ==s $my_path $p} $paths)] 0)) {
+                put $my_path
+              }
+            } $my_paths) $@paths]
+          }
+          # Add home.sessionPath paths to the PATH variable
+          add_to_path ${pathsToAdd}
+          ${homebrewPath}
 
-        # Set the xdg base directory variables
-        ${setXdgBases}
+          # Set the xdg base directory variables
+          ${setXdgBases}
 
-        # Set locale environmental variables
-        ${setLocaleVars}
+          # Set locale environmental variables
+          ${setLocaleVars}
 
-        # Add home.sessionVariables to elvish interactive environment
-        ${setSessionVars}
+          # Add home.sessionVariables to elvish interactive environment
+          ${setSessionVars}
 
-        # Create extra directories
-        ${createExtraDirs}
+          # Create extra directories
+          ${createExtraDirs}
 
-        # Source extra environment files
-        ${sourceExtraEnv}
+          # Source extra environment files
+          ${sourceExtraEnv}
 
-        # Setup carapace completions
-        if (has-external carapace) {
-          eval (e:carapace _carapace | slurp )
-        }
+          # Setup carapace completions
+          if (has-external carapace) {
+            eval (e:carapace _carapace | slurp )
+          }
 
-        ${historyHook}
+          ${historyHook}
 
-        # Import modules
-        ${importMods}
+          # Import modules
+          ${importMods}
 
-        # Disable ^S and ^Q
-        stty -ixon
+          # Disable ^S and ^Q
+          stty -ixon
 
-        ${fixGpg}
-        ${fixXterm}
-        ${condaMod}
+          ${fixGpg}
+          ${fixXterm}
+          ${condaMod}
 
-        # Shell Aliases
-        ${aliases}
+          # Shell Aliases
+          ${aliases}
 
-        ${devInit}
+          ${devInit}
 
-        # Extra functions
-        ${functions}
+          # Extra functions
+          ${functions}
 
-        # Setup common modules
-        use completions/molecule
-        use completions/crev
-        use jump
-        use iterm2
-        set edit:completion:arg-completer[tldr] = $edit:completion:arg-completer[tealdeer]
+          # Setup common modules
+          use completions/molecule
+          use completions/crev
+          use jump
+          use iterm2
+          set edit:completion:arg-completer[tldr] = $edit:completion:arg-completer[tealdeer]
 
-        fn add_bookmark {|@args| jump:add_bookmark $@args }
-        fn remove_bookmark {|@args| jump:remove_bookmark $@args }
-        fn jump {|@args| jump:jump $@args }
-        fn cd {|@args| jump:jump $@args }
+          fn add_bookmark {|@args| jump:add_bookmark $@args }
+          fn remove_bookmark {|@args| jump:remove_bookmark $@args }
+          fn jump {|@args| jump:jump $@args }
+          fn cd {|@args| jump:jump $@args }
 
-        ${
-          optionalString config.services.ssh-agent.enable "set-env SSH_AUTH_SOCK (path:join $E:XDG_RUNTIME_DIR ssh-agent)"
-        }
+          ${
+            optionalString config.services.ssh-agent.enable "set-env SSH_AUTH_SOCK (path:join $E:XDG_RUNTIME_DIR ssh-agent)"
+          }
 
-        fn upgrade {
-          ${builtins.concatStringsSep "\n" shellCfg.upgradeCommands}
-        }
+          fn upgrade {
+            ${builtins.concatStringsSep "\n" shellCfg.upgradeCommands}
+          }
 
-        ${starshipInit}
-        iterm2:init
+          ${starshipInit}
+          iterm2:init
 
-        # Extra completions
-        ${builtins.concatStringsSep "\n" cfg.extraCompletions}
+          # Extra completions
+          ${builtins.concatStringsSep "\n" cfg.extraCompletions}
 
-        # Extra config
-        ${cfg.extraConfig}
-      '';
+          # Extra config
+          ${cfg.extraConfig}
+        '';
 
       # Link raw elvish modules into elvish/lib
       "elvish/lib/jump.elv".source = ./_external.elvish/lib/jump.elv;
