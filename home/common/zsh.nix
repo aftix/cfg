@@ -44,6 +44,9 @@ in {
         '';
       fixXterm =
         optionalString cfg.xtermFix
+        /*
+        zsh
+        */
         ''
           # Fix xterm variants for ssh, etc
           [[ "$TERM" =~ ^xterm- || -z "$TERM" ]] && export TERM="xterm"
@@ -51,33 +54,37 @@ in {
         '';
 
       starshipInit = optionalString config.programs.starship.enable "source <(starship init zsh)";
-    in ''
-      ${neededDirs}
+    in
+      /*
+      zsh
+      */
+      ''
+        ${neededDirs}
 
-      ${
-        optionalString config.services.ssh-agent.enable
-        "export SSH_AUTH_SOCK=\"$XDG_RUNTIME_DIR/ssh-agent\""
-      }
+        ${
+          optionalString config.services.ssh-agent.enable
+          "export SSH_AUTH_SOCK=\"$XDG_RUNTIME_DIR/ssh-agent\""
+        }
 
-      ${envFiles}
+        ${envFiles}
 
-      ${homebrewPath}
+        ${homebrewPath}
 
-      ${fixGpg}
-      ${fixXterm}
+        ${fixGpg}
+        ${fixXterm}
 
-      # Disable ^S and ^Q
-      stty -ixon
+        # Disable ^S and ^Q
+        stty -ixon
 
-      # Load carapace completions
-      which carapace >/dev/null 2>&1 && source <(carapace _carapace zsh)
+        # Load carapace completions
+        which carapace >/dev/null 2>&1 && source <(carapace _carapace zsh)
 
-      ${starshipInit}
+        ${starshipInit}
 
-      upgrade () {
-      ${builtins.concatStringsSep "\n" cfg.upgradeCommands}
-      }
-    '';
+        upgrade () {
+        ${builtins.concatStringsSep "\n" cfg.upgradeCommands}
+        }
+      '';
 
     shellAliases = mergeAttrsList (
       builtins.map ({

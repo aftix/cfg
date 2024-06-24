@@ -96,13 +96,17 @@ in {
 
   config = mkIf cfg.enable {
     environment = {
-      etc."grocy/config.php".text = ''
-             <?php
-        Setting('CULTURE', '${cfg.settings.culture}');
-        Setting('CURRENCY', '${cfg.settings.currency}');
-        Setting('CALENDAR_FIRST_DAY_OF_WEEK', '${builtins.toString cfg.settings.calendar.firstDayOfWeek}');
-        Setting('CALENDAR_SHOW_WEEK_OF_YEAR', ${lib.boolToString cfg.settings.calendar.showWeekNumber});
-      '';
+      etc."grocy/config.php".text =
+        /*
+        php
+        */
+        ''
+               <?php
+          Setting('CULTURE', '${cfg.settings.culture}');
+          Setting('CURRENCY', '${cfg.settings.currency}');
+          Setting('CALENDAR_FIRST_DAY_OF_WEEK', '${builtins.toString cfg.settings.calendar.firstDayOfWeek}');
+          Setting('CALENDAR_SHOW_WEEK_OF_YEAR', ${lib.boolToString cfg.settings.calendar.showWeekNumber});
+        '';
 
       systemPackages = [pkgs.grocy];
     };
