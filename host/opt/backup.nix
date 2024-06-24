@@ -142,13 +142,17 @@ in {
       };
       templates."rclone.conf".content = let
         inherit (config.sops.placeholder) backblaze_key_id backblaze_application_key;
-      in ''
-        [backblaze]
-        type = b2
-        account = ${backblaze_key_id}
-        key = ${backblaze_application_key}
-        hard_delete = true
-      '';
+      in
+        /*
+        ini
+        */
+        ''
+          [backblaze]
+          type = b2
+          account = ${backblaze_key_id}
+          key = ${backblaze_application_key}
+          hard_delete = true
+        '';
     };
 
     systemd = {

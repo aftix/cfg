@@ -58,11 +58,15 @@
       completer = {
         name = "tract_complete";
         arguments = "@a";
-        body = ''
-          if (has-key $edit:completion:arg-completer transmission-remote) {
-            $edit:completion:arg-completer[transmission-remote] transmission-remote -F '~l:done' $@a
-          }
-        '';
+        body =
+          /*
+          elvish
+          */
+          ''
+            if (has-key $edit:completion:arg-completer transmission-remote) {
+              $edit:completion:arg-completer[transmission-remote] transmission-remote -F '~l:done' $@a
+            }
+          '';
       };
     }
   ];

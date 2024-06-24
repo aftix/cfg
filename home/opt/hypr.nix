@@ -614,24 +614,28 @@ in {
         };
 
         # Fontconfig
-        "fontconfig/fonts.conf".text = ''
-          <?xml version="1.0"?>
-          <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
-          <fontconfig>
-          <match target="pattern">
-            <test qual="any" name="family"><string>serif</string></test>
-            <edit name="family" mode="assign" binding="same"><string>Source Han Serif JP</string></edit>
-          </match>
-          <match target="pattern">
-            <test qual="any" name="family"><string>sans-serif</string></test>
-            <edit name="family" mode="assign" binding="same"><string>Source Han Sans JP</string></edit>
-          </match>
-          <match target="pattern">
-            <test qual="any" name="family"><string>monospace</string></test>
-            <edit name="family" mode="assign" binding="same"><string>WenQuanYi Zen Hei Mono</string></edit>
-          </match>
-          </fontconfig>
-        '';
+        "fontconfig/fonts.conf".text =
+          /*
+          xml
+          */
+          ''
+            <?xml version="1.0"?>
+            <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+            <fontconfig>
+            <match target="pattern">
+              <test qual="any" name="family"><string>serif</string></test>
+              <edit name="family" mode="assign" binding="same"><string>Source Han Serif JP</string></edit>
+            </match>
+            <match target="pattern">
+              <test qual="any" name="family"><string>sans-serif</string></test>
+              <edit name="family" mode="assign" binding="same"><string>Source Han Sans JP</string></edit>
+            </match>
+            <match target="pattern">
+              <test qual="any" name="family"><string>monospace</string></test>
+              <edit name="family" mode="assign" binding="same"><string>WenQuanYi Zen Hei Mono</string></edit>
+            </match>
+            </fontconfig>
+          '';
       };
     };
   };

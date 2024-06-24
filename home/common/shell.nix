@@ -280,50 +280,62 @@ in {
             {
               name = "fzfd";
               arguments = "@query";
-              body = ''
-                var q = ""
-                if (> (count $query) 0) {
-                  set q = (e:fzf --walker dir,follow -q $query[0])
-                } else {
-                  set q = (e:fzf --walker dir,follow)
-                }
+              body =
+                /*
+                elvish
+                */
+                ''
+                  var q = ""
+                  if (> (count $query) 0) {
+                    set q = (e:fzf --walker dir,follow -q $query[0])
+                  } else {
+                    set q = (e:fzf --walker dir,follow)
+                  }
 
-                if (!=s "" $q) {
-                  cd $q
-                }
-              '';
+                  if (!=s "" $q) {
+                    cd $q
+                  }
+                '';
             }
             {
               name = "fzfdh";
               arguments = "@query";
-              body = ''
-                var q = ""
-                if (> (count $query) 0) {
-                  set q = (e:fzf --walker dir,follow,hidden -q $query[0])
-                } else {
-                  set q = (e:fzf --walker dir,follow,hidden)
-                }
+              body =
+                /*
+                elvish
+                */
+                ''
+                  var q = ""
+                  if (> (count $query) 0) {
+                    set q = (e:fzf --walker dir,follow,hidden -q $query[0])
+                  } else {
+                    set q = (e:fzf --walker dir,follow,hidden)
+                  }
 
-                if (!=s "" $q) {
-                  cd $q
-                }
-              '';
+                  if (!=s "" $q) {
+                    cd $q
+                  }
+                '';
             }
             {
               name = "fzfe";
               arguments = "@query";
-              body = ''
-                var q = ""
-                if (> (count $query) 0) {
-                  set q = (e:fzf -q $query[0])
-                } else {
-                  set q = (e:fzf)
-                }
+              body =
+                /*
+                elvish
+                */
+                ''
+                  var q = ""
+                  if (> (count $query) 0) {
+                    set q = (e:fzf -q $query[0])
+                  } else {
+                    set q = (e:fzf)
+                  }
 
-                if (!=s "" $q) {
-                  (external $E:EDITOR) $q
-                }
-              '';
+                  if (!=s "" $q) {
+                    (external $E:EDITOR) $q
+                  }
+                '';
             }
           ];
         };
