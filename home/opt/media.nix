@@ -82,10 +82,14 @@
       {
         name = "vdesc";
         arguments = "file";
-        body = ''
-          ffprobe -v quiet -print_format json -show_format $file |\
-          jq ".format.tags.DESCRIPTION" | sed 's/\\n/\n/g'
-        '';
+        body =
+          /*
+          bash
+          */
+          ''
+            ffprobe -v quiet -print_format json -show_format $file |\
+            jq ".format.tags.DESCRIPTION" | sed 's/\\n/\n/g'
+          '';
       }
     ];
   };

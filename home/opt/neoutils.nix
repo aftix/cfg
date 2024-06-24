@@ -78,15 +78,23 @@ in {
       extraFunctions = [
         {
           name = "restore";
-          body = ''
-            trashy list | fzf --multi | awk '{$1=$1;print}' | rev | cut -d ' ' -f1 | rev | xargs trashy restore --match=exact --force
-          '';
+          body =
+            /*
+            bash
+            */
+            ''
+              trash list | fzf --multi | awk '{$1=$1;print}' | rev | cut -d ' ' -f1 | rev | xargs trashy restore --match=exact --force
+            '';
         }
         {
           name = "empty";
-          body = ''
-            trashy list | fzf --multi | awk '{$1=$1;print}' | rev | cut -d ' ' -f1 | rev | xargs trashy empty --match=exact --force
-          '';
+          body =
+            /*
+            bash
+            */
+            ''
+              trash list | fzf --multi | awk '{$1=$1;print}' | rev | cut -d ' ' -f1 | rev | xargs trashy empty --match=exact --force
+            '';
         }
       ];
     };
