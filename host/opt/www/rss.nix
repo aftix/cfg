@@ -8,6 +8,7 @@
   inherit (lib) mkIf mkOverride mkForce;
   inherit (lib.attrsets) filterAttrs;
   inherit (lib.options) mkOption;
+  inherit (lib.strings) concatMapStrings concatLines;
   inherit (config.services.freshrss) enable;
   cfg = config.my.www;
 in {
@@ -58,9 +59,41 @@ in {
 
         # Need to add extensions to the nix store path
         package = pkgs.freshrss.overrideAttrs {
-          postInstall = ''
-            cp -Lr "${inputs.freshrss-ext}/xExtension-"* "$out/extensions/."
-            cp -Lr "${inputs.freshrss-cntools}/xExtension-"* "$out/extensions/."
+          postInstall = let
+            extsWithSubdirs =
+              concatMapStrings (
+                x: "cp -Lr \"${x}/xExtension-\"* \"$out/extensions/.\"\n"
+              ) [
+                inputs.freshrss-ext
+                inputs.freshrss-cntools
+                inputs.freshrss-links
+                inputs.freshrss-ezpriorities
+                inputs.freshrss-ezread
+              ];
+            extsAlone = concatLines (builtins.map ({
+              path,
+              name,
+            }: "cp -Lr \"${path}\" \"$out/extensions/xExtension-${name}\"") [
+              {
+                path = inputs.freshrss-latex;
+                name = "LatexSupport";
+              }
+              {
+                path = inputs.freshrss-reddit;
+                name = "RedditImage";
+              }
+              {
+                path = inputs.freshrss-ttl;
+                name = "AutoTTL";
+              }
+              {
+                path = inputs.freshrss-threepane;
+                name = "ThreePanesView";
+              }
+            ]);
+          in ''
+            ${extsWithSubdirs}
+            ${extsAlone}
           '';
         };
 
