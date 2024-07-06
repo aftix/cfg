@@ -73,7 +73,7 @@
 
       {
         name = "ydl";
-        command = "yt-dlp -ic -o '%(title)s.%(ext)s' --add-metadata --user-agent 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html/)'";
+        command = "yt-dlp -ic -o '%(title)s.%(ext)s' --add-metadata --user-agent 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html/)' --sponsorblock-remove default";
         completer = "yt-dlp";
       }
     ];
@@ -108,6 +108,7 @@
         tscale = "oversample";
         hwdec = "best";
         ytdl-format = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best";
+        ytdl-raw-options = "sponsorblock-remove=default";
         save-position-on-quit = true;
         sub-font = "Source Han Serif JP";
         sub-auto = "fuzzy";
