@@ -452,6 +452,7 @@ in {
 
           "tag +filepicker, initialTitle:^(blob:.+)$"
           "tag +filepicker, initialTitle:^(Save [A-Z][^ ]*)$"
+          "tag +filepicker, initialTitle:^(Open [A-Z][^ ]*)$"
 
           "float, tag:filepicker"
           "group barred deny, tag:filepicker"
