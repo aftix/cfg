@@ -124,6 +124,8 @@
           stty "$@"
         '';
       };
+
+      znc = stablepkgs.legacyPackages.${final.system}.znc;
     };
 
     pkgsCfg = {
