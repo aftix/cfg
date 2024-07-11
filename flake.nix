@@ -127,6 +127,8 @@
 
       znc = stablepkgs.legacyPackages.${final.system}.znc;
       freshrss = stablepkgs.legacyPackages.${final.system}.freshrss;
+      clamav = stablepkgs.legacyPackages.${final.system}.clamav;
+      fail2ban = stablepkgs.legacyPackages.${final.system}.fail2ban;
     };
 
     pkgsCfg = {
