@@ -129,6 +129,7 @@
       freshrss = stablepkgs.legacyPackages.${final.system}.freshrss;
       clamav = stablepkgs.legacyPackages.${final.system}.clamav;
       fail2ban = stablepkgs.legacyPackages.${final.system}.fail2ban;
+      transmission_4 = stablepkgs.legacyPackages.${final.system}.transmission_4;
     };
 
     pkgsCfg = {
