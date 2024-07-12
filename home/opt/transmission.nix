@@ -82,7 +82,7 @@
     Service = {
       Type = "simple";
       ExecStart = ''
-        "${pkgs.transmission}/bin/transmission-daemon" -f --log-error -g "${config.home.homeDirectory}/.config/transmission"'';
+        "${pkgs.transmission_4}/bin/transmission-daemon" -f --log-error -g "${config.home.homeDirectory}/.config/transmission"'';
       ExecReload = "/run/current-system/sw/bin/kill -s HUP $MAINPID";
       NoNewPrivileges = true;
       MemoryDenyWriteExecute = true;
