@@ -428,6 +428,7 @@ in {
           "hyprpaper"
           "hypridle"
           "[workspace 1 silent] firefox"
+          "[workspace 8 silent] thunderbird"
           "[workspace 9 silent] keepassxc"
           "[workspace 2;group new] $terminal --title irc --session \"$HOME/.config/kitty/irc.session\""
           "[workspace 2;group set] element-desktop"
@@ -456,6 +457,12 @@ in {
 
           "float, tag:filepicker"
           "group barred deny, tag:filepicker"
+
+          "tag +thunderbirdpopup, initialTitle:^(Activity Manager)$"
+          "tag +thunderbirdpopup, initialTitle:^(About .+Thunderbird)$"
+
+          "float, tag:thunderbirdpopup"
+          "group barred deny, tag:thunderbirdpopup"
         ];
 
         workspace =
@@ -514,6 +521,7 @@ in {
           } "" "resizeactive");
           programs = map (cmd: "bind = ${cmd}") [
             ",w,exec,firefox"
+            ",e,exec,thunderbird"
             "SHIFT,w,exec,chromium"
             ",d,exec,discord"
             "SHIFT,d,exec,element-desktop"
