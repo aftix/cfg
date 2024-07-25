@@ -26,6 +26,13 @@
         ];
       }
       {
+        name = "8";
+        options = [
+          "persistent:true"
+          "monitor:desc:${asus}"
+        ];
+      }
+      {
         name = "9";
         options = [
           "persistent:true"
