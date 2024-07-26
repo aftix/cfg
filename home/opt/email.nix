@@ -32,8 +32,6 @@ in {
           };
         };
 
-        thunderbird.enable = true;
-
         gpg = {
           key = "${gpgSigningKey}";
           signByDefault = true;
@@ -64,8 +62,6 @@ in {
           };
         };
 
-        thunderbird.enable = true;
-
         gpg = {
           key = "${gpgSigningKey}";
           signByDefault = true;
@@ -95,8 +91,6 @@ in {
             useStartTls = true;
           };
         };
-
-        thunderbird.enable = true;
 
         gpg = {
           key = "${gpgSigningKey}";
