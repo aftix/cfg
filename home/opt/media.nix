@@ -101,7 +101,7 @@
       enable = true;
       config = {
         slang = "en";
-        vo = "dmabuf-wayland";
+        vo = "gpu";
         ao = "pipewire";
         video-sync = "display-resample";
         interpolation = true;
