@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }: let
   inherit (lib.options) mkOption;
@@ -94,6 +95,8 @@ in {
 
         appendHttpConfig = ''
           limit_req_zone $binary_remote_addr zone=put_request_by_addr:20m rate=100r/s;
+          include /etc/nginx/conf.d/globalblacklist.conf;
+          include /etc/nginx/conf.d/botblocker-nginx-settings.conf;
         '';
       };
 
@@ -102,6 +105,8 @@ in {
 
     systemd.tmpfiles.rules = [
       "d ${cfg.root} 0775 ${cfg.user} ${cfg.group} -"
+      "L+ /etc/nginx/conf.d - - - - ${inputs.nginxBlacklist}/conf.d"
+      "L+ /etc/nginx/bots.d - - - - ${inputs.nginxBlacklist}/bots.d"
     ];
 
     security.acme = {

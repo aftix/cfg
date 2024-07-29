@@ -65,6 +65,10 @@ in {
         kTLS = true;
         forceSSL = true;
         useACMEHost = wwwCfg.hostname;
+        extraConfig = ''
+          include /etc/nginx/bots.d/blockbots.conf;
+          include /etc/nginx/bots.d/ddos.conf;
+        '';
 
         locations = {
           "/".extraConfig = ''

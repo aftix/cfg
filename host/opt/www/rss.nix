@@ -112,6 +112,10 @@ in {
         kTLS = true;
         forceSSL = true;
         useACMEHost = cfg.hostname;
+        extraConfig = ''
+          include /etc/nginx/bots.d/blockbots.conf;
+          include /etc/nginx/bots.d/ddos.conf;
+        '';
       };
     };
   };
