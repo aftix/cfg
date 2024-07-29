@@ -472,6 +472,22 @@
         "type": "github"
       }
     },
+    "hostsBlacklist": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722193520,
+        "narHash": "sha256-RXbFxR9jxIDctkwrFfPUCq8l3pbwY2eaGbAGO1jW734=",
+        "owner": "Ultimate-Hosts-Blacklist",
+        "repo": "Ultimate.Hosts.Blacklist",
+        "rev": "c07009279189bb7565e13bc4bf0cad0db74bb76a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Ultimate-Hosts-Blacklist",
+        "repo": "Ultimate.Hosts.Blacklist",
+        "type": "github"
+      }
+    },
     "hyprcursor": {
       "inputs": {
         "hyprlang": [
@@ -795,6 +811,7 @@
         "freshrss-threepane": "freshrss-threepane",
         "freshrss-ttl": "freshrss-ttl",
         "home-manager": "home-manager",
+        "hostsBlacklist": "hostsBlacklist",
         "hyprland": "hyprland",
         "hyprland-plugins": "hyprland-plugins",
         "impermanence": "impermanence",
