@@ -96,6 +96,11 @@
       url = "git+https://framagit.org/nicofrand/xextension-threepanesview.git";
       flake = false;
     };
+
+    hostsBlacklist = {
+      url = "github:Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist";
+      flake = false;
+    };
   };
 
   outputs = {

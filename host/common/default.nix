@@ -12,6 +12,7 @@ in {
     ./barcodebuddy.nix
     ./channels.nix
     ./coffeepaste.nix
+    ./hostBlacklist
     ./nh.nix
     ./root.nix
     ./sleep.nix
