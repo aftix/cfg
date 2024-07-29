@@ -118,6 +118,11 @@ in {
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             '';
           };
+
+          extraConfig = ''
+            include /etc/nginx/bots.d/blockbots.conf;
+            include /etc/nginx/bots.d/ddos.conf;
+          '';
         };
 
         streamConfig = ''
