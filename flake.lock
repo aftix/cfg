@@ -695,6 +695,22 @@
         "type": "github"
       }
     },
+    "nginxBlacklist": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722247643,
+        "narHash": "sha256-W4z6NhZ4VJbwSot+4Hm8aKHBJdXGKMS4fhje4R53iJU=",
+        "owner": "mitchellkrogza",
+        "repo": "nginx-ultimate-bad-bot-blocker",
+        "rev": "9b859f31cf402ffbb5d8fb9c24611bca488c34bb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mitchellkrogza",
+        "repo": "nginx-ultimate-bad-bot-blocker",
+        "type": "github"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -815,6 +831,7 @@
         "hyprland": "hyprland",
         "hyprland-plugins": "hyprland-plugins",
         "impermanence": "impermanence",
+        "nginxBlacklist": "nginxBlacklist",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_3",
         "nur": "nur",

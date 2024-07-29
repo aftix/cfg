@@ -35,6 +35,8 @@ in {
           if ($request_method = 'PUT') {
             return 599;
           }
+          include /etc/nginx/bots.d/blockbots.conf;
+          include /etc/nginx/bots.d/ddos.conf;
         '';
 
         locations = {

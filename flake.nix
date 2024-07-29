@@ -101,6 +101,10 @@
       url = "github:Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist";
       flake = false;
     };
+    nginxBlacklist = {
+      url = "github:mitchellkrogza/nginx-ultimate-bad-bot-blocker";
+      flake = false;
+    };
   };
 
   outputs = {

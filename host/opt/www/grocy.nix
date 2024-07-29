@@ -188,6 +188,8 @@ in {
 
         extraConfig = ''
           try_files $uri /index.php;
+          include /etc/nginx/bots.d/blockbots.conf;
+          include /etc/nginx/bots.d/ddos.conf;
         '';
 
         locations = {
