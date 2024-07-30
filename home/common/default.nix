@@ -37,7 +37,7 @@ in {
         aspellDicts.en-computers
 
         jq
-        nix-doc
+        # nix-doc
         nix-tree
         manix
         sops
