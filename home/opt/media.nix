@@ -6,7 +6,7 @@
 }: {
   home.packages = with pkgs; [
     feh
-    ffmpeg_5
+    ffmpeg_7-full
     imagemagick
 
     mpc-cli
