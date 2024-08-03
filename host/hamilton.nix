@@ -212,27 +212,22 @@ in {
   };
 
   # Hardware specific settings
-  hardware.graphics.enable = true;
 
-  boot.initrd = {
-    kernelModules = ["amdgpu"];
-
-    # By default don't store state
-    postDeviceCommands =
-      lib.mkAfter
-      /*
-      bash
-      */
-      ''
-        mkdir /mnt
-        mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
-        [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
-        rm -rf /mnt/local/root
-        btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
-        umount /mnt
-        rmdir /mnt
-      '';
-  };
+  # By default don't store state
+  boot.initrd.postDeviceCommands =
+    lib.mkAfter
+    /*
+    bash
+    */
+    ''
+      mkdir /mnt
+      mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
+      [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
+      rm -rf /mnt/local/root
+      btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
+      umount /mnt
+      rmdir /mnt
+    '';
 
   fileSystems = {
     "/persist".neededForBoot = true;
