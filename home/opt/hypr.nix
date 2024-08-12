@@ -319,7 +319,7 @@ in {
           ];
         };
 
-        master.new_is_master = true;
+        master.new_status = "inherit";
         gestures.workspace_swipe = false;
         misc.force_default_wallpaper = 0;
 
