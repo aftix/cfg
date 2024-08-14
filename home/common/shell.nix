@@ -219,6 +219,11 @@ in {
             external = true;
             docs = false;
           }
+          {
+            name = "dfx";
+            command = "df -x tmpfs,fuse -h";
+            external = true;
+          }
 
           {
             name = "ls";
