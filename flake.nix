@@ -139,11 +139,9 @@
         '';
       };
 
-      znc = stablepkgs.legacyPackages.${final.system}.znc;
-      freshrss = stablepkgs.legacyPackages.${final.system}.freshrss;
-      clamav = stablepkgs.legacyPackages.${final.system}.clamav;
-      fail2ban = stablepkgs.legacyPackages.${final.system}.fail2ban;
-      transmission_4 = stablepkgs.legacyPackages.${final.system}.transmission_4;
+      cargo-update = prev.cargo-update.override {inherit (stablepkgs.legacyPackages.${final.system}) libgit2;};
+
+      inherit (stablepkgs.legacyPackages.${final.system}) znc freshrss clamav fail2ban transmission_4;
     };
 
     pkgsCfg = {
