@@ -2,6 +2,11 @@
   description = "Aftix's NixOS configuration";
 
   inputs = {
+    lix = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     stablepkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nur.url = "github:nix-community/NUR";
@@ -180,9 +185,9 @@
     commonModules = [
       pkgsCfg
       home-manager.nixosModules.home-manager
+      inputs.lix.nixosModules.default
       inputs.sops-nix.nixosModules.sops
       inputs.nix-index-database.nixosModules.nix-index
-      inputs.srvos.nixosModules.mixins-nix-experimental
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
       {
         programs = {
@@ -190,6 +195,13 @@
           command-not-found.enable = false;
         };
       }
+      ({
+        pkgs,
+        lib,
+        ...
+      }: {
+        nix.package = lib.mkForce pkgs.nix;
+      })
     ];
 
     commonHmModules = [
