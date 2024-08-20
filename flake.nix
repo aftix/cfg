@@ -158,12 +158,15 @@
           inputs.waybar.overlays.default
           overlay
         ];
-        config.allowUnfreePredicate = pkg:
-          builtins.elem (nixpkgs.lib.getName pkg) [
-            "discord"
-            "pay-by-privacy"
-            "aspell-dict-en-science"
-          ];
+        config = {
+          allowUnfreePredicate = pkg:
+            builtins.elem (nixpkgs.lib.getName pkg) [
+              "discord"
+              "pay-by-privacy"
+              "aspell-dict-en-science"
+            ];
+          permittedInsecurePackages = ["jitsi-meet-1.0.8043"];
+        };
       };
     };
 
