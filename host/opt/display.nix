@@ -5,7 +5,7 @@
   config,
   ...
 }: let
-  inherit (lib) mkDefault mkOverride;
+  inherit (lib) mkDefault mkOverride mkForce;
   inherit (lib.options) mkOption;
 in {
   options.my.greeterCfgExtra = mkOption {
@@ -42,7 +42,7 @@ in {
 
           GTK = {
             application_prefer_dark_theme = true;
-            cursor_theme_name = "BreezeX-RosePine-Linux";
+            cursor_theme_name = mkForce "BreezeX-RosePine-Linux";
           };
 
           background = {
