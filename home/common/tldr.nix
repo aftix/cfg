@@ -1,6 +1,10 @@
 {pkgs, ...}: {
   home.packages = [pkgs.tealdeer];
 
+  my.shell.upgradeCommands = [
+    "tldr --update"
+  ];
+
   xdg.configFile."tealdeer/config.toml".source = (pkgs.formats.toml {}).generate "tealdeer" {
     display.use_pager = true;
     updates.auto_update = true;
