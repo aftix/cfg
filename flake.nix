@@ -297,87 +297,95 @@
       })
       systems)
     isoCfgs;
-  in {
-    overlays.default = overlay;
-    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
-    checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+  in
+    {
+      overlays.default = overlay;
+      formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
 
-    nixosConfigurations =
-      {
-        hamilton = nixpkgs.lib.nixosSystem {
-          inherit specialArgs;
+      nixosConfigurations =
+        {
+          hamilton = nixpkgs.lib.nixosSystem {
+            inherit specialArgs;
 
-          modules =
-            commonModules
-            ++ [
-              inputs.disko.nixosModules.disko
-              inputs.impermanence.nixosModules.impermanence
+            modules =
+              commonModules
+              ++ [
+                inputs.disko.nixosModules.disko
+                inputs.impermanence.nixosModules.impermanence
 
-              ./host/hamilton.nix
+                ./host/hamilton.nix
 
-              {
-                home-manager = {
-                  inherit extraSpecialArgs;
-                  useUserPackages = true;
+                {
+                  home-manager = {
+                    inherit extraSpecialArgs;
+                    useUserPackages = true;
 
-                  sharedModules = commonHmModules;
+                    sharedModules = commonHmModules;
 
-                  users = {
-                    aftix = import ./home/aftix.nix;
-                    root = import ./home/root.nix;
+                    users = {
+                      aftix = import ./home/aftix.nix;
+                      root = import ./home/root.nix;
+                    };
                   };
-                };
-              }
-            ];
-        };
+                }
+              ];
+          };
 
-        fermi = nixpkgs.lib.nixosSystem {
-          inherit specialArgs;
+          fermi = nixpkgs.lib.nixosSystem {
+            inherit specialArgs;
 
-          modules =
-            commonModules
-            ++ [
-              inputs.srvos.nixosModules.common
-              inputs.srvos.nixosModules.server
-              inputs.srvos.nixosModules.mixins-nginx
-              ./host/fermi.nix
+            modules =
+              commonModules
+              ++ [
+                inputs.srvos.nixosModules.common
+                inputs.srvos.nixosModules.server
+                inputs.srvos.nixosModules.mixins-nginx
+                ./host/fermi.nix
 
-              {
-                home-manager = {
-                  inherit extraSpecialArgs;
-                  useUserPackages = true;
+                {
+                  home-manager = {
+                    inherit extraSpecialArgs;
+                    useUserPackages = true;
 
-                  sharedModules = commonHmModules;
+                    sharedModules = commonHmModules;
 
-                  users = {
-                    aftix = import ./home/aftix-minimal.nix;
-                    root = import ./home/root.nix;
+                    users = {
+                      aftix = import ./home/aftix-minimal.nix;
+                      root = import ./home/root.nix;
+                    };
                   };
-                };
-              }
-            ];
-        };
-      }
-      // flatIsoCfgs;
+                }
+              ];
+          };
+        }
+        // flatIsoCfgs;
 
-    deploy.nodes.fermi = {
-      hostname = "170.130.165.174";
-      profiles.system = {
-        user = "root";
-        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.fermi;
+      deploy.nodes.fermi = {
+        hostname = "170.130.165.174";
+        profiles.system = {
+          user = "root";
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.fermi;
+        };
       };
-    };
 
-    nixosModules = {
-      homeCommon = import ./home/common;
-      impermanence = ./home/opt/impermanence.nix;
+      nixosModules = {
+        homeCommon = import ./home/common;
+        impermanence = ./home/opt/impermanence.nix;
 
-      development = import ./home/opt/development.nix;
-      firefox = import ./home/opt/firefox.nix;
-      helix = import ./home/opt/helix.nix;
-      kitty = import ./home/opt/kitty.nix;
-      neoutils = import ./home/opt/neoutils.nix;
-      stylix = import ./home/opt/stylix.nix;
-    };
-  };
+        development = import ./home/opt/development.nix;
+        firefox = import ./home/opt/firefox.nix;
+        helix = import ./home/opt/helix.nix;
+        kitty = import ./home/opt/kitty.nix;
+        neoutils = import ./home/opt/neoutils.nix;
+        stylix = import ./home/opt/stylix.nix;
+      };
+    }
+    // flake-utils.lib.eachDefaultSystem (sys: {
+      packages = {
+        inherit (inputs.hyprland.packages.${sys}) hyprland xdg-desktop-portal-hyprland;
+        inherit (inputs.hyprland-plugins.packages.${sys}) hyprbars hyprexpo;
+        inherit (inputs.waybar.packages.${sys}) waybar;
+      };
+    });
 }
