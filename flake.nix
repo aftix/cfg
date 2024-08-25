@@ -45,6 +45,11 @@
       };
     };
 
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hyprland = {
       type = "git";
       url = "https://github.com/hyprwm/Hyprland";
@@ -55,11 +60,6 @@
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
-    };
-
-    waybar = {
-      url = "github:Alexays/Waybar";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     coffeepaste = {
@@ -156,7 +156,7 @@
       nixpkgs = {
         overlays = [
           nur.overlay
-          inputs.waybar.overlays.default
+          inputs.nixpkgs-wayland.overlay
           overlay
         ];
         config = {
@@ -385,7 +385,6 @@
       packages = {
         inherit (inputs.hyprland.packages.${sys}) hyprland xdg-desktop-portal-hyprland;
         inherit (inputs.hyprland-plugins.packages.${sys}) hyprbars hyprexpo;
-        inherit (inputs.waybar.packages.${sys}) waybar;
       };
     });
 }
