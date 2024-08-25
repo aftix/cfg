@@ -6,7 +6,6 @@ default:
     @just --list
 
 pre-build host=hostname *FLAGS="":
-    @[[ "{{host}}" = "hamilton" ]] && nix build '.#waybar' --out-link .nixkeep-waybar {{FLAGS}}
     @[[ "{{host}}" = "hamilton" ]] && nix build '.#hyprland' --out-link .nixkeep-hyprland {{FLAGS}}
 
 build host=hostname *FLAGS="":
