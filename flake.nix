@@ -45,6 +45,8 @@
       };
     };
 
+    nixos-cli.url = "github:water-sucks/nixos";
+
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -195,6 +197,7 @@
       inputs.sops-nix.nixosModules.sops
       inputs.nix-index-database.nixosModules.nix-index
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
+      inputs.nixos-cli.nixosModules.nixos-cli
       {
         programs = {
           nix-index-database.comma.enable = true;
@@ -260,33 +263,34 @@
           "iso-graphical" = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
 
-            modules = [
-              {nixpkgs.hostPlatform = isoSystem;}
-              "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-              "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-              pkgsCfg
-              inputs.disko.nixosModules.disko
-              inputs.impermanence.nixosModules.impermanence
-              inputs.sops-nix.nixosModules.sops
-              ./host/iso-graphical.nix
+            modules =
+              commonModules
+              ++ [
+                {nixpkgs.hostPlatform = isoSystem;}
+                "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+                pkgsCfg
+                inputs.disko.nixosModules.disko
+                inputs.impermanence.nixosModules.impermanence
+                ./host/iso-graphical.nix
 
-              home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  inherit extraSpecialArgs;
-                  useUserPackages = true;
+                home-manager.nixosModules.home-manager
+                {
+                  home-manager = {
+                    inherit extraSpecialArgs;
+                    useUserPackages = true;
 
-                  sharedModules = [
-                    pkgsCfg
-                  ];
+                    sharedModules = [
+                      pkgsCfg
+                    ];
 
-                  users = {
-                    root = ./home/root.nix;
-                    nixos = ./home/nixos-graphical.nix;
+                    users = {
+                      root = ./home/root.nix;
+                      nixos = ./home/nixos-graphical.nix;
+                    };
                   };
-                };
-              }
-            ];
+                }
+              ];
           };
         }
       );
