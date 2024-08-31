@@ -204,6 +204,11 @@ in {
       zsh.enable = true;
     };
 
+    services.nixos-cli = {
+      enable = true;
+      config.use_nvd = true;
+    };
+
     users.mutableUsers = false;
     i18n = rec {
       defaultLocale = "en_US.UTF-8";
