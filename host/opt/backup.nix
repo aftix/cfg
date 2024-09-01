@@ -38,6 +38,13 @@ in {
             function cleanup() {
               [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
               [[ -f /var/run/backupdisk.pid ]] && (rm /var/run/backupdisk.pid || :)
+              if [[ -d "$MNT" ]] ; then
+                [[ -d "$TMPDIR" ]] && btrfs subvolume delete "$TMPDIR"
+                [[ -d "$NTMPDIR" ]] && btrfs subvolume delete "$NTMPDIR"
+                umount "$MNT/nix" || :
+                umount "$MNT/backup" || :
+                rmdir "$MNT/nix" "$MNT/backup" "$MNT"
+              fi
             }
             trap cleanup EXIT
             echo "$$" > /var/run/backupdisk.pid
@@ -53,29 +60,32 @@ in {
             mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT/backup"
 
             SNAPSHOT_DIR="$MNT/backup/"${escapeShellArg cfg.snapshotPrefix}
-            mkdir -p "$MNT/nix/safe" "$SNAPSHOT_DIR" "$MNT/nix/tmp" "$MNT/backup/tmp"
+            TMPDIR="$(mktemp -d --tmpdir="$MNT/backup")"
+            NTMPDIR="$(mktemp -d --tmpdir="$MNT/nix")"
+            mkdir -p "$MNT/nix/safe" "$SNAPSHOT_DIR"
 
             for vol in "$MNT/nix/safe/"* ; do
               [[ "$vol" == "$MNT/nix/safe/*" ]] && break
               NAME="$(basename "$vol")"
               [[ -e "$SNAPSHOT_DIR/$NAME.$TS" ]] && continue
 
-              [[ -d "$MNT/nix/tmp/$NAME" ]] && (btrfs subvolume delete "$MNT/nix/tmp/$NAME" || :)
-              [[ -e "$MNT/nix/tmp/$NAME" ]] && rm -rf "$MNT/nix/tmp/$NAME"
-              btrfs subvolume snapshot -r "$vol" "$MNT/nix/tmp/$NAME"
+              [[ -d "$NTMPDIR/$NAME" ]] && (btrfs subvolume delete "$NTMPDIR/$NAME" || :)
+              [[ -e "''${NTMPDIR:?}/$NAME" ]] && rm -rf "''${NTMPDIR:?}/$NAME"
+              btrfs subvolume snapshot -r "$vol" "$NTMPDIR/$NAME"
 
               if [[ -d "$SNAPSHOT_DIR/$NAME" ]]; then
                 btrfs subvolume delete "$MNT/backup/safe/$NAME"
               fi
 
-              btrfs send "$MNT/nix/tmp/$NAME" | btrfs receive -m "$MNT/backup" "$MNT/backup/tmp"
-              btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME"
-              btrfs subvolume snapshot -r "$MNT/backup/tmp/$NAME" "$SNAPSHOT_DIR/$NAME.$TS"
-              btrfs subvolume delete "$MNT/nix/tmp/$NAME"
-              btrfs subvolume delete "$MNT/backup/tmp/$NAME"
+              btrfs send "$NTMPDIR/$NAME" | btrfs receive -m "$MNT/backup" "$TMPDIR"
+              btrfs subvolume snapshot -r "$TMPDIR/$NAME" "$SNAPSHOT_DIR/$NAME"
+              btrfs subvolume snapshot -r "$TMPDIR/$NAME" "$SNAPSHOT_DIR/$NAME.$TS"
+              btrfs subvolume delete "$NTMPDIR/$NAME"
+              btrfs subvolume delete "$TMPDIR/$NAME"
             done
 
-            rmdir "$MNT/nix/tmp"
+            rmdir "$NTMPDIR"
+            rmdir "$TMPDIR"
             umount "$MNT/nix"
 
             for snap in "$SNAPSHOT_DIR/"*; do
