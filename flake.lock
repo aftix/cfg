@@ -565,11 +565,11 @@
     "hostsBlacklist": {
       "flake": false,
       "locked": {
-        "lastModified": 1725390590,
-        "narHash": "sha256-pb4pJqsCeohXXnKwftt2F8cvUDzmr2YPoXxtsh0rA4M=",
+        "lastModified": 1725476530,
+        "narHash": "sha256-CBA3TccbUD2uXqguLUR0NjmxeD0JY73iKiKJJjQTLt0=",
         "owner": "Ultimate-Hosts-Blacklist",
         "repo": "Ultimate.Hosts.Blacklist",
-        "rev": "3724e4c5860bdf9ae09145d6c80ef9e20952ee5e",
+        "rev": "eb4bf8286d55d0eb6e526d705fcd34f02aa95624",
         "type": "github"
       },
       "original": {
@@ -581,11 +581,11 @@
     "hyprland": {
       "flake": false,
       "locked": {
-        "lastModified": 1725367654,
-        "narHash": "sha256-jrHPPAGPU1UOqvFfL7n2QOrp+0F6JAwGgc06WlGoE0o=",
+        "lastModified": 1725465540,
+        "narHash": "sha256-jSBPdNpgGuVYqgWMm+DAdOW936hY7SKCFmzqh0LMVCo=",
         "owner": "hyprwm",
         "repo": "hyprland",
-        "rev": "9b54342baa27d8de0460e1103ec4c3cc65592ed8",
+        "rev": "027140b7315efe3cd2e7b78fa608bd36da839894",
         "type": "github"
       },
       "original": {
@@ -647,11 +647,11 @@
     "nginxBlacklist": {
       "flake": false,
       "locked": {
-        "lastModified": 1725401085,
-        "narHash": "sha256-l0zO8GeUUKF32pHQEZHlf89JDTuOBC0IkVMJ4JrrDlA=",
+        "lastModified": 1725487508,
+        "narHash": "sha256-IuiOqKPg0jJB28R0xZNaHpxPFkLfDjhkd6yW1sRJFc4=",
         "owner": "mitchellkrogza",
         "repo": "nginx-ultimate-bad-bot-blocker",
-        "rev": "df9db8329e3207d73d91d3b25ef3dbd294142108",
+        "rev": "7c7864982ae527e5efcf117aa7f08388ae5e7f31",
         "type": "github"
       },
       "original": {
@@ -807,11 +807,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1725415083,
-        "narHash": "sha256-suBaSyf3hpVBWzUXwvjt4oKDMXAgQ8bmJ0VTYsuNWRE=",
+        "lastModified": 1725486293,
+        "narHash": "sha256-XRWbx8JcTCVoGxr3P2YL/tK4s4HzZBhUqlxr91zLOZs=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "da618e48ae9c0663288620fb8bb9958a2fe21d18",
+        "rev": "444e1f3fdf23aa476489b0038e0738c6f4d9df85",
         "type": "github"
       },
       "original": {
