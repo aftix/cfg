@@ -1,14 +1,15 @@
 {
   pkgs,
   config,
+  spkgs,
   lib,
-  hyprPkgs,
   ...
 }: let
   inherit (lib.options) mkOption;
   inherit (lib.strings) optionalString concatMapStringsSep escapeShellArg;
   inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
   cfg = config.my.hyprland;
+  hyprPackage = config.wayland.windowManager.hyprland.package;
 in {
   imports = [./waybar.nix];
 
@@ -142,7 +143,6 @@ in {
         hyprcursor
         hyprlock
         hypridle
-        hyprpaper
 
         pw-volume
         libnotify
@@ -180,11 +180,15 @@ in {
     services = {
       clipman.enable = true;
       udiskie.enable = true;
+      hyprpaper = {
+        enable = true;
+        package = spkgs.hyprpaper;
+      };
     };
 
     wayland.windowManager.hyprland = let
       terminal = "\"${pkgs.kitty}/bin/kitty\"";
-      menu = "\"${pkgs.tofi}/bin/tofi-run\" | \"${pkgs.findutils}/bin/xargs\" \"${pkgs.hyprland}/bin/hyprctl\" dispatch exec";
+      menu = "\"${pkgs.tofi}/bin/tofi-run\" | \"${pkgs.findutils}/bin/xargs\" \"${hyprPackage}/bin/hyprctl\" dispatch exec";
       left = "h";
       right = "l";
       up = "k";
@@ -228,14 +232,9 @@ in {
         );
     in {
       enable = true;
+
       xwayland.enable = true;
       systemd.enable = true;
-
-      package = hyprPkgs.hyprland;
-      plugins = with hyprPkgs; [
-        hyprbars
-        hyprexpo
-      ];
 
       settings = {
         "$terminal" = "${terminal}";
@@ -311,14 +310,6 @@ in {
           preserve_split = true;
         };
 
-        plugin.hyprbars = {
-          bar_height = 20;
-          hyprbars-button = [
-            "rgb(ff4040), 10, 󰖭, hyprctl dispatch killactive"
-            "rgb(eeee11), 10, , hyprctl dispatch fullscreen 1"
-          ];
-        };
-
         master.new_status = "inherit";
         gestures.workspace_swipe = false;
         misc.force_default_wallpaper = 0;
@@ -358,9 +349,6 @@ in {
             "$mainMod CTRL, BracketLeft, layoutmsg, rollprev"
             "$mainMod CTRL, Period, layoutmsg, swapwithmaster"
             "$mainMod ALT, Period, layoutmsg, focusmaster"
-
-            # Plugin binds
-            "$mainMod, grave, hyprexpo:expo, toggle"
 
             # Misc keybinds
             "$mainMod, P, exec, keepassxc"
@@ -425,7 +413,6 @@ in {
 
         exec-once = [
           "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
-          "hyprpaper"
           "hypridle"
           "[workspace 1 silent] firefox"
           "[workspace 8 silent] thunderbird"
@@ -448,8 +435,6 @@ in {
           "idleinhibit focus, class:(mpv)"
 
           "group set, class:^(Discord)"
-
-          "plugin:hyprbars:nobar, floating:0"
 
           "tag +filepicker, initialTitle:^(blob:.+)$"
           "tag +filepicker, initialTitle:^(Save [A-Z][^ ]*)$"

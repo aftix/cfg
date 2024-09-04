@@ -5,23 +5,16 @@ arch := `uname -m`
 default:
     @just --list
 
-pre-build host=hostname *FLAGS="":
-    @[[ "{{host}}" = "hamilton" ]] && nix build '.#hyprland' --out-link .nixkeep-hyprland {{FLAGS}}
-
 build host=hostname *FLAGS="":
-    @just pre-build {{host}} {{FLAGS}}
     @nix build ".#nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
 
 switch *FLAGS:
-    @just pre-build {{hostname}} {{FLAGS}}
     @nh os switch {{FLAGS}}
 
 boot *FLAGS:
-    @just pre-build {{hostname}} {{FLAGS}}
     @nh os boot {{FLAGS}}
 
 test *FLAGS:
-    @just pre-build {{hostname}} {{FLAGS}}
     @nh os test {{FLAGS}}
 
 check *FLAGS:
