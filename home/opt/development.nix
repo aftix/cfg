@@ -64,7 +64,7 @@ in {
         ++ optionals cfg.typescript
         [
           nodePackages_latest.nodejs
-          nodePackages_latest.eslint
+          eslint
           nodePackages_latest.yarn
           nodePackages_latest.prettier
           nodePackages_latest.typescript
