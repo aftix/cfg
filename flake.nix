@@ -125,6 +125,7 @@
 
       stty = prev.writeShellApplication {
         name = "stty";
+
         runtimeInputs =
           if prev.lib.strings.hasSuffix "-linux" prev.system
           then [final.busybox]
@@ -135,14 +136,8 @@
         '';
       };
 
-      znc = stablepkgs.legacyPackages.${final.system}.znc;
-      freshrss = stablepkgs.legacyPackages.${final.system}.freshrss;
-      clamav = stablepkgs.legacyPackages.${final.system}.clamav;
-      fail2ban = stablepkgs.legacyPackages.${final.system}.fail2ban;
-      transmission_4 = stablepkgs.legacyPackages.${final.system}.transmission_4;
-      inherit (stablepkgs.legacyPackages.${final.system}) hyprpaper xdg-desktop-portal-hyprland;
+      inherit (stablepkgs.legacyPackages.${final.system}) znc freshrss clamav fail2ban transmission_4 hyprpaper xdg-desktop-portal-hyprland;
     };
-
     pkgsCfg = {
       nixpkgs = {
         overlays = [
