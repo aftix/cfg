@@ -1,12 +1,13 @@
 {
   pkgs,
   lib,
-  hyprPkgs,
   config,
+  inputs,
   ...
 }: let
   inherit (lib) mkDefault mkOverride mkForce;
   inherit (lib.options) mkOption;
+  hyprlandPkg = config.programs.hyprland.package;
 in {
   options.my.greeterCfgExtra = mkOption {
     default = "";
@@ -14,29 +15,15 @@ in {
   };
 
   config = let
-    wallpaper = "${hyprPkgs.hyprland}/share/hyprland/wall2.png";
+    wallpaper = "${inputs.hyprland}/share/hyprland/wall2.png";
   in {
-    nix.settings = {
-      substituters = [
-        "https://hyprland.cachix.org"
-        "https://nixpkgs-wayland.cachix.org"
-      ];
-      trusted-public-keys = [
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-      ];
-    };
-
     environment.systemPackages = with pkgs; [
       rose-pine-cursor
       hyprpaper
     ];
 
     programs = {
-      hyprland = {
-        enable = mkDefault true;
-        package = hyprPkgs.hyprland;
-      };
+      hyprland.enable = mkDefault true;
 
       regreet = {
         enable = true;
@@ -68,7 +55,7 @@ in {
           terminal.vt = 1;
 
           initial_session = {
-            command = "${hyprPkgs.hyprland}/bin/Hyprland";
+            command = "${hyprlandPkg}/bin/Hyprland";
             user = mkOverride 990 "aftix";
           };
 
@@ -86,7 +73,7 @@ in {
             greetCfg = pkgs.writeTextFile {
               name = "greetd-cfg";
               text = ''
-                exec-once = ${config.programs.regreet.package}/bin/regreet; ${hyprPkgs.hyprland}/bin/hyprctl dispatch exit
+                exec-once = ${config.programs.regreet.package}/bin/regreet; ${hyprlandPkg}/bin/hyprctl dispatch exit
 
                 monitor=,preferred,auto,1
                 input {
@@ -111,7 +98,7 @@ in {
               '';
             };
           in {
-            command = "${hyprPkgs.hyprland}/bin/Hyprland --config ${greetCfg}";
+            command = "${hyprlandPkg}/bin/Hyprland --config ${greetCfg}";
             user = mkOverride 990 "aftix";
           };
         };
