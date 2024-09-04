@@ -47,23 +47,6 @@
 
     nixos-cli.url = "github:water-sucks/nixos";
 
-    nixpkgs-wayland = {
-      url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprland = {
-      type = "git";
-      url = "https://github.com/hyprwm/Hyprland";
-      submodules = true;
-      rev = "9a09eac79b85c846e3a865a9078a3f8ff65a9259";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
-    };
-
     coffeepaste = {
       url = "sourcehut:~mort/coffeepaste";
       flake = false;
@@ -118,6 +101,11 @@
       url = "github:mitchellkrogza/nginx-ultimate-bad-bot-blocker";
       flake = false;
     };
+
+    hyprland = {
+      url = "github:hyprwm/hyprland";
+      flake = false; # Just want the wallpaper image
+    };
   };
 
   outputs = {
@@ -152,13 +140,13 @@
       clamav = stablepkgs.legacyPackages.${final.system}.clamav;
       fail2ban = stablepkgs.legacyPackages.${final.system}.fail2ban;
       transmission_4 = stablepkgs.legacyPackages.${final.system}.transmission_4;
+      inherit (stablepkgs.legacyPackages.${final.system}) hyprpaper xdg-desktop-portal-hyprland;
     };
 
     pkgsCfg = {
       nixpkgs = {
         overlays = [
           nur.overlay
-          inputs.nixpkgs-wayland.overlay
           overlay
         ];
         config = {
@@ -177,10 +165,6 @@
 
     specialArgs = {
       inherit spkgs inputs;
-      hyprPkgs = {
-        inherit (inputs.hyprland.packages.${system}) hyprland hyprland-protocols xdg-desktop-portal-hyprland;
-        inherit (inputs.hyprland-plugins.packages.${system}) hyprbars hyprexpo;
-      };
     };
     extraSpecialArgs =
       specialArgs
@@ -386,9 +370,5 @@
       };
     }
     // flake-utils.lib.eachDefaultSystem (sys: {
-      packages = {
-        inherit (inputs.hyprland.packages.${sys}) hyprland xdg-desktop-portal-hyprland;
-        inherit (inputs.hyprland-plugins.packages.${sys}) hyprbars hyprexpo;
-      };
     });
 }
