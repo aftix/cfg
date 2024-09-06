@@ -55,6 +55,10 @@
       url = "github:Forceu/barcodebuddy/v1.8.1.7";
       flake = false;
     };
+    carapace = {
+      url = "github:carapace-sh/carapace-bin";
+      flake = false;
+    };
 
     freshrss-ext = {
       url = "github:FreshRSS/Extensions";
@@ -137,7 +141,15 @@
       };
 
       inherit (stablepkgs.legacyPackages.${final.system}) znc freshrss clamav fail2ban transmission_4 hyprpaper xdg-desktop-portal-hyprland;
+
+      carapace =
+        (prev.carapace.overrideAttrs {
+          src = inputs.carapace;
+          vendorHash = "sha256-ms+z/IM09Pie+Num1UvWxsLl/Vr3PJOgDl3Cc05fXYM=";
+        })
+        .override {buildGoModule = final.buildGo123Module;};
     };
+
     pkgsCfg = {
       nixpkgs = {
         overlays = [
