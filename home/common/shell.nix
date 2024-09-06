@@ -129,12 +129,16 @@ in {
   config = {
     home.packages = with pkgs; [stty];
 
-    programs.starship = {
-      enable = true;
-      settings = {
-        "$schema" = "https://starship.rs/config-schema.json";
-        add_newline = true;
-        shell.disabled = false;
+    programs = {
+      carapace.enable = true;
+
+      starship = {
+        enable = true;
+        settings = {
+          "$schema" = "https://starship.rs/config-schema.json";
+          add_newline = true;
+          shell.disabled = false;
+        };
       };
     };
 

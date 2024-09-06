@@ -131,6 +131,22 @@
         "type": "github"
       }
     },
+    "carapace": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1725516391,
+        "narHash": "sha256-pcholzy0rmmosgFUm+kQ96/TDC4vM+xFB13mJfQjR/4=",
+        "owner": "carapace-sh",
+        "repo": "carapace-bin",
+        "rev": "7d6a53f2bde10ed4b6fe4af2c3aa9ebbc6d67bd8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "carapace-sh",
+        "repo": "carapace-bin",
+        "type": "github"
+      }
+    },
     "coffeepaste": {
       "flake": false,
       "locked": {
@@ -823,6 +839,7 @@
     "root": {
       "inputs": {
         "barcodebuddy": "barcodebuddy",
+        "carapace": "carapace",
         "coffeepaste": "coffeepaste",
         "deploy-rs": "deploy-rs",
         "disko": "disko",
