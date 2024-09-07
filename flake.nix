@@ -44,6 +44,10 @@
         nixpkgs-stable.follows = "stablepkgs";
       };
     };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-cli.url = "github:water-sucks/nixos";
 
@@ -308,6 +312,7 @@
               ++ [
                 inputs.disko.nixosModules.disko
                 inputs.impermanence.nixosModules.impermanence
+                inputs.lanzaboote.nixosModules.lanzaboote
 
                 ./host/hamilton.nix
 
