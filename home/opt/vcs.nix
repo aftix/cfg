@@ -1,5 +1,73 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [pre-commit];
+{pkgs, ...}: let
+  better-git-branch = final:
+    final.writeShellApplication {
+      name = "better-git-branch";
+      runtimeInputs = with final; [git];
+      text = ''
+        # Taken from https://gist.github.com/schacon/e9e743dee2e92db9a464619b99e94eff
+        # Colors
+        RED='\033[0;31m'
+        GREEN='\033[0;32m'
+        NO_COLOR='\033[0m'
+        BLUE='\033[0;34m'
+        YELLOW='\033[0;33m'
+        NO_COLOR='\033[0m'
+
+        width1=5
+        width2=6
+        width3=30
+        width4=20
+        width5=40
+
+        # Function to count commits
+        count_commits() {
+            local branch="$1"
+            local base_branch="$2"
+            local ahead_behind
+
+            ahead_behind=$(git rev-list --left-right --count "$base_branch"..."$branch")
+            echo "$ahead_behind"
+        }
+
+        # Main script
+        main_branch=$(git rev-parse HEAD)
+
+        printf "''${GREEN}%-''${width1}s ''${RED}%-''${width2}s ''${BLUE}%-''${width3}s ''${YELLOW}%-''${width4}s ''${NO_COLOR}%-''${width5}s\n" "Ahead" "Behind" "Branch" "Last Commit"  " "
+
+        # Separator line for clarity
+        printf "''${GREEN}%-''${width1}s ''${RED}%-''${width2}s ''${BLUE}%-''${width3}s ''${YELLOW}%-''${width4}s ''${NO_COLOR}%-''${width5}s\n" "-----" "------" "------------------------------" "-------------------" " "
+
+
+        format_string="%(objectname:short)@%(refname:short)@%(committerdate:relative)"
+        IFS=$'\n'
+
+        for branchdata in $(git for-each-ref --sort=-authordate --format="$format_string" refs/heads/ --no-merged); do
+            sha=$(echo "$branchdata" | cut -d '@' -f1)
+            branch=$(echo "$branchdata" | cut -d '@' -f2)
+            time=$(echo "$branchdata" | cut -d '@' -f3)
+            if [ "$branch" != "$main_branch" ]; then
+                    # Get branch description
+                    description=$(git config branch."$branch".description)
+
+                    # Count commits ahead and behind
+                    ahead_behind=$(count_commits "$sha" "$main_branch")
+                    ahead=$(echo "$ahead_behind" | cut -f2)
+                    behind=$(echo "$ahead_behind" | cut -f1)
+
+                    # Display branch info
+        	    printf "''${GREEN}%-''${width1}s ''${RED}%-''${width2}s ''${BLUE}%-''${width3}s ''${YELLOW}%-''${width4}s ''${NO_COLOR}%-''${width5}s\n" "$ahead" "$behind" "$branch" "$time" "$description"
+            fi
+        done
+      '';
+    };
+in {
+  nixpkgs.overlays = [
+    (final: _: {
+      better-git-branch = better-git-branch final;
+    })
+  ];
+
+  home.packages = with pkgs; [pre-commit pkgs.better-git-branch];
 
   my.shell.aliases = [
     {
@@ -38,6 +106,7 @@
         branch.sort = "-committerdate";
         rebase.updateRefs = true;
         alias = {
+          bb = "!${pkgs.better-git-branch}/bin/better-git-branch";
           bl = "blame -w -C -C -C";
           staash = "stash --all";
           wdiff = "diff --word-diff";
