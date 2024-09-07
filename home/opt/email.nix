@@ -32,6 +32,14 @@ in {
           };
         };
 
+        msmtp = {
+          enable = true;
+          extraConfig = {
+            auth = "on";
+            passwordeval = "cat ${lib.strings.escapeShellArg config.sops.secrets.mailbox.path}";
+          };
+        };
+
         gpg = {
           key = "${gpgSigningKey}";
           signByDefault = true;
@@ -59,6 +67,14 @@ in {
           tls = {
             enable = true;
             useStartTls = true;
+          };
+        };
+
+        msmtp = {
+          enable = true;
+          extraConfig = {
+            auth = "on";
+            passwordeval = "cat ${lib.strings.escapeShellArg config.sops.secrets.gmailtoken.path}";
           };
         };
 
@@ -92,6 +108,14 @@ in {
           };
         };
 
+        msmtp = {
+          enable = true;
+          extraConfig = {
+            auth = "on";
+            passwordeval = "cat ${lib.strings.escapeShellArg config.sops.secrets.utmailtoken.path}";
+          };
+        };
+
         gpg = {
           key = "${gpgSigningKey}";
           signByDefault = true;
@@ -100,12 +124,27 @@ in {
     };
   };
 
-  programs.thunderbird = {
-    enable = true;
-    profiles.aftix = {
-      isDefault = true;
-      withExternalGnupg = true;
+  programs = {
+    msmtp.enable = true;
+
+    git.extraConfig.sendemail = {
+      from = let email = config.accounts.email.accounts.personal; in "${email.realName} <${email.address}>";
+      sendmailCmd = "${config.programs.msmtp.package}/bin/msmtp --account=personal";
     };
+
+    thunderbird = {
+      enable = true;
+      profiles.aftix = {
+        isDefault = true;
+        withExternalGnupg = true;
+      };
+    };
+  };
+
+  sops.secrets = {
+    mailbox = {};
+    gmailtoken = {};
+    utmailtoken = {};
   };
 
   xdg.mimeApps.defaultApplications = config.my.lib.registerMimes [
