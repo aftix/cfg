@@ -68,6 +68,8 @@ in {
       yubico-pam
       yubikey-personalization
       yubikey-manager
+
+      sbctl
     ];
 
     # opt into state
@@ -79,6 +81,7 @@ in {
           "/var/lib/nixos"
           "/etc/NetworkManager/system-connections"
           "/etc/mullvad-vpn"
+          "/etc/secureboot"
           "/var/cache/mullvad-vpn"
         ];
       };
@@ -97,6 +100,14 @@ in {
           "/var/lib/cups/subscriptions.conf"
         ];
       };
+    };
+  };
+
+  boot = {
+    loader.systemd-boot.enable = lib.mkForce false;
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/persist/etc/secureboot";
     };
   };
 
