@@ -543,11 +543,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1725180166,
-        "narHash": "sha256-fzssXuGR/mCeGbzM1ExaTqDz7QDGta3WA4jJsZyRruo=",
+        "lastModified": 1725694918,
+        "narHash": "sha256-+HsjshXpqNiJHLaJaK0JnIicJ/a1NquKcfn4YZ3ILgg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "471e3eb0a114265bcd62d11d58ba8d3421ee68eb",
+        "rev": "aaebdea769a5c10f1c6e50ebdf5924c1a13f0cda",
         "type": "github"
       },
       "original": {
@@ -581,11 +581,11 @@
     "hostsBlacklist": {
       "flake": false,
       "locked": {
-        "lastModified": 1725562992,
-        "narHash": "sha256-AXKcahJZUG81hJMvBzxiNny12gSuiisegwvaA64aAdk=",
+        "lastModified": 1725649535,
+        "narHash": "sha256-n59CMfPCC6VCOuowccdW5/bm/bDmkgSlhpvPrYOqvuk=",
         "owner": "Ultimate-Hosts-Blacklist",
         "repo": "Ultimate.Hosts.Blacklist",
-        "rev": "f25d49ebafe7eec852bedcc995ed41819efd673b",
+        "rev": "3fae6121a46ed0366fea4c647837c8ce6eeb20ee",
         "type": "github"
       },
       "original": {
@@ -597,11 +597,11 @@
     "hyprland": {
       "flake": false,
       "locked": {
-        "lastModified": 1725563063,
-        "narHash": "sha256-jA5U0yT+fXyRijo2ErvR//Jyb4IyidDOhII5Vom0T2c=",
+        "lastModified": 1725722063,
+        "narHash": "sha256-FIYhvCv9LG2uUlbZv5U9Qh73w9EwHraRUiHQsq/WqNc=",
         "owner": "hyprwm",
         "repo": "hyprland",
-        "rev": "727f1b54cd1ba48774092a5d54acc0e55f3ffe0f",
+        "rev": "5ca48231287d67e75a3f21dbdbc47d6dc65752c4",
         "type": "github"
       },
       "original": {
@@ -612,11 +612,11 @@
     },
     "impermanence": {
       "locked": {
-        "lastModified": 1724489415,
-        "narHash": "sha256-ey8vhwY/6XCKoh7fyTn3aIQs7WeYSYtLbYEG87VCzX4=",
+        "lastModified": 1725690722,
+        "narHash": "sha256-4qWg9sNh5g1qPGO6d/GV2ktY+eDikkBTbWSg5/iD2nY=",
         "owner": "nix-community",
         "repo": "impermanence",
-        "rev": "c7f5b394397398c023000cf843986ee2571a1fd7",
+        "rev": "63f4d0443e32b0dd7189001ee1894066765d18a5",
         "type": "github"
       },
       "original": {
@@ -663,11 +663,11 @@
     "nginxBlacklist": {
       "flake": false,
       "locked": {
-        "lastModified": 1725573882,
-        "narHash": "sha256-sfYfIPQ6dpcElgMDQXeWFpOSxsXjWdMReCVbRvloiMc=",
+        "lastModified": 1725703616,
+        "narHash": "sha256-rIT2bZrq73At3x470j0GI1EXExJe2QcjI+EPvmK99Qo=",
         "owner": "mitchellkrogza",
         "repo": "nginx-ultimate-bad-bot-blocker",
-        "rev": "9196addfc45f80a097a03d63d78f4a91bb0ff5ba",
+        "rev": "de8b13fc8a5ed78293afae7037795700a88e50f8",
         "type": "github"
       },
       "original": {
@@ -791,11 +791,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1725432240,
-        "narHash": "sha256-+yj+xgsfZaErbfYM3T+QvEE2hU7UuE+Jf0fJCJ8uPS0=",
+        "lastModified": 1725634671,
+        "narHash": "sha256-v3rIhsJBOMLR8e/RNWxr828tB+WywYIoajrZKFM+0Gg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ad416d066ca1222956472ab7d0555a6946746a80",
+        "rev": "574d1eac1c200690e27b8eb4e24887f8df7ac27c",
         "type": "github"
       },
       "original": {
@@ -823,11 +823,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1725572733,
-        "narHash": "sha256-z4Ev7KG+Cr9dg0R9H8IKTZ3dDjkZ4TXTU0a3Z6kmB9o=",
+        "lastModified": 1725727226,
+        "narHash": "sha256-1OIoBxbdi0ubRSFZWntx1VmFxZP647RBobDzJ5fTdqE=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "baf53e9f01a17b5e9393c5810a385450a820e201",
+        "rev": "22b3fd31d4b976ead0678ef88063b5b2b9dd7225",
         "type": "github"
       },
       "original": {
@@ -899,11 +899,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1725497274,
-        "narHash": "sha256-sGvYBY3q+5pAn4i1Vkb2/ah7NbruonQVIn7DDPRusqE=",
+        "lastModified": 1725708209,
+        "narHash": "sha256-Dur8ZkiskNeQxjivdp7Jtmz9ZFTi6q0w34+P6WTRyv0=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "39817ccdaf8c4a46340a1d3326d59891d6d0b586",
+        "rev": "c15adcd6056c0e218669e62affb3e27654d18181",
         "type": "github"
       },
       "original": {
