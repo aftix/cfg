@@ -37,7 +37,7 @@
         column.ui = "auto";
         branch.sort = "-committerdate";
         rebase.updateRefs = true;
-        aliases = {
+        alias = {
           bl = "blame -w -C -C -C";
           staash = "stash --all";
           wdiff = "diff --word-diff";
