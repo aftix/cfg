@@ -88,6 +88,10 @@ in {
           gpgsign = true;
         };
         gpg.program = "${pkgs.gnupg}/bin/gpg2";
+        core = {
+          untrackedcache = true;
+          fsmonitor = true;
+        };
         commit.gpgsign = false;
         pull.rebase = false;
         init.defaultBranch = "master";
@@ -113,6 +117,7 @@ in {
           fpush = "push --force-with-lease";
           logo = "log --oneline";
         };
+        fetch.writeCommitGraph = true;
       };
     };
 
