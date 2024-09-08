@@ -20,8 +20,11 @@ test *FLAGS:
 check *FLAGS:
     @nix flake check {{FLAGS}}
 
-deploy node="fermi":
-    @nix run 'github:serokell/deploy-rs' '.#{{node}}' -- -- --impure
+deploy node="fermi" *FLAGS="":
+    @nix run {{FLAGS}} 'github:serokell/deploy-rs' '.#{{node}}' -- -- --impure
+
+deploy-override node="fermi":
+    @just deploy {{node}} --override-input nixpkgs nixpkgs
 
 rekey:
     @sops updatekeys -y host/secrets.yaml
