@@ -13,6 +13,7 @@ in {
     ./blog.nix
     ./coffeepaste.nix
     ./grocy.nix
+    ./matrix.nix
     ./rss.nix
     ./searx.nix
     ./znc.nix
