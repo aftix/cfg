@@ -38,6 +38,16 @@ in {
     };
 
     znc.enable = true;
+    matrix = {
+      enable = true;
+      supportEndpointJSON.contacts = [
+        {
+          email_address = "aftix@aftix.xyz";
+          matrix_id = "@aftix:matrix.org";
+          role = "m.role.admin";
+        }
+      ];
+    };
 
     backup = {
       bucket = "fermi-backup";
