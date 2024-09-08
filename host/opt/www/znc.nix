@@ -19,7 +19,7 @@ in {
     };
   };
 
-  config = {
+  config = lib.mkIf config.my.znc.enable {
     sops.secrets = {
       znc_password = {
         inherit (cfg) group;
