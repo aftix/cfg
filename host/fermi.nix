@@ -47,6 +47,11 @@ in {
           role = "m.role.admin";
         }
       ];
+
+      ircBridge = {
+        enable = true;
+        esper = true;
+      };
     };
 
     backup = {
