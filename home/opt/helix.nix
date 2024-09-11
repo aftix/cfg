@@ -35,6 +35,14 @@ in {
     languages = builtins.fromTOML (builtins.readFile ./_external/helix/languages.toml);
     settings = {
       theme = "stylix";
+
+      keys.normal = {
+        g = {
+          a = "code_action";
+          q = ":reflow";
+        };
+      };
+
       editor = {
         line-number = "relative";
         auto-completion = true;
@@ -43,31 +51,42 @@ in {
         true-color = true;
         shell = ["zsh" "-cl"];
         bufferline = "multiple";
+
+        whitespace = {
+          render = "all";
+          characters = {
+            space = " ";
+            nbsp = "⍽";
+            tab = "→";
+            newline = "¬";
+            tabpad = ".";
+          };
+        };
+
+        cursor-shape = {
+          insert = "bar";
+          normal = "block";
+          select = "underline";
+        };
+
+        file-picker = {
+          hidden = false;
+          git-global = true;
+          git-ignore = true;
+          parents = true;
+        };
+
+        lsp.display-messages = true;
+        search = {
+          smart-case = true;
+          wrap-around = false;
+        };
+
+        indent-guides = {
+          render = true;
+          character = "|";
+        };
       };
-      editor.whitespace.render = "all";
-      editor.whitespace.characters = {
-        space = " ";
-        nbsp = "⍽";
-        tab = "→";
-        newline = "¬";
-        tabpad = ".";
-      };
-      editor.cursor-shape = {
-        insert = "bar";
-        normal = "block";
-        select = "underline";
-      };
-      editor.file-picker = {
-        hidden = false;
-        git-global = true;
-        git-ignore = true;
-        parents = true;
-      };
-      editor.lsp.display-messages = true;
-      editor.search.smart-case = true;
-      editor.search.wrap-around = false;
-      editor.indent-guides.render = true;
-      editor.indent-guides.character = "|";
     };
   };
 
