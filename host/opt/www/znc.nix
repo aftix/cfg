@@ -35,6 +35,28 @@ in {
       };
     };
 
+    my.www.streamConfig = [
+      ''
+        upstream znc {
+          server [::1]:7001;
+        }
+
+        server {
+          listen 6697 ssl;
+          listen [::]:6697 ssl;
+
+          ssl_protocols TLSv1.2 TLSv1.3;
+          ssl_ciphers  ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA384:DHE-DSS-AES256-GCM-SHA384:DHE-DSS-AES256-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256;
+          ssl_certificate /var/lib/acme/${hostname}/fullchain.pem;
+          ssl_certificate_key /var/lib/acme/${hostname}/key.pem;
+          ssl_trusted_certificate /var/lib/acme/${hostname}/chain.pem;
+          ssl_conf_command Options KTLS;
+
+          proxy_pass znc;
+        }
+      ''
+    ];
+
     networking.firewall = {
       allowedTCPPorts = [6697];
       allowedUDPPorts = [6697];
@@ -104,45 +126,23 @@ in {
     };
 
     services = {
-      nginx = {
-        virtualHosts."${subdomain}.${hostname}" = {
-          serverName = "${subdomain}.${hostname} www.${subdomain}.${hostname}";
-          kTLS = true;
-          forceSSL = true;
-          useACMEHost = hostname;
+      nginx.virtualHosts."${subdomain}.${hostname}" = {
+        serverName = "${subdomain}.${hostname} www.${subdomain}.${hostname}";
+        kTLS = true;
+        forceSSL = true;
+        useACMEHost = hostname;
 
-          locations."/" = {
-            proxyPass = "http://[::1]:7000/";
-            extraConfig = ''
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            '';
-          };
-
+        locations."/" = {
+          proxyPass = "http://[::1]:7000/";
           extraConfig = ''
-            include /etc/nginx/bots.d/blockbots.conf;
-            include /etc/nginx/bots.d/ddos.conf;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           '';
         };
 
-        streamConfig = ''
-          upstream znc {
-            server [::1]:7001;
-          }
-
-          server {
-            listen 6697 ssl;
-            listen [::]:6697 ssl;
-
-            ssl_protocols TLSv1.2 TLSv1.3;
-            ssl_ciphers  ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA384:DHE-DSS-AES256-GCM-SHA384:DHE-DSS-AES256-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256;
-            ssl_certificate /var/lib/acme/${hostname}/fullchain.pem;
-            ssl_certificate_key /var/lib/acme/${hostname}/key.pem;
-            ssl_trusted_certificate /var/lib/acme/${hostname}/chain.pem;
-            ssl_conf_command Options KTLS;
-
-            proxy_pass znc;
-          }
+        extraConfig = ''
+          include /etc/nginx/bots.d/blockbots.conf;
+          include /etc/nginx/bots.d/ddos.conf;
         '';
       };
 
