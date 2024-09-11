@@ -6,6 +6,7 @@
 }: let
   inherit (lib.options) mkOption mkEnableOption;
   inherit (lib.strings) escapeShellArg;
+  inherit (lib.lists) optional optionals;
 
   cfg = config.my.matrix;
   wwwCfg = config.my.www;
@@ -38,63 +39,40 @@
         CONDUIT_CONFIG="$CONF" conduit
       '';
   };
-
-  ircBridgeConfigFile =
-    pkgs.runCommand "matrix-appservice-irc.yml" {
-      # Because this program will be run at build time, we need `nativeBuildInputs`
-      nativeBuildInputs = [(pkgs.python3.withPackages (ps: [ps.jsonschema])) pkgs.remarshal];
-      preferLocalBuild = true;
-
-      config = builtins.toJSON config.services.matrix-appservice-irc.settings;
-      passAsFile = ["config"];
-    }
-    /*
-    bash
-    */
-    ''
-      # The schema is given as yaml, we need to convert it to json
-      remarshal --if yaml --of json -i ${pkgs.matrix-appservice-irc}/config.schema.yml -o config.schema.json
-      python -m jsonschema config.schema.json -i $configPath
-      cp "$configPath" "$out"
-    '';
-  launchBridgeWithSecrets = pkgs.writeShellApplication {
-    name = "launch-bridge-with-secrets";
-    runtimeInputs = with pkgs; [gnused coreutils-full matrix-appservice-irc];
-    text = let
-      esperNickservSecretPath = escapeShellArg config.sops.secrets.esper_nickserv_password.path;
-    in
-      /*
-      bash
-      */
-      ''
-        CONF="$(mktemp)"
-        chmod a-rwx "$CONF"
-        chmod +rw "$CONF"
-
-        function cleanup() {
-          [[ -f "$CONF" ]] && rm "$CONF"
-        }
-        trap cleanup EXIT
-
-        sed -e "s/__ESPER_PASSWORD__/$(cat ${esperNickservSecretPath})/g" ${ircBridgeConfigFile} > "$CONF"
-        matrix-appservice-irc --config "$CONF" --file /var/lib/matrix-appservice-irc/registration.yml --port ${builtins.toString config.services.matrix-appservice-irc.port}
-      '';
-  };
 in {
   options.my.matrix = {
     enable = mkEnableOption "matrix conduit homeserver";
     ircBridge = {
-      enable = mkEnableOption "matrix-appservice-irc bridge";
+      enable = mkEnableOption "heisenbridge";
 
-      mediaProxyPort = mkOption {
-        default = 9000;
+      port = mkOption {
+        default = 9898;
         type = lib.types.ints.positive;
       };
 
-      esper = mkEnableOption "espernet irc bridge";
-      esperPort = mkOption {
-        default = 9091;
-        type = lib.types.ints.positive;
+      namespaces = lib.mkOption {
+        description = "Configure the 'namespaces' section of the registration.yml for the bridge and the server";
+        type = lib.types.submodule {
+          freeformType = (pkgs.formats.json {}).type;
+        };
+
+        default = {
+          users = [
+            {
+              regex = "@irc_.*";
+              exclusive = true;
+            }
+          ];
+          aliases = [];
+          rooms = [];
+        };
+      };
+
+      identd.enable = lib.mkEnableOption "identd service support";
+      identd.port = lib.mkOption {
+        type = lib.types.port;
+        description = "identd listen port";
+        default = 9899;
       };
     };
 
@@ -115,12 +93,23 @@ in {
         owner = wwwCfg.user;
         inherit (wwwCfg) group;
       };
-
-      esper_nickserv_password = rec {
-        owner = "matrix-appservice-irc";
-        group = owner;
-      };
     };
+
+    my.www.streamConfig = let
+      sPort = builtins.toString cfg.ircBridge.identd.port;
+    in
+      optional cfg.ircBridge.identd.enable ''
+        upstream identd {
+          server 127.0.0.1:${sPort};
+        }
+
+        server {
+          listen 113;
+          listen [::]:113;
+
+          proxy_pass identd;
+        }
+      '';
 
     # Overwrite module service configurations to allow for sops secrets
     systemd.services = {
@@ -134,60 +123,115 @@ in {
         RemoveIPC = lib.mkForce true;
       };
 
-      matrix-appservice-irc.serviceConfig.ExecStart = lib.mkForce "${launchBridgeWithSecrets}/bin/launch-bridge-with-secrets";
+      heisenbridge = let
+        pkg = pkgs.heisenbridge;
+        bin = "${pkg}/bin/heisenbridge";
+
+        registrationFile = "/var/lib/heisenbridge/registration.yml";
+        # JSON is a proper subset of YAML
+        bridgeConfig = builtins.toFile "heisenbridge-registration.yml" (builtins.toJSON {
+          id = "heisenbridge";
+          url = "http://localhost:${builtins.toString config.services.heisenbridge.port}";
+          # Don't specify as_token and hs_token
+          rate_limited = false;
+          sender_localpart = "heisenbridge";
+          namespaces = cfg.ircBridge.namespaces;
+          media_url = "https://${wwwCfg.hostname}";
+        });
+      in
+        lib.mkIf cfg.ircBridge.enable {
+          description = "Matrix<->IRC bridge";
+          before = ["conduit.service"]; # So the registration file can be used by Conduit
+          wantedBy = ["multi-user.target"];
+
+          preStart = ''
+            umask 077
+            set -e -u -o pipefail
+
+            if ! [ -f "${registrationFile}" ]; then
+              # Generate registration file if not present (actually, we only care about the tokens in it)
+              ${bin} --generate --config ${registrationFile}
+            fi
+
+            # Overwrite the registration file with our generated one (the config may have changed since then),
+            # but keep the tokens. Two step procedure to be failure safe
+            ${pkgs.yq}/bin/yq --slurp \
+              '.[0] + (.[1] | {as_token, hs_token})' \
+              ${bridgeConfig} \
+              ${registrationFile} \
+              > ${registrationFile}.new
+            mv -f ${registrationFile}.new ${registrationFile}
+          '';
+
+          serviceConfig = rec {
+            Type = "simple";
+            ExecStart = lib.concatStringsSep " " ([
+                bin
+                "-v"
+                "--config"
+                registrationFile
+                "--listen-address"
+                "0.0.0.0"
+                "--listen-port"
+                (builtins.toString cfg.ircBridge.port)
+                "--owner"
+                "@aftix:matrix.org"
+              ]
+              ++ (optionals cfg.ircBridge.identd.enable [
+                "--identd-port"
+                (builtins.toString cfg.ircBridge.identd.port)
+              ])
+              ++ [
+                "http://localhost:${strPort}"
+              ]);
+
+            # Hardening options
+
+            User = wwwCfg.user;
+            Group = wwwCfg.group;
+            RuntimeDirectory = "heisenbridge";
+            RuntimeDirectoryMode = "0700";
+            StateDirectory = "heisenbridge";
+            StateDirectoryMode = "0755";
+
+            ProtectSystem = "strict";
+            ProtectHome = true;
+            PrivateTmp = true;
+            PrivateDevices = true;
+            ProtectKernelTunables = true;
+            ProtectControlGroups = true;
+            RestrictSUIDSGID = true;
+            PrivateMounts = true;
+            ProtectKernelModules = true;
+            ProtectKernelLogs = true;
+            ProtectHostname = true;
+            ProtectClock = true;
+            ProtectProc = "invisible";
+            ProcSubset = "pid";
+            RestrictNamespaces = true;
+            RemoveIPC = true;
+            UMask = "0077";
+
+            CapabilityBoundingSet = ["CAP_CHOWN"] ++ optional (cfg.port < 1024) "CAP_NET_BIND_SERVICE";
+            AmbientCapabilities = CapabilityBoundingSet;
+            NoNewPrivileges = true;
+            LockPersonality = true;
+            RestrictRealtime = true;
+            SystemCallFilter = ["@system-service" "~@privileged" "@chown"];
+            SystemCallArchitectures = "native";
+            RestrictAddressFamilies = "AF_INET AF_INET6";
+          };
+        };
     };
 
     services = {
       matrix-conduit = {
-        enable = assert wwwCfg.blog; true;
+        enable = assert wwwCfg.blog; assert cfg.ircBridge.enable -> cfg.enable; true;
         settings.global = {
           inherit (cfg) port;
           server_name = hostname;
           allow_registration = true;
           registration_token = "__REGISTRATION_TOKEN__";
-        };
-      };
-
-      matrix-appservice-irc = {
-        enable = assert cfg.ircBridge.enable -> cfg.enable; cfg.ircBridge.enable;
-
-        registrationUrl = "http://localhost:${builtins.toString config.services.matrix-appservice-irc.port}";
-
-        settings = rec {
-          homeserver = {
-            url = "http://localhost:${builtins.toString cfg.port}";
-            domain = config.services.matrix-conduit.settings.global.server_name;
-          };
-          ircService = {
-            permissions = {
-              "@admin:${homeserver.domain}" = "admin";
-              "@aftix:matrix.org" = "admin";
-            };
-
-            mediaProxy = {
-              enable = true;
-              bindPort = cfg.ircBridge.mediaProxyPort;
-              publicUrl = "${homeserver.url}/_media";
-            };
-
-            servers = lib.mkMerge [
-              (lib.mkIf cfg.ircBridge.esper {
-                "irc.esper.net" = {
-                  name = "EsperNet";
-                  port = 6697;
-                  ssl = true;
-                  sasl = true;
-                  botConfig = {
-                    nick = "AftMatrixBot";
-                    username = "aftixmatrixbridge";
-                    password = "__ESPER_PASSWORD__";
-                  };
-
-                  ircClients.nickTemplate = "$DISPLAY[m]";
-                };
-              })
-            ];
-          };
         };
       };
 
@@ -201,37 +245,31 @@ in {
             return 200 '${builtins.toJSON data}';
           '';
         };
-      in
-        lib.mkMerge [
-          {
-            "/_matrix/" = {
-              proxyPass = "http://[::1]:${strPort}";
-              extraConfig = ''
-                proxy_set_header Host $host;
-                proxy_set_header Access-Control-Allow-Origin *;
-                proxy_set_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
-                proxy_set_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
-                proxy_buffering on;
-                proxy_read_timeout 5m;
-              '';
-            };
+      in {
+        "/_matrix/" = {
+          proxyPass = "http://[::1]:${strPort}";
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header Access-Control-Allow-Origin *;
+            proxy_set_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
+            proxy_set_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
+            proxy_buffering on;
+            proxy_read_timeout 5m;
+          '';
+        };
 
-            "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
-            "/.well-known/matrix/client" = mkEndpoint {
-              "m.homeserver".base_url = "https://${hostname}";
-              "org.matrix.msc3575.proxy".url = "https://${hostname}";
-            };
-            "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
-          }
-          (lib.mkIf cfg.ircBridge.esper {
-            "/_media/" = {
-              proxyPass = "http://127.0.0.1:${builtins.toString cfg.ircBridge.mediaProxyPort}/";
-              extraConfig = ''
-                proxy_set_header X-Forwarded-For $remote_addr;
-              '';
-            };
-          })
-        ];
+        "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
+        "/.well-known/matrix/client" = mkEndpoint {
+          "m.homeserver".base_url = "https://${hostname}";
+          "org.matrix.msc3575.proxy".url = "https://${hostname}";
+        };
+        "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
+      };
+    };
+
+    networking.firewall = {
+      allowedTCPPorts = optional cfg.ircBridge.identd.enable 113;
+      allowedUDPPorts = optional cfg.ircBridge.identd.enable 113;
     };
   };
 }
