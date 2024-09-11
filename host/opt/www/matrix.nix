@@ -135,7 +135,7 @@ in {
           # Don't specify as_token and hs_token
           rate_limited = false;
           sender_localpart = "heisenbridge";
-          namespaces = cfg.ircBridge.namespaces;
+          inherit (cfg.ircBridge) namespaces;
           media_url = "https://${wwwCfg.hostname}";
         });
       in
