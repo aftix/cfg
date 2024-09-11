@@ -54,6 +54,11 @@ in {
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMmFgG1EuQDoJb8pQcxnhjqbncrpJGZ3iNon/gu0bXiE aftix@aftix.xyz"
       ];
     };
+
+    streamConfig = mkOption {
+      default = [];
+      type = lib.types.listOf lib.types.str;
+    };
   };
 
   config = {
@@ -99,6 +104,8 @@ in {
           include /etc/nginx/conf.d/globalblacklist.conf;
           include /etc/nginx/conf.d/botblocker-nginx-settings.conf;
         '';
+
+        streamConfig = lib.strings.concatLines cfg.streamConfig;
       };
 
       openssh.settings.AllowUsers = [cfg.user];

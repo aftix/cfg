@@ -50,7 +50,7 @@ in {
 
       ircBridge = {
         enable = true;
-        esper = true;
+        identd.enable = true;
       };
     };
 
