@@ -597,16 +597,6 @@ in {
 
   # Extra configuration files for kitty
   xdg.configFile = {
-    "kitty/irc.session".text =
-      /*
-      bash
-      */
-      ''
-        layout stack
-        cd ~
-        launch --title "irc" "${settings.shell.value}" -c "set-env WEECHAT_HOME '${config.home.homeDirectory}/.local/share/weechat' ; weechat"
-      '';
-
     "kitty/open-actions.conf".text = ''
       protocol file
       fragment_matches [0-9]+
