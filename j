@@ -12,13 +12,9 @@
 
   inherit (config.my.www) hostname;
   strPort = builtins.toString cfg.port;
-
-  bridgeRegistrationFile = "/var/lib/heisenbridge/registration.yml";
-  matrixUser = "matrix-synapse";
-  matrixGroup = "matrix-synapse";
 in {
   options.my.matrix = {
-    enable = mkEnableOption "matrix synapse homeserver";
+    enable = mkEnableOption "matrix conduit homeserver";
     ircBridge = {
       enable = mkEnableOption "heisenbridge";
 
@@ -67,27 +63,22 @@ in {
   config = lib.mkIf cfg.enable {
     sops = {
       secrets = {
-        synapse_registration_token = {
-          owner = matrixUser;
-          group = matrixGroup;
+        synapse_registration_token = with config.systemd.services.matrix-synapse.serviceConfig; {
+          owner = User;
+          group = Group;
         };
-        synapse_macaroon_key = {
-          owner = matrixUser;
-          group = matrixGroup;
-        };
-      };
 
-      templates."synapse-secrets.yaml" = {
-        owner = matrixUser;
-        group = matrixGroup;
-        content =
-          /*
-          yaml
-          */
-          ''
-            registration_shared_secret: "${config.sops.placeholder.synapse_registration_token}"
-            macaroon_secret_key: "${config.sops.placeholder.synapse_macaroon_key}"
-          '';
+        templates."synapse-registration-secret.yaml" = with config.systemd.services.matrix-synapse.serviceConfig; {
+          owner = User;
+          group = Group;
+          content =
+            /*
+            yaml
+            */
+            ''
+              registration_shared_secret: "${config.sops.placeholder.synapse_registration_token}"
+            '';
+        };
       };
     };
 
@@ -113,6 +104,7 @@ in {
         pkg = pkgs.heisenbridge;
         bin = "${pkg}/bin/heisenbridge";
 
+        registrationFile = "/var/lib/heisenbridge/registration.yml";
         # JSON is a proper subset of YAML
         bridgeConfig = builtins.toFile "heisenbridge-registration.yml" (builtins.toJSON {
           id = "heisenbridge";
@@ -126,16 +118,16 @@ in {
       in
         lib.mkIf cfg.ircBridge.enable {
           description = "Matrix<->IRC bridge";
-          before = ["synapse.service"]; # So the registration file can be used by Conduit
+          before = ["conduit.service"]; # So the registration file can be used by Conduit
           wantedBy = ["multi-user.target"];
 
           preStart = ''
             umask 077
             set -e -u -o pipefail
 
-            if ! [ -f "${bridgeRegistrationFile}" ]; then
+            if ! [ -f "${registrationFile}" ]; then
               # Generate registration file if not present (actually, we only care about the tokens in it)
-              ${bin} --generate --config ${bridgeRegistrationFile}
+              ${bin} --generate --config ${registrationFile}
             fi
 
             # Overwrite the registration file with our generated one (the config may have changed since then),
@@ -143,9 +135,9 @@ in {
             ${pkgs.yq}/bin/yq --slurp \
               '.[0] + (.[1] | {as_token, hs_token})' \
               ${bridgeConfig} \
-              ${bridgeRegistrationFile} \
-              > ${bridgeRegistrationFile}.new
-            mv -f ${bridgeRegistrationFile}.new ${bridgeRegistrationFile}
+              ${registrationFile} \
+              > ${registrationFile}.new
+            mv -f ${registrationFile}.new ${registrationFile}
           '';
 
           serviceConfig = rec {
@@ -154,7 +146,7 @@ in {
                 bin
                 "-v"
                 "--config"
-                bridgeRegistrationFile
+                registrationFile
                 "--listen-address"
                 "0.0.0.0"
                 "--listen-port"
@@ -172,8 +164,8 @@ in {
 
             # Hardening options
 
-            User = matrixUser;
-            Group = matrixGroup;
+            User = wwwCfg.user;
+            Group = wwwCfg.group;
             RuntimeDirectory = "heisenbridge";
             RuntimeDirectoryMode = "0700";
             StateDirectory = "heisenbridge";
@@ -215,9 +207,6 @@ in {
         settings = {
           server_name = hostname;
           public_baseurl = "https://${hostname}/";
-          database.name = "sqlite3";
-          surpress_keyserver_warning = true;
-          withJemalloc = true;
 
           trusted_key_servers = [
             {
@@ -225,7 +214,7 @@ in {
             }
           ];
 
-          app_service_config_files = optional cfg.ircBridge.enable bridgeRegistrationFile;
+          withJemalloc = true;
 
           listeners = [
             {
@@ -248,7 +237,7 @@ in {
           ];
         };
 
-        extraConfigFiles = [config.sops.templates."synapse-secrets.yaml".path];
+        extraConfigFiles = [];
       };
 
       nginx.virtualHosts.${hostname}.locations = let
@@ -263,7 +252,7 @@ in {
         };
       in {
         "/_matrix/" = {
-          proxyPass = "http://127.0.0.1:${strPort}";
+          proxyPass = "http://[::1]:${strPort}";
           extraConfig = ''
             proxy_set_header Host $host;
             proxy_set_header Access-Control-Allow-Origin *;
@@ -274,7 +263,7 @@ in {
           '';
         };
         "/_synapse/" = {
-          proxyPass = "http://127.0.0.1:${strPort}";
+          proxyPass = "http://[::1]:${strPort}";
           extraConfig = ''
             proxy_set_header Host $host;
             proxy_set_header Access-Control-Allow-Origin *;
