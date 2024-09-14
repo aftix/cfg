@@ -231,6 +231,7 @@ in {
           inherit (cfg) port;
           server_name = hostname;
           allow_registration = true;
+          allow_encryption = false;
           registration_token = "__REGISTRATION_TOKEN__";
         };
       };
