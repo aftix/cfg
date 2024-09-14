@@ -258,6 +258,17 @@ in {
             proxy_read_timeout 5m;
           '';
         };
+        "/_synapse/" = {
+          proxyPass = "http://[::1]:${strPort}";
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header Access-Control-Allow-Origin *;
+            proxy_set_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
+            proxy_set_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
+            proxy_buffering on;
+            proxy_read_timeout 5m;
+          '';
+        };
 
         "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
         "/.well-known/matrix/client" = mkEndpoint {
