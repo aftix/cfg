@@ -30,6 +30,7 @@ in {
       adventofcode = true;
       aftgraphs = true;
       blog = true;
+      coffeepasteLocation = "litterbox";
       searx.enable = true;
       grocy.enable = true;
 
