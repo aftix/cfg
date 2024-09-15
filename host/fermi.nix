@@ -38,7 +38,6 @@ in {
       ipv6 = "2a0b:7140:8:1:5054:ff:fe84:ed8c";
     };
 
-    znc.enable = true;
     matrix = {
       enable = true;
       supportEndpointJSON.contacts = [
