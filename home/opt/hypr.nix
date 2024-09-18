@@ -1,12 +1,13 @@
 {
   pkgs,
   config,
-  spkgs,
   lib,
   ...
 }: let
   inherit (lib.options) mkOption;
   inherit (lib.strings) optionalString concatMapStringsSep escapeShellArg;
+
+  inherit (config.dep-inject) spkgs;
   inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
   cfg = config.my.hyprland;
   hyprPackage = config.wayland.windowManager.hyprland.package;

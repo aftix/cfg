@@ -5,9 +5,8 @@
   stylix,
   ...
 }: {
-  home.packages = [pkgs.base16-schemes];
-
   imports = [stylix];
+  home.packages = [pkgs.base16-schemes];
 
   stylix = {
     enable = true;

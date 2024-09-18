@@ -3,7 +3,6 @@
 in {
   imports = [
     ../hardware/fermi.nix
-    ./common
 
     ./opt/aftix.nix
     ./opt/basicbackup.nix
