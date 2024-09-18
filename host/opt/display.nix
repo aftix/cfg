@@ -2,11 +2,12 @@
   pkgs,
   lib,
   config,
-  inputs,
   ...
 }: let
   inherit (lib) mkDefault mkOverride mkForce;
   inherit (lib.options) mkOption;
+
+  inherit (config.dep-inject) inputs;
   hyprlandPkg = config.programs.hyprland.package;
 in {
   options.my.greeterCfgExtra = mkOption {

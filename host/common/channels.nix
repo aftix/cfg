@@ -1,11 +1,12 @@
 {
   lib,
   config,
-  inputs,
   ...
 }: let
   inherit (lib.options) mkOption;
   inherit (lib.lists) optional;
+
+  inherit (config.dep-inject) inputs;
   cfg = config.my.channels;
 in {
   options.my.channels = {

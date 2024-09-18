@@ -2,13 +2,14 @@
   pkgs,
   lib,
   config,
-  inputs,
   ...
 }: let
   inherit (lib) mkIf mkOverride mkForce;
   inherit (lib.attrsets) filterAttrs;
   inherit (lib.options) mkOption;
   inherit (lib.strings) concatMapStrings concatLines;
+
+  inherit (config.dep-inject) inputs;
   inherit (config.services.freshrss) enable;
   cfg = config.my.www;
 in {

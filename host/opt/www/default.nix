@@ -2,10 +2,11 @@
   lib,
   config,
   pkgs,
-  inputs,
   ...
 }: let
   inherit (lib.options) mkOption;
+
+  inherit (config.dep-inject) inputs;
   cfg = config.my.www;
 in {
   imports = [

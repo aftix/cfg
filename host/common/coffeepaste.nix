@@ -2,11 +2,12 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit (lib) mkDefault;
   inherit (lib.options) mkOption mkEnableOption;
+
+  inherit (config.dep-inject) inputs;
   cfg = config.services.coffeepaste;
 
   configFile = (pkgs.formats.toml {}).generate "config.toml" {
