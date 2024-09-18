@@ -1,12 +1,12 @@
 {
   lib,
   config,
-  home-impermanence,
+  impermanence,
   ...
 }: let
   cfg = config.my.impermanence;
 in {
-  imports = [home-impermanence];
+  imports = [impermanence];
 
   options.my.impermanence = {
     enable = lib.mkOption {default = true;};

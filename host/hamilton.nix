@@ -8,7 +8,6 @@ in {
   imports = [
     ../hardware/hamilton.nix
     ../hardware/disko/hamilton.nix
-    ./common
 
     ./opt/aftix.nix
     ./opt/backup.nix
