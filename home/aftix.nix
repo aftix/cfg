@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (lib.strings) escapeShellArg;
+
   inherit (config.xdg) configHome dataHome;
 in {
   imports = [

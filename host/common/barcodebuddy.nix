@@ -2,12 +2,13 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit (lib) mkDefault mkIf;
   inherit (lib.options) mkOption mkEnableOption;
   inherit (lib.attrsets) filterAttrs;
+
+  inherit (config.dep-inject) inputs;
   cfg = config.services.barcodebuddy;
 in {
   options.services.barcodebuddy = {

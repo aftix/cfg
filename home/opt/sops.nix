@@ -1,11 +1,11 @@
 {
   config,
-  sops-nix,
+  sops,
   ...
 }: let
   keyFile = config.home.homeDirectory + "/.local/persist/.config/sops/age/keys.txt";
 in {
-  imports = [sops-nix];
+  imports = [sops];
 
   sops = {
     defaultSopsFile = ../secrets.yaml;
