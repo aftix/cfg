@@ -142,6 +142,34 @@ in {
             rmdir "$MNT"
           '';
         };
+
+        my-snapshot-cleanup = final.writeShellApplication {
+          name = "snapshotcleanup.bash";
+          runtimeInputs = with final; [util-linux mktemp findutils];
+          text = ''
+            shopt -s nullglob globstar
+
+            if [ "$(id -u)" != 0 ]; then
+              echo "Error: Must run ''${0} as root" >&2
+              exit 1
+            fi
+
+            function cleanup() {
+              [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
+              if [[ -d "$MNT" ]] ; then
+                umount "$MNT" || :
+                rmdir "$MNT"
+              fi
+            }
+            trap cleanup EXIT
+
+            NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
+            MNT="$(mktemp -d)"
+
+            mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT"
+            find "$MNT" -mindepth 1 -maxdepth 1 -type d -name "tmp.*" -execdir rm -rf '{}' '+'
+          '';
+        };
       })
     ];
 
@@ -172,6 +200,16 @@ in {
           wantedBy = ["timers.target"];
           timerConfig = {
             OnCalendar = cfg.snapshotOnCalendar;
+            Persistent = true;
+            RandomizedDelaySec = 600;
+          };
+        };
+
+        btrfs-cleanup = {
+          description = "Cleanup from btrfs-snapshots.timer";
+          wantedBy = ["timers.target"];
+          timerConfig = {
+            OnCalendar = "Mon,Wed,Fri *-*-* 00:00:00";
             Persistent = true;
             RandomizedDelaySec = 600;
           };
@@ -211,6 +249,16 @@ in {
             Type = "simple";
             RestartSec = "5min";
           };
+        };
+
+        btrfs-cleanup = {
+          description = "Cleanup any lingering temporary data from btrfs-snapshots.service";
+          after = ["btrfs-snapshots.service"];
+
+          script = ''
+            cd / || exit 1
+            ${pkgs.my-snapshot-cleanup}/bin/snapshotcleanup.bash >/var/log/snapshotcleanup 2>/var/log/snapshotcleanup.err
+          '';
         };
 
         backup = {
