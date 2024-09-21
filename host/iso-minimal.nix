@@ -10,7 +10,7 @@
 
   users.users.root.hashedPasswordFile = null;
 
-  boot.kernelPackages = lib.mkForce config.boot.zfs.package.latestCompatibleLinuxPackages;
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
 
   environment = {
     systemPackages = with pkgs; [
