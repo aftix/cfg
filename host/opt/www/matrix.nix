@@ -107,6 +107,14 @@ in {
         }
       '';
 
+    # These locale settings are expected to be set on the psql db by matrix-synapse
+    i18n = {
+      extraLocaleSettings = {
+        LC_CTYPE = "C.UTF-8";
+        LC_COLLATE = "C.UTF-8";
+      };
+    };
+
     # Overwrite module service configurations to allow for sops secrets
     systemd.services = {
       heisenbridge = let
@@ -210,14 +218,48 @@ in {
     };
 
     services = {
+      postgresql = {
+        enable = true;
+        ensureDatabases = [matrixUser];
+        ensureUsers = [
+          {
+            name = matrixUser;
+            ensureDBOwnership = true;
+            ensureClauses = {
+              createdb = true;
+              login = true;
+              replication = true;
+            };
+          }
+        ];
+        identMap = lib.mkForce ''
+          superuser_map root postgres
+          superuser_map postgres postgres
+          superuser_map /^(.*)$ \1
+        '';
+        authentication = lib.mkForce ''
+          #type database DBuser auth-method
+          local sameuser all peer map=superuser_map
+        '';
+        settings.unix_socket_directories = "/var/run/postgresql";
+      };
+
       matrix-synapse = {
         enable = assert wwwCfg.blog; assert cfg.ircBridge.enable -> cfg.enable; true;
         settings = {
           server_name = hostname;
           public_baseurl = "https://${hostname}/";
-          database.name = "sqlite3";
-          surpress_keyserver_warning = true;
-          withJemalloc = true;
+          suppress_key_server_warning = true;
+
+          database = {
+            name = "psycopg2";
+            allow_unsafe_locale = true; # matrix-synapse only accepts "C", not "C.UTF-8", but nixos only has "C.UTF-8"
+            args = {
+              user = matrixUser;
+              dbname = "matrix-synapse";
+              host = "/var/lib/postgresql";
+            };
+          };
 
           trusted_key_servers = [
             {
