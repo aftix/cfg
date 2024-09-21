@@ -33,7 +33,7 @@ in {
           just
         ]
         ++ optionals cfg.nix
-        [statix alejandra]
+        [statix alejandra nix-output-monitor nvd]
         ++ optionals cfg.rust
         [
           rustup

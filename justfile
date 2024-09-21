@@ -6,7 +6,7 @@ default:
     @just --list
 
 build host=hostname *FLAGS="":
-    @nix build ".#nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
+    @nom build ".#nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
 
 switch *FLAGS:
     @nh os switch {{FLAGS}}
@@ -32,7 +32,7 @@ rekey:
     @sops updatekeys -y home/secrets.yaml
 
 iso variant="minimal" arch=arch *FLAGS="":
-    @nix build ".#nixosConfigurations.iso-{{variant}}-{{arch}}-linux.config.system.build.isoImage" {{FLAGS}}
+    @nom build ".#nixosConfigurations.iso-{{variant}}-{{arch}}-linux.config.system.build.isoImage" {{FLAGS}}
 
 vm variant="minimal" arch=arch *FLAGS="":
     @just iso {{variant}} {{arch}}
