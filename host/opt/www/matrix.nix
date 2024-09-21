@@ -256,10 +256,10 @@ in {
             allow_unsafe_locale = true; # matrix-synapse only accepts "C", not "C.UTF-8", but nixos only has "C.UTF-8"
             args = {
               user = matrixUser;
-              dbname = "matrix-synapse";
-              host = "/var/lib/postgresql";
+              host = config.services.postgresql.settings.unix_socket_directories;
             };
           };
+          # database.name = "sqlite3";
 
           trusted_key_servers = [
             {
@@ -304,26 +304,14 @@ in {
           '';
         };
       in {
-        "/_matrix/" = {
+        "~ ^(/_matrix|/_synapse/client)" = {
           proxyPass = "http://127.0.0.1:${strPort}";
           extraConfig = ''
-            proxy_set_header Host $host;
-            proxy_set_header Access-Control-Allow-Origin *;
-            proxy_set_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
-            proxy_set_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
-            proxy_buffering on;
-            proxy_read_timeout 5m;
-          '';
-        };
-        "/_synapse/" = {
-          proxyPass = "http://127.0.0.1:${strPort}";
-          extraConfig = ''
-            proxy_set_header Host $host;
-            proxy_set_header Access-Control-Allow-Origin *;
-            proxy_set_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
-            proxy_set_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
-            proxy_buffering on;
-            proxy_read_timeout 5m;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            client_max_body_size 100M;
+            proxy_http_version 1.1;
           '';
         };
 
