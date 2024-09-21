@@ -15,7 +15,7 @@ in {
 
   users.users.root.hashedPasswordFile = null;
 
-  boot.kernelPackages = mkForce config.boot.zfs.package.latestCompatibleLinuxPackages;
+  boot.kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
   environment = {
     systemPackages = with pkgs; [
