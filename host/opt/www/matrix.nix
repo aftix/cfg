@@ -134,7 +134,7 @@ in {
       in
         lib.mkIf cfg.ircBridge.enable {
           description = "Matrix<->IRC bridge";
-          before = ["synapse.service"]; # So the registration file can be used by Conduit
+          before = ["matrix-synapse.service"]; # So the registration file can be used by Synapse
           wantedBy = ["multi-user.target"];
 
           preStart = ''
