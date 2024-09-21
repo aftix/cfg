@@ -152,7 +152,7 @@
       carapace =
         (prev.carapace.overrideAttrs {
           src = inputs.carapace;
-          vendorHash = "sha256-z2sxm+qxSCU60kJqI6Rg9KQRizqgJlZWjvb0zxwSL2o=";
+          vendorHash = "sha256-biJN+WjNK/Fjjd3+ihZcFCu75fup3g9R6lIa6qHco5I=";
         })
         .override {buildGoModule = final.buildGo123Module;};
     };
