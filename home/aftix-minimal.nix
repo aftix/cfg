@@ -13,6 +13,10 @@
   home = {
     username = "aftix";
     homeDirectory = "/home/aftix";
+    sessionVariables = rec {
+      TERM = "xterm";
+      TERMINAL = TERM;
+    };
     stateVersion = "23.11"; # DO NOT CHANGE
   };
 
