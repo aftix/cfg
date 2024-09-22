@@ -321,12 +321,8 @@ in {
               x_forwarded = true;
               resources = [
                 {
-                  compress = true;
-                  names = ["client"];
-                }
-                {
                   compress = false;
-                  names = ["federation"];
+                  names = ["federation" "client" "keys" "media" "static"];
                 }
               ];
             }
@@ -347,51 +343,67 @@ in {
         };
       };
 
-      nginx.virtualHosts.${hostname}.locations = let
-        mkEndpoint = data: {
-          extraConfig = ''
-            default_type application/json;
-            add_header Access-Control-Allow-Origin *;
-            add_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
-            add_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
-            return 200 '${builtins.toJSON data}';
-          '';
-        };
-        syncPort = builtins.toString cfg.slidingSyncPort;
-      in {
-        "~* ^(\\/_matrix\\/push)" = {
-          proxyPass = "http://127.0.0.1:${syncPort}";
-          extraConfig = ''
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-          '';
+      nginx = {
+        upstreams = {
+          matrix-synapse = {
+            servers."localhost:${strPort}" = {};
+            extraConfig = ''
+              zone synapse 64k;
+            '';
+          };
+          matrix-sliding-sync = {
+            servers."localhost:${builtins.toString cfg.slidingSyncPort}" = {};
+            extraConfig = ''
+              zone sliding_sync 64k;
+            '';
+          };
         };
 
-        "~ ^/(client/|_matrix/client/unstable/org.matrix.msc3575/sync)" = {
-          proxyPass = "http://127.0.0.1:${syncPort}";
-          extraConfig = ''
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-          '';
-        };
+        virtualHosts.${hostname}.locations = let
+          mkEndpoint = data: {
+            extraConfig = ''
+              default_type application/json;
+              add_header Access-Control-Allow-Origin *;
+              add_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
+              add_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
+              return 200 '${builtins.toJSON data}';
+            '';
+          };
+        in {
+          "~* ^(\\/_matrix\\/push)" = {
+            proxyPass = "http://matrix-sliding-sync";
+            extraConfig = ''
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+            '';
+          };
 
-        "~* ^(\\/_matrix|\\/_synapse\\/client)" = {
-          proxyPass = "http://127.0.0.1:${strPort}";
-          extraConfig = ''
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+          "~ ^/(client/|_matrix/client/unstable/org.matrix.msc3575/sync)" = {
+            proxyPass = "http://matrix-sliding-sync";
+            extraConfig = ''
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+            '';
+          };
 
-            client_max_body_size 100M;
-            proxy_http_version 1.1;
-          '';
-        };
+          "~* ^(\\/_matrix|\\/_synapse\\/client)" = {
+            proxyPass = "http://matrix-synapse";
+            extraConfig = ''
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
 
-        "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
-        "/.well-known/matrix/client" = mkEndpoint {
-          "m.homeserver".base_url = "https://${hostname}";
-          "org.matrix.msc3575.proxy".url = "https://${hostname}";
+              client_max_body_size 100M;
+              proxy_http_version 1.1;
+            '';
+          };
+
+          "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
+          "/.well-known/matrix/client" = mkEndpoint {
+            "m.homeserver".base_url = "https://${hostname}";
+            "org.matrix.msc3575.proxy".url = "https://${hostname}";
+          };
+          "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
         };
-        "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
       };
     };
 

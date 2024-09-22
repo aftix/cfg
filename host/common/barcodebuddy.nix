@@ -174,6 +174,13 @@ in {
 
       nginx = {
         enable = true;
+
+        upstreams.barcodebuddy = {
+          servers."unix:${config.services.phpfpm.pools.barcodebuddy.socket}" = {};
+          extraConfig = ''
+            keepalive 8;
+          '';
+        };
         virtualHosts.${cfg.hostName} = {
           root = pkgs.barcodebuddy;
           serverName = mkDefault "${cfg.hostName} www.${cfg.hostName}";
@@ -210,7 +217,8 @@ in {
               fastcgi_param BBUDDY_DATABASE_PATH '${cfg.dataDir}/barcodebuddy.db';
               fastcgi_param BBUDDY_AUTHDB_PATH '${cfg.dataDir}/auth.db';
               fastcgi_param BBUDDY_HIDE_LINK_SCREEN 'true';
-              fastcgi_pass unix:${config.services.phpfpm.pools.barcodebuddy.socket};
+              fastcgi_keep_conn on;
+              fastcgi_pass barcodebuddy;
             '';
           };
         };
