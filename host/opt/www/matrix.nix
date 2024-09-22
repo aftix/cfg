@@ -298,6 +298,8 @@ in {
             args = {
               user = matrixUser;
               host = config.services.postgresql.settings.unix_socket_directories;
+              cp_min = 5;
+              cp_max = 10;
             };
           };
           # database.name = "sqlite3";
