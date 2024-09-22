@@ -33,13 +33,14 @@ in {
         virtualHosts.${cfg.hostname} = {
           locations = assert config.services.coffeepaste.enable -> cfg.blog; {
             "/${cfg.coffeepasteLocation}/" = {
-              proxyPass = "http://coffeepaste";
+              proxyPass = "http://coffeepaste/";
               extraConfig = ''
                 if ($request_method = PUT) {
                   return ${builtins.toString cfg.putRequestCode};
                 }
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
               '';
             };
 
@@ -47,8 +48,10 @@ in {
               proxyPass = "http://coffeepaste";
               extraConfig = ''
                 limit_req zone=put_request_by_addr burst=10;
+                proxy_pass_request_headers on;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
               '';
             };
           };

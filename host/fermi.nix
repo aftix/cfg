@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  lib,
+  config,
+  ...
+}: let
   inherit (lib) mkForce;
 in {
   imports = [
@@ -82,7 +86,10 @@ in {
 
   services = {
     openssh.settings.AllowUsers = ["aftix"];
-    coffeepaste.enable = true;
+    coffeepaste = {
+      enable = true;
+      url = "https://${config.my.www.hostname}/${config.my.www.coffeepasteLocation}";
+    };
     freshrss.enable = true;
     barcodebuddy.enable = true;
   };
