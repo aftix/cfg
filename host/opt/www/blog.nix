@@ -29,6 +29,7 @@ in {
       forceSSL = true;
       useACMEHost = cfg.hostname;
       extraConfig = ''
+        error_page ${builtins.toString cfg.putRequestCode} = @putrequest;
         include /etc/nginx/bots.d/blockbots.conf;
         include /etc/nginx/bots.d/ddos.conf;
       '';

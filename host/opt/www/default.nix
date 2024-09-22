@@ -60,6 +60,11 @@ in {
       default = [];
       type = lib.types.listOf lib.types.str;
     };
+
+    putRequestCode = mkOption {
+      default = 599;
+      type = lib.types.ints.positive;
+    };
   };
 
   config = {
