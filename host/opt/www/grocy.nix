@@ -179,41 +179,51 @@ in {
         };
       };
 
-      nginx.virtualHosts."${cfg.subdomain}.${wwwCfg.hostname}" = {
-        root = "${pkgs.grocy}/public";
-        serverName = "${cfg.subdomain}.${wwwCfg.hostname} www.${cfg.subdomain}.${wwwCfg.hostname}";
-        kTLS = true;
-        forceSSL = true;
-        useACMEHost = wwwCfg.hostname;
+      nginx = {
+        upstreams.grocy = {
+          servers."unix:${config.services.phpfpm.pools.grocy.socket}" = {};
+          extraConfig = ''
+            keepalive 8;
+          '';
+        };
 
-        extraConfig = ''
-          try_files $uri /index.php;
-          include /etc/nginx/bots.d/blockbots.conf;
-          include /etc/nginx/bots.d/ddos.conf;
-        '';
+        virtualHosts."${cfg.subdomain}.${wwwCfg.hostname}" = {
+          root = "${pkgs.grocy}/public";
+          serverName = "${cfg.subdomain}.${wwwCfg.hostname} www.${cfg.subdomain}.${wwwCfg.hostname}";
+          kTLS = true;
+          forceSSL = true;
+          useACMEHost = wwwCfg.hostname;
 
-        locations = {
-          "/".extraConfig = ''
-            rewrite ^ /index.php;
+          extraConfig = ''
+            try_files $uri /index.php;
+            include /etc/nginx/bots.d/blockbots.conf;
+            include /etc/nginx/bots.d/ddos.conf;
           '';
 
-          "~ \\.php$".extraConfig = ''
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            fastcgi_pass unix:${config.services.phpfpm.pools.grocy.socket};
-            include ${config.services.nginx.package}/conf/fastcgi.conf;
-            include ${config.services.nginx.package}/conf/fastcgi_params;
-          '';
+          locations = {
+            "/".extraConfig = ''
+              rewrite ^ /index.php;
+            '';
 
-          "~ \\.(js|css|ttf|woff2?|png|jpe?g|svg)$".extraConfig = ''
-            add_header Cache-Control "public, max-age=15778463";
-            add_header X-Content-Type-Options nosniff;
-            add_header X-XSS-Protection "1; mode=block";
-            add_header X-Robots-Tag none;
-            add_header X-Download-Options noopen;
-            add_header X-Permitted-Cross-Domain-Policies none;
-            add_header Referrer-Policy no-referrer;
-            access_log off;
-          '';
+            "~ \\.php$".extraConfig = ''
+              fastcgi_split_path_info ^(.+\.php)(/.+)$;
+              fastcgi_pass grocy;
+              fastcgi_keep_conn on;
+              include ${config.services.nginx.package}/conf/fastcgi.conf;
+              include ${config.services.nginx.package}/conf/fastcgi_params;
+            '';
+
+            "~ \\.(js|css|ttf|woff2?|png|jpe?g|svg)$".extraConfig = ''
+              add_header Cache-Control "public, max-age=15778463";
+              add_header X-Content-Type-Options nosniff;
+              add_header X-XSS-Protection "1; mode=block";
+              add_header X-Robots-Tag none;
+              add_header X-Download-Options noopen;
+              add_header X-Permitted-Cross-Domain-Policies none;
+              add_header Referrer-Policy no-referrer;
+              access_log off;
+            '';
+          };
         };
       };
     };

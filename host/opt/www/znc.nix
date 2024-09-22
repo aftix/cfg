@@ -126,24 +126,34 @@ in {
     };
 
     services = {
-      nginx.virtualHosts."${subdomain}.${hostname}" = {
-        serverName = "${subdomain}.${hostname} www.${subdomain}.${hostname}";
-        kTLS = true;
-        forceSSL = true;
-        useACMEHost = hostname;
-
-        locations."/" = {
-          proxyPass = "http://[::1]:7000/";
+      nginx = {
+        upstreams.znc = {
+          servers."[::1]:7000" = {};
           extraConfig = ''
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            zone znc 64k;
+            keepalive 8;
           '';
         };
 
-        extraConfig = ''
-          include /etc/nginx/bots.d/blockbots.conf;
-          include /etc/nginx/bots.d/ddos.conf;
-        '';
+        virtualHosts."${subdomain}.${hostname}" = {
+          serverName = "${subdomain}.${hostname} www.${subdomain}.${hostname}";
+          kTLS = true;
+          forceSSL = true;
+          useACMEHost = hostname;
+
+          locations."/" = {
+            proxyPass = "http://znc";
+            extraConfig = ''
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            '';
+          };
+
+          extraConfig = ''
+            include /etc/nginx/bots.d/blockbots.conf;
+            include /etc/nginx/bots.d/ddos.conf;
+          '';
+        };
       };
 
       znc = {
