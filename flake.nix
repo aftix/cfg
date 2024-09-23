@@ -155,6 +155,16 @@
           vendorHash = "sha256-biJN+WjNK/Fjjd3+ihZcFCu75fup3g9R6lIa6qHco5I=";
         })
         .override {buildGoModule = final.buildGo123Module;};
+
+      heisenbridge = prev.heisenbridge.overridePythonAttrs (oldAttrs: rec {
+        version = "1.15.0";
+        src = final.fetchFromGitHub {
+          owner = "hifi";
+          repo = oldAttrs.pname;
+          rev = "refs/tags/v${version}";
+          sha256 = "sha256-4K6Sffu/yKHkcoNENbgpci2dbJVAH3vVkogcw/IYpnw=";
+        };
+      });
     };
 
     getModules = atPath: let
@@ -399,7 +409,7 @@
         pkgs = nixpkgs.legacyPackages.${sys};
         appliedOverlay = self.overlays.default pkgs pkgs;
       in {
-        inherit (appliedOverlay) carapace stty;
+        inherit (appliedOverlay) carapace stty heisenbridge;
       };
     });
 }
