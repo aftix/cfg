@@ -402,9 +402,7 @@
       formatter = let
         pkgs = nixpkgs.legacyPackages.${sys};
       in
-        if pkgs ? alejandra
-        then pkgs.alejandra
-        else pkgs.nix-fmt;
+        pkgs.alejandra or pkgs.nix-fmt;
 
       checks = nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy);
 
