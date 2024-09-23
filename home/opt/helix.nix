@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (lib) mkOverride;
+  inherit (config.dep-inject) inputs;
 in {
   home = {
     packages = with pkgs; [
@@ -21,18 +22,10 @@ in {
     };
   };
 
-  my.shell.aliases = [
-    {
-      name = "helix";
-      command = "${pkgs.helix}/bin/hx";
-      completer = "hx";
-    }
-  ];
-
   programs.helix = {
     enable = true;
     defaultEditor = true;
-    languages = builtins.fromTOML (builtins.readFile ./_external/helix/languages.toml);
+    languages = mkOverride 900 {};
     settings = {
       theme = "stylix";
 
@@ -90,7 +83,10 @@ in {
     };
   };
 
-  xdg.mimeApps.defaultApplications = config.my.lib.registerMimes [
+  xdg = {
+    configFile."helix/languages.toml".source = "${inputs.helix}/languages.toml";
+
+    mimeApps.defaultApplications = config.my.lib.registerMimes [
     {
       application = "Helix";
       mimetypes = [
@@ -131,4 +127,5 @@ in {
       ];
     }
   ];
+  };
 }

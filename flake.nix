@@ -104,6 +104,8 @@
       flake = false;
     };
 
+    helix.url = "github:helix-editor/helix";
+
     hostsBlacklist = {
       url = "github:Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist";
       flake = false;
@@ -195,6 +197,7 @@
       nixpkgs = {
         overlays = [
           nur.overlay
+          inputs.helix.overlays.default
           overlay
         ];
         config = {
@@ -408,8 +411,10 @@
       packages = let
         pkgs = nixpkgs.legacyPackages.${sys};
         appliedOverlay = self.overlays.default pkgs pkgs;
+        helixOverlay = inputs.helix.overlays.default pkgs pkgs;
       in {
         inherit (appliedOverlay) carapace stty heisenbridge;
+        inherit (helixOverlay) helix;
       };
     });
 }
