@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (lib.options) mkOption mkEnableOption;
+  inherit (lib.attrsets) optionalAttrs;
   inherit (lib.lists) optional optionals;
 
   cfg = config.my.matrix;
@@ -153,7 +154,7 @@ in {
           rate_limited = false;
           sender_localpart = "heisenbridge";
           inherit (cfg.ircBridge) namespaces;
-          media_url = "https://${wwwCfg.hostname}";
+          heisenbridge.media_url = "https://${wwwCfg.hostname}";
         });
       in
         lib.mkIf cfg.ircBridge.enable {
@@ -344,20 +345,31 @@ in {
       };
 
       nginx = {
-        upstreams = {
-          matrix-synapse = {
-            servers."localhost:${strPort}" = {};
-            extraConfig = ''
-              zone synapse 64k;
-            '';
+        upstreams =
+          {
+            matrix-synapse = {
+              servers."localhost:${strPort}" = {};
+              extraConfig = ''
+                zone synapse 64k;
+                keepalive 8;
+              '';
+            };
+            matrix-sliding-sync = {
+              servers."localhost:${builtins.toString cfg.slidingSyncPort}" = {};
+              extraConfig = ''
+                zone sliding_sync 64k;
+                keepalive 8;
+              '';
+            };
+          }
+          // optionalAttrs cfg.ircBridge.enable {
+            heisenbridge = {
+              servers."localhost:${builtins.toString cfg.ircBridge.port}" = {};
+              extraConfig = ''
+                keepalive 8;
+              '';
+            };
           };
-          matrix-sliding-sync = {
-            servers."localhost:${builtins.toString cfg.slidingSyncPort}" = {};
-            extraConfig = ''
-              zone sliding_sync 64k;
-            '';
-          };
-        };
 
         virtualHosts.${hostname}.locations = let
           mkEndpoint = data: {
@@ -369,41 +381,50 @@ in {
               return 200 '${builtins.toJSON data}';
             '';
           };
-        in {
-          "~* ^(\\/_matrix\\/push)" = {
-            proxyPass = "http://matrix-sliding-sync";
-            extraConfig = ''
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
-          };
+        in
+          {
+            "~* ^(\\/_matrix\\/push)" = {
+              proxyPass = "http://matrix-sliding-sync";
+              extraConfig = ''
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+              '';
+            };
 
-          "~ ^/(client/|_matrix/client/unstable/org.matrix.msc3575/sync)" = {
-            proxyPass = "http://matrix-sliding-sync";
-            extraConfig = ''
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
-          };
+            "~ ^/(client/|_matrix/client/unstable/org.matrix.msc3575/sync)" = {
+              proxyPass = "http://matrix-sliding-sync";
+              extraConfig = ''
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+              '';
+            };
 
-          "~* ^(\\/_matrix|\\/_synapse\\/client)" = {
-            proxyPass = "http://matrix-synapse";
-            extraConfig = ''
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
+            "~* ^(\\/_matrix|\\/_synapse\\/client)" = {
+              proxyPass = "http://matrix-synapse";
+              extraConfig = ''
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
 
-              client_max_body_size 100M;
-              proxy_http_version 1.1;
-            '';
-          };
+                client_max_body_size 100M;
+              '';
+            };
 
-          "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
-          "/.well-known/matrix/client" = mkEndpoint {
-            "m.homeserver".base_url = "https://${hostname}";
-            "org.matrix.msc3575.proxy".url = "https://${hostname}";
+            "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
+            "/.well-known/matrix/client" = mkEndpoint {
+              "m.homeserver".base_url = "https://${hostname}";
+              "org.matrix.msc3575.proxy".url = "https://${hostname}";
+            };
+            "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
+          }
+          // optionalAttrs cfg.ircBridge.enable {
+            "/_heisenbridge/media/" = {
+              proxyPass = "http://heisenbridge";
+              extraConfig = ''
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+              '';
+            };
           };
-          "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
-        };
       };
     };
 
