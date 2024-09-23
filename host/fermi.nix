@@ -10,7 +10,6 @@ in {
 
     ./opt/aftix.nix
     ./opt/basicbackup.nix
-    ./opt/clamav.nix
     ./opt/docker.nix
     ./opt/openssh.nix
     ./opt/www
