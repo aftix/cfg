@@ -316,7 +316,7 @@ in {
           listeners = [
             {
               bind_addresses = ["127.0.0.1"];
-              port = cfg.port;
+              inherit (cfg) port;
               tls = false;
               type = "http";
               x_forwarded = true;
