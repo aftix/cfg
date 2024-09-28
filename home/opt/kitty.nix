@@ -528,10 +528,10 @@ in {
 
       kitty_mod = settings.kittyMod.value;
       shell = lib.mkDefault (
-        if config.my.shell.elvish.enable
-        then "${pkgs.elvish}/bin/elvish"
-        else if config.my.shell.nushell.enable
+        if config.my.shell.nushell.enable
         then "${pkgs.nushell}/bin/nu"
+        else if config.my.shell.elvish.enable
+        then "${pkgs.elvish}/bin/elvish"
         else "${pkgs.zsh}/bin/zsh"
       );
       allow_remote_control = true;
