@@ -19,7 +19,8 @@ alias core-cd = cd
 
 
 # Remove everything above current position on jump stack and cd, pushing new directory to jump stack
-export def --env jump_to [to: string] {
+export def --env jump_to [to?: string] {
+  let to = if $to == null { "~" } else { $to }
   let to = ($to | path expand)
   core-cd $to
 
@@ -321,4 +322,4 @@ export def --env jump_init [] {
 }
 
 # replace core cd
-export def --env cd [to: string] { jump_to $to }
+export def --env cd [to?: string] { jump_to $to }
