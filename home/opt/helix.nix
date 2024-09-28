@@ -5,7 +5,19 @@
   ...
 }: let
   inherit (lib) mkOverride;
+  inherit (lib.lists) optionals;
   inherit (config.dep-inject) inputs;
+
+  devCfg =
+    config.my.devlopment
+    or {
+      nix = true;
+      rust = true;
+      go = true;
+      cpp = true;
+      typescript = true;
+      gh = true;
+    };
 
   helixLanguages = let
     inherit (lib.strings) escapeShellArg;
@@ -28,14 +40,14 @@
     '';
 in {
   home = {
-    packages = with pkgs; [
-      nil
-      alejandra
-      markdown-oxide
-      gopls
-      bash-language-server
-      nodePackages_latest.typescript-language-server
-    ];
+    packages = with pkgs;
+      [
+        markdown-oxide
+        bash-language-server
+        nodePackages_latest.typescript-language-server
+      ]
+      ++ (optionals devCfg.nix [nil alejandra])
+      ++ (optionals devCfg.go [gopls]);
 
     sessionVariables = {
       EDITOR = mkOverride 900 "${pkgs.helix}/bin/hx";
