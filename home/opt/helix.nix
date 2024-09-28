@@ -6,10 +6,31 @@
 }: let
   inherit (lib) mkOverride;
   inherit (config.dep-inject) inputs;
+
+  helixLanguages = let
+    inherit (lib.strings) escapeShellArg;
+    selectNix = ".language[] | select(.name == \"nix\")";
+    addAutoFormat = escapeShellArg "(${selectNix}).\"auto-format\" |= true";
+    addAlejandra = escapeShellArg "(${selectNix}).\"formatter\" |= {\"command\": \"alejandra\"}";
+  in
+    pkgs.runCommandLocal "helix-languages" {}
+    /*
+    bash
+    */
+    ''
+      PATH=${pkgs.yq}/bin:"$PATH"
+
+      TMP="$(${pkgs.mktemp}/bin/mktemp)"
+
+      tomlq -t ${addAutoFormat} "${inputs.helix}/languages.toml" > "$TMP"
+      tomlq -t ${addAlejandra} "$TMP" > $out
+      rm "$TMP"
+    '';
 in {
   home = {
     packages = with pkgs; [
       nil
+      alejandra
       markdown-oxide
       gopls
       bash-language-server
@@ -84,48 +105,48 @@ in {
   };
 
   xdg = {
-    configFile."helix/languages.toml".source = "${inputs.helix}/languages.toml";
+    configFile."helix/languages.toml".source = "${helixLanguages}";
 
     mimeApps.defaultApplications = config.my.lib.registerMimes [
-    {
-      application = "Helix";
-      mimetypes = [
-        "text/plain"
-        "text/csv"
-        "text/tab-separated-values"
-        "text/markdown"
-        "text/html"
-        "text/xml"
-        "text/css"
-        "text/javascript"
-        "text/ecmascript"
-        "text/rust"
-        "text/x-go"
-        "text/x-c"
-        "text/x-h"
-        "text/x-shellscript"
-        "text/x-script.csh"
-        "text/x-script.ksh"
-        "text/x-script.lisp"
-        "text/x-script.elisp"
-        "text/x-script.scheme"
-        "text/x-script.perl"
-        "text/x-script.python"
-        "text/x-script.zsh"
-        "text/x-asm"
-        "text/x-fortran"
-        "text/x-java-source"
-        "text/x-latex"
-        "text/x-m"
-        "text/x-pascal"
-        "application/x-httpd-php"
-        "application/xhtml+xml"
-        "application/atom+xml"
-        "application/xml"
-        "application/x-csh"
-        "application/json"
-      ];
-    }
-  ];
+      {
+        application = "Helix";
+        mimetypes = [
+          "text/plain"
+          "text/csv"
+          "text/tab-separated-values"
+          "text/markdown"
+          "text/html"
+          "text/xml"
+          "text/css"
+          "text/javascript"
+          "text/ecmascript"
+          "text/rust"
+          "text/x-go"
+          "text/x-c"
+          "text/x-h"
+          "text/x-shellscript"
+          "text/x-script.csh"
+          "text/x-script.ksh"
+          "text/x-script.lisp"
+          "text/x-script.elisp"
+          "text/x-script.scheme"
+          "text/x-script.perl"
+          "text/x-script.python"
+          "text/x-script.zsh"
+          "text/x-asm"
+          "text/x-fortran"
+          "text/x-java-source"
+          "text/x-latex"
+          "text/x-m"
+          "text/x-pascal"
+          "application/x-httpd-php"
+          "application/xhtml+xml"
+          "application/atom+xml"
+          "application/xml"
+          "application/x-csh"
+          "application/json"
+        ];
+      }
+    ];
   };
 }
