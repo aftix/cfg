@@ -124,6 +124,49 @@ in {
         description = "enable edit:before-readline hook that updates the command history";
       };
     };
+
+    nushell = {
+      enable = mkOption {
+        default = true;
+        type = with lib.types; uniq bool;
+      };
+
+      plugins = mkOption {
+        default = with pkgs.nushellPlugins; [net query gstat polars formats];
+        description = "list of nushell plugin packages to install";
+        type = with lib.types; listOf package;
+      };
+
+      extraMods = mkOption {
+        default = [];
+        description = ''
+          A list of extra modules to include in $XDG_CONFIG_HOME/nushell
+          Each element is a set with the following keys:
+            name: name of the module, can include "/". e.g, "completions/nix" would make a file
+              in $XDG_CONFIG_HOME/nushell/completions named nix.elv
+            source: source file of the module
+            enable: true if the module should be used in config.nu, defaults to true
+          Aliases are created after modules are loaded
+        '';
+      };
+
+      extraCommands = mkOption {
+        default = [];
+        description = ''
+          A list of extra commands to include in nushell/config.nu. The functions will be placed after
+          any use statements for `my.shell.nushell.extraMods` and after aliases. Each element is a set:
+          { name, arguments, body }. Arguments is optional, but if present will be put between [] automatically.
+          Nothing will be quoted.
+
+          The set may also contain a 'docs' attribute to change what is rendered in the <host>-elvish.7 man page
+        '';
+      };
+
+      extraConfig = mkOption {
+        default = "";
+        description = "Newline delimited string that will be inserted verbatim at the end of config.nu";
+      };
+    };
   };
 
   config = {

@@ -527,7 +527,13 @@ in {
       bold_italic_font = "auto";
 
       kitty_mod = settings.kittyMod.value;
-      shell = lib.mkDefault "${pkgs.elvish}/bin/elvish";
+      shell = lib.mkDefault (
+        if config.my.shell.elvish.enable
+        then "${pkgs.elvish}/bin/elvish"
+        else if config.my.shell.nushell.enable
+        then "${pkgs.nushell}/bin/nu"
+        else "${pkgs.zsh}/bin/zsh"
+      );
       allow_remote_control = true;
 
       cursor_shape = "block";
