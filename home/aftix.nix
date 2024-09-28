@@ -102,7 +102,10 @@ in {
   ];
 
   my = {
-    shell.elvish.enable = true;
+    shell = {
+      elvish.enable = true;
+      nushell.enable = true;
+    };
     docs = {
       enable = true;
       prefix = "hamilton";
