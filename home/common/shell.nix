@@ -170,7 +170,7 @@ in {
   };
 
   config = {
-    home.packages = with pkgs; [stty];
+    home.packages = with pkgs; [coreutils-full];
 
     programs = {
       carapace.enable = true;
