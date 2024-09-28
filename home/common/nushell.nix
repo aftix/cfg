@@ -80,6 +80,19 @@ in {
             ''
           else base;
 
+        addPlugins = concatLines (builtins.map (
+            pkg:
+            /*
+            nushell
+            */
+            ''
+              try {
+                plugin add ${lib.meta.getExe pkg}
+              }
+            ''
+          )
+          cfg.plugins);
+
         fixGpg =
           optionalString shellCfg.gpgTtyFix
           /*
@@ -197,6 +210,13 @@ in {
           $env.config = {
             show_banner: false
             rm: {always_trash: true}
+            history: {file_format: sqlite}
+            completions: {algorithm: fuzzy}
+            use_kitty_protocol: ${
+            if config.programs.kitty.enable
+            then "true"
+            else "false"
+          }
           }
 
           # Setup the PATH environmental variable
@@ -212,6 +232,9 @@ in {
 
           # Add home.sessionVariables to nushell environment
           ${setEnvVars config.home.sessionVariables}
+
+          # Add plugins to registry
+          ${addPlugins}
 
           ${fixGpg}
           ${fixXterm}

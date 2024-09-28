@@ -132,7 +132,7 @@ in {
       };
 
       plugins = mkOption {
-        default = with pkgs.nushellPlugins; [net query gstat polars formats];
+        default = with pkgs.nushellPlugins; [query gstat polars formats];
         description = "list of nushell plugin packages to install";
         type = with lib.types; listOf package;
       };
