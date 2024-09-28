@@ -23,6 +23,7 @@
     inherit (lib.strings) escapeShellArg;
     mkSelector = name: ".language[] | select(.name == \"${name}\")";
     selectNix = mkSelector "nix";
+    selectNu = mkSelector "nu";
 
     doFilter = selector: field: value: let
       filter = escapeShellArg "(${selector}).\"${field}\" |= ${value}";
@@ -51,6 +52,7 @@
       TMP="$(${pkgs.mktemp}/bin/mktemp)"
       cat "${inputs.helix}/languages.toml" > "$TMP"
       ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
+      ${addAutoFormatter "{\"command\": \"nufmt\"}" selectNu}
       cat "$TMP" > $out
       rm "$TMP"
     '';
@@ -62,6 +64,7 @@ in {
         bash-language-server
         nodePackages_latest.typescript-language-server
       ]
+      ++ (optionals config.my.shell.nushell.enable [nufmt])
       ++ (optionals devCfg.nix [nil alejandra])
       ++ (optionals devCfg.go [gopls]);
 

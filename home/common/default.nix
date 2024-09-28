@@ -15,6 +15,7 @@ in {
     ./documentation.nix
     ./elvish.nix
     ./gnupg.nix
+    ./nushell.nix
     ./python.nix
     ./shell.nix
     ./tldr.nix
