@@ -19,28 +19,10 @@
       gh = true;
     };
 
-  nufmtWrapped = pkgs.writeShellApplication {
-    name = "nufmt-wrapped";
-    runtimeInputs = with pkgs; [nufmt mktemp];
-    text =
-      /*
-      bash
-      */
-      ''
-        shopt -s nullglob globstar
-        TMP="$(mktemp)"
-        cat > "$TMP"
-        nufmt "$TMP"
-        cat "$TMP"
-        rm "$TMP"
-      '';
-  };
-
   helixLanguages = let
     inherit (lib.strings) escapeShellArg;
     mkSelector = name: ".language[] | select(.name == \"${name}\")";
     selectNix = mkSelector "nix";
-    selectNu = mkSelector "nu";
 
     doFilter = selector: field: value: let
       filter = escapeShellArg "(${selector}).\"${field}\" |= ${value}";
@@ -69,7 +51,6 @@
       TMP="$(${pkgs.mktemp}/bin/mktemp)"
       cat "${inputs.helix}/languages.toml" > "$TMP"
       ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
-      ${addAutoFormatter "{\"command\": \"${nufmtWrapped}/bin/nufmt-wrapped\"}" selectNu}
       cat "$TMP" > $out
       rm "$TMP"
     '';
