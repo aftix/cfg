@@ -21,9 +21,25 @@
 
   helixLanguages = let
     inherit (lib.strings) escapeShellArg;
-    selectNix = ".language[] | select(.name == \"nix\")";
-    addAutoFormat = escapeShellArg "(${selectNix}).\"auto-format\" |= true";
-    addAlejandra = escapeShellArg "(${selectNix}).\"formatter\" |= {\"command\": \"alejandra\"}";
+    mkSelector = name: ".language[] | select(.name == \"${name}\")";
+    selectNix = mkSelector "nix";
+
+    doFilter = selector: field: value: let
+      filter = escapeShellArg "(${selector}).\"${field}\" |= ${value}";
+    in
+      /*
+      bash
+      */
+      ''
+        CTMP="$(${pkgs.mktemp}/bin/mktemp)"
+        tomlq -t ${filter} "$TMP" > "$CTMP"
+        rm -f "$TMP"
+        TMP="$CTMP"
+      '';
+    addAutoFormatter = formatter: selector: ''
+      ${doFilter selector "auto-format" "true"}
+      ${doFilter selector "formatter" formatter}
+    '';
   in
     pkgs.runCommandLocal "helix-languages" {}
     /*
@@ -33,9 +49,9 @@
       PATH=${pkgs.yq}/bin:"$PATH"
 
       TMP="$(${pkgs.mktemp}/bin/mktemp)"
-
-      tomlq -t ${addAutoFormat} "${inputs.helix}/languages.toml" > "$TMP"
-      tomlq -t ${addAlejandra} "$TMP" > $out
+      cat "${inputs.helix}/languages.toml" > "$TMP"
+      ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
+      cat "$TMP" > $out
       rm "$TMP"
     '';
 in {
