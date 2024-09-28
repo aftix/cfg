@@ -335,9 +335,14 @@ in {
 
           ${starshipInit}
 
+          use jump.nu *
+          jump_init
+
           # Extra config
           ${cfg.extraConfig}
         '';
+
+      "nushell/jump.nu".source = ./_external.nushell/jump.nu;
     }
     // mergeAttrsList (builtins.map ({
         name,
