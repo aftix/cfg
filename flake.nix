@@ -134,21 +134,6 @@
     system = "x86_64-linux";
 
     overlay = final: prev: {
-      coreutils-full = prev.uutils-coreutils-noprefix;
-
-      stty = prev.writeShellApplication {
-        name = "stty";
-
-        runtimeInputs =
-          if prev.lib.strings.hasSuffix "-linux" prev.system
-          then [final.busybox]
-          else [prev.coreutils];
-
-        text = ''
-          stty "$@"
-        '';
-      };
-
       inherit (stablepkgs.legacyPackages.${final.system}) znc freshrss fail2ban transmission_4 hyprpaper xdg-desktop-portal-hyprland;
 
       carapace =
@@ -411,7 +396,7 @@
         appliedOverlay = self.overlays.default pkgs pkgs;
         helixOverlay = inputs.helix.overlays.default pkgs pkgs;
       in {
-        inherit (appliedOverlay) carapace stty heisenbridge;
+        inherit (appliedOverlay) carapace heisenbridge;
         inherit (helixOverlay) helix;
       };
     });
