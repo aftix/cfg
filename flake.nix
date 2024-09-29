@@ -381,8 +381,9 @@
           carapace
           heisenbridge
           nu_plugin_audio_hook
-          nu_plugin_dbus
           nu_plugin_compress
+          nu_plugin_dbus
+          nu_plugin_desktop_notifications
           ;
 
         inherit (helixOverlay) helix;
