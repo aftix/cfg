@@ -19,4 +19,5 @@ inputs: final: prev: {
   });
 
   nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};
+  nu_plugin_dbus = final.callPackage ./packages/nu_plugin_dbus.nix {};
 }
