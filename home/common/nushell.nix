@@ -31,6 +31,25 @@ in {
               else docs;
           })
           (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.extraCommands));
+        Plugins = mergeTagged (builtins.map (pkg: {
+            tag = "${lib.strings.getName pkg} (${lib.strings.getVersion pkg})";
+            content = let
+              desc =
+                pkg.meta.description or "No description available.";
+              homepage = pkg.meta.homepage or "No homepage available.";
+              license =
+                if pkg.meta ? license
+                then "${pkg.meta.license.fullName or pkg.meta.license.shortName} (${pkg.meta.license.url or "no url available"})"
+                else "No license available";
+            in ''
+              Description: ${desc}
+
+              Homepage: ${homepage}
+
+              License: ${license}
+            '';
+          })
+          cfg.plugins);
       }
       // optionalAttrs shellCfg.development {
         Aliases = mergeTagged [
