@@ -384,6 +384,7 @@
           nu_plugin_compress
           nu_plugin_dbus
           nu_plugin_desktop_notifications
+          nu_plugin_dns
           ;
 
         inherit (helixOverlay) helix;
