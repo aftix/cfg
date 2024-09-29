@@ -17,4 +17,6 @@ inputs: final: prev: {
       sha256 = "sha256-4K6Sffu/yKHkcoNENbgpci2dbJVAH3vVkogcw/IYpnw=";
     };
   });
+
+  nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};
 }
