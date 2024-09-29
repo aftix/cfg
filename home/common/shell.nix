@@ -268,7 +268,7 @@ in {
           }
           {
             name = "dfx";
-            command = "df -x tmpfs,fuse -h";
+            command = "df -x tmpfs -x fuse -h";
             external = true;
           }
 
