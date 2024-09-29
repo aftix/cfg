@@ -387,6 +387,7 @@
           nu_plugin_dns
           nu_plugin_endecode
           nu_plugin_explore
+          nu_plugin_strutils
           ;
 
         inherit (helixOverlay) helix;
