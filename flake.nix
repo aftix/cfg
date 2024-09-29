@@ -389,6 +389,7 @@
           nu_plugin_explore
           nu_plugin_strutils
           nu_plugin_port_scan
+          nu_plugin_port_list
           ;
 
         inherit (helixOverlay) helix;
