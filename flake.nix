@@ -376,7 +376,7 @@
         appliedOverlay = self.overlays.default pkgs pkgs;
         helixOverlay = inputs.helix.overlays.default pkgs pkgs;
       in {
-        inherit (appliedOverlay) carapace heisenbridge;
+        inherit (appliedOverlay) carapace heisenbridge nu_plugin_audio_hook;
         inherit (helixOverlay) helix;
       };
     });
