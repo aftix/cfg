@@ -25,7 +25,8 @@ inputs: final: prev: {
   nu_plugin_dns = final.callPackage ./packages/nu_plugin_dns.nix {};
   nu_plugin_endecode = final.callPackage ./packages/nu_plugin_endecode.nix {};
   nu_plugin_explore = final.callPackage ./packages/nu_plugin_explore.nix {};
-  nu_plugin_strutils = final.callPackage ./packages/nu_plugin_strutils.nix {};
   nu_plugin_port_scan = final.callPackage ./packages/nu_plugin_port_scan.nix {};
   nu_plugin_port_list = final.callPackage ./packages/nu_plugin_port_list.nix {};
+  nu_plugin_strutils = final.callPackage ./packages/nu_plugin_strutils.nix {};
+  nu_plugin_skim = final.callPackage ./packages/nu_plugin_skim.nix {};
 }
