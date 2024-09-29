@@ -23,5 +23,6 @@ inputs: final: prev: {
   nu_plugin_dbus = final.callPackage ./packages/nu_plugin_dbus.nix {};
   nu_plugin_desktop_notifications = final.callPackage ./packages/nu_plugin_desktop_notifications.nix {};
   nu_plugin_dns = final.callPackage ./packages/nu_plugin_dns.nix {};
+  nu_plugin_endecode = final.callPackage ./packages/nu_plugin_endecode.nix {};
   nu_plugin_explore = final.callPackage ./packages/nu_plugin_explore.nix {};
 }
