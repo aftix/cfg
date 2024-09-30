@@ -4,6 +4,19 @@
   config,
   ...
 }: let
+  nuWrapped =
+    if pkgs.stdenv.hostPlatform.isDarwin
+    then
+      pkgs.writeShellApplication {
+        name = "nu-wrapped";
+        runtimeInputs = [pkgs.nushell];
+        text = ''
+          export XDG_CONFIG_HOME=${lib.strings.escapeShellArg config.xdg.configHome}
+          nu
+        '';
+      }
+    else pkgs.nushell;
+
   settings = {
     shell = {
       tag = "shell";
@@ -529,7 +542,7 @@ in {
       kitty_mod = settings.kittyMod.value;
       shell = lib.mkDefault (
         if config.my.shell.nushell.enable
-        then "${pkgs.nushell}/bin/nu"
+        then (lib.meta.getExe nuWrapped)
         else if config.my.shell.elvish.enable
         then "${pkgs.elvish}/bin/elvish"
         else "${pkgs.zsh}/bin/zsh"

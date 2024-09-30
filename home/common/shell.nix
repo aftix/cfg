@@ -174,6 +174,9 @@ in {
           Nothing will be quoted.
 
           The set may also contain a 'docs' attribute to change what is rendered in the <host>-elvish.7 man page
+
+          The set may also contain an 'init' attribute which is a string to be inserted after the `use` statement
+          The set may also contain an 'extra' attribute which is a string to be insterted at the end of the `use` statement (i.e. "*")
         '';
       };
 

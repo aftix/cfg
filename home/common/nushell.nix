@@ -6,7 +6,6 @@
 }: let
   inherit (lib.attrsets) optionalAttrs mergeAttrsList;
   inherit (lib.strings) hasPrefix optionalString concatMapStringsSep concatLines;
-  inherit (lib.lists) optionals;
   shellCfg = config.my.shell;
   cfg = shellCfg.nushell;
 in {
@@ -73,8 +72,8 @@ in {
     ];
   };
 
-  xdg.configFile =
-    lib.mkIf cfg.enable {
+  xdg.configFile = lib.mkIf cfg.enable (
+    {
       "nushell/env.nu".text = let
         setEnvVars = vars: "load-env ${builtins.toJSON vars}\n";
 
@@ -288,9 +287,18 @@ in {
             {
               name,
               enable ? true,
+              init ? "",
+              extra ? "",
               ...
             }:
-              optionalString enable ("use $env.XDG_CONFIG_HOME/nushell/" + name)
+              optionalString enable
+              /*
+              nushell
+              */
+              ''
+                use ${config.xdg.configHome}/nushell/${name} ${extra}
+                ${optionalString (init != "") init}
+              ''
           )
           cfg.extraMods;
 
@@ -387,13 +395,12 @@ in {
       "nushell/jump.nu".source = ./_external.nushell/jump.nu;
     }
     // mergeAttrsList (builtins.map ({
-        name,
-        source,
-        enable ? true,
-        ...
-      }:
-        optionalAttrs enable {"nushell/${name}".source = source;})
-      (optionals
-        cfg.enable
-        cfg.extraMods));
+      name,
+      source,
+      enable ? true,
+      ...
+    }:
+      optionalAttrs enable {"nushell/${name}".source = source;})
+    cfg.extraMods)
+  );
 }
