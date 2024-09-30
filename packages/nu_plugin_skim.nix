@@ -1,7 +1,9 @@
 {
+  stdenv,
   lib,
   rustPlatform,
   fetchFromGitHub,
+  darwin,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_skim";
@@ -14,6 +16,12 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-CwBswDVhHqPY4y7fnfL1mpTBMgu6FU8noeVwY+5I/T0=";
   };
   cargoHash = "sha256-cFni5Pp6QFEKQx/1gRsWN5AytdgilZf4PTRVO54M+OE=";
+
+  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
+  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.apple_sdk.frameworks.IOKit
+    darwin.apple_sdk.frameworks.CoreFoundation
+  ];
 
   meta = with lib; {
     description = "A nushell plugin that adds integrates the skim fuzzy finder.";
