@@ -20,6 +20,6 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "nu_plugin_port_list";
     homepage = "https://github.com/FMotalleb/nu_plugin_port_list/tree/${version}";
     license = licenses.mit;
-    platforms = with platforms; all;
+    platforms = with platforms; linux;
   };
 }

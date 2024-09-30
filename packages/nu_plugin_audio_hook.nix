@@ -27,6 +27,6 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "nu_plugin_audio_hook";
     homepage = "https://github.com/FMotalleb/nu_plugin_audio_hook/tree/${version}";
     license = licenses.mit;
-    platforms = with platforms; all;
+    platforms = with platforms; linux;
   };
 }
