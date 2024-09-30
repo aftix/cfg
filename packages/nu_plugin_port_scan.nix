@@ -1,7 +1,9 @@
 {
+  stdenv,
   lib,
   rustPlatform,
   fetchFromGitHub,
+  darwin,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_port_scan";
@@ -14,6 +16,12 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-2WluXknQQYY2sHW1VwgWJUGL5kRLo1vfVpV7/X3I8RU=";
   };
   cargoHash = "sha256-bW+KtD9S3jncl4djcsAWH0a6ulE9LoCgfH5+WtubAag=";
+
+  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
+  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.apple_sdk.frameworks.IOKit
+    darwin.apple_sdk.frameworks.CoreFoundation
+  ];
 
   meta = with lib; {
     description = "A nushell plugin for scanning ports on a target.";

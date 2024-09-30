@@ -148,13 +148,13 @@ in {
           */
           ''
             # Add homebrew prefix to path
-            $env.PATH = ($env.PATH | prepend (${brewPath} --prefix)/bin)
+            $env.PATH = ($env.PATH | prepend $"(${brewPath} --prefix)/bin")
             # Add homebrew environmental variables
             (brew shellenv
               | lines
               | find -v PATH
               | str replace -r '^export' ""
-              | str replace -r '\w+;\w+$' ""
+              | str replace -r '(\w+|");\w*$' '$1'
               | str trim
               | each { split column --number 2 '=' }
               | each { {$in.0.column1: $in.0.column2} }
