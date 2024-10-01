@@ -239,7 +239,7 @@ export def --env jump_init [] {
     {
       name: jump_pop
       modifier: shift_alt
-      keycode: char_p
+      keycode: char_o
       mode: [emacs vi_normal vi_insert]
       event: [
         { edit: Clear }
