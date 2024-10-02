@@ -119,7 +119,12 @@ in {
           parents = true;
         };
 
-        lsp.display-messages = true;
+        lsp = {
+          display-messages = true;
+          display-inlay-hints = true;
+        };
+        inline-diagnostics.cursor-line = "warning";
+
         search = {
           smart-case = true;
           wrap-around = false;
