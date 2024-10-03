@@ -89,7 +89,9 @@ export def jump_pick [] {
     $to = ($jumps_explicit | append $jumps
     | uniq
     | to csv --noheaders --separator ' '
-    | fzf -i --border --header Jumps -n '1,3..'
+    | fzf -i --border --header Jumps
+    | split row --number 2 ' '
+    | get $.1
     )
   }
   if $to == '.' { return }
@@ -98,7 +100,11 @@ export def jump_pick [] {
 
 # Jumps destructively to a fuzzy picked jump point
 export def --env jump_to_pick [] {
-  try { jump_pick | jump_to $in } | ignore
+  let to = jump_pick
+  if $to == null {
+    return
+  }
+  try { jump_to $to } | ignore
 }
 
 # Marks pwd explicity as a jump point
@@ -121,7 +127,7 @@ export def jump_unmark [] {
 ######### BOOKMARKS ########
 # bookmarks - kept in $XDG_CONFIG_HOME/bookmarks, named list of directories managed by this module
 #   bookmarks can be added with add_bookmark <name> to add the cwd (will check for conflicts and prompt for overwriting previous values)
-#   bookmarks can be removed with remove_bookmark <name> (with tab completion)
+#   bookmarks can be removed with remove_bookmark (with fuzzy completion)
 #   Alt-x brings up a fuzzy finder to jump to a bookmark
 #   Shift-alt-x lets you insert a bookmark path at the cursor position in the shell buffer
 
@@ -132,53 +138,63 @@ def parse_bmarks [] {
   )
 }
 
-
 def sanitize_location [] {
-  (str replace --all $env.XDG_CONFIG_HOME '$XDG_CONFIG_HOME'
-   | str replace --all $env.XDG_DATA_HOME '$XDG_DATA_HOME'
-   | str replace --all $env.XDG_CACHE_HOME '$XDG_CACHE_HOME'
-   | str replace --all $env.HOME '$HOME'
-  )
+    (str replace --all $env.XDG_CONFIG_HOME '$XDG_CONFIG_HOME'
+      | str replace --all $env.XDG_DATA_HOME '$XDG_DATA_HOME'
+      | str replace --all $env.XDG_CACHE_HOME '$XDG_CACHE_HOME'
+      | str replace --all $env.HOME '$HOME'
+    )
 }
 
-export def add_bookmark [name @rest] {
-  let bmarks = (stor open | query db 'SELECT * FROM jump_bookmarks')
-  let conflicting_name = ($bmarks | each {
-    (str upcase $name) == (str upcase $in.name)
-  } | reduce {|it, acc| $acc or $it})
+export def add_bookmark [name] {
+  sync_bmarks
 
-  let location = (pwd | sanatize_location)
+  let bmarks = (stor open | query db 'SELECT * FROM jump_bookmarks')
+
+  let conflicting_name = if ($bmarks| length) > 0 {
+    ($bmarks| each {
+      |b|
+      ($name | str upcase) == ($b.name | str upcase)
+    } | reduce {|it, acc| $acc or $it})
+  } else { false }
+
+  let location = (pwd | sanitize_location)
   if $conflicting_name {
     print  $"Overwrite bookmark for ($name)?"
     let choice = ([no yes] | input list)
-    if choice == "no" {
+    if $choice == null or $choice == "no" {
       print "Not overwriting."
       return
     }
 
-    stor update --table-name jump_bookmarks --update-record {name: $name location: $location}
+    stor update --table-name jump_bookmarks --update-record {name: $name location: $location} --where-clause $"name = '($name)'"
   } else {
     stor insert --table-name jump_bookmarks --data-record {name: $name location: $location} 
   }
 
   let bfile = $env.XDG_DATA_HOME ++ '/bookmarks'
-  stor open | query db 'SELECT * FROM jump_bookmarks' | to csv --noheaders --separator ' ' | sanitize_location | save --force $bfile
+  (stor open 
+    | query db 'SELECT * FROM jump_bookmarks'
+    | to csv --noheaders --separator ' '
+    | save --force $bfile
+  )
 }
 
 export def remove_bookmark [] {
-  let bmarks = (stor open | query db 'SELECT * FROM jump_bookmarks')
+  sync_bmarks
+  let bmarks = (stor open | query db 'SELECT * FROM jump_bookmarks' | sort-by name | uniq-by name)
 
   mut name = '.'
   try { 
-    $name = ($bmarks | to csv --noheaders --separator ' ' | fzf --border -i)
+    $name = ($bmarks | to csv --noheaders --separator ' ' | fzf --border -i --header Bookmarks | split row --number 2 ' ' | get $.0)
   }
   if $name == '.' {
     return
   }
 
   let bfile = $env.XDG_DATA_HOME ++ '/bookmarks'
-  stor delete --table-name jump_bookmarks --where-clause $"name == '($name)'"
-  stor open | query db 'SELECT * from jump_bookmarkl' | to csv --noheaders --separator ' ' | save --force $bfile
+  stor delete --table-name jump_bookmarks --where-clause $"name = '($name)'"
+  stor open | query db 'SELECT * from jump_bookmarks' | to csv --noheaders --separator ' ' | save --force $bfile
 }
 
 export def get_bookmark [] {
@@ -189,21 +205,32 @@ export def get_bookmark [] {
     | sort-by name
     | uniq-by name
     | to csv --noheaders --separator ' '
-    | fzf -i --border --header Bookmarks -n '1,3..'
+    | fzf -i --border --header Bookmarks
+    | split row --number 2 ' '
+    | get $.1
     )
   }
   if $location == '.' { return }
-
-  ($location
-    | split row --number 2 ' '
-    | get $.1
-    | $"echo \"($in)\""
-    | bash -ls
-  )
+  $location | $"echo \"($in)\"" | bash -ls
 }
 
 export def --env goto_bookmark [] {
-  try {get_bookmark | jump_to $in} | ignore
+  let to = get_bookmark
+  if $to == null {
+    return
+  }
+  try {jump_to $to} | ignore
+}
+
+export def sync_bmarks [] {
+  try { stor delete --table-name jump_bookmarks } catch { } | ignore
+  stor create --table-name jump_bookmarks --columns {name: str location: str} | ignore
+
+  (open ($env.XDG_DATA_HOME ++ '/bookmarks')
+    | parse_bmarks
+    | each {stor insert --table-name jump_bookmarks}
+    | ignore
+  )
 }
 
 export def --env jump_init [] {
@@ -214,14 +241,7 @@ export def --env jump_init [] {
 
   stor insert --table-name jumps --data-record {idx: 0 location: (pwd) current: true} | ignore
 
-  try { stor delete --table-name jump_bookmarks } catch { } | ignore
-  stor create --table-name jump_bookmarks --columns {name: str location: str} | ignore
-
-  (open ($env.XDG_DATA_HOME ++ '/bookmarks')
-    | parse_bmarks
-    | each {stor insert --table-name jump_bookmarks}
-    | ignore
-  )
+  sync_bmarks
 
   # Module keybindings
   let jump_keybindings = [
