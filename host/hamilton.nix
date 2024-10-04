@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }: let
   inherit (lib.strings) optionalString;
@@ -23,6 +24,15 @@ in {
   sops = {
     defaultSopsFile = ./secrets.yaml;
     age.keyFile = "/home/aftix/.local/persist/.config/sops/age/keys.txt";
+
+    secrets.gh_access_token = {};
+
+    templates.nixAccessTokens = {
+      mode = "0444";
+      content = ''
+        extra-access-tokens = github.com=${config.sops.placeholder.gh_access_token}
+      '';
+    };
   };
 
   my = {
@@ -58,6 +68,10 @@ in {
       monitor=desc:ViewSonic Corporation VX2703 SERIES T8G132800478,preferred,2560x-180,1,transform,1
     '';
   };
+
+  nix.extraOptions = ''
+    !include ${config.sops.templates.nixAccessTokens.path}
+  '';
 
   environment = {
     systemPackages = with pkgs; [
