@@ -91,6 +91,7 @@ in {
             for snap in "$SNAPSHOT_DIR/"*; do
               [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
               [[ -d "$snap" ]] || continue
+              [[ "$snap" =~ (safe|persist)\.[0-9]{4}-[0-9]{2}-[0-9]{2} ]] || continue
               MTIME="$(date -r "$snap" +%s)"
               (( MTIME <= CUTOFF_DATE )) && btrfs subvolume delete "$snap"
             done
