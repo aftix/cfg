@@ -4,6 +4,7 @@
       name = "better-git-branch";
       runtimeInputs = with final; [git];
       text = ''
+        set +o errexit
         # Taken from https://gist.github.com/schacon/e9e743dee2e92db9a464619b99e94eff
         # Colors
         RED='\033[0;31m'
