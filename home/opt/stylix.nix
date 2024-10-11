@@ -12,11 +12,7 @@
     enable = true;
     image = ./wallpaper.jpg;
     polarity = "dark";
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
-    override = {
-      base03 = "808080";
-      base05 = "eeeeee";
-    };
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-sulphurpool.yaml";
 
     fonts = {
       serif = {
@@ -52,7 +48,7 @@
       name = "BreezeX-RosePine-Linux";
     };
 
-    opacity.terminal = 0.5;
+    opacity.terminal = 0.9;
 
     targets = {
       tofi.enable = true;
