@@ -26,7 +26,7 @@ in {
       (final: _: {
         my-snapshot = final.writeShellApplication {
           name = "snapshot.bash";
-          runtimeInputs = with final; [util-linux gnugrep btrfs-progs rclone mktemp];
+          runtimeInputs = with final; [util-linux gnugrep btrfs-progs rclone mktemp coreutils-full findutils gawk];
           text = ''
             shopt -s nullglob globstar
 
@@ -52,7 +52,7 @@ in {
             NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
             MNT="$(mktemp -d)"
             TS="$(date +%Y-%m-%d)"
-            CUTOFF_DATE="$(${pkgs.coreutils}/bin/date -d ${escapeShellArg cfg.deleteOlderThan} +%s)"
+            CUTOFF_DATE="$(date -d ${escapeShellArg cfg.deleteOlderThan} +%s)"
 
             mkdir "$MNT/nix" "$MNT/backup"
 
@@ -91,8 +91,9 @@ in {
             for snap in "$SNAPSHOT_DIR/"*; do
               [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
               [[ -d "$snap" ]] || continue
-              [[ "$snap" =~ (safe|persist)\.[0-9]{4}-[0-9]{2}-[0-9]{2} ]] || continue
-              MTIME="$(date -r "$snap" +%s)"
+              TS="$(basename "$snap")"
+              [[ "$TS" =~ ^([^.]+)\.[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || continue
+              MTIME="$(awk -F. '{print $2}' <<< "$TS" | xargs -n1 date +%s -d | head -n1)"
               (( MTIME <= CUTOFF_DATE )) && btrfs subvolume delete "$snap"
             done
 
