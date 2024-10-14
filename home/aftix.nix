@@ -72,6 +72,7 @@ in {
     stateVersion = "23.11"; # DO NOT CHANGE
 
     packages = with pkgs; [
+      attic-client
       link-gh-hosts
       weechat-unwrapped
       weechatScripts.weechat-notify-send
@@ -97,6 +98,7 @@ in {
   };
 
   home.persistence.${config.my.impermanence.path}.directories = [
+    ".config/attic"
     ".config/keepassxc"
     ".config/Yubico"
   ];
