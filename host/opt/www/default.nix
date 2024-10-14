@@ -6,7 +6,6 @@
 }: let
   inherit (lib.options) mkOption;
 
-  inherit (config.dep-inject) inputs;
   cfg = config.my.www;
 in {
   imports = [
@@ -65,6 +64,11 @@ in {
       default = 599;
       type = lib.types.ints.positive;
     };
+
+    nginxBlockerPatches = mkOption {
+      default = [];
+      type = lib.types.listOf lib.types.path;
+    };
   };
 
   config = {
@@ -117,10 +121,12 @@ in {
       openssh.settings.AllowUsers = [cfg.user];
     };
 
-    systemd.tmpfiles.rules = [
+    systemd.tmpfiles.rules = let
+      blockerPkg = pkgs.nginx_blocker.overrideAttrs {patches = cfg.nginxBlockerPatches;};
+    in [
       "d ${cfg.root} 0775 ${cfg.user} ${cfg.group} -"
-      "L+ /etc/nginx/conf.d - - - - ${inputs.nginxBlacklist}/conf.d"
-      "L+ /etc/nginx/bots.d - - - - ${inputs.nginxBlacklist}/bots.d"
+      "L+ /etc/nginx/conf.d - - - - ${blockerPkg}/conf.d"
+      "L+ /etc/nginx/bots.d - - - - ${blockerPkg}/bots.d"
     ];
 
     security.acme = {
