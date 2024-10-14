@@ -39,6 +39,20 @@ jobs:
             extra-trusted-public-keys = helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE= attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo=
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
+      - name: Install and configure attic
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
+          nix profile install '.#attic-client'
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          attic use "$ATTIC_CACHE"
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+
       - name: Create ssh key from repository secrets
         run: |
           install -m 600 -D /dev/stdin ~/.ssh/id_ed25519 <<< "${{ secrets.PRIVATE_KEY }}"
@@ -48,7 +62,10 @@ jobs:
 
       - name: Deploy fermi
         run: |
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          attic watch-store "ci:$ATTIC_CACHE" &
           nix run 'github:serokell/deploy-rs' '.#fermi' -- --ssh-user aftix -- --impure
+          kill %1
           ssh aftix@170.130.165.174 'sh -ls' <<< "$SCRIPT"
         env:
           SCRIPT: >-
