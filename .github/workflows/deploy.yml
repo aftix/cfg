@@ -6,10 +6,26 @@ on:
   workflow_dispatch:
 
 jobs:
+  bootstrap:
+    name: Bootstrap nix.conf options
+    runs-on: ubuntu-latest
+    outputs:
+      substituters: ${{ steps.getconf.outputs.substituters }}
+      trustedPublicKeys: ${{ steps.getconf.outputs.trustedPublicKeys }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - id: getconf
+        name: Get nix.conf configuration options
+        run: |
+          nix eval '.#extra.substituters' --apply 'builtins.toString' | awk '{print "substituters="$0}' | tee -a "$GITHUB_OUTPUT"
+          nix eval '.#extra.trusted-public-keys' --apply 'builtins.toString' | awk '{print "trustedPublicKeys="$0}' | tee -a "$GITHUB_OUTPUT"
+    
   deploy-fermi:
     name: Deploy fermi NixOS server
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || !github.event.forced }}
+    needs: bootstrap
     concurrency:
       group: deploy-fermi
       cancel-in-progress: true
@@ -31,12 +47,15 @@ jobs:
           sudo rm -rf /usr/share/R /usr/share/alsa /usr/share/miniconda /usr/share/grub /usr/share/gradle-* /usr/share/locale /usr/share/texinfo /usr/share/kotlinc /usr/share/swift
           sudo rm -rf /usr/share/doc /usr/share/az_9.3.0 /usr/share/sbt /usr/share/ri /usr/share/icons /usr/share/java /usr/share/fonts /usr/lib/google-cloud-sdk /usr/lib/jvm
           sudo rm -rf /usr/lib/mono /usr/lib/R /usr/lib/postgresql /usr/lib/heroku /usr/lib/gcc
+
       - uses: actions/checkout@v4
+
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
-            extra-trusted-substituters = https://helix.cachix.org https://cache.thalheim.io https://nix-community.cachix.org https://cache.garnix.io https://numtide.cachix.org https://staging.attic.rs/attic-ci
-            extra-trusted-public-keys = helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE= attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo=
+            extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
+            extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
+
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Install and configure attic
