@@ -24,7 +24,7 @@ deploy node="fermi" *FLAGS="":
     @nix run {{FLAGS}} 'github:serokell/deploy-rs' '.#{{node}}' -- -- --impure
 
 deploy-override node="fermi":
-    @just deploy {{node}} --override-input nixpkgs nixpkgs
+    @just deploy {{node}} --inputs-from .
 
 rekey:
     @sops updatekeys -y host/secrets.yaml
