@@ -18,6 +18,8 @@ inputs: final: prev: {
     };
   });
 
+  nginx_blocker = final.callPackage ./packages/nginx_blocker.nix {inherit (inputs) nginxBlacklist;};
+
   nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};
   nu_plugin_compress = final.callPackage ./packages/nu_plugin_compress.nix {};
   nu_plugin_dbus = final.callPackage ./packages/nu_plugin_dbus.nix {};
