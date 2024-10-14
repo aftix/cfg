@@ -56,6 +56,12 @@ jobs:
         timeout-minutes: 60
         run: |
           nix build '.#attic-client'
+          nix run '.#attic-client' -- login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          nix-store --query --requisites --include-outputs ./result | xargs nix run '.#attic-client' -- push "ci:$ATTIC_CACHE"
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
 
   prebuild:
     name: Get nixosConfiguration outputs of the flake to populate build matrix
