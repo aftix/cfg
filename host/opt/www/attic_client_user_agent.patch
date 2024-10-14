@@ -1,0 +1,10 @@
+--- a/bots.d/blacklist-user-agents.conf
++++ b/bots.d/blacklist-user-agents.conf
+@@ -83,6 +83,7 @@
+ # MY WHITELIST
+ # ------------
+ 
++"~*(?:\b)Attic\/[\w{}]+ \([\w{}\b]+\)[\w-]+(?:\b)"			0;
+ 
+ # ------------
+ # MY BLACKLIST
