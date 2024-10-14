@@ -97,11 +97,18 @@ in {
     Install.WantedBy = ["default.target"];
   };
 
-  home.persistence.${config.my.impermanence.path}.directories = [
-    ".config/attic"
-    ".config/keepassxc"
-    ".config/Yubico"
-  ];
+  home.persistence.${config.my.impermanence.path} = {
+    directories = [
+      ".config/attic"
+      ".config/keepassxc"
+      ".config/Yubico"
+    ];
+    files = [
+      ".config/nushell/history.sqlite3"
+      ".config/nushell/history.sqlite3-shm"
+      ".config/nushell/history.sqlite3-wal"
+    ];
+  };
 
   my = {
     shell = {
