@@ -63,8 +63,8 @@ jobs:
         continue-on-error: true
         run: |
           echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
+          (nix eval '.#attic-client' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
           nix profile install '.#attic-client'
-          export PATH=$HOME/.nix-profile/bin:$PATH
           attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
           attic use "$ATTIC_CACHE"
         env:
@@ -81,7 +81,15 @@ jobs:
 
       - name: Deploy fermi
         run: |
-          export PATH=$HOME/.nix-profile/bin:$PATH
+          CONFS="$(nix flake show --json | jq -c '.nixosConfigurations | keys' | tr -d '[]"' | tr ',' ' ')"
+          for conf in $CONFS; do
+            if [[ "${{ matrix.configuration }}" =~ ^iso- ]] ; then
+              (nix eval ".#nixosConfigurations.$conf.config.system.build.isoImage" --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
+            else
+              (nix eval ".#nixosConfigurations.$conf.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
+            fi
+          done
+          (nix eval --inputs-from . 'github:serokell/deploy-rs#deploy-rs' --raw --apply 'x: x.outPath' | xargs nix-store --realise &>/dev/null) || :
           attic watch-store "ci:$ATTIC_CACHE" &
           nix run 'github:serokell/deploy-rs' '.#fermi' -- --ssh-user aftix -- --impure
           kill %1
