@@ -104,6 +104,7 @@
       flake = false;
     };
 
+    attic.url = "github:zhaofengli/attic";
     helix.url = "github:helix-editor/helix";
 
     hostsBlacklist = {
@@ -163,6 +164,7 @@
         overlays = [
           nur.overlay
           inputs.helix.overlays.default
+          inputs.attic.overlays.default
           overlay
         ];
         config = {
@@ -217,6 +219,7 @@
       inputs.nix-index-database.nixosModules.nix-index
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
       inputs.nixos-cli.nixosModules.nixos-cli
+      inputs.attic.nixosModules.atticd
       {
         imports = [depInject];
         programs = {

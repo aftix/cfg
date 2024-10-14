@@ -9,6 +9,7 @@
   cfg = config.my.www;
 in {
   imports = [
+    ./attic.nix
     ./barcodebuddy.nix
     ./blog.nix
     ./coffeepaste.nix

@@ -1,4 +1,8 @@
-{lib, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ./common
 
@@ -17,6 +21,8 @@
       TERM = "xterm";
       TERMINAL = TERM;
     };
+    packages = with pkgs; [attic-client];
+
     stateVersion = "23.11"; # DO NOT CHANGE
   };
 
