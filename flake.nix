@@ -378,6 +378,7 @@
         pkgs = nixpkgs.legacyPackages.${sys};
         appliedOverlay = self.overlays.default pkgs pkgs;
         helixOverlay = inputs.helix.overlays.default pkgs pkgs;
+        atticOverlay = inputs.attic.overlays.default pkgs pkgs;
       in {
         inherit
           (appliedOverlay)
@@ -398,6 +399,7 @@
           nu_plugin_strutils
           ;
 
+        inherit (atticOverlay) attic-client;
         inherit (helixOverlay) helix;
       };
     });

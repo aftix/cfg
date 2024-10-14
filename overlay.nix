@@ -18,6 +18,8 @@ inputs: final: prev: {
     };
   });
 
+  inherit (inputs.attic.overlays.default final prev) attic-client;
+
   nginx_blocker = final.callPackage ./packages/nginx_blocker.nix {inherit (inputs) nginxBlacklist;};
 
   nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};

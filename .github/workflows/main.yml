@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  check:
-    name: check nix flake
+  attic:
+    name: Build attic-client
     runs-on: ubuntu-latest
     steps:
       # Taken from https://github.com/lilyinstarlight/foosteros/blob/aa611d0cf03bd82f6c1c701e73f86f27abb8d8e4/.github/workflows/installer.yml
@@ -34,4 +34,200 @@ jobs:
             extra-trusted-substituters = https://helix.cachix.org https://cache.thalheim.io https://nix-community.cachix.org https://cache.garnix.io https://numtide.cachix.org https://staging.attic.rs/attic-ci
             extra-trusted-public-keys = helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE= attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo=
       - uses: DeterminateSystems/magic-nix-cache-action@main
-      - run: nix flake check
+      - name: Build attic
+        timeout-minutes: 60
+        run: |
+          nix build '.#attic-client'
+
+  prebuild:
+    name: Get nixosConfiguration outputs of the flake to populate build matrix
+    needs: attic
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.getconfigs.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - name: Get configurations
+        id: getconfigs
+        run: >
+          nix flake show --json | 
+            jq -c '.nixosConfigurations | keys | {configuration: .}' |
+            awk '{print "matrix="$0}' >> $GITHUB_OUTPUT
+  build:
+    name: build nixos configurations
+    runs-on: ubuntu-latest
+    needs: prebuild
+    strategy:
+      matrix: ${{ fromJson(needs.prebuild.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      # Taken from https://github.com/lilyinstarlight/foosteros/blob/aa611d0cf03bd82f6c1c701e73f86f27abb8d8e4/.github/workflows/installer.yml
+      # MIT licensed
+      - name: Free up runner disk space
+        run: |
+          # Large docker images
+          sudo docker image prune --all --force
+          # Large packages
+          sudo apt-get purge -y '^llvm-.*' 'php.*' '^mongodb-.*' '^mysql-.*' azure-cli google-cloud-cli google-chrome-stable firefox powershell microsoft-edge-stable
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          # Large folders
+          sudo rm -rf /var/lib/apt/lists/* /opt/hostedtoolcache /usr/local/games /usr/local/sqlpackage /usr/local/.ghcup /usr/local/share/powershell /usr/local/share/edge_driver
+          sudo rm -rf /usr/local/share/gecko_driver /usr/local/share/chromium /usr/local/share/chromedriver-linux64 /usr/local/share/vcpkg /usr/local/lib/python*
+          sudo rm -rf /usr/local/lib/node_modules /usr/local/julia* /opt/mssql-tools /etc/skel /usr/share/vim /usr/share/postgresql /usr/share/man /usr/share/apache-maven-*
+          sudo rm -rf /usr/share/R /usr/share/alsa /usr/share/miniconda /usr/share/grub /usr/share/gradle-* /usr/share/locale /usr/share/texinfo /usr/share/kotlinc /usr/share/swift
+          sudo rm -rf /usr/share/doc /usr/share/az_9.3.0 /usr/share/sbt /usr/share/ri /usr/share/icons /usr/share/java /usr/share/fonts /usr/lib/google-cloud-sdk /usr/lib/jvm
+          sudo rm -rf /usr/lib/mono /usr/lib/R /usr/lib/postgresql /usr/lib/heroku /usr/lib/gcc
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-trusted-substituters = https://helix.cachix.org https://cache.thalheim.io https://nix-community.cachix.org https://cache.garnix.io https://numtide.cachix.org https://staging.attic.rs/attic-ci
+            extra-trusted-public-keys = helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE= attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo=
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Install and configure attic
+        continue-on-error: true
+        timeout-minutes: 20
+        run: |
+          echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
+          nix profile install '.#attic-client'
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          attic use "$ATTIC_CACHE"
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+
+      - name: Build configuration ${{ matrix.configuration }}
+        timeout-minutes: 120
+        run: |
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          if [[ "${{ matrix.configuration }}" =~ ^iso- ]] ; then
+            nix build '.#nixosConfigurations.${{ matrix.configuration }}.config.system.build.isoImage'
+          else
+            nix build '.#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel'
+          fi
+          nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
+  prebuildpkgs:
+    name: Get package outputs of the flake to populate build matrix
+    needs: attic
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.getconfigs.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - name: Get packages
+        id: getconfigs
+        run: >
+          nix flake show --json | 
+            jq -c '.packages."x86_64-linux" | keys | {package: .}' |
+            awk '{print "matrix="$0}' >> $GITHUB_OUTPUT
+  buildpkgs:
+    name: build nix packages
+    runs-on: ubuntu-latest
+    needs: prebuildpkgs
+    strategy:
+      matrix: ${{ fromJson(needs.prebuildpkgs.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      # Taken from https://github.com/lilyinstarlight/foosteros/blob/aa611d0cf03bd82f6c1c701e73f86f27abb8d8e4/.github/workflows/installer.yml
+      # MIT licensed
+      - name: Free up runner disk space
+        run: |
+          # Large docker images
+          sudo docker image prune --all --force
+          # Large packages
+          sudo apt-get purge -y '^llvm-.*' 'php.*' '^mongodb-.*' '^mysql-.*' azure-cli google-cloud-cli google-chrome-stable firefox powershell microsoft-edge-stable
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          # Large folders
+          sudo rm -rf /var/lib/apt/lists/* /opt/hostedtoolcache /usr/local/games /usr/local/sqlpackage /usr/local/.ghcup /usr/local/share/powershell /usr/local/share/edge_driver
+          sudo rm -rf /usr/local/share/gecko_driver /usr/local/share/chromium /usr/local/share/chromedriver-linux64 /usr/local/share/vcpkg /usr/local/lib/python*
+          sudo rm -rf /usr/local/lib/node_modules /usr/local/julia* /opt/mssql-tools /etc/skel /usr/share/vim /usr/share/postgresql /usr/share/man /usr/share/apache-maven-*
+          sudo rm -rf /usr/share/R /usr/share/alsa /usr/share/miniconda /usr/share/grub /usr/share/gradle-* /usr/share/locale /usr/share/texinfo /usr/share/kotlinc /usr/share/swift
+          sudo rm -rf /usr/share/doc /usr/share/az_9.3.0 /usr/share/sbt /usr/share/ri /usr/share/icons /usr/share/java /usr/share/fonts /usr/lib/google-cloud-sdk /usr/lib/jvm
+          sudo rm -rf /usr/lib/mono /usr/lib/R /usr/lib/postgresql /usr/lib/heroku /usr/lib/gcc
+
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-trusted-substituters = https://helix.cachix.org https://cache.thalheim.io https://nix-community.cachix.org https://cache.garnix.io https://numtide.cachix.org https://staging.attic.rs/attic-ci
+            extra-trusted-public-keys = helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE= attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo=
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Install and configure attic
+        timeout-minutes: 20
+        continue-on-error: true
+        run: |
+          echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
+          nix profile install '.#attic-client'
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          attic use "$ATTIC_CACHE"
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+
+      - name: Build package ${{ matrix.package }}
+        timeout-minutes: 120
+        run: |
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          nix build '.#${{ matrix.package }}'
+          nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
+  check:
+    name: check nix flake
+    needs: attic
+    runs-on: ubuntu-latest
+    steps:
+      # Taken from https://github.com/lilyinstarlight/foosteros/blob/aa611d0cf03bd82f6c1c701e73f86f27abb8d8e4/.github/workflows/installer.yml
+      # MIT licensed
+      - name: Free up runner disk space
+        run: |
+          # Large docker images
+          sudo docker image prune --all --force
+          # Large packages
+          sudo apt-get purge -y '^llvm-.*' 'php.*' '^mongodb-.*' '^mysql-.*' azure-cli google-cloud-cli google-chrome-stable firefox powershell microsoft-edge-stable
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          # Large folders
+          sudo rm -rf /var/lib/apt/lists/* /opt/hostedtoolcache /usr/local/games /usr/local/sqlpackage /usr/local/.ghcup /usr/local/share/powershell /usr/local/share/edge_driver
+          sudo rm -rf /usr/local/share/gecko_driver /usr/local/share/chromium /usr/local/share/chromedriver-linux64 /usr/local/share/vcpkg /usr/local/lib/python*
+          sudo rm -rf /usr/local/lib/node_modules /usr/local/julia* /opt/mssql-tools /etc/skel /usr/share/vim /usr/share/postgresql /usr/share/man /usr/share/apache-maven-*
+          sudo rm -rf /usr/share/R /usr/share/alsa /usr/share/miniconda /usr/share/grub /usr/share/gradle-* /usr/share/locale /usr/share/texinfo /usr/share/kotlinc /usr/share/swift
+          sudo rm -rf /usr/share/doc /usr/share/az_9.3.0 /usr/share/sbt /usr/share/ri /usr/share/icons /usr/share/java /usr/share/fonts /usr/lib/google-cloud-sdk /usr/lib/jvm
+          sudo rm -rf /usr/lib/mono /usr/lib/R /usr/lib/postgresql /usr/lib/heroku /usr/lib/gcc
+
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-trusted-substituters = https://helix.cachix.org https://cache.thalheim.io https://nix-community.cachix.org https://cache.garnix.io https://numtide.cachix.org https://staging.attic.rs/attic-ci
+            extra-trusted-public-keys = helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE= attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo=
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Install and configure attic
+        timeout-minutes: 20
+        continue-on-error: true
+        run: |
+          echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
+          nix profile install '.#attic-client'
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          attic use "$ATTIC_CACHE"
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+
+      - name: Run flake checks
+        run: |
+          export PATH=$HOME/.nix-profile/bin:$PATH
+          attic watch-store "ci:$ATTIC_CACHE" &
+          nix flake check
+          kill %1
