@@ -380,6 +380,7 @@
           (appliedOverlay)
           carapace
           heisenbridge
+          nginx_blocker
           nu_plugin_audio_hook
           nu_plugin_compress
           nu_plugin_dbus
