@@ -18,8 +18,8 @@ jobs:
       - id: getconf
         name: Get nix.conf configuration options
         run: |
-          nix eval '.#extra.substituters' --apply 'builtins.toString' | awk '{print "substituters="$0}' | tee -a "$GITHUB_OUTPUT"
-          nix eval '.#extra.trusted-public-keys' --apply 'builtins.toString' | awk '{print "trustedPublicKeys="$0}' | tee -a "$GITHUB_OUTPUT"
+          nix eval '.#extra.substituters' --apply 'builtins.toString' | tr -d '"' | awk '{print "substituters="$0}' | tee -a "$GITHUB_OUTPUT"
+          nix eval '.#extra.trusted-public-keys' --apply 'builtins.toString' | tr -d '"' | awk '{print "trustedPublicKeys="$0}' | tee -a "$GITHUB_OUTPUT"
   attic:
     name: Build attic-client
     runs-on: ubuntu-latest
@@ -37,7 +37,6 @@ jobs:
       - name: Build attic
         timeout-minutes: 60
         run: |
-          (nix eval '.#attic-client' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
           nix build '.#attic-client'
           nix run '.#attic-client' -- login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
           nix-store --query --requisites --include-outputs ./result | xargs nix run '.#attic-client' -- push "ci:$ATTIC_CACHE"
@@ -104,7 +103,6 @@ jobs:
         timeout-minutes: 20
         run: |
           echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
-          (nix eval '.#attic-client' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
           nix profile install '.#attic-client'
           attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
           attic use "$ATTIC_CACHE"
@@ -117,10 +115,8 @@ jobs:
         timeout-minutes: 120
         run: |
           if [[ "${{ matrix.configuration }}" =~ ^iso- ]] ; then
-            (nix eval '.#nixosConfigurations.${{ matrix.configuration }}.config.system.build.isoImage' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
             nix build '.#nixosConfigurations.${{ matrix.configuration }}.config.system.build.isoImage'
           else
-            (nix eval '.#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
             nix build '.#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel'
           fi
           nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
@@ -164,7 +160,6 @@ jobs:
         continue-on-error: true
         run: |
           echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
-          (nix eval '.#attic-client' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
           nix profile install '.#attic-client'
           attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
           attic use "$ATTIC_CACHE"
@@ -176,7 +171,6 @@ jobs:
       - name: Build package ${{ matrix.package }}
         timeout-minutes: 120
         run: |
-          (nix eval '.#${{ matrix.package }}' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
           nix build '.#${{ matrix.package }}'
           nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
   check:
@@ -219,7 +213,6 @@ jobs:
         continue-on-error: true
         run: |
           echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
-          (nix eval '.#attic-client' --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
           nix profile install '.#attic-client'
           attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
           attic use "$ATTIC_CACHE"
@@ -230,15 +223,6 @@ jobs:
 
       - name: Run flake checks
         run: |
-          CONFS="$(nix flake show --json | jq -c '.nixosConfigurations | keys' | tr -d '[]"' | tr ',' ' ')"
-          for conf in $CONFS; do
-            if [[ "${{ matrix.configuration }}" =~ ^iso- ]] ; then
-              (nix eval ".#nixosConfigurations.$conf.config.system.build.isoImage" --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
-            else
-              (nix eval ".#nixosConfigurations.$conf.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)' --raw | tr ' ' '\n' | xargs nix-store --realise &>/dev/null) || :
-            fi
-          done
-          (nix eval --inputs-from . 'github:serokell/deploy-rs#deploy-rs' --raw --apply 'x: x.outPath' | xargs nix-store --realise &>/dev/null) || :
           attic watch-store "ci:$ATTIC_CACHE" &
           nix flake check
           kill %1
