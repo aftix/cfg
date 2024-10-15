@@ -428,6 +428,7 @@
 
         inherit (atticOverlay) attic-client;
         inherit (helixOverlay) helix;
+        lix = inputs.lix.packages.${sys}.default;
       };
     });
 }
