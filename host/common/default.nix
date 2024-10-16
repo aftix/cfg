@@ -16,6 +16,7 @@ in {
     ./nh.nix
     ./root.nix
     ./sleep.nix
+    ./youtube_operational_api.nix
   ];
 
   options.my = {
