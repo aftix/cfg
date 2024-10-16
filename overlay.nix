@@ -21,6 +21,7 @@ inputs: final: prev: {
   inherit (inputs.attic.overlays.default final prev) attic-client;
 
   nginx_blocker = final.callPackage ./packages/nginx_blocker.nix {inherit (inputs) nginxBlacklist;};
+  youtube-operational-api = final.callPackage ./packages/youtube_operational_api.nix {};
 
   nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};
   nu_plugin_compress = final.callPackage ./packages/nu_plugin_compress.nix {};
