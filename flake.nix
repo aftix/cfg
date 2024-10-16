@@ -412,6 +412,7 @@
           carapace
           heisenbridge
           nginx_blocker
+          youtube-operational-api
           nu_plugin_audio_hook
           nu_plugin_compress
           nu_plugin_dbus
