@@ -19,7 +19,18 @@ in {
     defaultSopsFile = ./srv_secrets.yaml;
     age.keyFile = "/state/age/keys.txt";
 
-    secrets."freshrss_password" = {
+    secrets = {
+      freshrss_password = {};
+      youtube_api_key = {};
+    };
+
+    templates.youtubeapi_keys = {
+      mode = "0400";
+      owner = config.my.www.user;
+      inherit (config.my.www) group;
+      content = ''
+        ${config.sops.placeholder.youtube_api_key}
+      '';
     };
   };
 
@@ -92,6 +103,11 @@ in {
     };
     freshrss.enable = true;
     barcodebuddy.enable = true;
+    youtube-operational-api = {
+      enable = true;
+      settings.SERVER_NAME = "aftix.xyz";
+      keysFile = config.sops.templates.youtubeapi_keys.path;
+    };
   };
 
   users = {
