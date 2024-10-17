@@ -427,7 +427,7 @@
           nu_plugin_strutils
           ;
 
-        inherit (atticOverlay) attic-client;
+        inherit (atticOverlay) attic-client attic-server;
         inherit (helixOverlay) helix;
         lix = inputs.lix.packages.${sys}.default;
       };
