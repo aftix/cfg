@@ -2,7 +2,6 @@
   config,
   lib,
   modulesPath,
-  pkgs,
   ...
 }: {
   imports = [
@@ -15,7 +14,6 @@
       kernelModules = ["amdgpu"];
     };
     kernelModules = ["kvm-amd"];
-    kernelParams = ["radeon.cik_support=0" "amdgpu.cik_support=1"];
     extraModulePackages = [];
   };
 
@@ -30,7 +28,7 @@
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     graphics = {
       enable = true;
-      extraPackages = with pkgs; [amdvlk];
+      enable32Bit = true;
     };
   };
 }
