@@ -42,7 +42,6 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Install and configure attic
-        continue-on-error: true
         timeout-minutes: 20
         run: ./.github/install-attic.bash
         env:
@@ -58,7 +57,9 @@ jobs:
           else
             nix build '.#nixosConfigurations.${{ inputs.configuration }}.config.system.build.toplevel'
           fi
-          nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
+
+      - name: Push configuration ${{ inputs.configuration }} to attic
+        run: nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
 
       - name: Find if ${{ inputs.configuration }} is in deploy.nodes
         id: getdeploy
