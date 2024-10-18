@@ -17,12 +17,7 @@
   home = {
     username = "aftix";
     homeDirectory = "/home/aftix";
-    sessionVariables = rec {
-      TERM = "xterm";
-      TERMINAL = TERM;
-    };
     packages = with pkgs; [attic-client kitty.terminfo];
-
     stateVersion = "23.11"; # DO NOT CHANGE
   };
 
@@ -32,6 +27,7 @@
     shell = {
       elvish.enable = false;
       gpgTtyFix = false;
+      xtermFix = true;
     };
 
     docs = {
