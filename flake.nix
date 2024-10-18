@@ -236,7 +236,6 @@
       inputs.nix-index-database.nixosModules.nix-index
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
       inputs.nixos-cli.nixosModules.nixos-cli
-      inputs.attic.nixosModules.atticd
       {
         imports = [depInject];
         programs = {
