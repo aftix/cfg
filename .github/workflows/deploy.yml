@@ -1,8 +1,6 @@
 name: deploy
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -24,7 +22,6 @@ jobs:
   deploy-fermi:
     name: Deploy fermi NixOS server
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || !github.event.forced }}
     needs: bootstrap
     concurrency:
       group: deploy-fermi
@@ -62,7 +59,7 @@ jobs:
         timeout-minutes: 60
         continue-on-error: true
         run: |
-          echo ATTIC_CACHE=$ATTIC_CACHE >>$GITHUB_ENV
+          echo ATTIC_CACHE=$ATTIC_CACHE | tee -a "$GITHUB_ENV"
           nix profile install '.#attic-client'
           attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
           attic use "$ATTIC_CACHE"
