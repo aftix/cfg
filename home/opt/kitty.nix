@@ -476,7 +476,7 @@ in {
     packages = with pkgs; [kitty-img kitty-themes];
 
     sessionVariables = rec {
-      TERM = "kitty";
+      TERM = "xterm-kitty";
       TERMINAL = TERM;
     };
   };

@@ -29,7 +29,13 @@
   xdg.userDirs.createDirectories = lib.mkForce false;
 
   my = {
-    shell.elvish.enable = false;
+    shell = {
+      elvish.enable = false;
+      nushell.enable = false;
+      xtermFix = true;
+      gpgTtyFix = false;
+    };
+
     docs = {
       enable = true;
       prefix = "nixos";
