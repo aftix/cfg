@@ -111,30 +111,6 @@ in {
           )
           cfg.plugins);
 
-        fixGpg =
-          optionalString shellCfg.gpgTtyFix
-          /*
-          nushell
-          */
-          ''
-            # Fix gpg pinentry
-            $env.GPG_TTY = (tty)
-          '';
-        fixXterm =
-          optionalString shellCfg.xtermFix
-          /*
-          nushell
-          */
-          ''
-            # Fix xterm variants for ssh, etc
-            if $env.TERM =~ '^xterm-' {
-              $env.TERM = 'xterm'
-            } else if $env.TERM? == null or $env.TERM == "" {
-              $env.TERM = 'xterm'
-            }
-            $env.TERMINAL = $env.TERM
-          '';
-
         homebrewPath = let
           brewPath =
             if hasPrefix "x86_64" pkgs.system
@@ -254,8 +230,6 @@ in {
           # Add plugins to registry
           ${addPlugins}
 
-          ${fixGpg}
-          ${fixXterm}
 
           ${fixSshAgent}
 
@@ -273,6 +247,29 @@ in {
         '';
 
       "nushell/config.nu".text = let
+        fixGpg =
+          optionalString shellCfg.gpgTtyFix
+          /*
+          nushell
+          */
+          ''
+            # Fix gpg pinentry
+            $env.GPG_TTY = (tty)
+          '';
+        fixXterm =
+          optionalString shellCfg.xtermFix
+          /*
+          nushell
+          */
+          ''
+            # Fix xterm variants for ssh, etc
+            if $env.TERM =~ '^xterm-' {
+              $env.TERM = 'xterm'
+            } else if $env.TERM? == null or $env.TERM == "" {
+              $env.TERM = 'xterm'
+            }
+            $env.TERMINAL = $env.TERM
+          '';
         starshipInit =
           optionalString config.programs.starship.enable
           /*
@@ -369,11 +366,11 @@ in {
           # Extra commands
           ${extraCommands}
 
-          ${devInit}
-
           def upgrade [] {
             ${concatLines shellCfg.upgradeCommands}
           }
+
+          ${devInit}
 
           # Setup carapace completions
           if (r#'${config.xdg.cacheHome}/carapace/init.nu'# | path expand | path type) == file {
@@ -382,11 +379,14 @@ in {
 
           # Disable ^S and ^Q
           stty -ixon
+          ${fixGpg}
+          ${fixXterm}
 
           ${starshipInit}
 
           use jump.nu *
           jump_init
+
 
           # Extra config
           ${cfg.extraConfig}
