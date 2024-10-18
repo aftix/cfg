@@ -55,7 +55,7 @@ in {
     };
 
     xtermFix = mkOption {
-      default = true;
+      default = false;
       description = "Will replace the TERM and TERMINAL environment variables from `xterm-` (if matched) to `xterm`";
     };
 
