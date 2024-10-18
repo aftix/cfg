@@ -27,25 +27,9 @@ jobs:
       group: deploy-fermi
       cancel-in-progress: true
     steps:
-      # Taken from https://github.com/lilyinstarlight/foosteros/blob/aa611d0cf03bd82f6c1c701e73f86f27abb8d8e4/.github/workflows/installer.yml
-      # MIT licensed
-      - name: Free up runner disk space
-        run: |
-          # Large docker images
-          sudo docker image prune --all --force
-          # Large packages
-          sudo apt-get purge -y '^llvm-.*' 'php.*' '^mongodb-.*' '^mysql-.*' azure-cli google-cloud-cli google-chrome-stable firefox powershell microsoft-edge-stable
-          sudo apt-get autoremove -y
-          sudo apt-get clean
-          # Large folders
-          sudo rm -rf /var/lib/apt/lists/* /opt/hostedtoolcache /usr/local/games /usr/local/sqlpackage /usr/local/.ghcup /usr/local/share/powershell /usr/local/share/edge_driver
-          sudo rm -rf /usr/local/share/gecko_driver /usr/local/share/chromium /usr/local/share/chromedriver-linux64 /usr/local/share/vcpkg /usr/local/lib/python*
-          sudo rm -rf /usr/local/lib/node_modules /usr/local/julia* /opt/mssql-tools /etc/skel /usr/share/vim /usr/share/postgresql /usr/share/man /usr/share/apache-maven-*
-          sudo rm -rf /usr/share/R /usr/share/alsa /usr/share/miniconda /usr/share/grub /usr/share/gradle-* /usr/share/locale /usr/share/texinfo /usr/share/kotlinc /usr/share/swift
-          sudo rm -rf /usr/share/doc /usr/share/az_9.3.0 /usr/share/sbt /usr/share/ri /usr/share/icons /usr/share/java /usr/share/fonts /usr/lib/google-cloud-sdk /usr/lib/jvm
-          sudo rm -rf /usr/lib/mono /usr/lib/R /usr/lib/postgresql /usr/lib/heroku /usr/lib/gcc
-
       - uses: actions/checkout@v4
+      - name: Free up runner disk space
+        run: ./.github/clean-space.bash
 
       - uses: DeterminateSystems/nix-installer-action@main
         with:
@@ -58,11 +42,7 @@ jobs:
       - name: Install and configure attic
         timeout-minutes: 60
         continue-on-error: true
-        run: |
-          echo ATTIC_CACHE=$ATTIC_CACHE | tee -a "$GITHUB_ENV"
-          nix profile install '.#attic-client'
-          attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
-          attic use "$ATTIC_CACHE"
+        run: ./.github/install-attic.bash
         env:
           ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
           ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
@@ -72,16 +52,6 @@ jobs:
         run: |
           install -m 600 -D /dev/stdin ~/.ssh/id_ed25519 <<< "${{ secrets.PRIVATE_KEY }}"
     
-      - name: Add VPS fingerprint to known ssh hosts
-        run: ssh-keyscan -H 170.130.165.174 > ~/.ssh/known_hosts
-
       - name: Deploy fermi
         run: |
-          attic watch-store "ci:$ATTIC_CACHE" &
-          nix run 'github:serokell/deploy-rs' '.#fermi' -- --ssh-user aftix -- --impure
-          kill %1
-          ssh aftix@170.130.165.174 'sh -ls' <<< "$SCRIPT"
-        env:
-          SCRIPT: >-
-            cd $HOME/cfg ;
-            git pull --rebase
+          ./.github/deploy-node.bash "fermi" "170.130.165.174"
