@@ -1,0 +1,144 @@
+name: build-configuration
+
+on:
+  workflow_call:
+    secrets:
+      ATTIC_SERVER:
+        required: true
+      ATTIC_CACHE:
+        required: true
+      ATTIC_TOKEN:
+        required: true
+      PRIVATE_KEY:
+        required: true
+    inputs:
+      substituters:
+        type: string
+        required: true
+      trustedPublicKeys:
+        type: string
+        required: true
+      configuration:
+        type: string
+        required: true
+
+jobs:
+  build:
+    name: Build nixos configuration ${{ inputs.configuration }}
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.getdeploy.outputs.deploy }}
+    steps:
+      # Taken from https://github.com/lilyinstarlight/foosteros/blob/aa611d0cf03bd82f6c1c701e73f86f27abb8d8e4/.github/workflows/installer.yml
+      # MIT licensed
+      - name: Free up runner disk space
+        run: |
+          # Large docker images
+          sudo docker image prune --all --force
+          # Large packages
+          sudo apt-get purge -y '^llvm-.*' 'php.*' '^mongodb-.*' '^mysql-.*' azure-cli google-cloud-cli google-chrome-stable firefox powershell microsoft-edge-stable
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          # Large folders
+          sudo rm -rf /var/lib/apt/lists/* /opt/hostedtoolcache /usr/local/games /usr/local/sqlpackage /usr/local/.ghcup /usr/local/share/powershell /usr/local/share/edge_driver
+          sudo rm -rf /usr/local/share/gecko_driver /usr/local/share/chromium /usr/local/share/chromedriver-linux64 /usr/local/share/vcpkg /usr/local/lib/python*
+          sudo rm -rf /usr/local/lib/node_modules /usr/local/julia* /opt/mssql-tools /etc/skel /usr/share/vim /usr/share/postgresql /usr/share/man /usr/share/apache-maven-*
+          sudo rm -rf /usr/share/R /usr/share/alsa /usr/share/miniconda /usr/share/grub /usr/share/gradle-* /usr/share/locale /usr/share/texinfo /usr/share/kotlinc /usr/share/swift
+          sudo rm -rf /usr/share/doc /usr/share/az_9.3.0 /usr/share/sbt /usr/share/ri /usr/share/icons /usr/share/java /usr/share/fonts /usr/lib/google-cloud-sdk /usr/lib/jvm
+          sudo rm -rf /usr/lib/mono /usr/lib/R /usr/lib/postgresql /usr/lib/heroku /usr/lib/gcc
+
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-substituters = ${{ inputs.substituters }}
+            extra-trusted-public-keys = ${{ inputs.trustedPublicKeys }}
+
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Install and configure attic
+        continue-on-error: true
+        timeout-minutes: 20
+        run: |
+          echo ATTIC_CACHE=$ATTIC_CACHE | tee -a "$GITHUB_ENV"
+          nix profile install '.#attic-client'
+          attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          attic use "$ATTIC_CACHE"
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+
+      - name: Build configuration ${{ inputs.configuration }}
+        timeout-minutes: 120
+        run: |
+          if [[ "${{ inputs.configuration }}" =~ ^iso- ]] ; then
+            nix build '.#nixosConfigurations.${{ inputs.configuration }}.config.system.build.isoImage'
+          else
+            nix build '.#nixosConfigurations.${{ inputs.configuration }}.config.system.build.toplevel'
+          fi
+          nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
+
+      - name: Find if ${{ inputs.configuration }} is in deploy.nodes
+        id: getdeploy
+        run: >
+          nix eval .#deploy.nodes --apply 'x: builtins.elem "${{ inputs.configuration }}" (builtins.attrNames x)' | awk '{print "deploy="$0}' | tee -a "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy node ${{ inputs.configuration }}
+    runs-on: ubuntu-latest
+    needs: build
+    concurrency:
+      group: deploy-${{ inputs.configuration }}
+      cancel-in-progress: true
+    if: ${{ !github.event.forced && needs.build.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
+            extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
+
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Install and configure attic
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          echo ATTIC_CACHE=$ATTIC_CACHE | tee -a "$GITHUB_ENV"
+          nix profile install '.#attic-client'
+          attic login --set-default ci "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          attic use "$ATTIC_CACHE"
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_CACHE: ${{ secrets.ATTIC_CACHE }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+
+      - name: Create ssh key from repository secrets
+        run: |
+          install -m 600 -D /dev/stdin ~/.ssh/id_ed25519 <<< "${{ secrets.PRIVATE_KEY }}"
+
+      - name: Get ${{ inputs.configuration }} hostname
+        id: hostname
+        run: >
+          nix eval '.#deploy.nodes.${{ inputs.configuration }}.hostname' | awk '{print "hostname="$0}' | tee -a "$GITHUB_OUTPUT"
+    
+      - name: Add node fingerprint to known ssh hosts
+        run: |
+          ssh-keyscan -H ${{ steps.hostname.outputs.hostname }} > ~/.ssh/known_hosts
+
+      - name: Deploy ${{ inputs.configuration }}
+        run: |
+          attic watch-store "ci:$ATTIC_CACHE" &
+          nix run 'github:serokell/deploy-rs' '.#${{ inputs.configuration }}' -- --ssh-user aftix -- --impure
+          kill %1
+          ssh aftix@${{ steps.hostname.outputs.hostname }} 'sh -ls' <<< "$SCRIPT"
+        env:
+          SCRIPT: >-
+            if [ -d "$HOME/cfg" ]; 
+              then cd $HOME/cfg ;
+              git pull --rebase ;
+            fi
