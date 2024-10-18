@@ -21,7 +21,7 @@
       TERM = "xterm";
       TERMINAL = TERM;
     };
-    packages = with pkgs; [attic-client];
+    packages = with pkgs; [attic-client kitty.terminfo];
 
     stateVersion = "23.11"; # DO NOT CHANGE
   };
@@ -31,8 +31,6 @@
   my = {
     shell = {
       elvish.enable = false;
-      nushell.enable = false;
-      xtermFix = true;
       gpgTtyFix = false;
     };
 
