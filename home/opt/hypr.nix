@@ -507,7 +507,6 @@ in {
           programs = map (cmd: "bind = ${cmd}") [
             ",w,exec,firefox"
             ",e,exec,thunderbird"
-            "SHIFT,w,exec,chromium"
             ",d,exec,discord"
             "SHIFT,d,exec,element-desktop"
           ];

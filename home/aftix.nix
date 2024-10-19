@@ -20,7 +20,6 @@ in {
     ./opt/helix.nix
     ./opt/neoutils.nix
 
-    ./opt/chromium.nix
     ./opt/firefox.nix
 
     ./opt/email.nix
