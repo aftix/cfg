@@ -64,7 +64,7 @@ in {
 
     services = {
       atticd = {
-        credentialsFile = config.sops.templates.attic_creds.path;
+        environmentFile = config.sops.templates.attic_creds.path;
         settings = {
           allowed-hosts = ["localhost:${strPort}" fullHostname "www.${fullHostname}"];
           api-endpoint = "https://${fullHostname}/";
