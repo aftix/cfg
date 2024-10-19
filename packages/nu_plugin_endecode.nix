@@ -7,16 +7,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_endecode";
-  version = "9d8d29ae40734ad95765f780b245d54ce7a291da";
+  version = "738034b769fca04ad6695dd6b0b26d65e2492033";
 
   src = fetchFromGitea {
     domain = "codeberg.org";
     owner = "kaathewise";
-    repo = "nu-plugin";
+    repo = "nugins";
     rev = version;
-    sha256 = "sha256-goFxqEuc++89pQ/wsWmFUudlQoeVFFxj4WBangFdZkE=";
+    sha256 = "sha256-kMd8hNKRAxlbpVpuZQC2suut3CpIBD9cgN7ABBp9WZw=";
   };
-  cargoHash = "sha256-gfZ7JdSNWFE706EfhQ9DhyJ0w3HgY/LruuDgm6xH/ss=";
+  cargoHash = "sha256-oL1rTkEontUcMeNcr64W0Xvqva+EOWgniJIB8Qlhjmo=";
 
   cargoBuildHook = ''
     export buildAndTestSubdir="./endecode"
