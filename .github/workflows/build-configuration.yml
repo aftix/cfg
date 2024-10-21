@@ -50,7 +50,7 @@ jobs:
           ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Build configuration ${{ inputs.configuration }}
-        timeout-minutes: 120
+        timeout-minutes: 180
         run: |
           if [[ "${{ inputs.configuration }}" =~ ^iso- ]] ; then
             nix build '.#nixosConfigurations.${{ inputs.configuration }}.config.system.build.isoImage'
