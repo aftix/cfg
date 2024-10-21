@@ -49,33 +49,6 @@ jobs:
         run: |
           nix-store --query --requisites --include-outputs ./result | xargs ./result/bin/attic push "ci:$ATTIC_CACHE"
 
-  prebuild:
-    name: Get nixosConfiguration outputs of the flake to populate build matrix
-    needs: attic
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.getconfigs.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
-      - name: Get configurations
-        id: getconfigs
-        run: >
-          nix flake show --json | jq -c '.nixosConfigurations | keys | {configuration: .}' | awk '{print "matrix="$0}' | tee -a "$GITHUB_OUTPUT"
-  build:
-    needs: 
-      - prebuild
-      - bootstrap
-    strategy:
-      matrix: ${{ fromJson(needs.prebuild.outputs.matrix) }}
-      fail-fast: false
-    uses: ./.github/workflows/build-configuration.yml
-    with:
-      substituters: ${{ needs.bootstrap.outputs.substituters }}
-      trustedPublicKeys: ${{ needs.bootstrap.outputs.trustedPublicKeys }}
-      configuration: ${{ matrix.configuration }}
-    secrets: inherit
-
   prebuildpkgs:
     name: Get package outputs of the flake to populate build matrix
     needs: attic
@@ -123,6 +96,34 @@ jobs:
 
       - name: Push package ${{ matrix.package }} to attic
         run: nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
+  prebuild:
+    name: Get nixosConfiguration outputs of the flake to populate build matrix
+    needs: attic
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.getconfigs.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - name: Get configurations
+        id: getconfigs
+        run: >
+          nix flake show --json | jq -c '.nixosConfigurations | keys | {configuration: .}' | awk '{print "matrix="$0}' | tee -a "$GITHUB_OUTPUT"
+  build:
+    needs: 
+      - prebuild
+      - bootstrap
+      - buildpkgs
+    strategy:
+      matrix: ${{ fromJson(needs.prebuild.outputs.matrix) }}
+      fail-fast: false
+    uses: ./.github/workflows/build-configuration.yml
+    with:
+      substituters: ${{ needs.bootstrap.outputs.substituters }}
+      trustedPublicKeys: ${{ needs.bootstrap.outputs.trustedPublicKeys }}
+      configuration: ${{ matrix.configuration }}
+    secrets: inherit
+
   check:
     name: check nix flake
     needs: 
