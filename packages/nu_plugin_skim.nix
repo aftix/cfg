@@ -7,15 +7,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_skim";
-  version = "6de10d1995f243b8ae7331103a71ea895578e843";
+  version = "0.8.0";
 
   src = fetchFromGitHub {
     owner = "idanarye";
     repo = pname;
     rev = version;
-    sha256 = "sha256-sD+oStE+w39/psFErdcrItciSNyXRtHDnKz3gT9mrX4=";
+    sha256 = "sha256-3q2qt35lZ07N8E3p4/BoYX1H4B8qcKXJWnZhdJhgpJE=";
   };
-  cargoHash = "sha256-HEhG6KRnirZCjryKuQexfF7Kg2KFEPMN6TCen+D8/zw=";
+  cargoHash = "sha256-+RYrQsB8LVjxZsQ7dVDK6GT6nXSM4b+qpILOe0Q2SjA=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
