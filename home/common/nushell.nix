@@ -123,7 +123,7 @@ in {
           */
           ''
             # Add homebrew prefix to path
-            $env.PATH = ($env.PATH | prepend $"(${brewPath} --prefix)/bin")
+            $env.PATH = ($env.PATH | append $"(${brewPath} --prefix)/bin")
             # Add homebrew environmental variables
             (brew shellenv
               | lines
@@ -142,7 +142,7 @@ in {
           nushell
           */
           ''
-            $env.PATH = ($env.PATH | prepend r#'${p}'#)
+            $env.PATH = ($env.PATH | append r#'${p}'#)
           '')
         config.home.sessionPath);
         sourceExtraEnv = concatLines (builtins.map (
