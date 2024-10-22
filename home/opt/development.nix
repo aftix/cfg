@@ -18,7 +18,7 @@ in {
     rust = mkOption {default = true;};
     go = mkOption {default = true;};
     cpp = mkOption {default = true;};
-    typescript = mkOption {default = true;};
+    typescript = mkOption {default = false;};
     gh = mkOption {default = true;};
   };
 
