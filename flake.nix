@@ -207,7 +207,7 @@
       };
 
       config.dep-inject = {
-        inherit spkgs inputs;
+        inherit spkgs inputs commonHmModules;
       };
     };
 
@@ -226,6 +226,57 @@
       };
     };
 
+    # Options that are for home-manager, but should be set on a per-host basis
+    nixosHomeOptions = lib: {
+      my.development.nixdConfig = lib.mkOption {
+        default = {};
+        description = "Configuration for the nixd LSP";
+        type = with lib.types; attrsOf anything;
+      };
+    };
+
+    # Nixos module for nixosHomeOptions
+    # Allows nixos configurations to set options to propagate into each home-manager configuration
+    nixosHomeModule = {lib, ...}: {options = nixosHomeOptions lib;};
+
+    # Inject config from nixosHomeOptions into home-manager
+    # Leaves a my.nixosCfg option set to the total system configuration, and
+    # recursively picks out the options defined in nixosHomeOptions and injects them into the home-manager
+    # configuration so those options in particular won't need a "my.nixosCfg" before the config path.
+    # Downstream users should get this from the `extra` flake output and use it to generate a hm module
+    # with their sysCfg injected. The nixos side is already in the default flake nixosModule, so nothing
+    # extra is needed beyond that.
+    hmInjectNixosHomeOptions = sysCfg: {lib, ...}: let
+      homeOpts = nixosHomeOptions lib;
+    in {
+      imports = [{options = homeOpts;}];
+
+      options.my.nixosCfg = lib.mkOption {
+        description = "The NixOS configuration";
+        readOnly = true;
+        type = lib.types.raw;
+      };
+
+      config = let
+        inherit (lib.attrsets) mapAttrsRecursiveCond hasAttrByPath getAttrFromPath;
+      in
+        lib.mkMerge [
+          (
+            mapAttrsRecursiveCond
+            # Do not recurse into attrsets that are option definitions
+            (attrs: !(attrs ? "_type" && attrs._type == "option"))
+            (optPath: _:
+              if hasAttrByPath optPath sysCfg
+              then getAttrFromPath optPath sysCfg
+              else null)
+            homeOpts
+          )
+          {
+            my.nixosCfg = sysCfg;
+          }
+        ];
+    };
+
     commonModules = [
       pkgsCfg
       home-manager.nixosModules.home-manager
@@ -234,8 +285,9 @@
       inputs.nix-index-database.nixosModules.nix-index
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
       inputs.nixos-cli.nixosModules.nixos-cli
+      nixosHomeModule
+      depInject
       {
-        imports = [depInject];
         programs = {
           nix-index-database.comma.enable = true;
           command-not-found.enable = false;
@@ -283,14 +335,19 @@
             ]
             ++ modules
             ++ [
-              {
+              ({config, ...}: let
+                nixosHomeOptions = hmInjectNixosHomeOptions config;
+              in {
                 home-manager = {
                   useUserPackages = true;
                   inherit extraSpecialArgs users;
 
-                  sharedModules = [self.homemanagerModules.default];
+                  sharedModules = [
+                    nixosHomeOptions
+                    self.homemanagerModules.default
+                  ];
                 };
-              }
+              })
             ];
         }
         // extraAttrs);
@@ -387,7 +444,7 @@
         # NOTE: you'll need to use these for some optional modules
         inherit extraSpecialArgs;
 
-        inherit substituters trusted-public-keys;
+        inherit substituters trusted-public-keys nixosHomeOptions hmInjectNixosHomeOptions;
       };
     }
     // flake-utils.lib.eachDefaultSystem (sys: {
@@ -402,7 +459,6 @@
         pkgs = nixpkgs.legacyPackages.${sys};
         appliedOverlay = self.overlays.default pkgs pkgs;
         helixOverlay = inputs.helix.overlays.default pkgs pkgs;
-        atticOverlay = inputs.attic.overlays.default pkgs pkgs;
       in {
         inherit
           (appliedOverlay)

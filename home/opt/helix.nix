@@ -9,19 +9,22 @@
   inherit (config.dep-inject) inputs;
 
   devCfg =
-    config.my.devlopment
-    or {
+    {
       nix = true;
       rust = true;
       go = true;
       cpp = true;
       typescript = true;
       gh = true;
-    };
+
+      nixdConfig = {};
+    }
+    // (config.my.development or {});
 
   helixLanguages = let
     inherit (lib.strings) escapeShellArg;
     mkSelector = name: ".language[] | select(.name == \"${name}\")";
+    mkLSPSelector = name: ".\"language-server\".\"${name}\"";
     selectNix = mkSelector "nix";
 
     doFilter = selector: field: value: let
@@ -40,6 +43,13 @@
       ${doFilter selector "auto-format" "true"}
       ${doFilter selector "formatter" formatter}
     '';
+
+    addNixdConfig =
+      lib.strings.optionalString (
+        devCfg.nixdConfig != {}
+      ) ''
+        ${doFilter (mkLSPSelector "nixd") "config" (builtins.toJSON devCfg.nixdConfig)}
+      '';
   in
     pkgs.runCommandLocal "helix-languages" {}
     /*
@@ -51,6 +61,7 @@
       TMP="$(${pkgs.mktemp}/bin/mktemp)"
       cat "${inputs.helix}/languages.toml" > "$TMP"
       ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
+      ${addNixdConfig}
       cat "$TMP" > $out
       rm "$TMP"
     '';
@@ -60,10 +71,10 @@ in {
       [
         markdown-oxide
         bash-language-server
-        nodePackages_latest.typescript-language-server
       ]
+      ++ (optionals devCfg.typescript [nodePackages_latest.typescript-language-server])
       ++ (optionals config.my.shell.nushell.enable [nufmt])
-      ++ (optionals devCfg.nix [nil alejandra])
+      ++ (optionals devCfg.nix [nixd alejandra])
       ++ (optionals devCfg.go [gopls]);
 
     sessionVariables = {

@@ -33,7 +33,7 @@ in {
           just
         ]
         ++ optionals cfg.nix
-        [statix alejandra nix-output-monitor nvd]
+        [statix alejandra nix-output-monitor nvd nurl]
         ++ optionals cfg.rust
         [
           rustup
@@ -91,23 +91,29 @@ in {
         "${config.home.sessionVariables.GOPATH}/bin";
     };
 
-    my.shell = {
-      development = true;
+    my = {
+      shell = {
+        development = true;
 
-      upgradeCommands =
-        optionals cfg.rust
-        [
-          "rustup update"
-          "cargo install-update --all"
-        ];
+        upgradeCommands =
+          optionals cfg.rust
+          [
+            "rustup update"
+            "cargo install-update --all"
+          ];
 
-      neededDirs = with config.home.sessionVariables; (
-        ["${dataHome}/bin"]
-        ++ optionals cfg.go
-        [GOPATH GOCACHE GOMODCACHE]
-        ++ optional cfg.rust
-        CARGO_HOME
-      );
+        neededDirs = with config.home.sessionVariables; (
+          ["${dataHome}/bin"]
+          ++ optionals cfg.go
+          [GOPATH GOCACHE GOMODCACHE]
+          ++ optional cfg.rust
+          CARGO_HOME
+        );
+      };
+
+      development.nixdConfig = lib.mkIf (cfg.nix) {
+        formatting.command = ["alejandra"];
+      };
     };
 
     programs.gh = {
