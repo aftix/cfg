@@ -152,6 +152,35 @@ in {
       optimise.automatic = true;
     };
 
+    # Set the host-specific things in the nixd configuration
+    my.development.nixdConfig.options = lib.mkIf ((config.my.flake or "") != "") {
+      nixos.expr = "(builtins.getFlake \"${config.my.flake}\").nixosConfigurations.${config.networking.hostName}.options";
+      home-manager.expr =
+        /*
+        nix
+        */
+        ''
+          let
+            flake = builtins.getFlake "${config.my.flake}";
+            nixosCfg = flake.nixosConfigurations.${config.networking.hostName}.config;
+            pkgs = import <nixpkgs> {};
+            inherit (pkgs) lib;
+            inherit (flake.extra) extraSpecialArgs nixosHomeOptions hmInjectNixosHomeOptions;
+            mkHmCfg = flake.inputs.home-manager.lib.homeManagerConfiguration;
+            nixosOpts = nixosHomeOptions lib;
+            modules = nixosCfg.dep-inject.commonHmModules ++ [
+              nixosOpts
+              ({pkgs, ...}: { nix.package = pkgs.nix;})
+              (hmInjectNixosHomeOptions nixosCfg)
+              (import "${config.my.flake}/home/aftix.nix")
+            ];
+          in
+            (mkHmCfg {
+              inherit pkgs lib extraSpecialArgs modules;
+            }).options
+        '';
+    };
+
     # Use the systemd-boot EFI boot loader.
     boot = {
       loader = lib.mkIf config.my.uefi {
