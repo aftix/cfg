@@ -108,8 +108,6 @@ in {
 
     history.path = "${stateHome}/zsh/history";
     historySubstringSearch.enable = true;
-    dirHashes =
-      {inherit (config.xdg) configHome dataHome cacheHome stateHome;} // optionalAttrs userDirs.enable (filterAttrs (_: v: builtins.isString v) userDirs);
   };
 
   home = {
