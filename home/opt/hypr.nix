@@ -543,6 +543,11 @@ in {
 
           listener = [
             {
+              timeout = 540;
+              on-timeout = "notify-send --app-name hypridle -u low -t 60000 hypridle \"No user interaction dected for 9 minutes, system will lock in 1 minute.\"";
+              on-resume = "notify-send --app-name hypridle -u low -t 5000 hypridle \"User interaction detected, cancelled pending system lock.\"";
+            }
+            {
               timeout = 600;
               on-timeout = "loginctl lock-session";
             }
