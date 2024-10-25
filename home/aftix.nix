@@ -24,11 +24,11 @@ in {
 
     ./opt/email.nix
 
-    ./opt/dunst.nix
     ./opt/hypr.nix
     ./opt/kitty.nix
     ./opt/media.nix
     ./opt/stylix.nix
+    ./opt/swaync.nix
     ./opt/transmission.nix
 
     ./opt/discord.nix
@@ -81,6 +81,8 @@ in {
       WEECHAT_HOME = dataHome + "/weechat";
     };
   };
+
+  services.swaync.enable = true;
 
   systemd.user.services.ghHosts = {
     Unit = {

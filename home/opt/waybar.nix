@@ -1,4 +1,13 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
+  inherit (lib.attrsets) optionalAttrs;
+  inherit (lib.lists) optionals;
+  inherit (lib.strings) optionalString;
+
   waybar-dunst = final:
     final.writeShellApplication {
       name = "waybar-dunst";
@@ -60,13 +69,15 @@
     };
 in {
   nixpkgs.overlays = [
-    (final: _: {
-      waybar-dunst = waybar-dunst final;
-      waybar-mullvad = waybar-mullvad final;
-      waybar-backup = waybar-backup final;
-    })
+    (final: _:
+      {
+        waybar-dunst = waybar-dunst final;
+        waybar-mullvad = waybar-mullvad final;
+        waybar-backup = waybar-backup final;
+      }
+      // optionalAttrs config.services.dunst.enable {waybar-dunst = waybar-dunst final;})
   ];
-  home.packages = with pkgs; [waybar pkgs.waybar-dunst pkgs.waybar-mullvad pkgs.waybar-backup];
+  home.packages = with pkgs; [waybar pkgs.waybar-dunst pkgs.waybar-mullvad pkgs.waybar-backup] ++ optionals config.services.dunst.enable [pkgs.dunst];
 
   programs.waybar = {
     enable = true;
@@ -105,14 +116,14 @@ in {
         }
 
         #custom-mullvad,
-        #custom-dunst {
+        #custom-notification {
           padding: 2px 2px;
           padding-right: 4px;
         }
 
         #custom-mullvad.disconnected,
         #network.disconnected,
-        #custom-dunst.disabled,
+        #custom-notification.disabled,
         #mpd.disconnected {
           background-color: #f53c3c;
         }
@@ -129,12 +140,52 @@ in {
           background-color: #ecf0f1;
           color: black;
         }
+      ''
+      + optionalString config.services.swaync.enable ''
+        #custom-notification {
+          font-family: "NotoSansMono Nerd Font";
+        }
       '';
   };
 
   xdg.configFile = let
     mullvad = "/run/current-system/sw/bin/mullvad";
-    dunstctl = "${pkgs.dunst}/bin/dunstctl";
+
+    dunstNotification = {
+      return-type = "json";
+      exec = lib.getExe pkgs.waybar-dunst;
+      on-click = "${lib.getExe' config.services.dunst.package "dunstctl"} set-paused toggle";
+      restart-interval = 1;
+    };
+
+    swayncNotification = let
+      swaync = lib.getExe' config.services.swaync.package "swaync-client";
+    in {
+      tooltip = false;
+      format = "{} {icon}";
+      format-icons = {
+        notification = "<span foreground='red'><sup></sup></span>";
+        none = "";
+        dnd-notification = "<span foreground='red'><sup></sup></span>";
+        dnd-none = "";
+        inhibited-notification = "<span foreground='red'><sup></sup></span>";
+        inhibited-none = "";
+        dnd-inhibited-notification = "<span foreground='red'><sup></sup></span>";
+        dnd-inhibited-none = "";
+      };
+      return-type = "json";
+      exec-if = "which ${swaync}";
+      exec = "${swaync} -swb";
+      on-click = "${swaync} -t -sw";
+      on-click-right = "${swaync} -d -sw";
+      escape = true;
+    };
+
+    customNotification = assert config.services.dunst.enable != config.services.swaync.enable;
+      if config.services.swaync.enable
+      then swayncNotification
+      else dunstNotification;
+
     cfg = {
       layer = "top";
       position = "bottom";
@@ -239,12 +290,7 @@ in {
         tooltip-format = "VPN connection status";
       };
 
-      "custom/dunst" = {
-        return-type = "json";
-        exec = "${pkgs.waybar-dunst}/bin/waybar-dunst";
-        on-click = "\"${dunstctl}\" set-paused toggle";
-        restart-interval = 1;
-      };
+      "custom/notification" = customNotification;
     };
   in {
     "waybar/config.jsonc".source = (pkgs.formats.json {}).generate "waybar" [
@@ -268,13 +314,13 @@ in {
             "idle_inhibitor"
             "pulseaudio"
             "custom/mullvad"
+            "custom/notification"
             "network"
             "cpu"
             "memory"
             "temperature"
             "keyboard-state"
             "clock"
-            "custom/dunst"
             "tray"
           ];
 
@@ -338,7 +384,6 @@ in {
             "temperature"
             "keyboard-state"
             "clock"
-            "custom/dunst"
             "tray"
           ];
         })
