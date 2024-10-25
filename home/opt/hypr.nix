@@ -6,6 +6,7 @@
 }: let
   inherit (lib.options) mkOption;
   inherit (lib.strings) optionalString concatMapStringsSep escapeShellArg;
+  inherit (lib.lists) optionals;
 
   inherit (config.dep-inject) spkgs;
   inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
@@ -367,12 +368,20 @@ in {
             # Scratch pad
             "$mainMod, Minus, togglespecialworkspace, magic"
             "$mainMod SHIFT, Minus, movetoworkspace, special:magic"
-
+          ]
+          ++ optionals config.services.dunst.enable [
             # Dunst hotkeys
             "CTRL, Space, exec, dunstctl close"
             "CTRL SHIFT, Space, exec, dunstctl close-all"
             "CTRL SHIFT, Period, exec, dunstctl context"
             "CTRL SHIFT, Grave, exec, dunstctl history-pop"
+          ]
+          ++ optionals config.services.swaync.enable [
+            # Swaync
+            "CTRL, Space, exec, swaync-client --close-latest"
+            "CTRL SHIFT, Space, exec, swaync-client -C"
+            "$mainMod, N, exec, swaync-client -t"
+            "$mainMod SHIFT, N, exec, swaync-client -d"
           ]
           ++
           # Focus movement
