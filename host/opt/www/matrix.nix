@@ -17,8 +17,6 @@
   bridgeRegistrationFile = "/var/lib/heisenbridge/registration.yml";
   matrixUser = "matrix-synapse";
   matrixGroup = "matrix-synapse";
-  slidingSyncUser = "matrix-sliding-sync";
-  slidingSyncGroup = "matrix-sliding-sync";
 in {
   options.my.matrix = {
     enable = mkEnableOption "matrix synapse homeserver";
@@ -60,10 +58,6 @@ in {
       default = 9090;
       type = lib.types.ints.positive;
     };
-    slidingSyncPort = mkOption {
-      default = 8009;
-      type = lib.types.ints.positive;
-    };
 
     supportEndpointJSON = mkOption {
       default = {};
@@ -82,10 +76,6 @@ in {
           owner = matrixUser;
           group = matrixGroup;
         };
-        matrix_sliding_sync = {
-          owner = slidingSyncUser;
-          group = slidingSyncGroup;
-        };
       };
 
       templates = {
@@ -99,18 +89,6 @@ in {
             ''
               registration_shared_secret: "${config.sops.placeholder.synapse_registration_token}"
               macaroon_secret_key: "${config.sops.placeholder.synapse_macaroon_key}"
-            '';
-        };
-
-        "sliding-sync-secret.env" = {
-          owner = slidingSyncUser;
-          group = slidingSyncGroup;
-          content =
-            /*
-            env
-            */
-            ''
-              SYNCV3_SECRET="${config.sops.placeholder.matrix_sliding_sync}"
             '';
         };
       };
@@ -240,33 +218,15 @@ in {
             RestrictAddressFamilies = "AF_INET AF_INET6";
           };
         };
-
-      matrix-sliding-sync = {
-        after = lib.mkForce ["postgresql.service" "matrix-synapse.service"];
-        serviceConfig = {
-          DynamicUser = lib.mkForce false;
-          User = lib.mkForce slidingSyncUser;
-          Group = lib.mkForce slidingSyncGroup;
-          WorkingDirectory = lib.mkForce config.services.matrix-sliding-sync.package;
-        };
-      };
     };
 
     services = {
       postgresql = {
         enable = true;
-        ensureDatabases = [matrixUser slidingSyncUser];
+        ensureDatabases = [matrixUser];
         ensureUsers = [
           {
             name = matrixUser;
-            ensureDBOwnership = true;
-            ensureClauses = {
-              login = true;
-              replication = true;
-            };
-          }
-          {
-            name = slidingSyncUser;
             ensureDBOwnership = true;
             ensureClauses = {
               login = true;
@@ -333,17 +293,6 @@ in {
         extraConfigFiles = [config.sops.templates."synapse-secrets.yaml".path];
       };
 
-      matrix-sliding-sync = {
-        enable = true;
-        environmentFile = config.sops.templates."sliding-sync-secret.env".path;
-        createDatabase = false;
-        settings = {
-          SYNCV3_SERVER = pkgs.lib.strings.removeSuffix "/" config.services.matrix-synapse.settings.public_baseurl;
-          SYNCV3_BINDADDR = "127.0.0.1:${builtins.toString cfg.slidingSyncPort}";
-          SYNCV3_DB = "postgresql:///${slidingSyncUser}?host=${config.services.postgresql.settings.unix_socket_directories}";
-        };
-      };
-
       nginx = {
         upstreams =
           {
@@ -351,13 +300,6 @@ in {
               servers."localhost:${strPort}" = {};
               extraConfig = ''
                 zone synapse 64k;
-                keepalive 8;
-              '';
-            };
-            matrix-sliding-sync = {
-              servers."localhost:${builtins.toString cfg.slidingSyncPort}" = {};
-              extraConfig = ''
-                zone sliding_sync 64k;
                 keepalive 8;
               '';
             };
@@ -383,22 +325,6 @@ in {
           };
         in
           {
-            "~* ^(\\/_matrix\\/push)" = {
-              proxyPass = "http://matrix-sliding-sync";
-              extraConfig = ''
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-              '';
-            };
-
-            "~ ^/(client/|_matrix/client/unstable/org.matrix.msc3575/sync)" = {
-              proxyPass = "http://matrix-sliding-sync";
-              extraConfig = ''
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-              '';
-            };
-
             "~* ^(\\/_matrix|\\/_synapse\\/client)" = {
               proxyPass = "http://matrix-synapse";
               extraConfig = ''
@@ -431,17 +357,6 @@ in {
     networking.firewall = {
       allowedTCPPorts = optional cfg.ircBridge.identd.enable 113;
       allowedUDPPorts = optional cfg.ircBridge.identd.enable 113;
-    };
-
-    users = rec {
-      users.${slidingSyncUser} = {
-        group = slidingSyncGroup;
-        isSystemUser = true;
-        createHome = false;
-        uid = 10555;
-      };
-
-      groups.${slidingSyncGroup}.gid = users.${slidingSyncUser}.uid;
     };
   };
 }
