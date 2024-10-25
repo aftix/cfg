@@ -196,11 +196,7 @@
 
     spkgs = stablepkgs.legacyPackages.${system};
 
-    depInject = {
-      pkgs,
-      lib,
-      ...
-    }: {
+    depInject = {lib, ...}: {
       options.dep-inject = lib.mkOption {
         type = with lib.types; attrsOf unspecified;
         default = {};
@@ -211,11 +207,7 @@
       };
     };
 
-    depInjectHm = {
-      pkgs,
-      lib,
-      ...
-    }: {
+    depInjectHm = {lib, ...}: {
       options.dep-inject = lib.mkOption {
         type = with lib.types; attrsOf unspecified;
         default = {};
@@ -279,8 +271,15 @@
 
     commonModules = [
       pkgsCfg
+      ({...}: {
+        nixpkgs.overlays = [
+          inputs.lix.overlays.default
+          (_: prev: {
+            lix = prev.lix.override {aws-sdk-cpp = null;};
+          })
+        ];
+      })
       home-manager.nixosModules.home-manager
-      inputs.lix.nixosModules.default
       inputs.sops-nix.nixosModules.sops
       inputs.nix-index-database.nixosModules.nix-index
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
