@@ -4,50 +4,65 @@
   lib,
   ...
 }: {
-  home.packages = with pkgs; [
-    feh
-    ffmpeg_7-full
-    imagemagick
+  home = {
+    packages = with pkgs; [
+      feh
+      ffmpeg_7-full
+      imagemagick
 
-    mpc-cli
-    ncmpcpp
-  ];
-
-  services.mpd = let
-    dataDir = "${config.home.homeDirectory}/.local/share/mpd";
-  in {
-    enable = true;
-    inherit dataDir;
-    musicDirectory = "${config.home.homeDirectory}/media/music";
-    playlistDirectory = "${dataDir}/playlists";
-    dbFile = "${dataDir}/database";
-    extraConfig = lib.concatStrings [
-      ''
-        log_file "${config.home.homeDirectory}/.cache/mpd.log"
-      ''
-      ''
-        pid_file "/run/user/1000/mpd.pid"
-      ''
-      ''
-        state_file "${config.home.homeDirectory}/.cache/mpd.state"
-      ''
-      ''
-        sticker_file "${dataDir}/sticker.sql"
-      ''
-
-      ''
-        input {
-          plugin "curl"
-        }
-      ''
-
-      ''
-        audio_output {
-          type "pipewire"
-          name "Pipewire audio"
-        }
-      ''
+      ario
+      mpc-cli
     ];
+
+    persistence."${config.my.impermanence.path}" = lib.mkIf config.my.impermanence.enable {
+      directories = [
+        ".config/ario"
+      ];
+    };
+  };
+
+  services = {
+    mpd = let
+      dataDir = "${config.home.homeDirectory}/.local/share/mpd";
+    in {
+      enable = true;
+      inherit dataDir;
+      musicDirectory = "${config.home.homeDirectory}/media/music";
+      playlistDirectory = "${dataDir}/playlists";
+      dbFile = "${dataDir}/database";
+      extraConfig = lib.concatStrings [
+        ''
+          log_file "${config.home.homeDirectory}/.cache/mpd.log"
+        ''
+        ''
+          pid_file "/run/user/1000/mpd.pid"
+        ''
+        ''
+          state_file "${config.home.homeDirectory}/.cache/mpd.state"
+        ''
+        ''
+          sticker_file "${dataDir}/sticker.sql"
+        ''
+
+        ''
+          input {
+            plugin "curl"
+          }
+        ''
+
+        ''
+          audio_output {
+            type "pipewire"
+            name "Pipewire audio"
+          }
+        ''
+      ];
+    };
+
+    mpd-mpris = {
+      enable = true;
+      mpd.useLocal = true;
+    };
   };
 
   my.shell = {
@@ -137,14 +152,6 @@
   };
 
   xdg = {
-    configFile."ncmpcpp/config".source = (pkgs.formats.keyValue {}).generate "ncmpcpp" {
-      ncmpcpp_directory = "${config.home.homeDirectory}/.config/ncmpcpp";
-      lyrics_directory = "${config.home.homeDirectory}/.local/share/lyrics";
-      mpd_host = "127.0.0.1";
-      mpd_port = 6600;
-      mpd_music_dir = "${config.home.homeDirectory}/media/music";
-    };
-
     mimeApps.defaultApplications = config.my.lib.registerMimes [
       {
         application = "feh";
