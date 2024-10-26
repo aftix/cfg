@@ -111,7 +111,7 @@ in {
         );
       };
 
-      development.nixdConfig = lib.mkIf (cfg.nix) {
+      development.nixdConfig = lib.mkIf cfg.nix {
         formatting.command = ["alejandra"];
       };
     };
