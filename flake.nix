@@ -271,7 +271,7 @@
 
     commonModules = [
       pkgsCfg
-      ({...}: {
+      (_: {
         nixpkgs.overlays = [
           inputs.lix.overlays.default
           (_: prev: {
