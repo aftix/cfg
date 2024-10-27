@@ -4,15 +4,19 @@
   pkgs,
   ...
 }: {
-  home.persistence.${config.my.impermanence.path} = lib.mkIf config.my.impermanence.enable {
-    directories = [
-      ".config/discord"
-      ".config/BetterDiscord"
-    ];
-  };
-
-  home.packages = with pkgs; [
-    discord
-    betterdiscordctl
-  ];
+  home =
+    {
+      packages = with pkgs; [
+        discord
+        betterdiscordctl
+      ];
+    }
+    // lib.optionalAttrs (config.my ? impermanence && config.my.impermanence.enable) {
+      persistence.${config.my.impermanence.path} = {
+        directories = [
+          ".config/discord"
+          ".config/BetterDiscord"
+        ];
+      };
+    };
 }
