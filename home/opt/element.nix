@@ -4,11 +4,15 @@
   lib,
   ...
 }: {
-  home.persistence.${config.my.impermanence.path} = lib.mkIf config.my.impermanence.enable {
-    directories = [
-      ".config/Element"
-    ];
-  };
-
-  home.packages = [pkgs.element-desktop];
+  home =
+    {
+      packages = [pkgs.element-desktop];
+    }
+    // lib.optionalAttrs (config.my ? impermanence && config.my.impermanence.enable) {
+      persistence.${config.my.impermanence.path} = {
+        directories = [
+          ".config/Element"
+        ];
+      };
+    };
 }
