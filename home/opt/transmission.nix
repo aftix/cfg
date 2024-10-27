@@ -29,22 +29,24 @@
     })
   ];
 
-  home = {
-    packages = with pkgs; [transmission_4 transmission-notify];
-
-    persistence.${config.my.impermanence.path} = lib.mkIf config.my.impermanence.enable {
-      directories = [
-        ".config/transmission/torrents"
-        ".config/transmission/blocklists"
-        ".config/transmission/resume"
-      ];
-      files = [
-        ".config/transmission/dht.dat"
-        ".config/transmission/stats.json"
-        ".config/transmission/bandwidth-groups.json"
-      ];
+  home =
+    {
+      packages = with pkgs; [transmission_4 transmission-notify];
+    }
+    // lib.optionalAttrs (config.my ? impermanence && config.my.impermanence.enable) {
+      persistence.${config.my.impermanence.path} = {
+        directories = [
+          ".config/transmission/torrents"
+          ".config/transmission/blocklists"
+          ".config/transmission/resume"
+        ];
+        files = [
+          ".config/transmission/dht.dat"
+          ".config/transmission/stats.json"
+          ".config/transmission/bandwidth-groups.json"
+        ];
+      };
     };
-  };
 
   my.shell.aliases = [
     {
