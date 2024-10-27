@@ -5,6 +5,7 @@
     rootless = {
       enable = true;
       setSocketVariable = true;
+      daemon.settings.dns = ["10.64.0.1"];
     };
   };
 }
