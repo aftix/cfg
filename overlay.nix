@@ -1,5 +1,5 @@
 inputs: final: prev: {
-  inherit (inputs.stablepkgs.legacyPackages.${final.system}) znc freshrss fail2ban transmission_4 hyprpaper xdg-desktop-portal-hyprland;
+  inherit (inputs.stablepkgs.legacyPackages.${final.system}) znc fail2ban transmission_4 hyprpaper xdg-desktop-portal-hyprland;
 
   carapace =
     (prev.carapace.overrideAttrs {
