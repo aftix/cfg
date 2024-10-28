@@ -34,7 +34,7 @@
   '';
 
   defaultSettings = {
-    SERVER_NAME = "my instance";
+    SERVER_NAME = "localhost";
     GOOGLE_ABUSE_EXEMPTION = "";
     MULTIPLE_IDS_ENABLED = true;
     HTTPS_PROXY_ADDRESS = "";
@@ -52,32 +52,12 @@
       name = "youtube-operational-api-configured";
       stdenv = pkgs.stdenvNoCC;
       runLocal = true;
-      derivationArgs = {
-        overrideConfig = pkgs.writeText "youtubeapi-configuration.php" (mkConfig settings);
-        envConfig = pkgs.writeText "youtubeapi-env" "EXPOSED_HTTP_PORT=${builtins.toString cfg.port}";
-      };
+      derivationArgs.overrideConfig = pkgs.writeText "youtubeapi-configuration.php" (mkConfig settings);
     } ''
       mkdir -p $out/var/www/html
       cp -vr "${cfg.package}/"* $out/var/www/html/
       rm $out/var/www/html/configuration.php
       cp $overrideConfig $out/var/www/html/configuration.php
-      cp $envConfig $out/var/www/html/.env
-    '';
-
-  startupScript =
-    pkgs.runCommandWith {
-      name = "youtube-operational-api-startup";
-      stdenv = pkgs.stdenvNoCC;
-      runLocal = true;
-    } ''
-      mkdir -p $out
-      cat > $out/start.bash <<EOF
-      #!/bin/bash
-      a2enmod rewrite
-      sed -ri -e 'N;N;N;s/(<Directory \/var\/www\/>\n)(.*\n)(.*)AllowOverride None/\1\2\3AllowOverride All/;p;d;' /etc/apache2/apache2.conf
-      apachectl -D FOREGROUND
-      EOF
-      chmod +x $out/start.bash
     '';
 
   baseImage = pkgs.dockerTools.pullImage {
@@ -95,14 +75,16 @@
     name = imageName;
     tag = imageTag;
 
-    contents = [cfgPackage startupScript];
+    contents = [cfgPackage];
 
     fakeRootCommands = ''
+      a2enmod rewrite
+      sed -ri -e 'N;N;N;s/(<Directory \/var\/www\/>\n)(.*\n)(.*)AllowOverride None/\1\2\3AllowOverride All/;p;d;' ./etc/apache2/apache2.conf
     '';
     enableFakechroot = true;
 
     config = {
-      Cmd = ["/start.bash"];
+      Cmd = ["sh" "-c" "apachectl -D FOREGROUND"];
       WorkingDir = "/";
       Volumes = {"/logs" = {};};
     };

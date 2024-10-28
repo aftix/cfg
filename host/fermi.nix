@@ -105,7 +105,6 @@ in {
     barcodebuddy.enable = true;
     youtube-operational-api = {
       enable = true;
-      settings.SERVER_NAME = "aftix.xyz";
       keysFile = config.sops.templates.youtubeapi_keys.path;
     };
   };
