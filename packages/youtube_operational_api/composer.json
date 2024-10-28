@@ -1,0 +1,13 @@
+{
+    "name": "benjamin-loison/youtube_operational_api",
+    "description": "YouTube operational API works when YouTube Data API v3 fails",
+    "require": {
+        "google/protobuf": "^4.28",
+        "nix-community/composer-local-repo-plugin": "^1.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "nix-community/composer-local-repo-plugin": true
+        }
+    }
+}
