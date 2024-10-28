@@ -22,7 +22,7 @@ inputs: final: prev: {
   attic-server = final.lib.addMetaAttrs {mainProgram = "atticd";} (inputs.attic.overlays.default final prev).attic-server;
 
   nginx_blocker = final.callPackage ./packages/nginx_blocker.nix {inherit (inputs) nginxBlacklist;};
-  youtube-operational-api = final.callPackage ./packages/youtube_operational_api.nix {};
+  youtube-operational-api = final.callPackage ./packages/youtube_operational_api/package.nix {};
 
   nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};
   nu_plugin_compress = final.callPackage ./packages/nu_plugin_compress.nix {};
