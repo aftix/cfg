@@ -67,43 +67,6 @@
       flake = false;
     };
 
-    freshrss-ext = {
-      url = "github:FreshRSS/Extensions";
-      flake = false;
-    };
-    freshrss-cntools = {
-      url = "github:cn-tools/cntools_FreshRssExtensions";
-      flake = false;
-    };
-    freshrss-latex = {
-      url = "github:aledeg/xExtension-LatexSupport";
-      flake = false;
-    };
-    freshrss-reddit = {
-      url = "github:aledeg/xExtension-RedditImage";
-      flake = false;
-    };
-    freshrss-ttl = {
-      url = "github:mgnsk/FreshRSS-AutoTTL";
-      flake = false;
-    };
-    freshrss-links = {
-      url = "github:kapdap/freshrss-extensions";
-      flake = false;
-    };
-    freshrss-ezpriorities = {
-      url = "github:aidistan/freshrss-extensions";
-      flake = false;
-    };
-    freshrss-ezread = {
-      url = "github:kalvn/freshrss-mark-previous-as-read";
-      flake = false;
-    };
-    freshrss-threepane = {
-      url = "git+https://framagit.org/nicofrand/xextension-threepanesview.git";
-      flake = false;
-    };
-
     attic.url = "github:zhaofengli/attic";
     helix.url = "github:helix-editor/helix";
 
