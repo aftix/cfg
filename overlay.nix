@@ -29,7 +29,6 @@ inputs: final: prev: {
 
   nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};
   nu_plugin_compress = final.callPackage ./packages/nu_plugin_compress.nix {};
-  nu_plugin_dbus = final.callPackage ./packages/nu_plugin_dbus.nix {};
   nu_plugin_desktop_notifications = final.callPackage ./packages/nu_plugin_desktop_notifications.nix {};
   nu_plugin_dns = final.callPackage ./packages/nu_plugin_dns.nix {};
   nu_plugin_endecode = final.callPackage ./packages/nu_plugin_endecode.nix {};
@@ -37,6 +36,5 @@ inputs: final: prev: {
   nu_plugin_port_scan = final.callPackage ./packages/nu_plugin_port_scan.nix {};
   nu_plugin_port_list = final.callPackage ./packages/nu_plugin_port_list.nix {};
   nu_plugin_semver = final.callPackage ./packages/nu_plugin_semver.nix {};
-  nu_plugin_skim = final.callPackage ./packages/nu_plugin_skim.nix {};
   nu_plugin_strutils = final.callPackage ./packages/nu_plugin_strutils.nix {};
 }
