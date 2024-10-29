@@ -18,6 +18,8 @@ inputs: final: prev: {
     };
   });
 
+  coffeepaste = final.callPackage ./packages/coffeepaste.nix {};
+
   inherit (inputs.attic.overlays.default final prev) attic-client;
   attic-server = final.lib.addMetaAttrs {mainProgram = "atticd";} (inputs.attic.overlays.default final prev).attic-server;
 
