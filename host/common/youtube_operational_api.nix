@@ -45,7 +45,9 @@
     ADD_KEY_FORCE_SECRET = "";
     ADD_KEY_TO_INSTANCES = [];
   };
-  settings = defaultSettings // (optionalAttrs (cfg.settings != null) cfg.settings) // {KEYS_FILE = "/keys.txt";};
+  settings = defaultSettings // (optionalAttrs (cfg.settings != null) cfg.settings) // {KEYS_FILE = cfg.keysFile;};
+
+  defaultUser = "youtubeapi";
 
   cfgPackage =
     pkgs.runCommandWith {
@@ -54,41 +56,11 @@
       runLocal = true;
       derivationArgs.overrideConfig = pkgs.writeText "youtubeapi-configuration.php" (mkConfig settings);
     } ''
-      mkdir -p $out/var/www/html
-      cp -vr "${cfg.package}/"* $out/var/www/html/
-      rm $out/var/www/html/configuration.php
-      cp $overrideConfig $out/var/www/html/configuration.php
+      mkdir -p $out
+      cp -vr "${cfg.package}/"* $out/
+      rm $out/configuration.php
+      cp $overrideConfig $out/configuration.php
     '';
-
-  baseImage = pkgs.dockerTools.pullImage {
-    imageName = "php";
-    imageDigest = "sha256:1e6b2955c2b2e3f1113c682d08441037b84462158c601d3b606190bfb14e5456";
-    finalImageName = "php";
-    finalImageTag = "apache";
-    sha256 = "09ddjl6g1yjd3vgsmqjqf976wnf06iijlswv8j5cz4w5b3s3yc62";
-  };
-
-  imageName = "youtubeapi";
-  imageTag = "latest";
-  imageScript = pkgs.dockerTools.streamLayeredImage {
-    fromImage = baseImage;
-    name = imageName;
-    tag = imageTag;
-
-    contents = [cfgPackage];
-
-    fakeRootCommands = ''
-      a2enmod rewrite
-      sed -ri -e 'N;N;N;s/(<Directory \/var\/www\/>\n)(.*\n)(.*)AllowOverride None/\1\2\3AllowOverride All/;p;d;' ./etc/apache2/apache2.conf
-    '';
-    enableFakechroot = true;
-
-    config = {
-      Cmd = ["sh" "-c" "apachectl -D FOREGROUND"];
-      WorkingDir = "/";
-      Volumes = {"/logs" = {};};
-    };
-  };
 in {
   options.services.youtube-operational-api = {
     enable = mkEnableOption "Youtube operational API";
@@ -97,13 +69,25 @@ in {
     settings = mkOption {
       default = null;
       description = "Settings for the configuration.php file.";
-      type = with lib.types; nullOr attrs;
+      type = with lib.types; nullOr (attrsOf str);
     };
 
     keysFile = mkOption {
       default = "/dev/null";
       description = "File containing API keys for youtube.";
-      type = lib.types.str;
+      type = lib.types.nonEmptyStr;
+    };
+
+    user = mkOption {
+      default = defaultUser;
+      description = "User to run the service under, will be created if ${defaultUser}";
+      type = lib.types.nonEmptyStr;
+    };
+
+    group = mkOption {
+      default = defaultUser;
+      description = "Group to run the service under, will be created if ${defaultUser}";
+      type = lib.types.nonEmptyStr;
     };
 
     port = mkOption {
@@ -111,28 +95,89 @@ in {
       description = "Port to listen on for docker container";
       type = lib.types.ints.positive;
     };
+
+    pool = mkOption {
+      default = "youtubeapi";
+      description = "Name of phpfpm pool to run under";
+      type = lib.types.nonEmptyStr;
+    };
   };
 
   config = lib.mkIf cfg.enable {
-    security.apparmor.enable = true;
-
-    virtualisation = {
-      podman = {
-        enable = true;
-        dockerSocket.enable = true;
+    users = {
+      users.${defaultUser} = lib.mkIf (cfg.user == defaultUser) {
+        inherit (cfg) group;
+        shell = "/run/current-system/sw/bin/nologin";
+        isSystemUser = true;
+        description = "youtube-operational-api service user";
+        home = "/var/empty";
       };
 
-      oci-containers = {
-        backend = "podman";
-        containers.youtubeapi = {
-          image = "${imageName}:${imageTag}";
-          imageStream = imageScript;
-          volumes = [
-            "${cfg.keysFile}:/keys.txt:ro"
+      groups.${defaultUser} = lib.mkIf (cfg.group == defaultUser) {};
+    };
+
+    services = {
+      phpfpm.pools.${cfg.pool} = {
+        inherit (cfg) user group;
+        phpPackage = pkgs.php82;
+        settings = {
+          "listen.owner" = cfg.user;
+          "listen.group" = cfg.group;
+          "listen.mode" = "0600";
+          pm = "dynamic";
+          "pm.max_children" = 32;
+          "pm.max_requests" = 500;
+          "pm.start_servers" = 2;
+          "pm.min_spare_servers" = 2;
+          "pm.max_spare_servers" = 5;
+          "catch_workers_output" = true;
+        };
+      };
+
+      nginx = {
+        enable = true;
+
+        virtualHosts.youtubeapi = {
+          root = cfgPackage;
+          rejectSSL = true;
+          serverName = "localhost";
+
+          listen = [
+            {
+              inherit (cfg) port;
+              addr = "127.0.0.1";
+            }
+            {
+              inherit (cfg) port;
+              addr = "[::1]";
+            }
           ];
-          ports = [
-            "${builtins.toString cfg.port}:80"
-          ];
+
+          extraConfig = ''
+            index index.php index.html index.htm;
+            rewrite ^/(search|videos|playlists|playlistItems|channels|community|webhooks|commentThreads|lives|liveChats)$ /$1.php;
+            rewrite ^/noKey/ /noKey/index.php;
+          '';
+
+          locations = {
+            "/" = {
+              tryFiles = "$uri $uri/ index.php";
+              index = "index.php index.html index.htm";
+            };
+
+            "= /ytPrivate/keys.txt".extraConfig = "deny all;";
+            "~ /noKey".extraConfig = "rewrite ^(.*)$ /noKey/index.php;";
+            "~ ^.+?\.php(/.*)?$".extraConfig = ''
+              fastcgi_pass unix:${config.services.phpfpm.pools.${cfg.pool}.socket};
+              fastcgi_split_path_info ^(.+\.php)(/.*)$;
+              set $path_info $fastcgi_path_info;
+              fastcgi_param PATH_INFO $path_info;
+              fastcgi_read_timeout 80;
+              fastcgi_keep_conn on;
+              include ${config.services.nginx.package}/conf/fastcgi.conf;
+              include ${config.services.nginx.package}/conf/fastcgi_params;
+            '';
+          };
         };
       };
     };
