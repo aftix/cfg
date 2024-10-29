@@ -54,10 +54,6 @@
 
     nixos-cli.url = "github:water-sucks/nixos";
 
-    barcodebuddy = {
-      url = "github:Forceu/barcodebuddy/v1.8.1.7";
-      flake = false;
-    };
     carapace = {
       url = "github:carapace-sh/carapace-bin";
       flake = false;
@@ -420,6 +416,7 @@
       in {
         inherit
           (appliedOverlay)
+          barcodebuddy
           carapace
           coffeepaste
           attic-client

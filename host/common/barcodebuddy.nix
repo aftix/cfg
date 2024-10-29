@@ -8,7 +8,6 @@
   inherit (lib.options) mkOption mkEnableOption;
   inherit (lib.attrsets) filterAttrs;
 
-  inherit (config.dep-inject) inputs;
   cfg = config.services.barcodebuddy;
 in {
   options.services.barcodebuddy = {
@@ -70,47 +69,6 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = [pkgs.barcodebuddy];
 
-    nixpkgs.overlays = [
-      (final: prev: {
-        barcodebuddy-php = prev.php83.buildEnv {
-          extensions = {
-            enabled,
-            all,
-          }:
-            enabled
-            ++ (with all; [
-              curl
-              mbstring
-              sqlite3
-              redis
-              sockets
-            ]);
-        };
-
-        barcodebuddy = final.stdenv.mkDerivation rec {
-          pname = "barcodebuddy";
-          version = "1.8.1.7";
-
-          src = inputs.barcodebuddy;
-
-          nativeBuildInputs = with final; [
-            barcodebuddy-php
-            valkey
-            evtest
-          ];
-
-          installPhase = ''
-            runHook preInstall
-
-            mkdir -p "$out"
-            cp -R "${src}/"* "$out/."
-
-            runHook postInstall
-          '';
-        };
-      })
-    ];
-
     security.acme.certs.${cfg.acmeHost} = mkIf (cfg.acmeHost != cfg.hostName) {
       extraDomainNames = [
         cfg.hostName
@@ -169,7 +127,7 @@ in {
       phpfpm.pools.barcodebuddy = {
         inherit (cfg) user group;
         inherit (cfg.phpfpm) settings;
-        phpPackage = pkgs.barcodebuddy-php;
+        phpPackage = pkgs.barcodebuddy.phpWithExts;
       };
 
       nginx = {
