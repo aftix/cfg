@@ -401,16 +401,21 @@
         inherit substituters trusted-public-keys nixosHomeOptions hmInjectNixosHomeOptions;
       };
     }
-    // flake-utils.lib.eachDefaultSystem (sys: {
-      formatter = let
-        pkgs = nixpkgs.legacyPackages.${sys};
-      in
+    // flake-utils.lib.eachDefaultSystem (sys: let
+      pkgs = nixpkgs.legacyPackages.${sys};
+    in {
+      formatter =
         pkgs.alejandra or pkgs.nix-fmt;
 
       checks = nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy);
 
+      legacyPackages = let
+        appliedOverlay = self.overlays.default pkgs pkgs;
+      in {
+        inherit (appliedOverlay) freshrssExts;
+      };
+
       packages = let
-        pkgs = nixpkgs.legacyPackages.${sys};
         appliedOverlay = self.overlays.default pkgs pkgs;
         helixOverlay = inputs.helix.overlays.default pkgs pkgs;
       in {
