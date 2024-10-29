@@ -21,6 +21,8 @@ inputs: final: prev: {
   barcodebuddy = final.callPackage ./packages/barcodebuddy.nix {};
   coffeepaste = final.callPackage ./packages/coffeepaste.nix {};
 
+  freshrssExts = final.lib.attrsets.recurseIntoAttrs (final.callPackage ./packages/freshrss {});
+
   inherit (inputs.attic.overlays.default final prev) attic-client;
   attic-server = final.lib.addMetaAttrs {mainProgram = "atticd";} (inputs.attic.overlays.default final prev).attic-server;
 
