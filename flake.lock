@@ -122,22 +122,6 @@
         "type": "github"
       }
     },
-    "coffeepaste": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1633818370,
-        "narHash": "sha256-zsdLUdTiqnnYRe17HndoAfOWGGB08UBsXP6A7FpG1Sc=",
-        "owner": "~mort",
-        "repo": "coffeepaste",
-        "rev": "92795c856c6227d334635538d5176f6fe34de988",
-        "type": "sourcehut"
-      },
-      "original": {
-        "owner": "~mort",
-        "repo": "coffeepaste",
-        "type": "sourcehut"
-      }
-    },
     "crane": {
       "inputs": {
         "nixpkgs": [
@@ -1007,7 +991,6 @@
         "attic": "attic",
         "barcodebuddy": "barcodebuddy",
         "carapace": "carapace",
-        "coffeepaste": "coffeepaste",
         "deploy-rs": "deploy-rs",
         "disko": "disko",
         "flake-utils": "flake-utils",
