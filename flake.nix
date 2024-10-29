@@ -54,10 +54,6 @@
 
     nixos-cli.url = "github:water-sucks/nixos";
 
-    coffeepaste = {
-      url = "sourcehut:~mort/coffeepaste";
-      flake = false;
-    };
     barcodebuddy = {
       url = "github:Forceu/barcodebuddy/v1.8.1.7";
       flake = false;
@@ -425,6 +421,7 @@
         inherit
           (appliedOverlay)
           carapace
+          coffeepaste
           attic-client
           attic-server
           heisenbridge

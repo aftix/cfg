@@ -7,7 +7,6 @@
   inherit (lib) mkDefault;
   inherit (lib.options) mkOption mkEnableOption;
 
-  inherit (config.dep-inject) inputs;
   cfg = config.services.coffeepaste;
 
   configFile = (pkgs.formats.toml {}).generate "config.toml" {
@@ -15,6 +14,10 @@
     listen = "${cfg.listenAddr}:${builtins.toString cfg.listenPort}";
     data = "${cfg.dataDir}";
   };
+  configDrv = pkgs.runCommandLocal "coffeepaste-config" {} ''
+    mkdir -p $out
+    cp -vL "${configFile}" $out/config.toml
+  '';
 in {
   options.services.coffeepaste = {
     enable = mkEnableOption "coffeepaste";
@@ -60,44 +63,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    nixpkgs.overlays = [
-      (final: _: {
-        coffeepaste = final.rustPlatform.buildRustPackage rec {
-          pname = "coffeepaste";
-          version = "1.5.1";
-
-          src = inputs.coffeepaste;
-          cargoLock.lockFile = "${src}/Cargo.lock";
-
-          nativeBuildInputs = with pkgs; [
-            pkg-config
-          ];
-          buildInputs = with pkgs; [
-            glib
-            gexiv2
-          ];
-
-          postInstall = ''
-            mkdir -p "$out/share"
-            cp ${configFile} "$out/share/config.toml"
-          '';
-
-          meta = with pkgs.lib; {
-            description = "A neat pastebin";
-            homepage = "https://git.sr.ht/~mort/coffeepaste";
-            license = licenses.agpl3Only;
-            maintainers = [
-              {
-                name = "aftix";
-                email = "aftix@aftix.xyz";
-                github = "aftix";
-              }
-            ];
-          };
-        };
-      })
-    ];
-
     users = {
       users.${cfg.user} = {
         isSystemUser = mkDefault true;
@@ -121,7 +86,7 @@ in {
         serviceConfig = {
           User = cfg.user;
           Group = cfg.group;
-          WorkingDirectory = "${pkgs.coffeepaste}/share";
+          WorkingDirectory = "${configDrv}";
           ReadWritePaths = cfg.dataDir;
 
           CapabilityBoundingSet = config.my.systemdCapabilities;
