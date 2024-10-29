@@ -18,6 +18,7 @@ inputs: final: prev: {
     };
   });
 
+  barcodebuddy = final.callPackage ./packages/barcodebuddy.nix {};
   coffeepaste = final.callPackage ./packages/coffeepaste.nix {};
 
   inherit (inputs.attic.overlays.default final prev) attic-client;
