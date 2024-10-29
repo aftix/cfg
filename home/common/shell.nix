@@ -133,11 +133,10 @@ in {
 
       plugins = mkOption {
         default =
-          (with pkgs.nushellPlugins; [query gstat polars formats])
+          (with pkgs.nushellPlugins; [query gstat polars formats skim dbus])
           ++ (with pkgs; [
             nu_plugin_audio_hook
             nu_plugin_compress
-            nu_plugin_dbus
             nu_plugin_desktop_notifications
             nu_plugin_dns
             nu_plugin_endecode
@@ -145,7 +144,6 @@ in {
             nu_plugin_port_scan
             nu_plugin_port_list
             nu_plugin_semver
-            nu_plugin_skim
             nu_plugin_strutils
           ]);
         description = "list of nushell plugin packages to install";
