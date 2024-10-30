@@ -4,7 +4,7 @@ inputs: final: prev: {
   carapace =
     (prev.carapace.overrideAttrs {
       src = inputs.carapace;
-      vendorHash = "sha256-DcQqFw9tVz+IbYsyHwG+KyBwFlP8Avy45/7vDv2PDZ0=";
+      vendorHash = "sha256-NYmtWd5PR3zdNIu2AbaOPO9RpM0qdhUWnvXRNoE/J/0=";
     })
     .override {buildGoModule = final.buildGo123Module;};
 
