@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: {
   nixpkgs.overlays = [
@@ -64,7 +65,7 @@
     Unit.Description = "aria2 Daemon";
     Service = {
       Type = "forking";
-      ExecStart = "${pkgs.aria2d}/bin/aria2d";
+      ExecStart = "${lib.getExe pkgs.aria2d}";
     };
     Install.WantedBy = ["default.target"];
   };

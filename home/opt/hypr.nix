@@ -202,8 +202,8 @@ in {
     };
 
     wayland.windowManager.hyprland = let
-      terminal = "\"${pkgs.kitty}/bin/kitty\"";
-      menu = "\"${pkgs.tofi}/bin/tofi-run\" | \"${pkgs.findutils}/bin/xargs\" \"${hyprPackage}/bin/hyprctl\" dispatch exec";
+      terminal = "\"${lib.getExe pkgs.kitty}\"";
+      menu = "\"${lib.getExe' pkgs.tofi "tofi-run"}\" | \"${lib.getExe' pkgs.findutils "xargs"}\" \"${lib.getExe' hyprPackage "hyprctl"}\" dispatch exec";
       left = "h";
       right = "l";
       up = "k";
@@ -367,10 +367,10 @@ in {
 
             # Misc keybinds
             "$mainMod, P, exec, keepassxc"
-            "$mainMod, S, exec, ${pkgs.screenshot}/bin/screenshot"
-            "$mainMod SHIFT, S, exec, [float;group barred deny] ${pkgs.zenith-popup}/bin/zenith-popup $terminal"
-            "$mainMod, C, exec, ${pkgs.clipman}/bin/clipman pick --tool CUSTOM -T ${pkgs.tofi}/bin/tofi"
-            "$mainMod SHIFT, C, exec, ${pkgs.clipman}/bin/clipman clear --tool CUSTOM -T \"${pkgs.tofi}/bin/tofi --auto-accept-single=false\""
+            "$mainMod, S, exec, ${lib.getExe pkgs.screenshot}"
+            "$mainMod SHIFT, S, exec, [float;group barred deny] ${lib.getExe pkgs.zenith-popup}"
+            "$mainMod, C, exec, ${lib.getExe pkgs.clipman} pick --tool CUSTOM -T ${lib.getExe pkgs.tofi}"
+            "$mainMod SHIFT, C, exec, ${lib.getExe pkgs.clipman} clear --tool CUSTOM -T \"${lib.getExe pkgs.tofi} --auto-accept-single=false\""
             "$mainMod, Z, exec, [fullscreen;group barred deny] ${lib.getExe pkgs.mpv-play-clipboard}"
 
             # Supmap binds
@@ -436,7 +436,7 @@ in {
         ];
 
         exec-once = [
-          "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
+          "${lib.getExe' pkgs.kdePackages.polkit-kde-agent-1 "polkit-kde-agent-1"}"
           "hypridle"
           "[workspace 1 silent] firefox"
           "[workspace 8 silent] thunderbird"
