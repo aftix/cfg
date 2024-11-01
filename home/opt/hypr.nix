@@ -71,6 +71,19 @@ in {
             [ -n "$1" ] && "$1" -e ${escapeShellArg final.zenith}/bin/zenith
           '';
         };
+
+        mpv-play-clipboard = final.writeShellApplication {
+          name = "mpv-play-clipboard";
+          runtimeInputs = with final; [config.programs.mpv.finalPackage wl-clipboard libnotify];
+          text = ''
+            if wl-paste -n &>/dev/null; then
+              notify-send --app-name mpv --urgency low -t 3000 "mpv" "Playing $(wl-paste -n) with mpv"
+              wl-paste -n | xargs mpv || :
+            else
+              notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Clipboard is empty"
+            fi
+          '';
+        };
       })
     ];
 
@@ -358,6 +371,7 @@ in {
             "$mainMod SHIFT, S, exec, [float;group barred deny] ${pkgs.zenith-popup}/bin/zenith-popup $terminal"
             "$mainMod, C, exec, ${pkgs.clipman}/bin/clipman pick --tool CUSTOM -T ${pkgs.tofi}/bin/tofi"
             "$mainMod SHIFT, C, exec, ${pkgs.clipman}/bin/clipman clear --tool CUSTOM -T \"${pkgs.tofi}/bin/tofi --auto-accept-single=false\""
+            "$mainMod, Z, exec, [fullscreen;group barred deny] ${lib.getExe pkgs.mpv-play-clipboard}"
 
             # Supmap binds
             "$mainMod ALT, T, submap, group"
