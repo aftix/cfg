@@ -73,8 +73,6 @@ in {
     packages = with pkgs; [
       attic-client
       link-gh-hosts
-      weechat-unwrapped
-      weechatScripts.weechat-notify-send
     ];
 
     sessionVariables = {
