@@ -34,7 +34,7 @@
       bash
       */
       ''
-        CTMP="$(${pkgs.mktemp}/bin/mktemp)"
+        CTMP="$(${lib.getExe pkgs.mktemp})"
         tomlq -t ${filter} "$TMP" > "$CTMP"
         rm -f "$TMP"
         TMP="$CTMP"
@@ -56,9 +56,9 @@
     bash
     */
     ''
-      PATH=${pkgs.yq}/bin:"$PATH"
+      PATH="${lib.strings.makeBinPath [pkgs.yq]}:$PATH"
 
-      TMP="$(${pkgs.mktemp}/bin/mktemp)"
+      TMP="$(${lib.getExe pkgs.mktemp})"
       cat "${inputs.helix}/languages.toml" > "$TMP"
       ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
       ${addNixdConfig}
@@ -78,8 +78,8 @@ in {
       ++ (optionals devCfg.go [gopls]);
 
     sessionVariables = {
-      EDITOR = mkOverride 900 "${pkgs.helix}/bin/hx";
-      VISUAL = mkOverride 900 "${pkgs.helix}/bin/hx";
+      EDITOR = mkOverride 900 "${lib.getExe pkgs.helix}";
+      VISUAL = mkOverride 900 "${lib.getExe pkgs.helix}";
     };
   };
 

@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }: let
   docPrefix = config.my.docs.prefix;
@@ -73,7 +74,7 @@ in {
         max_icon_size = 32;
         sticky_history = true;
         history_lenght = 20;
-        dmenu = "${pkgs.tofi}/bin/tofi -p dunst:";
+        dmenu = "${lib.getExe pkgs.tofi} -p dunst:";
         browser = "/run/current-system/sw/bin/firefox -new-tab";
         always_run_script = true;
         title = "Dunst";

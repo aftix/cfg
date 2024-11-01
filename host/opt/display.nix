@@ -93,7 +93,7 @@ in {
                 misc {
                   force_default_wallpaper=0
                 }
-                exec-once = ${pkgs.hyprpaper}/bin/hyprpaper --config ${paperCfg}
+                exec-once = ${lib.getExe pkgs.hyprpaper} --config ${paperCfg}
 
                 ${config.my.greeterCfgExtra}
               '';
