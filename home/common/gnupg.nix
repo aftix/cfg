@@ -55,7 +55,7 @@ in {
     enable = lib.strings.hasSuffix "-linux" pkgs.system;
     enableSshSupport = enable;
     extraConfig = mkDefault ''
-      pinentry-program ${pkgs.pinentry-custom}/bin/pinentry-custom
+      pinentry-program ${lib.getExe pkgs.pinentry-custom}
     '';
   };
 
@@ -68,7 +68,7 @@ in {
       Service = {
         Type = "oneshot";
         Environment = ''GNUPGHOME="${config.programs.gpg.homedir}"'';
-        ExecStart = "${pkgs.gnupg}/bin/gpg --refresh-keys";
+        ExecStart = "${lib.getExe pkgs.gnupg} --refresh-keys";
       };
     };
 

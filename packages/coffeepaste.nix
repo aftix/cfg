@@ -27,6 +27,7 @@ rustPlatform.buildRustPackage rec {
 
   meta = with lib; {
     description = "A neat pastebin";
+    mainProgram = "coffeepaste";
     homepage = "https://git.sr.ht/~mort/coffeepaste";
     license = licenses.agpl3Only;
   };

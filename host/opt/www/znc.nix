@@ -107,7 +107,7 @@ in {
 
             if [[ ! -f ${cfg.dataDir}/znc.pem ]]; then
               echo "No znc.pem file found in ${cfg.dataDir}. Creating one now."
-              ${pkgs.znc}/bin/znc --makepem --datadir ${cfg.dataDir}
+              ${lib.getExe pkgs.znc} --makepem --datadir ${cfg.dataDir}
             fi
 
             # Symlink modules
@@ -119,7 +119,7 @@ in {
             [[ -f ${passwordSaltSecretPath} ]] || exit 1
             [[ -f ${twitchOauthSecretPath} ]] || exit 1
             mv ${cfg.dataDir}/configs/znc.conf ${cfg.dataDir}/configs/znc.conf.old
-            ${pkgs.gnused}/bin/sed -e "s/__PASSWORD__/$(cat ${passwordSecretPath})/g" -e "s/__SALT__/$(cat ${passwordSaltSecretPath})/g" -e "s/__TWITCHOAUTH__/$(cat ${twitchOauthSecretPath})/g" ${cfg.dataDir}/configs/znc.conf.old > ${cfg.dataDir}/configs/znc.conf
+            ${lib.getExe pkgs.gnused} -e "s/__PASSWORD__/$(cat ${passwordSecretPath})/g" -e "s/__SALT__/$(cat ${passwordSaltSecretPath})/g" -e "s/__TWITCHOAUTH__/$(cat ${twitchOauthSecretPath})/g" ${cfg.dataDir}/configs/znc.conf.old > ${cfg.dataDir}/configs/znc.conf
             rm ${cfg.dataDir}/configs/znc.conf.old
           '';
       };

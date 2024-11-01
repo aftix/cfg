@@ -27,24 +27,24 @@ in {
       trashy;
 
     sessionVariables = {
-      PAGER = mkOverride 900 "${pkgs.moar}/bin/moar";
-      MANPAGER = mkOverride 900 "${pkgs.moar}/bin/moar";
+      PAGER = mkOverride 900 "${lib.getExe pkgs.moar}";
+      MANPAGER = mkOverride 900 "${lib.getExe pkgs.moar}";
       MOAR = mkDefault "-quit-if-one-screen";
     };
   };
 
-  programs.kitty.settings.scrollback_pager = "'${pkgs.moar}/bin/moar' -no-linenumbers";
+  programs.kitty.settings.scrollback_pager = "'${lib.getExe pkgs.moar}' -no-linenumbers";
 
   my.shell = {
     aliases = [
       {
         name = "gzip";
-        command = "${pkgs.pigz}/bin/pigz";
+        command = "${lib.getExe' pkgs.pigz "pigz"}";
         docs = false;
       }
       {
         name = "bzip2";
-        command = "${pkgs.pbzip2}/bin/pbzip2";
+        command = "${lib.getExe' pkgs.pbzip2 "pbzip2"}";
         docs = false;
       }
 

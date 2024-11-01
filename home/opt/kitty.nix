@@ -104,7 +104,7 @@
     showConfig = {
       tag = "kitty_mod + slash";
       content = "Open the kitty configuration in the pager in a new window";
-      value = "new_window '${pkgs.moar}/bin/moar' -no-linenumbers $HOME/.config/kitty/kitty.conf";
+      value = "new_window '${lib.getExe pkgs.moar}' -no-linenumbers $HOME/.config/kitty/kitty.conf";
     };
 
     opacityMore = {
@@ -542,10 +542,10 @@ in {
       kitty_mod = settings.kittyMod.value;
       shell = lib.mkDefault (
         if config.my.shell.nushell.enable
-        then (lib.meta.getExe nuWrapped)
+        then (lib.getExe nuWrapped)
         else if config.my.shell.elvish.enable
-        then "${pkgs.elvish}/bin/elvish"
-        else "${pkgs.zsh}/bin/zsh"
+        then "${lib.geteExe pkgs.elvish}"
+        else "${lib.getExe pkgs.zsh}"
       );
       allow_remote_control = true;
 
@@ -553,7 +553,7 @@ in {
       cursor_blink_interval = -1;
 
       scrollback_lines = 1024;
-      scrollback_pager = lib.mkDefault "${pkgs.less}/bin/less";
+      scrollback_pager = lib.mkDefault "${lib.getExe pkgs.less}";
       scrollback_pager_history_size = 0;
 
       url_style = "curly";
