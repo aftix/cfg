@@ -108,7 +108,6 @@ in {
           "/root/.config/rclone"
         ];
         files = [
-          "/etc/machine-id"
           "/var/lib/cups/printers.conf"
           "/var/lib/cups/subscriptions.conf"
         ];
@@ -132,14 +131,21 @@ in {
     swaylock.u2fAuth = true;
   };
 
-  systemd.network.networks."10-enp6s0".networkConfig = {
-    DHCP = lib.mkForce "no";
-    Address = ["192.168.1.179/24"];
-    Gateway = "192.168.1.1";
-  };
   networking = {
     hostName = "hamilton";
     useDHCP = false;
+  };
+
+  systemd = {
+    network.networks."10-enp6s0".networkConfig = {
+      DHCP = lib.mkForce "no";
+      Address = ["192.168.1.179/24"];
+      Gateway = "192.168.1.1";
+    };
+
+    tmpfiles.rules = [
+      "L /etc/machine-id - - - - /persist/etc/machine-id"
+    ];
   };
 
   documentation.dev.enable = true;
