@@ -59,8 +59,8 @@ in {
         LESSHISTFILE = mkDefault "-";
 
         EDITOR = mkDefault "micro";
-        MANPAGER = mkDefault "${pkgs.coreutils}/bin/less";
-        PAGER = mkDefault "${pkgs.coreutils}/bin/less";
+        MANPAGER = mkDefault "${lib.getExe pkgs.less}";
+        PAGER = mkDefault "${lib.getExe pkgs.less}";
         VISUAL = mkDefault "micro";
       };
 

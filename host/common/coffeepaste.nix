@@ -67,7 +67,7 @@ in {
       users.${cfg.user} = {
         isSystemUser = mkDefault true;
         group = mkDefault cfg.group;
-        shell = mkDefault "/run/current-system/sw/bin/nologin";
+        shell = mkDefault (lib.getExe' pkgs.shadow "nologin");
       };
       groups.${cfg.group} = {};
     };
@@ -109,7 +109,7 @@ in {
           SystemCallArchitectures = "native";
           UMask = "0027";
         };
-        script = "${pkgs.coffeepaste}/bin/coffeepaste";
+        script = "${lib.getExe pkgs.coffeepaste}";
       };
     };
   };

@@ -72,7 +72,6 @@ in {
 
     packages = with pkgs; [
       attic-client
-      link-gh-hosts
     ];
 
     sessionVariables = {
@@ -91,7 +90,7 @@ in {
       Type = "oneshot";
       Restart = "on-failure";
       RestartSec = "1s";
-      ExecStart = "${pkgs.link-gh-hosts}/bin/link-gh-hosts";
+      ExecStart = "${lib.getExe pkgs.link-gh-hosts}";
     };
     Install.WantedBy = ["default.target"];
   };

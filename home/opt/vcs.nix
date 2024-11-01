@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   better-git-branch = final:
     final.writeShellApplication {
       name = "better-git-branch";
@@ -73,7 +77,7 @@ in {
   my.shell.aliases = [
     {
       name = "g";
-      command = "${pkgs.git}/bin/git";
+      command = "${lib.getExe pkgs.git}";
       completer = "git";
     }
   ];
@@ -88,7 +92,7 @@ in {
           signingkey = "C6F4434A6A4C3A74DC9569C247DB00554BA8E05F";
           gpgsign = true;
         };
-        gpg.program = "${pkgs.gnupg}/bin/gpg2";
+        gpg.program = "${lib.getExe' pkgs.gnupg "gpg2"}";
         core = {
           untrackedcache = true;
           fsmonitor = true;
@@ -104,14 +108,14 @@ in {
           prompt = false;
           trustExitCode = true;
         };
-        difftool.kitty.cmd = "${pkgs.kitty}/bin/kitty +kitten diff $LOCAL $REMOTE";
-        difftool.kitty-gui = "${pkgs.kitty}/bin/kitty kitty +kitten diff $LOCAL $REMOTE";
+        difftool.kitty.cmd = "${lib.getExe pkgs.kitty} +kitten diff $LOCAL $REMOTE";
+        difftool.kitty-gui = "${lib.getExe pkgs.kitty} kitty +kitten diff $LOCAL $REMOTE";
         rerere.enabled = true;
         column.ui = "auto";
         branch.sort = "-committerdate";
         rebase.updateRefs = true;
         alias = {
-          bb = "!${pkgs.better-git-branch}/bin/better-git-branch";
+          bb = "!${lib.getExe pkgs.better-git-branch}";
           bl = "blame -w -C -C -C";
           staash = "stash --all";
           wdiff = "diff --word-diff";

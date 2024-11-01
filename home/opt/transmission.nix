@@ -84,8 +84,8 @@
     Service = {
       Type = "simple";
       ExecStart = ''
-        "${pkgs.transmission_4}/bin/transmission-daemon" -f --log-error -g "${config.home.homeDirectory}/.config/transmission"'';
-      ExecReload = "/run/current-system/sw/bin/kill -s HUP $MAINPID";
+        "${lib.getExe' pkgs.transmission_4 "transmission-daemon"}" -f --log-error -g "${config.home.homeDirectory}/.config/transmission"'';
+      ExecReload = "${lib.getExe' pkgs.coreutils "kill"} -s HUP $MAINPID";
       NoNewPrivileges = true;
       MemoryDenyWriteExecute = true;
       ProtectSystem = true;
@@ -108,9 +108,9 @@
 
         trash-original-torrent-files = true;
         script-torrent-added-enabled = true;
-        script-torrent-added-filename = "${pkgs.transmission-notify}/bin/transmission-notify";
+        script-torrent-added-filename = "${lib.getExe pkgs.transmission-notify}";
         script-torrent-done-enabled = true;
-        script-torrent-done-filename = "${pkgs.transmission-notify}/bin/transmission-notify";
+        script-torrent-done-filename = "${lib.getExe pkgs.transmission-notify}";
       };
   };
 }

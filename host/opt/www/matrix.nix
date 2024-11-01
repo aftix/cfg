@@ -151,7 +151,7 @@ in {
 
             # Overwrite the registration file with our generated one (the config may have changed since then),
             # but keep the tokens. Two step procedure to be failure safe
-            ${pkgs.yq}/bin/yq --slurp \
+            ${lib.getExe pkgs.yq} --slurp \
               '.[0] + (.[1] | {as_token, hs_token})' \
               ${bridgeConfig} \
               ${bridgeRegistrationFile} \

@@ -108,13 +108,13 @@ in {
           cd / || exit 1
           LOCKFILE="/var/run/backupdisk"
           LOCKFD=99
-          _lock() { ${pkgs.flock}/bin/flock -"$1" "$LOCKFD"; }
+          _lock() { ${lib.getExe pkgs.flock} -"$1" "$LOCKFD"; }
           _no_more_locking() { _lock u ; _lock xn && rm -f "$LOCKFILE"; }
           _prepare_locking() { eval "exec $LOCKFD>\"$LOCKFILE\""; trap _no_more_locking EXIT; }
           _prepare_locking
 
           _lock xn || exit 1
-          ${pkgs.my-basic-backup}/bin/backup.bash >/var/log/backup 2>/var/log/backup.err
+          ${lib.getExe pkgs.my-basic-backup} >/var/log/backup 2>/var/log/backup.err
         '';
         serviceConfig = {
           Type = "simple";
