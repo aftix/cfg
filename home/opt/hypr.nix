@@ -8,7 +8,6 @@
   inherit (lib.strings) optionalString concatMapStringsSep escapeShellArg;
   inherit (lib.lists) optionals;
 
-  inherit (config.dep-inject) spkgs;
   inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
   cfg = config.my.hyprland;
   hyprPackage = config.wayland.windowManager.hyprland.package;
@@ -195,10 +194,7 @@ in {
     services = {
       clipman.enable = true;
       udiskie.enable = true;
-      hyprpaper = {
-        enable = true;
-        package = spkgs.hyprpaper;
-      };
+      hyprpaper.enable = true;
     };
 
     wayland.windowManager.hyprland = let
