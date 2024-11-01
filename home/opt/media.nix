@@ -147,8 +147,13 @@
         };
       };
 
-      scripts = [
-        pkgs.mpvScripts.mpris
+      scripts = with pkgs.mpvScripts; [
+        modernx-zydezu
+        mpris
+        mpv-notify-send
+        sponsorblock
+        thumbfast
+        quality-menu
       ];
     };
   };
