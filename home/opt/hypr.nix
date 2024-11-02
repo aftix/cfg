@@ -80,7 +80,7 @@ in {
           excludeRegexs = ["youtu\\.?be"];
           excludeChecks = lib.strings.concatLines (builtins.map (regex: ''
               if [[ "$URL" =~ ${regex} ]]; then
-                ${vpnExclude} mpv "$URL" || notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Failed to play $URL"
+                ${vpnExclude} mpv --no-resume-playback "$URL" || notify-send --app-name mpv "mpv" "Failed to play $URL"
                 exit 0
               fi
             '')
@@ -92,11 +92,11 @@ in {
             text = ''
               if wl-paste -n &>/dev/null; then
                 URL="$(wl-paste -n)"
-                notify-send --app-name mpv --urgency low -t 3000 "mpv" "Playing $URL with mpv"
+                notify-send --app-name mpv --urgency low "mpv" "Playing $URL with mpv"
                 ${excludeChecks}
-                mpv "$URL" || notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Failed to play $URL"
+                mpv --no-resume-playback "$URL" || notify-send --app-name mpv "mpv" "Failed to play $URL"
               else
-                notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Clipboard is empty"
+                notify-send --app-name mpv "mpv" "Clipboard is empty"
               fi
             '';
           };
