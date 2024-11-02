@@ -71,18 +71,35 @@ in {
           '';
         };
 
-        mpv-play-clipboard = final.writeShellApplication {
-          name = "mpv-play-clipboard";
-          runtimeInputs = with final; [config.programs.mpv.finalPackage wl-clipboard libnotify];
-          text = ''
-            if wl-paste -n &>/dev/null; then
-              notify-send --app-name mpv --urgency low -t 3000 "mpv" "Playing $(wl-paste -n) with mpv"
-              wl-paste -n | xargs mpv || notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Failed to play $(wl-paste -n)"
-            else
-              notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Clipboard is empty"
-            fi
-          '';
-        };
+        mpv-play-clipboard = let
+          vpnEnable =
+            if config.my ? nixosCfg
+            then config.my.nixosCfg.services.mullvad-vpn.enable
+            else false;
+          vpnExclude = lib.strings.optionalString vpnEnable "mullvad-exclude";
+          excludeRegexs = ["youtu\\.?be"];
+          excludeChecks = lib.strings.concatLines (builtins.map (regex: ''
+              if [[ "$URL" =~ ${regex} ]]; then
+                ${vpnExclude} mpv "$URL" || notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Failed to play $URL"
+                exit 0
+              fi
+            '')
+            excludeRegexs);
+        in
+          final.writeShellApplication {
+            name = "mpv-play-clipboard";
+            runtimeInputs = with final; [config.programs.mpv.finalPackage wl-clipboard libnotify];
+            text = ''
+              if wl-paste -n &>/dev/null; then
+                URL="$(wl-paste -n)"
+                notify-send --app-name mpv --urgency low -t 3000 "mpv" "Playing $URL with mpv"
+                ${excludeChecks}
+                mpv "$URL" || notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Failed to play $URL"
+              else
+                notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Clipboard is empty"
+              fi
+            '';
+          };
       })
     ];
 
