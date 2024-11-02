@@ -77,7 +77,7 @@ in {
           text = ''
             if wl-paste -n &>/dev/null; then
               notify-send --app-name mpv --urgency low -t 3000 "mpv" "Playing $(wl-paste -n) with mpv"
-              wl-paste -n | xargs mpv || :
+              wl-paste -n | xargs mpv || notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Failed to play $(wl-paste -n)"
             else
               notify-send --app-name mpv --urgency normal -t 5000 "mpv" "Clipboard is empty"
             fi
