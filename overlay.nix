@@ -1,5 +1,16 @@
 inputs: final: prev: {
   inherit (inputs.stablepkgs.legacyPackages.${final.system}) znc fail2ban transmission_4 hyprpaper xdg-desktop-portal-hyprland;
+  yubikey-manager = prev.yubikey-manager.override (prev: {
+    python3Packages =
+      prev.python3Packages
+      // {
+        pyscard = let
+          stable =
+            inputs.stablepkgs.legacyPackages.${final.system}.python312Packages.pyscard;
+        in
+          stable.override {inherit (prev.python3Packages) buildPythonPackage pytestCheckHook setuptools;};
+      };
+  });
 
   carapace =
     (prev.carapace.overrideAttrs {
