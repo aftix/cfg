@@ -45,9 +45,9 @@ in {
           cargo-udeps
           cargo-crev
         ]
-        ++ optional
-        (hasSuffix "-linux" pkgs.system && cfg.rust)
-        cargo-llvm-cov
+        # ++ optional
+        # (hasSuffix "-linux" pkgs.system && cfg.rust)
+        # cargo-llvm-cov
         ++ optionals cfg.go
         [
           go
