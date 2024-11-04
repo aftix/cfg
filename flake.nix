@@ -3,8 +3,15 @@
 
   inputs = {
     lix = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz";
+      url = "https://git.lix.systems/lix-project/lix/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz";
+      inputs = {
+        lix.follows = "lix";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -228,7 +235,7 @@
       pkgsCfg
       (_: {
         nixpkgs.overlays = [
-          inputs.lix.overlays.default
+          inputs.lix-module.overlays.default
           (_: prev: {
             lix = prev.lix.override {aws-sdk-cpp = null;};
           })
@@ -444,7 +451,7 @@
           ;
 
         inherit (helixOverlay) helix;
-        lix = inputs.lix.packages.${sys}.default;
+        lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
       };
     });
 }
