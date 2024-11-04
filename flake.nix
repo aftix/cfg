@@ -432,6 +432,7 @@
           barcodebuddy
           carapace
           coffeepaste
+          attic
           attic-client
           attic-server
           heisenbridge
