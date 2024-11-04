@@ -421,6 +421,7 @@
       in {
         inherit
           (appliedOverlay)
+          _7zz
           barcodebuddy
           carapace
           coffeepaste
