@@ -37,8 +37,7 @@ inputs: final: prev: {
 
   freshrssExts = final.lib.attrsets.recurseIntoAttrs (final.callPackage ./packages/freshrss {});
 
-  inherit (inputs.attic.overlays.default final prev) attic-client;
-  attic-server = final.lib.addMetaAttrs {mainProgram = "atticd";} (inputs.attic.overlays.default final prev).attic-server;
+  inherit (inputs.attic.overlays.default final prev) attic attic-client attic-server;
 
   nginx_blocker = final.callPackage ./packages/nginx_blocker.nix {inherit (inputs) nginxBlacklist;};
   youtube-operational-api = final.callPackage ./packages/youtube_operational_api/package.nix {};
