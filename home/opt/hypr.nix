@@ -173,6 +173,7 @@ in {
       packages = with pkgs; [
         hyprcursor
         hyprlock
+        hyprpolkitagent
         hypridle
 
         pw-volume
@@ -180,7 +181,6 @@ in {
         wl-clipboard
         xclip
         xdotool
-        kdePackages.polkit-kde-agent-1
         pwvucontrol
         keepassxc
 
@@ -449,7 +449,6 @@ in {
         ];
 
         exec-once = [
-          "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
           "hypridle"
           "[workspace 1 silent] firefox"
           "[workspace 8 silent] thunderbird"
@@ -547,6 +546,23 @@ in {
             "SHIFT,d,exec,element-desktop"
           ];
         };
+    };
+
+    systemd.user.services.hypr-polkit-agent = {
+      Unit = {
+        Description = "Hyprland Polkit Authentication Agent";
+        Documentation = "https://wiki.hyprland.org/Hypr-Ecosystem/hyprpolkitagent";
+        PartOf = ["graphical-session.target"];
+        After = ["graphical-session.target"];
+        ConditionEnvironment = ["WAYLAND_DISPLAY"];
+      };
+      Service = {
+        ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
+        Slice = "session.slice";
+        TimeoutStopSec = "5sec";
+        Restart = "on-failure";
+      };
+      Install.WantedBy = ["hyprland-session.target"];
     };
 
     xdg = {
