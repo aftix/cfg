@@ -449,7 +449,7 @@ in {
         ];
 
         exec-once = [
-          "${lib.getExe' pkgs.kdePackages.polkit-kde-agent-1 "polkit-kde-agent-1"}"
+          "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
           "hypridle"
           "[workspace 1 silent] firefox"
           "[workspace 8 silent] thunderbird"
