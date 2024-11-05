@@ -30,6 +30,8 @@ in {
 
     environment.systemPackages = [cfg.shell];
 
+    security.polkit.adminIdentities = ["unix-user:aftix"];
+
     users.users.aftix = {
       uid = mkDefault 1000;
       hashedPasswordFile = mkDefault "/state/passwd.aftix";
