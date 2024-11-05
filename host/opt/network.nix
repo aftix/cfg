@@ -38,7 +38,10 @@ in {
     };
 
     networking = {
-      networkmanager.enable = lib.mkDefault true;
+      networkmanager = {
+        enable = lib.mkDefault true;
+        unmanaged = lib.mkIf config.services.mullvad-vpn.enable ["wg0-mullvad"];
+      };
       firewall = {
         enable = true;
         checkReversePath = lib.mkDefault false;
