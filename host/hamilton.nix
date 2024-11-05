@@ -126,6 +126,7 @@ in {
   security.pam.services = {
     greetd.u2fAuth = true;
     login.u2fAuth = true;
+    polkit-1.u2fAuth = true;
     su.u2fAuth = true;
     sudo.u2fAuth = true;
     swaylock.u2fAuth = true;
