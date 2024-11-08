@@ -11,10 +11,6 @@ inputs: final: prev: {
       };
   });
 
-  _7zz = prev._7zz.overrideAttrs (oldAttrs: {
-    makeFlags = oldAttrs.makeFlags ++ ["USE_ASM="];
-  });
-
   carapace =
     (prev.carapace.overrideAttrs {
       src = inputs.carapace;
