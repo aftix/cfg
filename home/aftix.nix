@@ -31,8 +31,8 @@ in {
     ./opt/swaync.nix
     ./opt/transmission.nix
 
+    ./opt/cinny.nix
     ./opt/discord.nix
-    ./opt/element.nix
   ];
 
   nixpkgs.overlays = [

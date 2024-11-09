@@ -448,14 +448,22 @@ in {
           "$mainMod, mouse:273, resizewindow"
         ];
 
-        exec-once = [
-          "hypridle"
-          "[workspace 1 silent] firefox"
-          "[workspace 8 silent] thunderbird"
-          "[workspace 9 silent] keepassxc"
-          "[workspace 2;group set] element-desktop"
-          "[workspace 2] discord"
-        ];
+        exec-once =
+          [
+            "hypridle"
+            "[workspace 1 silent] firefox"
+            "[workspace 8 silent] thunderbird"
+            "[workspace 9 silent] keepassxc"
+          ]
+          ++ optionals config.my.element [
+            "[workspace 2;group set] element-desktop"
+          ]
+          ++ optionals config.my.cinny [
+            "[workspace 2;group set] cinny"
+          ]
+          ++ [
+            "[workspace 2] discord"
+          ];
 
         windowrulev2 = [
           "tile,class:(kitty)"
@@ -539,12 +547,17 @@ in {
             up = "0 -10";
             down = "0 10";
           } "" "resizeactive");
-          programs = map (cmd: "bind = ${cmd}") [
-            ",w,exec,firefox"
-            ",e,exec,thunderbird"
-            ",d,exec,discord"
-            "SHIFT,d,exec,element-desktop"
-          ];
+          programs = map (cmd: "bind = ${cmd}") ([
+              ",w,exec,firefox"
+              ",e,exec,thunderbird"
+              ",d,exec,discord"
+            ]
+            ++ optionals config.my.element [
+              "SHIFT,d,exec,element-desktop"
+            ]
+            ++ optionals config.my.cinny [
+              "SHIFT,d,exec,cinny"
+            ]);
         };
     };
 

@@ -149,7 +149,11 @@
               "pay-by-privacy"
               "aspell-dict-en-science"
             ];
-          permittedInsecurePackages = ["jitsi-meet-1.0.8043"];
+          permittedInsecurePackages = [
+            "jitsi-meet-1.0.8043"
+            "cinny-4.2.2"
+            "cinny-unwrapped-4.2.2"
+          ];
         };
       };
     };
