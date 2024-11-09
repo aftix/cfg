@@ -15,4 +15,6 @@
         ];
       };
     };
+
+  my.element = true;
 }
