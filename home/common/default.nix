@@ -23,7 +23,12 @@ in {
     ./zsh.nix
   ];
 
-  options.my.registerMimes = mkOption {default = true;};
+  options.my = {
+    registerMimes = mkOption {default = true;};
+
+    element = mkOption {default = false;};
+    cinny = mkOption {default = false;};
+  };
 
   config = {
     nix.settings.use-xdg-base-directories = true;
