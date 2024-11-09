@@ -67,6 +67,8 @@
     };
   };
 
+  sops.secrets.mpv = {};
+
   my.shell = {
     aliases = [
       {
@@ -129,6 +131,7 @@
         save-position-on-quit = true;
         sub-font = "Source Han Serif JP";
         sub-auto = "fuzzy";
+        include = config.sops.secrets.mpv.path;
       };
 
       profiles = {
