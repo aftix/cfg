@@ -4,24 +4,14 @@
   lib,
   ...
 }: {
-  home =
-    {
-      packages = with pkgs; [
-        feh
-        ffmpeg_7-full
-        imagemagick
+  home.packages = with pkgs; [
+    feh
+    ffmpeg_7-full
+    imagemagick
 
-        ario
-        mpc-cli
-      ];
-    }
-    // lib.optionalAttrs (config.my ? impermanence && config.my.impermanence.enable) {
-      persistence.${config.my.impermanence.path} = {
-        directories = [
-          ".config/ario"
-        ];
-      };
-    };
+    ario
+    mpc-cli
+  ];
 
   services = {
     mpd = let

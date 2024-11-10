@@ -12,7 +12,6 @@ in {
     ./common
     ../hardware/hamilton-home.nix
 
-    ./opt/impermanence.nix
     ./opt/sops.nix
 
     ./opt/aria2.nix
@@ -93,19 +92,6 @@ in {
       ExecStart = "${lib.getExe pkgs.link-gh-hosts}";
     };
     Install.WantedBy = ["default.target"];
-  };
-
-  home.persistence.${config.my.impermanence.path} = {
-    directories = [
-      ".config/attic"
-      ".config/keepassxc"
-      ".config/Yubico"
-    ];
-    files = [
-      ".config/nushell/history.sqlite3"
-      ".config/nushell/history.sqlite3-shm"
-      ".config/nushell/history.sqlite3-wal"
-    ];
   };
 
   my = {

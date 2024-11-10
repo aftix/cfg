@@ -3,7 +3,7 @@
   sops,
   ...
 }: let
-  keyFile = config.home.homeDirectory + "/.local/persist/.config/sops/age/keys.txt";
+  keyFile = config.home.homeDirectory + "/.local/persist/${config.home.homeDirectory}/.config/sops/age/keys.txt";
 in {
   imports = [sops];
 
