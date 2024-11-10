@@ -2,7 +2,6 @@
   imports = [
     ./common
 
-    ./opt/impermanence.nix
     ./opt/sops.nix
 
     ./opt/helix.nix

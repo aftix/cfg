@@ -44,7 +44,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    impermanence.url = "github:nix-community/impermanence";
+    preservation.url = "github:willibutz/preservation";
     stylix.url = "github:danth/stylix";
 
     sops-nix = {
@@ -248,6 +248,7 @@
       inputs.nix-index-database.nixosModules.nix-index
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
       inputs.nixos-cli.nixosModules.nixos-cli
+      inputs.preservation.nixosModules.default
       nixosHomeModule
       depInject
       {
@@ -271,7 +272,6 @@
     extraSpecialArgs = {
       inherit (inputs.sops-nix.homeManagerModules) sops;
       inherit (inputs.stylix.homeManagerModules) stylix;
-      inherit (inputs.impermanence.nixosModules.home-manager) impermanence;
     };
 
     commonHmModules = [
@@ -322,7 +322,6 @@
         hamilton = genNixosSystem {
           modules = [
             inputs.disko.nixosModules.disko
-            inputs.impermanence.nixosModules.impermanence
             inputs.lanzaboote.nixosModules.lanzaboote
             ./host/hamilton.nix
           ];
@@ -351,7 +350,6 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
             inputs.disko.nixosModules.disko
-            inputs.impermanence.nixosModules.impermanence
             ./host/iso-minimal.nix
           ];
           users = {
@@ -366,7 +364,6 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
             inputs.disko.nixosModules.disko
-            inputs.impermanence.nixosModules.impermanence
             ./host/iso-graphical.nix
           ];
           users = {
