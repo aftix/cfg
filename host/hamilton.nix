@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (lib.strings) optionalString;
+  inherit (config.my.lib.preservation) mkDirs mkFiles;
 in {
   imports = [
     ../hardware/hamilton.nix
@@ -23,7 +24,7 @@ in {
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
-    age.keyFile = "/home/aftix/.local/persist/.config/sops/age/keys.txt";
+    age.keyFile = "/home/aftix/.local/persist/home/aftix/.config/sops/age/keys.txt";
 
     secrets.gh_access_token = {};
 
@@ -84,43 +85,54 @@ in {
 
       sbctl
     ];
+  };
 
-    # opt into state
-    persistence = {
+  # opt into state
+  preservation = {
+    enable = true;
+    preserveAt = {
       # /persist is backed up (btrfs subvolume under safe/)
       "/persist" = {
-        hideMounts = true;
-        directories = [
+        directories = mkDirs [
           "/var/lib/nixos"
           "/etc/NetworkManager/system-connections"
           "/etc/mullvad-vpn"
           "/etc/secureboot"
           "/var/cache/mullvad-vpn"
         ];
+        files = mkFiles [
+          {
+            file = "/etc/machine-id";
+            inInitrd = true;
+            how = "symlink";
+          }
+          {
+            file = "/var/lib/systemd/random-seed";
+            inInitrd = true;
+            how = "symlink";
+          }
+        ];
       };
       # /state is not backup up (btrfs subvolume under local)
       "/state" = {
-        hideMounts = true;
-        directories = [
-          "/var/log"
+        directories = mkDirs [
+          {
+            directory = "/var/log";
+            inInitrd = true;
+          }
           "/var/lib/bluetooth"
           "/var/lib/systemd/coredump"
+          "/var/lib/systemd/timers"
           "/root/.config/rclone"
         ];
-        files = [
+        files = mkFiles [
           "/var/lib/cups/printers.conf"
           "/var/lib/cups/subscriptions.conf"
         ];
       };
     };
   };
-
   boot = {
-    loader.systemd-boot.enable = lib.mkForce false;
-    lanzaboote = {
-      enable = true;
-      pkiBundle = "/persist/etc/secureboot";
-    };
   };
 
   security.pam.services = {
@@ -144,19 +156,26 @@ in {
       Gateway = "192.168.1.1";
     };
 
-    tmpfiles.rules = [
-      "L /etc/machine-id - - - - /persist/etc/machine-id"
-    ];
+    oomd = {
+      enableRootSlice = true;
+      enableSystemSlice = true;
+      enableUserSlices = true;
+    };
+
+    services.systemd-machine-id-commit = {
+      unitConfig.ConditionPathIsMountPoint = [
+        ""
+        "/persist/etc/machine-id"
+      ];
+      serviceConfig.ExecStart = [
+        ""
+        "systemd-machine-id-setup --commit --root /persist"
+      ];
+    };
   };
 
   documentation.dev.enable = true;
   time.timeZone = "America/Chicago";
-
-  systemd.oomd = {
-    enableRootSlice = true;
-    enableSystemSlice = true;
-    enableUserSlices = true;
-  };
 
   services = {
     mullvad-vpn.enable = true;
@@ -244,21 +263,43 @@ in {
 
   # Hardware specific settings
 
-  # By default don't store state
-  boot.initrd.postDeviceCommands =
-    lib.mkAfter
-    /*
-    bash
-    */
-    ''
-      mkdir /mnt
-      mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /mnt
-      [ -e "/mnt/local/root/var/empty" ] && chattr -i /mnt/local/root/var/empty
-      rm -rf /mnt/local/root
-      btrfs subvolume snapshot /mnt/local/root@blank /mnt/local/root
-      umount /mnt
-      rmdir /mnt
-    '';
+  boot = {
+    loader.systemd-boot.enable = lib.mkForce false;
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/persist/etc/secureboot";
+    };
+
+    initrd.systemd = rec {
+      storePaths = with pkgs; [
+        toybox
+        btrfs-progs
+      ];
+
+      # By default don't store state
+      services.reset-fs-state = {
+        description = "Rollback BtrFS local/root subvolume to blank state";
+        wantedBy = ["initrd.target"];
+        after = ["basic.target"];
+        before = ["sysroot.mount"];
+
+        path = storePaths;
+
+        unitConfig.DefaultDependencies = "no";
+        serviceConfig.Type = "oneshot";
+
+        script = ''
+          MDIR="$(mktemp -d)"
+          mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos "$MDIR"
+          [ -e "$MDIR/local/root/var/empty" ] && chattr -i "$MDIR/local/root/var/empty"
+          rm -rf "$MDIR/local/root"
+          btrfs subvolume snapshot "$MDIR/local/root@blank" "$MDIR/local/root"
+          umount "$MDIR"
+          rmdir "$MDIR"
+        '';
+      };
+    };
+  };
 
   fileSystems = {
     "/persist".neededForBoot = true;
