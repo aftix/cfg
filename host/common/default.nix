@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (lib) mkDefault mkForce;
+  inherit (lib.attrsets) optionalAttrs;
   inherit (lib.options) mkOption mkEnableOption;
 in {
   imports = [
@@ -115,6 +116,11 @@ in {
         UMask = mkForce "0027";
       };
     };
+
+    lib = mkOption {
+      default = {};
+      type = with lib.types; attrsOf anything;
+    };
   };
 
   config = {
@@ -152,33 +158,59 @@ in {
       optimise.automatic = true;
     };
 
-    # Set the host-specific things in the nixd configuration
-    my.development.nixdConfig.options = lib.mkIf ((config.my.flake or "") != "") {
-      nixos.expr = "(builtins.getFlake \"${config.my.flake}\").nixosConfigurations.${config.networking.hostName}.options";
-      home-manager.expr =
-        /*
-        nix
-        */
-        ''
-          let
-            flake = builtins.getFlake "${config.my.flake}";
-            nixosCfg = flake.nixosConfigurations.${config.networking.hostName}.config;
-            pkgs = import <nixpkgs> {};
-            inherit (pkgs) lib;
-            inherit (flake.extra) extraSpecialArgs nixosHomeOptions hmInjectNixosHomeOptions;
-            mkHmCfg = flake.inputs.home-manager.lib.homeManagerConfiguration;
-            nixosOpts = nixosHomeOptions lib;
-            modules = nixosCfg.dep-inject.commonHmModules ++ [
-              nixosOpts
-              ({pkgs, ...}: { nix.package = pkgs.nix;})
-              (hmInjectNixosHomeOptions nixosCfg)
-              (import "${config.my.flake}/home/aftix.nix")
-            ];
-          in
-            (mkHmCfg {
-              inherit pkgs lib extraSpecialArgs modules;
-            }).options
-        '';
+    my = {
+      lib.preservation = {
+        mkDirs = builtins.map (d:
+          if builtins.isString d
+          then {
+            directory = d;
+            mountOptions = ["x-gvfs-hide"];
+          }
+          else
+            d
+            // optionalAttrs (! (d ? how && d.how == "symlink")) {
+              mountOptions = (d.mountOptions or []) ++ ["x-gvfs-hide"];
+            });
+        mkFiles = builtins.map (f:
+          if builtins.isString f
+          then {
+            file = f;
+            mountOptions = ["x-gvfs-hide"];
+          }
+          else
+            f
+            // optionalAttrs (! (f ? how && f.how == "symlink")) {
+              mountOptions = (f.mountOptions or []) ++ ["x-gvfs-hide"];
+            });
+      };
+      # Set the host-specific things in the nixd configuration
+      development.nixdConfig.options = lib.mkIf ((config.my.flake or "") != "") {
+        nixos.expr = "(builtins.getFlake \"${config.my.flake}\").nixosConfigurations.${config.networking.hostName}.options";
+        home-manager.expr =
+          /*
+          nix
+          */
+          ''
+            let
+              flake = builtins.getFlake "${config.my.flake}";
+              nixosCfg = flake.nixosConfigurations.${config.networking.hostName}.config;
+              pkgs = import <nixpkgs> {};
+              inherit (pkgs) lib;
+              inherit (flake.extra) extraSpecialArgs nixosHomeOptions hmInjectNixosHomeOptions;
+              mkHmCfg = flake.inputs.home-manager.lib.homeManagerConfiguration;
+              nixosOpts = nixosHomeOptions lib;
+              modules = nixosCfg.dep-inject.commonHmModules ++ [
+                nixosOpts
+                ({pkgs, ...}: { nix.package = pkgs.nix;})
+                (hmInjectNixosHomeOptions nixosCfg)
+                (import "${config.my.flake}/home/aftix.nix")
+              ];
+            in
+              (mkHmCfg {
+                inherit pkgs lib extraSpecialArgs modules;
+              }).options
+          '';
+      };
     };
 
     # Use the systemd-boot EFI boot loader.
@@ -191,6 +223,11 @@ in {
           editor = false;
           memtest86.enable = true;
         };
+      };
+
+      initrd.systemd = {
+        enable = true;
+        storePaths = with pkgs; [kbd];
       };
 
       kernelPackages = pkgs.linuxPackages_latest;
