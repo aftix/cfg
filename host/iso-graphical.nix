@@ -14,7 +14,10 @@ in {
 
   users.users.root.hashedPasswordFile = null;
 
-  boot.kernelPackages = mkForce pkgs.linuxPackages_6_6;
+  boot = {
+    kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
+    initrd.systemd.enable = lib.mkForce false;
+  };
 
   environment = {
     systemPackages = with pkgs; [
