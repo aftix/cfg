@@ -15,6 +15,7 @@ in {
     extraGroups = mkOption {
       default = [
         "networkmanager"
+        "input"
         "scanner"
         "lp"
         "dialout"
