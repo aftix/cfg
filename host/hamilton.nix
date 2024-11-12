@@ -18,6 +18,7 @@ in {
     ./opt/display.nix
     ./opt/docker.nix
     ./opt/network.nix
+    ./opt/silentboot.nix
     ./opt/sound.nix
     ./opt/syncthing.nix
   ];
