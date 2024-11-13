@@ -17,6 +17,7 @@ in {
     ./gnupg.nix
     ./nushell.nix
     ./python.nix
+    ./swayosd.nix
     ./shell.nix
     ./tldr.nix
     ./xdg.nix

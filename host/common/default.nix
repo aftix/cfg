@@ -17,6 +17,7 @@ in {
     ./nh.nix
     ./root.nix
     ./sleep.nix
+    ./swayosd.nix
     ./youtube_operational_api.nix
   ];
 

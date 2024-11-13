@@ -63,12 +63,15 @@ in {
     };
 
     backup.bucket = "aftix-hamilton-backup";
-    uefi = true;
 
     greeterCfgExtra = ''
       monitor=desc:ASUSTek COMPUTER INC ASUS VG27W 0x0001995C,preferred,0x0,1
       monitor=desc:ViewSonic Corporation VX2703 SERIES T8G132800478,preferred,2560x-180,1,transform,1
     '';
+
+    swayosd.enable = true;
+
+    uefi = true;
   };
 
   nix.extraOptions = ''
