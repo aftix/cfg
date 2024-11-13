@@ -389,4 +389,77 @@ in {
         })
     ];
   };
+
+  systemd.user.services.waybar.Service = {
+    CapabilityBoundingSet = lib.strings.concatStringsSep " " (builtins.map (s: "~CAP_" + s) [
+      "BPF"
+      "BLOCK_SUSPEND"
+      "CHOWN"
+      "FOWNER"
+      "FSETID"
+      "IPC_OWNER"
+      "LEASE"
+      "LINUX_IMMUTABLE"
+      "NET_ADMIN"
+      "NET_BIND_SERVICE"
+      "NET_BROADCAST"
+      "NET_RAW"
+      "SETFCAP"
+      "SETGID"
+      "SETPCAP"
+      "SETUID"
+      "SYS_ADMIN"
+      "SYS_BOOT"
+      "SYS_CHROOT"
+      "SYS_MODULE"
+      "SYS_NICE"
+      "SYS_PACCT"
+      "SYS_PTRACE"
+      "SYS_RAWIO"
+      "SYS_RESOURCE"
+      "SYS_SYSLOG"
+      "SYS_TIME"
+      "SYS_TTY_CONFIG"
+    ]);
+    DeviceAllow = "";
+    IPAddressDeny = "any";
+    KeyringMode = "shared";
+    LockPersonality = true;
+    MemoryDenyWriteExecute = true;
+    NoNewPrivileges = true;
+    PrivateDevices = true;
+    PrivateMounts = true;
+    PrivateTmp = true;
+    PrivateUsers = true;
+    ProcSubset = "pid";
+    ProtectClock = true;
+    ProtectControlGroups = true;
+    ProtectHostname = true;
+    ProtectKernelLogs = true;
+    ProtectKernelModules = true;
+    ProtectKernelTunables = true;
+    ProtectProc = "invisible";
+    ProtectSystem = true;
+    ReadOnlyPaths = "/home";
+    RestrictAddressFamilies = "AF_UNIX AF_INET";
+    RestrictNamespaces = true;
+    RestrictRealtime = true;
+    RestrictSUIDSGID = true;
+    SystemCallArchitectures = "native";
+    SystemCallFilter = lib.strings.concatStringsSep " " (builtins.map (s: "~@" + s) [
+      "clock"
+      "cpu_emulation"
+      "debug"
+      "module"
+      "mount"
+      "obsolete"
+      "privileged"
+      "raw-io"
+      "reboot"
+      "resources"
+      "swap"
+    ]);
+    UMask = "0027";
+    WorkingDirectory = "${config.programs.waybar.package}/bin";
+  };
 }
