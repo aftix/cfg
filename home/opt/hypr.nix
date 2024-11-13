@@ -11,6 +11,34 @@
   inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
   cfg = config.my.hyprland;
   hyprPackage = config.wayland.windowManager.hyprland.package;
+
+  volumeCmds = let
+    osd = lib.getExe' config.my.nixosCfg.my.swayosd.package "swayosd-client";
+    pw = lib.getExe pkgs.pw-volume;
+  in
+    if config.my.nixosCfg.my.swayosd.enable
+    then {
+      raise = "${osd} --output-volume raise";
+      raiseMid = "${osd} --output-volume +3";
+      raiseHigh = "${osd} --output-volume +10";
+      lower = "${osd} --output-volume lower";
+      lowerMid = "${osd} --output-volume -3";
+      lowerHigh = "${osd} --output-volume -10";
+      mute = "${pw} mute on";
+      unmute = "${pw} mute off";
+      muteToggle = "${osd} --output-volume mute-toggle";
+    }
+    else {
+      raise = "${pw} change +1%";
+      raiseMid = "${pw} change +3%";
+      raiseHigh = "${pw} change +10%";
+      lower = "${pw} change -1%";
+      lowerMid = "${pw} change -3%";
+      lowerHigh = "${pw} change -10%";
+      mute = "${pw} mute on";
+      unmute = "${pw} mute off";
+      muteToggle = "${pw} mute toggle";
+    };
 in {
   imports = [./waybar.nix];
 
@@ -430,12 +458,12 @@ in {
             10);
 
         bindel = [
-          ",XF86AudioRaiseVolume,exec,pw-volume change +1%"
-          ",XF86AudioLowerVolume,exec,pw-volume change -1%"
+          ",XF86AudioRaiseVolume,exec,${volumeCmds.raise}"
+          ",XF86AudioLowerVolume,exec,${volumeCmds.lower}"
         ];
 
         bindl = [
-          ",XF86AudioMute,exec,pw-volume mute toggle"
+          ",XF86AudioMute,exec,${volumeCmds.muteToggle}"
           ",XF86AudioPlay,exec,mpc toggle"
           ",XF86AudioPause,exec,mpc pause"
           ",XF86AudioNext,exec,mpc next"
@@ -522,24 +550,24 @@ in {
             ++ (map (cmd: "bindel = ${cmd}") (mkMovements {} "" "moveintogroup"));
           volume =
             [
-              "bindel=SHIFT, m, exec, pw-volume mute off"
-              "bindel=SHIFT, u, exec, pw-volume change +10%"
-              "bindel=SHIFT, d, exec, pw-volume change -10%"
+              "bindel=SHIFT, m, exec, ${volumeCmds.unmute}"
+              "bindel=SHIFT, u, exec, ${volumeCmds.raiseHigh}"
+              "bindel=SHIFT, d, exec, ${volumeCmds.lowerHigh}"
             ]
             ++ (map (cmd: "bindel=, ${cmd}") [
-              "XF86AudioRaiseVolume, exec, pw-volume change +1%"
-              "XF86AudioLowerVolume, exec, pw-volume change -1%"
-              "u, exec, pw-volume change +3%"
-              "d, exec, pw-volume change -3%"
-              "m, exec, pw-volume mute on"
+              "XF86AudioRaiseVolume, exec, ${volumeCmds.raise}"
+              "XF86AudioLowerVolume, exec, ${volumeCmds.lower}"
+              "u, exec, ${volumeCmds.raiseMid}"
+              "d, exec, ${volumeCmds.lowerMid}"
+              "m, exec, ${volumeCmds.mute}"
             ])
             ++ (map (cmd: "bindl=, ${cmd}") [
-              "XF86AudioMute, exec, pw-volume mute toggle"
+              "XF86AudioMute, exec, ${volumeCmds.muteToggle}"
               "XF86AudioPlay, exec, mpc toggle"
               "XF86AudioPause, exec, mpc pause"
               "XF86AudioNext, exec, mpc next"
               "XF86AudioPrev, exec, mpc prev"
-              "t, exec, pw-volume mute toggle"
+              "t, exec, ${volumeCmds.muteToggle}"
             ]);
           resize = map (cmd: "binde=${cmd}") (mkMovements {
             left = "-10 0";
