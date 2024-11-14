@@ -1,18 +1,10 @@
 {
-  pkgs,
   lib,
   config,
   ...
 }: let
   cfg = config.my.swayosd;
 in {
-  options.my.swayosd = {
-    enable = lib.mkEnableOption "swayosd";
-    package = lib.mkPackageOption pkgs "swayosd" {
-      default = ["swayosd"];
-    };
-  };
-
   config = lib.mkIf cfg.enable {
     services.dbus.packages = [cfg.package];
     systemd.services.swayosd = {
