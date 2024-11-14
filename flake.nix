@@ -183,17 +183,30 @@
     };
 
     # Options that are for home-manager, but should be set on a per-host basis
-    nixosHomeOptions = lib: {
-      my.development.nixdConfig = lib.mkOption {
-        default = {};
-        description = "Configuration for the nixd LSP";
-        type = with lib.types; attrsOf anything;
+    nixosHomeOptions = pkgs: lib: {
+      my = {
+        development.nixdConfig = lib.mkOption {
+          default = {};
+          description = "Configuration for the nixd LSP";
+          type = with lib.types; attrsOf anything;
+        };
+
+        swayosd = {
+          enable = lib.mkEnableOption "swayosd";
+          package = lib.mkPackageOption pkgs "swayosd" {
+            default = ["swayosd"];
+          };
+        };
       };
     };
 
     # Nixos module for nixosHomeOptions
     # Allows nixos configurations to set options to propagate into each home-manager configuration
-    nixosHomeModule = {lib, ...}: {options = nixosHomeOptions lib;};
+    nixosHomeModule = {
+      lib,
+      pkgs,
+      ...
+    }: {options = nixosHomeOptions pkgs lib;};
 
     # Inject config from nixosHomeOptions into home-manager
     # Leaves a my.nixosCfg option set to the total system configuration, and
@@ -202,8 +215,12 @@
     # Downstream users should get this from the `extra` flake output and use it to generate a hm module
     # with their sysCfg injected. The nixos side is already in the default flake nixosModule, so nothing
     # extra is needed beyond that.
-    hmInjectNixosHomeOptions = sysCfg: {lib, ...}: let
-      homeOpts = nixosHomeOptions lib;
+    hmInjectNixosHomeOptions = sysCfg: {
+      lib,
+      pkgs,
+      ...
+    }: let
+      homeOpts = nixosHomeOptions pkgs lib;
     in {
       imports = [{options = homeOpts;}];
 
