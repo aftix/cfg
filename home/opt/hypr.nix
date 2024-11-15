@@ -75,9 +75,6 @@ in {
   };
 
   config = {
-    # https://github.com/danth/stylix/pull/610
-    stylix.targets.hyprland.enable = false;
-
     nixpkgs.overlays = [
       (final: _: {
         screenshot = final.writeShellApplication {
@@ -349,7 +346,6 @@ in {
           shadow = {
             range = 4;
             render_power = 3;
-            color = "rgba(20274699)";
           };
         };
 
