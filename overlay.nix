@@ -11,12 +11,29 @@ inputs: final: prev: {
       };
   });
 
-  carapace =
-    (prev.carapace.overrideAttrs {
-      src = inputs.carapace;
-      vendorHash = "sha256-IoFQZrUN+2L7be4cNsAKSEngxz+PvhluVi9QC1Io1Ok=";
-    })
-    .override {buildGoModule = final.buildGo123Module;};
+  carapace = prev.carapace.overrideAttrs {
+    src = inputs.carapace;
+    vendorHash = "sha256-fJXTgltbeUPgjwQbNbsU0w1WRK0Xqi8LQ6BltqypKJ4=";
+  };
+
+  cinny-desktop = prev.cinny-desktop.overrideAttrs {
+    postPatch = let
+      inherit (final) pkgs lib;
+      cinny' = assert lib.assertMsg (
+        pkgs.cinny.version == prev.cinny-desktop.version
+      ) "cinny.version (${pkgs.cinny.version}) != cinny-desktop.version (${prev.cinny-desktop.version})";
+        pkgs.cinny.override {
+          conf = {
+            hashRouter.enabled = true;
+          };
+        };
+    in ''
+      substituteInPlace tauri.conf.json \
+        --replace-fail '"distDir": "../cinny/dist",' '"distDir": "${cinny'}",'
+      substituteInPlace tauri.conf.json \
+        --replace-fail '"cd cinny && npm run build"' '""'
+    '';
+  };
 
   heisenbridge = prev.heisenbridge.overridePythonAttrs (oldAttrs: rec {
     version = "1.15.0";

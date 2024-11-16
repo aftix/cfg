@@ -17,7 +17,6 @@ in {
 
   programs.firefox = {
     enable = true;
-    package = mkDefault (with pkgs; wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {});
 
     policies = {
       DontCheckDefaultBrowser = true;
