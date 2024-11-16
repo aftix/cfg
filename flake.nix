@@ -152,10 +152,11 @@
               "pay-by-privacy"
               "aspell-dict-en-science"
             ];
+
           permittedInsecurePackages = [
             "jitsi-meet-1.0.8043"
-            "cinny-4.2.2"
-            "cinny-unwrapped-4.2.2"
+            "cinny-4.2.3"
+            "cinny-unwrapped-4.2.3"
           ];
         };
       };
@@ -428,32 +429,37 @@
       };
     }
     // flake-utils.lib.eachDefaultSystem (sys: let
-      pkgs = nixpkgs.legacyPackages.${sys};
+      pkgs = import nixpkgs {
+        system = sys;
+        inherit (pkgsCfg.nixpkgs) config;
+        overlays = [
+          nur.overlay
+          inputs.helix.overlays.default
+          self.overlays.default
+        ];
+      };
     in {
       formatter =
         pkgs.alejandra or pkgs.nix-fmt;
 
       checks = nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy);
 
-      legacyPackages = let
-        appliedOverlay = self.overlays.default pkgs pkgs;
-      in {
-        inherit (appliedOverlay) freshrssExts;
+      legacyPackages = {
+        inherit (pkgs) freshrssExts;
       };
 
-      packages = let
-        appliedOverlay = self.overlays.default pkgs pkgs;
-        helixOverlay = inputs.helix.overlays.default pkgs pkgs;
-      in {
+      packages = {
         inherit
-          (appliedOverlay)
+          (pkgs)
           barcodebuddy
           carapace
+          cinny-desktop
           coffeepaste
           attic
           attic-client
           attic-server
           heisenbridge
+          helix
           nginx_blocker
           youtube-operational-api
           yubikey-manager
@@ -469,7 +475,6 @@
           nu_plugin_strutils
           ;
 
-        inherit (helixOverlay) helix;
         lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
       };
     });
