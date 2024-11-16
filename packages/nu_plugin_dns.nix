@@ -27,7 +27,7 @@ rustPlatform.buildRustPackage rec {
   meta = with lib; {
     description = "A DNS utility for nushell.";
     mainProgram = "nu_plugin_dns";
-    homepage = "https://github.com/dead10ck/nu_plugin_dns/tree/${version}";
+    homepage = "https://github.com/dead10ck/nu_plugin_dns";
     license = licenses.mpl20;
     platforms = with platforms; all;
   };

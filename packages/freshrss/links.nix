@@ -6,7 +6,7 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-kapdap";
-  version = "0-unstable-2021-12-24";
+  version = "brach";
 
   src = fetchFromGitHub {
     owner = "kapdap";

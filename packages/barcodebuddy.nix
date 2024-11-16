@@ -24,7 +24,7 @@
 in
   stdenvNoCC.mkDerivation (self: {
     pname = "barcodebuddy";
-    version = "1.8.1.8";
+    version = "1.8.1.8-unstable-2024-06-02";
 
     src = fetchFromGitHub {
       owner = "Forceu";

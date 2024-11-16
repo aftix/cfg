@@ -6,7 +6,7 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-ezpriorities";
-  version = "0-unstable-2024-01-22";
+  version = "brach";
 
   src = fetchFromGitHub {
     owner = "aidistan";
