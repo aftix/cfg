@@ -6,7 +6,7 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-threepane";
-  version = "0-unstable-2024-03-30";
+  version = "brach";
 
   src = fetchFromGitLab {
     domain = "framagit.org";

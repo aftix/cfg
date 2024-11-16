@@ -27,7 +27,7 @@ rustPlatform.buildRustPackage rec {
   meta = with lib; {
     description = "A nushell plugin for compression and decompression, supporting zstd, gzip, bzip2, and xz.";
     mainProgram = "nu_plugin_compress";
-    homepage = "https://github.com/yybit/nu_plugin_compress/tree/${version}";
+    homepage = "https://github.com/yybit/nu_plugin_compress";
     license = licenses.asl20;
     platforms = with platforms; all;
   };

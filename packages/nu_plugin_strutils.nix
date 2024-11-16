@@ -7,15 +7,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_strutils";
-  version = "88271e793f1246139cb20a8d92a3d66c4370ad81";
+  version = "0.7.0-unstable-2024-11-15";
 
   src = fetchFromGitHub {
     owner = "fdncred";
     repo = pname;
     rev = version;
-    sha256 = "sha256-wTOYnnibalPj9SmrwZ8bXcYfk0b8gLGcTF4nWwOEy3c=";
+    sha256 = "sha256-vWg/l8Y1zC8i7A/VBF+lBrgB/NyotZiQcLyb68vbP08=";
   };
-  cargoHash = "sha256-W/QPBDevydB2uOsGI/NVIVwAYeiNAg4PUCtH16r/piI=";
+  cargoHash = "sha256-A6TfIh2mIHHUwY55VQKbb0ZrHGwOqi1JawpwJLkXjc0=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
@@ -26,7 +26,7 @@ rustPlatform.buildRustPackage rec {
   meta = with lib; {
     description = "Nushell plugin that implements some string utilities that are not included in nushell.";
     mainProgram = "nu_plugin_strutils";
-    homepage = "https://github.com/fdncred/nu_plugin_strutils/tree/${version}";
+    homepage = "https://github.com/fdncred/nu_plugin_strutils";
     license = licenses.mit;
     platforms = with platforms; all;
   };
