@@ -17,6 +17,7 @@ in {
         "networkmanager"
         "input"
         "scanner"
+        "libvirtd"
         "lp"
         "dialout"
       ];
