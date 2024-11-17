@@ -15,7 +15,7 @@
       availableKernelModules = ["ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi"];
       kernelModules = [];
     };
-    kernelModules = ["kvm-intel"];
+    kernelModules = ["kvm_intel"];
     extraModulePackages = [];
     loader.grub = {
       enable = true;

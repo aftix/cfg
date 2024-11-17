@@ -11,9 +11,9 @@
   boot = {
     initrd = {
       availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"];
-      kernelModules = ["amdgpu"];
+      kernelModules = ["amdgpu" "kvm_amd"];
     };
-    kernelModules = ["kvm-amd"];
+    kernelModules = ["kvm_amd"];
     extraModulePackages = [];
   };
 
