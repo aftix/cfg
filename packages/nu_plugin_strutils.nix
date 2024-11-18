@@ -12,7 +12,7 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "fdncred";
     repo = pname;
-    rev = version;
+    rev = "b68f6bc6e946c9a176748b438ac34f0377d606dc";
     sha256 = "sha256-vWg/l8Y1zC8i7A/VBF+lBrgB/NyotZiQcLyb68vbP08=";
   };
   cargoHash = "sha256-A6TfIh2mIHHUwY55VQKbb0ZrHGwOqi1JawpwJLkXjc0=";
