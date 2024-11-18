@@ -14,7 +14,6 @@ in {
     ./channels.nix
     ./coffeepaste.nix
     ./hostBlacklist
-    ./nh.nix
     ./root.nix
     ./sleep.nix
     ./swayosd.nix

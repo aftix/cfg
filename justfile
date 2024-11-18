@@ -41,17 +41,17 @@ build host=hostname *FLAGS="":
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 switch *FLAGS:
-    @nh os switch {{FLAGS}}
+    @nixos apply . --use-nom {{FLAGS}}
     @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 boot *FLAGS:
-    @nh os boot {{FLAGS}}
+    @nixos apply . --use-nom --no-activate {{FLAGS}}
     @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 test *FLAGS:
-    @nh os test {{FLAGS}}
+    @nixos apply . --use-nom --no-boot {{FLAGS}}
     @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
