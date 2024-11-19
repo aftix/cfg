@@ -52,6 +52,9 @@ inputs: final: prev: {
 
   inherit (inputs.attic.overlays.default final prev) attic attic-client attic-server;
 
+  nixt = prev.nixt.override {nix = final.nixVersions.nix_2_24;};
+  nixd = prev.nixd.override {nix = final.nixVersions.nix_2_24;};
+
   nginx_blocker = final.callPackage ./packages/nginx_blocker.nix {inherit (inputs) nginxBlacklist;};
   youtube-operational-api = final.callPackage ./packages/youtube_operational_api/package.nix {};
 
