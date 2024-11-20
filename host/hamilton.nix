@@ -160,11 +160,7 @@ in {
       Gateway = "192.168.1.1";
     };
 
-    oomd = {
-      enableRootSlice = true;
-      enableSystemSlice = true;
-      enableUserSlices = true;
-    };
+    oomd.enableUserSlices = true;
 
     services.systemd-machine-id-commit = {
       unitConfig.ConditionPathIsMountPoint = [
