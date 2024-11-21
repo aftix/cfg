@@ -132,7 +132,12 @@ in {
     };
     docs = {
       enable = true;
-      prefix = "hamilton";
+      prefix = let
+        host = config.my.nixosCfg.networking.hostName or "";
+      in
+        if host == ""
+        then "nixos"
+        else host;
     };
   };
 
