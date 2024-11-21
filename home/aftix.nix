@@ -4,6 +4,7 @@
   lib,
   ...
 }: let
+  inherit (lib.lists) optionals;
   inherit (lib.strings) escapeShellArg;
 
   inherit (config.xdg) configHome dataHome;
@@ -97,7 +98,37 @@ in {
   my = {
     shell = {
       elvish.enable = true;
-      nushell.enable = true;
+      nushell = {
+        enable = true;
+        extraCommands = optionals pkgs.stdenv.hostPlatform.isLinux [
+          {
+            name = "\"limit mem\"";
+            arguments = ''
+              --soft: string
+              --hard: string
+              --soft-swap: string
+              --hard-swap: string
+              ...args
+            '';
+            body = ''
+              mut args = $args
+              if $soft != null {
+                $args = ["-p" $"MemoryHigh=($soft)" ...$args]
+              }
+              if $hard != null {
+                $args = ["-p" $"MemoryHigh=($hard)" ...$args]
+              }
+              if $soft_swap != null {
+                $args = ["-p" $"MemoryHigh=($soft_swap)" ...$args]
+              }
+              if $hard_swap != null {
+                $args = ["-p" $"MemoryHigh=($hard_swap)" ...$args]
+              }
+              systemd-run --user --slice-inherit -dtP ...$args
+            '';
+          }
+        ];
+      };
     };
     docs = {
       enable = true;
