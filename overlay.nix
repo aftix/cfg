@@ -1,16 +1,4 @@
 inputs: final: prev: {
-  yubikey-manager = prev.yubikey-manager.override (prev: {
-    python3Packages =
-      prev.python3Packages
-      // {
-        pyscard = let
-          stable =
-            inputs.stablepkgs.legacyPackages.${final.system}.python312Packages.pyscard;
-        in
-          stable.override {inherit (prev.python3Packages) buildPythonPackage pytestCheckHook setuptools;};
-      };
-  });
-
   carapace = prev.carapace.overrideAttrs {
     src = inputs.carapace;
     vendorHash = "sha256-OCQcGn78Y/5QdbXk/Vjuo7VXXd9AesvBYjHCN6Ams7w=";
