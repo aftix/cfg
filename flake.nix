@@ -459,7 +459,6 @@
           helix
           nginx_blocker
           youtube-operational-api
-          yubikey-manager
           nu_plugin_audio_hook
           nu_plugin_compress
           nu_plugin_desktop_notifications
