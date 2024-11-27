@@ -33,13 +33,13 @@ in {
                   type = "filesystem";
                   format = "vfat";
                   mountpoint = "/boot";
-                  mountOptions =
-                    [
-                      "noexec"
-                      "nodev"
-                      "nosuid"
-                    ]
-                    ++ cfg.massDrive.mountOptions;
+                  mountOptions = [
+                    "noexec"
+                    "nodev"
+                    "nosuid"
+                    "relatime"
+                    "nodiratime"
+                  ];
                 };
               };
 
@@ -144,7 +144,7 @@ in {
                     }: {
                       "local/${name}" = {
                         inherit mountpoint;
-                        inherit (cfg.massDrive) mountOptions;
+                        mountOptions = ["x-systemd.automount" "nofail"] ++ cfg.massDrive.mountOptions;
                       };
                     })
                     cfg.massDrive.subvolumes);

@@ -135,8 +135,6 @@ in {
       };
     };
   };
-  boot = {
-  };
 
   security.pam.services = {
     greetd.u2fAuth = true;
