@@ -14,7 +14,6 @@ in {
   options.my.users.aftix = {
     extraGroups = mkOption {
       default = [
-        "networkmanager"
         "input"
         "scanner"
         "libvirtd"

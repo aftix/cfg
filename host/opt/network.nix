@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }: let
   cfg = config.my.network;
@@ -38,23 +37,9 @@ in {
         cfg.interfaces);
     };
 
-    networking = {
-      networkmanager = {
-        enable = lib.mkDefault true;
-        unmanaged = lib.mkIf config.services.mullvad-vpn.enable ["wg0-mullvad"];
-        plugins = lib.mkForce (with pkgs; [
-          networkmanager-fortisslvpn
-          networkmanager-iodine
-          networkmanager-l2tp
-          networkmanager-openvpn
-          networkmanager-vpnc
-          networkmanager-sstp
-        ]);
-      };
-      firewall = {
-        enable = true;
-        checkReversePath = lib.mkDefault false;
-      };
+    networking.firewall = {
+      enable = true;
+      checkReversePath = lib.mkDefault false;
     };
 
     services.resolved = {
