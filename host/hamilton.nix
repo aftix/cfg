@@ -99,7 +99,6 @@ in {
       "/persist" = {
         directories = mkDirs [
           "/var/lib/nixos"
-          "/etc/NetworkManager/system-connections"
           "/etc/mullvad-vpn"
           "/etc/secureboot"
           "/var/cache/mullvad-vpn"
