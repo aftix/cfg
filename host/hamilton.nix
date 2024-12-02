@@ -254,7 +254,7 @@ in {
 
     pcscd.enable = true;
     udisks2.enable = true;
-    udev.packages = [pkgs.yubikey-personalization];
+    udev.packages = with pkgs; [yubikey-personalization android-udev-rules];
     xserver.videoDrivers = ["modesetting"];
   };
 
