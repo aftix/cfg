@@ -112,21 +112,24 @@ in {
       };
     };
 
-    fonts.packages = with pkgs; [
-      inconsolata
-      dejavu_fonts
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-emoji
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      dina-font
-      proggyfonts
-      nerdfonts
-      font-awesome
-      office-code-pro
-      cantarell-fonts
-    ];
+    fonts.packages =
+      (with pkgs; [
+        inconsolata
+        dejavu_fonts
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-emoji
+        liberation_ttf
+        fira-code
+        fira-code-symbols
+        dina-font
+        proggyfonts
+        font-awesome
+        office-code-pro
+        cantarell-fonts
+      ])
+      ++ (with pkgs.nerd-fonts; [
+        symbols-only
+      ]);
   };
 }
