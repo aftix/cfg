@@ -29,7 +29,7 @@ in
     src = fetchFromGitHub {
       owner = "Forceu";
       repo = "barcodebuddy";
-      rev = "v${self.version}";
+      rev = "refs/tags/v1.8.1.8";
       hash = "sha256-zHprV5mCFciq5XgJD7fmEgb/vHlwAWOY1TcdBoCA8Eo=";
     };
 
