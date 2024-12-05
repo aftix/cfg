@@ -1,0 +1,10 @@
+--- a/web/index.html
++++ b/web/index.html
+@@ -55,6 +55,6 @@ coffeepaste 1.5.1                  June 2021                     COFFEEPASTE(1)
+ <script>
+ // This isn't super nice, but meh.
+ var man = document.getElementById("man");
+-man.innerHTML = man.innerHTML.replace(/\[URL\]/g, location.protocol + "//" + location.host);
++man.innerHTML = man.innerHTML.replace(/\[URL\]/g, location.protocol + "//" + location.host + location.pathname);
+ </script>
+ </html>

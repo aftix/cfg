@@ -34,7 +34,7 @@ inputs: final: prev: {
   });
 
   barcodebuddy = final.callPackage ./packages/barcodebuddy.nix {};
-  coffeepaste = final.callPackage ./packages/coffeepaste.nix {};
+  coffeepaste = final.callPackage ./packages/coffeepaste {};
 
   freshrssExts = final.lib.attrsets.recurseIntoAttrs (final.callPackage ./packages/freshrss {});
 
