@@ -23,6 +23,7 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [glib gexiv2];
   nativeBuildInputs = [pkg-config];
 
+  patches = [./change-url-replace.patch];
   passthru.updateScript = nix-update-script {};
 
   meta = with lib; {

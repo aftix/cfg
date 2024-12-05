@@ -16,7 +16,7 @@ in {
       coffeepaste = {
         user = mkDefault cfg.user;
         group = mkDefault cfg.group;
-        url = mkDefault "https://${cfg.hostname}/${cfg.coffeepasteLocation}";
+        url = mkDefault "https://${cfg.hostname}/${cfg.coffeepasteLocation}/";
       };
 
       nginx = {
