@@ -1,4 +1,8 @@
-inputs: final: prev: {
+inputs: final: prev:
+{
+  inherit (inputs.attic.overlays.default final prev) attic attic-client attic-server;
+  inherit (inputs) nginxBlacklist;
+
   carapace = prev.carapace.overrideAttrs {
     src = inputs.carapace;
     vendorHash = "sha256-VF5awF0zSuRibw/um7fRGM6icIXAnMdLNHMUXVO4/JY=";
@@ -33,27 +37,12 @@ inputs: final: prev: {
     };
   });
 
-  barcodebuddy = final.callPackage ./packages/barcodebuddy.nix {};
-  coffeepaste = final.callPackage ./packages/coffeepaste {};
-
-  freshrssExts = final.lib.attrsets.recurseIntoAttrs (final.callPackage ./packages/freshrss {});
-
-  inherit (inputs.attic.overlays.default final prev) attic attic-client attic-server;
-
   nixt = prev.nixt.override {nix = final.nixVersions.nix_2_24;};
   nixd = prev.nixd.override {nix = final.nixVersions.nix_2_24;};
 
-  nginx_blocker = final.callPackage ./packages/nginx_blocker.nix {inherit (inputs) nginxBlacklist;};
-  youtube-operational-api = final.callPackage ./packages/youtube_operational_api/package.nix {};
-
-  nu_plugin_audio_hook = final.callPackage ./packages/nu_plugin_audio_hook.nix {};
-  nu_plugin_compress = final.callPackage ./packages/nu_plugin_compress.nix {};
-  nu_plugin_desktop_notifications = final.callPackage ./packages/nu_plugin_desktop_notifications.nix {};
-  nu_plugin_dns = final.callPackage ./packages/nu_plugin_dns.nix {};
-  nu_plugin_endecode = final.callPackage ./packages/nu_plugin_endecode.nix {};
-  nu_plugin_explore = final.callPackage ./packages/nu_plugin_explore.nix {};
-  nu_plugin_port_scan = final.callPackage ./packages/nu_plugin_port_scan.nix {};
-  nu_plugin_port_list = final.callPackage ./packages/nu_plugin_port_list.nix {};
-  nu_plugin_semver = final.callPackage ./packages/nu_plugin_semver.nix {};
-  nu_plugin_strutils = final.callPackage ./packages/nu_plugin_strutils.nix {};
+  freshrssExts = final.lib.attrsets.recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
+}
+// prev.lib.filesystem.packagesFromDirectoryRecursive {
+  inherit (final) callPackage;
+  directory = ./packages;
 }
