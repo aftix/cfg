@@ -432,7 +432,7 @@
         overlays = [
           nur.overlay
           inputs.helix.overlays.default
-          self.overlays.default
+          (_: _: {inherit (inputs) nginxBlacklist;})
         ];
       };
     in {
@@ -441,37 +441,30 @@
 
       checks = nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy);
 
-      legacyPackages = {
-        inherit (pkgs) freshrssExts;
-      };
+      legacyPackages =
+        pkgs.lib.attrsets.recurseIntoAttrs (pkgs.callPackage ./legacyPackages/freshrss {});
 
-      packages = {
-        inherit
-          (pkgs)
-          barcodebuddy
-          carapace
-          cinny-desktop
-          coffeepaste
-          attic
-          attic-client
-          attic-server
-          heisenbridge
-          helix
-          nginx_blocker
-          youtube-operational-api
-          nu_plugin_audio_hook
-          nu_plugin_compress
-          nu_plugin_desktop_notifications
-          nu_plugin_dns
-          nu_plugin_endecode
-          nu_plugin_explore
-          nu_plugin_port_scan
-          nu_plugin_port_list
-          nu_plugin_semver
-          nu_plugin_strutils
-          ;
+      packages = let
+        appliedOverlay = pkgs.extend self.overlays.default;
+      in
+        pkgs.lib.filesystem.packagesFromDirectoryRecursive {
+          inherit (pkgs) callPackage;
+          directory = ./packages;
+        }
+        // {
+          inherit
+            (appliedOverlay)
+            carapace
+            cinny-desktop
+            heisenbridge
+            attic
+            attic-client
+            attic-server
+            nixt
+            nixd
+            ;
 
-        lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
-      };
+          lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
+        };
     });
 }
