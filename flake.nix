@@ -137,7 +137,7 @@
     pkgsCfg = {
       nixpkgs = {
         overlays = [
-          nur.overlay
+          nur.overlays.default
           inputs.helix.overlays.default
           inputs.attic.overlays.default
           overlay
@@ -430,7 +430,7 @@
         system = sys;
         inherit (pkgsCfg.nixpkgs) config;
         overlays = [
-          nur.overlay
+          nur.overlays.default
           inputs.helix.overlays.default
           (_: _: {inherit (inputs) nginxBlacklist;})
         ];
