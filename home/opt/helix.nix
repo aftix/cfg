@@ -16,6 +16,7 @@
       cpp = true;
       typescript = true;
       gh = true;
+      steel = true;
 
       nixdConfig = {};
     }
@@ -50,6 +51,50 @@
       ) ''
         ${doFilter (mkLSPSelector "nixd") "config" (builtins.toJSON devCfg.nixdConfig)}
       '';
+
+    addSteelConfig = let
+      steelCfg = {
+        name = "steel";
+        scope = "source.steel";
+        file-types = ["steel"];
+        injection-regex = "steel";
+        auto-format = false;
+        grammar = "scheme";
+        comment-tokens = ";";
+        language-servers = ["steel-language-server"];
+
+        indent = {
+          tab-width = 4;
+          unit = "    ";
+        };
+
+        auto-pairs = {
+          "(" = ")";
+          "{" = "}";
+          "[" = "]";
+          "\"" = "\"";
+        };
+      };
+    in
+      lib.strings.optionalString devCfg.steel ''
+        CTMP="$(${lib.getExe pkgs.mktemp})"
+        tomlq -t ${lib.escapeShellArg ".language |= [.[], ${builtins.toJSON steelCfg}]"} "$TMP" > "$CTMP"
+        rm -f "$TMP"
+        TMP="$CTMP"
+      '';
+
+    addSteelLSPConfig = let
+      steelCfg = {
+        command = "steel-language-server";
+        args = [];
+      };
+    in
+      lib.strings.optionalString devCfg.steel ''
+        CTMP="$(${lib.getExe pkgs.mktemp})"
+        tomlq -t ${lib.escapeShellArg "${mkLSPSelector "steel-language-server"} |= ${builtins.toJSON steelCfg}"} "$TMP" > "$CTMP"
+        rm -f "$TMP"
+        TMP="$CTMP"
+      '';
   in
     pkgs.runCommandLocal "helix-languages" {}
     /*
@@ -62,6 +107,8 @@
       cat "${inputs.helix}/languages.toml" > "$TMP"
       ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
       ${addNixdConfig}
+      ${addSteelConfig}
+      ${addSteelLSPConfig}
       cat "$TMP" > $out
       rm "$TMP"
     '';
