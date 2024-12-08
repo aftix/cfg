@@ -5,7 +5,6 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkMerge;
-  inherit (lib.strings) hasSuffix;
   inherit (lib.lists) optional optionals;
   inherit (lib.options) mkOption;
   inherit (config.xdg) dataHome cacheHome stateHome;
@@ -20,10 +19,17 @@ in {
     cpp = mkOption {default = true;};
     typescript = mkOption {default = false;};
     gh = mkOption {default = true;};
+    steel = mkOption {default = true;};
   };
 
   config = {
     home = {
+      activation = mkIf cfg.steel {
+        makeSteelLSPDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+          run mkdir ''${VERBOSE_ARG} -p "${config.xdg.stateHome}/steel-language-server"
+        '';
+      };
+
       packages = with pkgs;
         [
           shellcheck
@@ -68,7 +74,8 @@ in {
           nodePackages_latest.yarn
           nodePackages_latest.prettier
           nodePackages_latest.typescript
-        ];
+        ]
+        ++ optionals cfg.steel [steel steel-language-server];
 
       sessionVariables = mkMerge [
         (mkIf cfg.rust {
@@ -82,6 +89,10 @@ in {
           GOPATH = mkDefault "${dataHome}/go";
           GOCACHE = mkDefault "${cacheHome}/go/build";
           GOMODCACHE = mkDefault "${cacheHome}/go/mod";
+        })
+
+        (mkIf cfg.steel {
+          STEEL_LSP_HOME = "${stateHome}/steel-lsp-server";
         })
       ];
 
