@@ -150,6 +150,7 @@ in {
       nixPath = ["/nix/var/nix/profiles/per-user/root/channels"];
 
       settings = {
+        accept-flake-config = false;
         experimental-features = ["nix-command" "flakes"];
         use-xdg-base-directories = true;
         trusted-users = ["@wheel"];
