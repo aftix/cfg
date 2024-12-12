@@ -108,6 +108,11 @@
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "cfg-actions:R9aJEQdcJT8NrUh1yox2FgZfmzRrKi6MAobbfuRvv3g="
     ];
+    extra-experimental-features = [
+      "nix-command"
+      "flakes"
+      "pipe-operator"
+    ];
 
     overlay = import ./overlay.nix inputs;
     getModules = atPath: let
@@ -313,6 +318,7 @@
           modules =
             [
               self.nixosModules.default
+              self.nixosModules.nix-settings
             ]
             ++ modules
             ++ [
@@ -404,8 +410,8 @@
           default = {
             imports = commonModules ++ [./host/common];
           };
-          nix-substituters = {
-            nix.settings = {inherit substituters trusted-public-keys;};
+          nix-settings = {
+            nix.settings = {inherit substituters trusted-public-keys extra-experimental-features;};
           };
         }
         // getModules ./host/opt;
@@ -422,7 +428,13 @@
         # NOTE: you'll need to use these for some optional modules
         inherit extraSpecialArgs;
 
-        inherit substituters trusted-public-keys nixosHomeOptions hmInjectNixosHomeOptions;
+        inherit
+          substituters
+          trusted-public-keys
+          extra-experimental-features
+          nixosHomeOptions
+          hmInjectNixosHomeOptions
+          ;
       };
     }
     // flake-utils.lib.eachDefaultSystem (sys: let

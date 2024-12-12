@@ -10,6 +10,7 @@ jobs:
     outputs:
       substituters: ${{ steps.getconf.outputs.substituters }}
       trustedPublicKeys: ${{ steps.getconf.outputs.trustedPublicKeys }}
+      experimentalFeatures: ${{ steps.getconf.outputs.experimentalFeatures }}
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@main
@@ -18,6 +19,7 @@ jobs:
         run: |
           nix eval '.#extra.substituters' --apply 'builtins.toString' | tr -d '"' | awk '{print "substituters="$0}' | tee -a "$GITHUB_OUTPUT"
           nix eval '.#extra.trusted-public-keys' --apply 'builtins.toString' | tr -d '"' | awk '{print "trustedPublicKeys="$0}' | tee -a "$GITHUB_OUTPUT"
+          nix eval '.#extra.extra-experimental-features' --apply 'builtins.toString' | tr -d '"' | awk '{print "experimentalFeatures="$0}' | tee -a "GITHUB_OUTPUT"
     
   deploy-fermi:
     name: Deploy fermi NixOS server
@@ -36,6 +38,7 @@ jobs:
           extra-conf: |
             extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
             extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
+            extra-experimental-features = ${{ needs.bootstrap.outputs.experimentalFeatures }}
 
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
