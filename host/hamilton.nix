@@ -175,6 +175,7 @@ in {
   time.timeZone = "America/Chicago";
 
   services = {
+    bpftune.enable = true;
     mullvad-vpn.enable = true;
 
     pipewire.wireplumber.configPackages = let
