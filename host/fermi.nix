@@ -96,6 +96,7 @@ in {
 
   services = {
     atticd.enable = true;
+    bpftune.enable = true;
     openssh.settings.AllowUsers = ["aftix"];
     coffeepaste = {
       enable = true;
