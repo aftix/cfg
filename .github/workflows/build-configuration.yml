@@ -36,9 +36,10 @@ jobs:
       - name: Free up runner disk space
         run: ./.github/clean-space.bash
 
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
         with:
-          extra-conf: |
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
             extra-substituters = ${{ inputs.substituters }}
             extra-trusted-public-keys = ${{ inputs.trustedPublicKeys }}
             extra-experimental-features = ${{ inputs.experimentalFeatures }}
@@ -81,9 +82,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
         with:
-          extra-conf: |
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
             extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
             extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
             extra-experimental-features = ${{ inputs.experimentalFeatures }}

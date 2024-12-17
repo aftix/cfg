@@ -15,22 +15,27 @@ jobs:
       experimentalFeatures: ${{ steps.getconf.outputs.experimentalFeatures }}
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
       - id: getconf
         name: Get nix.conf configuration options
         run: |
           nix eval '.#extra.substituters' --apply 'builtins.toString' | tr -d '"' | awk '{print "substituters="$0}' | tee -a "$GITHUB_OUTPUT"
           nix eval '.#extra.trusted-public-keys' --apply 'builtins.toString' | tr -d '"' | awk '{print "trustedPublicKeys="$0}' | tee -a "$GITHUB_OUTPUT"
-          nix eval '.#extra.extra-experimental-features' --apply 'builtins.toString' | tr -d '"' | awk '{print "experimentalFeatures="$0}' | tee -a "GITHUB_OUTPUT"
+          nix eval '.#extra.extra-experimental-features' --apply 'builtins.toString' | tr -d '"' | sed 's/pipe-operator/pipe-operators/' | awk '{print "experimentalFeatures="$0}' | tee -a "$GITHUB_OUTPUT"
+
   attic:
     name: Build attic-client
     runs-on: ubuntu-latest
     needs: bootstrap
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
         with:
-          extra-conf: |
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
             extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
             extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
             extra-experimental-features = ${{ needs.bootstrap.outputs.experimentalFeatures }}
@@ -54,13 +59,22 @@ jobs:
 
   prebuildpkgs:
     name: Get package outputs of the flake to populate build matrix
-    needs: attic
+    needs:
+      - attic
+      - bootstrap
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.getpkgs.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
+            extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
+            extra-experimental-features = ${{ needs.bootstrap.outputs.experimentalFeatures }}
+
       - name: Get packages
         id: getpkgs
         run: >
@@ -77,9 +91,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
         with:
-          extra-conf: |
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
             extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
             extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
             extra-experimental-features = ${{ needs.bootstrap.outputs.experimentalFeatures }}
@@ -102,13 +117,22 @@ jobs:
         run: nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
   prebuild:
     name: Get nixosConfiguration outputs of the flake to populate build matrix
-    needs: attic
+    needs:
+      - attic
+      - bootstrap
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.getconfigs.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
+            extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
+            extra-experimental-features = ${{ needs.bootstrap.outputs.experimentalFeatures }}
+
       - name: Get configurations
         id: getconfigs
         run: >
@@ -140,9 +164,10 @@ jobs:
       - name: Free up runner disk space
         run: ./.github/clean-space.bash
 
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v27
         with:
-          extra-conf: |
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
             extra-substituters = ${{ needs.bootstrap.outputs.substituters }}
             extra-trusted-public-keys = ${{ needs.bootstrap.outputs.trustedPublicKeys }}
             extra-experimental-features = ${{ needs.bootstrap.outputs.experimentalFeatures }}
