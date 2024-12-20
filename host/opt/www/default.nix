@@ -126,6 +126,7 @@ in {
       blockerPkg = pkgs.nginx_blocker.overrideAttrs {patches = cfg.nginxBlockerPatches;};
     in [
       "d ${cfg.root} 0775 ${cfg.user} ${cfg.group} -"
+      "e ${cfg.root} 0775 ${cfg.user} ${cfg.group} -"
       "L+ /etc/nginx/conf.d - - - - ${blockerPkg}/conf.d"
       "L+ /etc/nginx/bots.d - - - - ${blockerPkg}/bots.d"
     ];
