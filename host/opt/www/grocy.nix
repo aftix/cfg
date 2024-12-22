@@ -100,8 +100,17 @@ in {
 
     systemd = {
       tmpfiles.rules =
-        ["d /var/lib/grocy - root root - -"]
-        ++ (map (dirName: "d '/var/lib/grocy/${dirName}' - root root - -") [
+        [
+          "d /var/lib/grocy - grocy grocy - -"
+          "Z /var/lib/grocy - grocy grocy - -"
+        ]
+        ++ (map (dirName: "d '/var/lib/grocy/${dirName}' - grocy grocy - -") [
+          "viewcache"
+          "plugins"
+          "settingoverrides"
+          "storage"
+        ])
+        ++ (map (dirName: "Z '/var/lib/grocy/${dirName}' - grocy grocy - -") [
           "viewcache"
           "plugins"
           "settingoverrides"
