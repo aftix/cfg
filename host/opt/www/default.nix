@@ -13,6 +13,7 @@ in {
     ./barcodebuddy.nix
     ./blog.nix
     ./coffeepaste.nix
+    ./forgejo.nix
     ./grocy.nix
     ./kanidm.nix
     ./matrix.nix
