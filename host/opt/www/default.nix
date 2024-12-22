@@ -14,6 +14,7 @@ in {
     ./blog.nix
     ./coffeepaste.nix
     ./grocy.nix
+    ./kanidm.nix
     ./matrix.nix
     ./rss.nix
     ./searx.nix
