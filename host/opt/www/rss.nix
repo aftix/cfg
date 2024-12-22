@@ -18,8 +18,8 @@ in {
 
   config = mkIf enable {
     sops.secrets."freshrss_password" = {
-      inherit (config.my.www) group;
-      owner = config.my.www.user;
+      owner = "freshrss";
+      group = "freshrss";
     };
 
     security.acme.certs.${cfg.hostname}.extraDomainNames = [
@@ -29,9 +29,11 @@ in {
 
     systemd.services = {
       freshrss-config.serviceConfig = {
-        User = mkForce cfg.user;
-        Group = mkForce cfg.group;
+        User = mkForce "freshrss";
+        Group = mkForce "freshrss";
         WorkingDirectory = config.services.freshrss.package;
+        StateDirectory = "freshrss";
+        ReadWritePaths = mkForce ["/run/phpfpm"];
 
         PrivateNetwork = true;
         UMask = mkForce "0027";
@@ -39,17 +41,18 @@ in {
 
       phpfpm-freshrss.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {
         workdir = config.services.freshrss.package;
-        datadir = config.services.freshrss.dataDir;
+        datadir = "/var/lib/freshrss";
       });
     };
 
     services = {
       phpfpm.pools.${config.services.freshrss.pool} = {
-        user = mkForce cfg.user;
-        group = mkForce cfg.group;
+        user = mkForce "freshrss";
+        group = mkForce "freshrss";
         settings = {
-          "listen.owner" = mkForce cfg.user;
-          "listen.group" = mkForce cfg.group;
+          "listen.owner" = mkForce "freshrss";
+          "listen.group" = mkForce "freshrss";
+          "listen.mode" = mkForce "0666";
         };
       };
 
@@ -88,6 +91,16 @@ in {
           include /etc/nginx/bots.d/ddos.conf;
         '';
       };
+    };
+
+    users = {
+      users.freshrss = {
+        group = "freshrss";
+        isSystemUser = true;
+        shell = lib.getExe' pkgs.util-linux "nologin";
+      };
+
+      groups.freshrss = {};
     };
   };
 }
