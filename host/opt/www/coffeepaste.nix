@@ -13,11 +13,7 @@ in {
 
   config = mkIf config.services.coffeepaste.enable {
     services = {
-      coffeepaste = {
-        user = mkDefault cfg.user;
-        group = mkDefault cfg.group;
-        url = mkDefault "https://${cfg.hostname}/${cfg.coffeepasteLocation}/";
-      };
+      coffeepaste.url = mkDefault "https://${cfg.hostname}/${cfg.coffeepasteLocation}/";
 
       nginx = {
         upstreams = {
