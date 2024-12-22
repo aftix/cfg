@@ -27,22 +27,29 @@ in {
       "www.${cfg.rssSubdomain}.${cfg.hostname}"
     ];
 
-    systemd.services = {
-      freshrss-config.serviceConfig = {
-        User = mkForce "freshrss";
-        Group = mkForce "freshrss";
-        WorkingDirectory = config.services.freshrss.package;
-        StateDirectory = "freshrss";
-        ReadWritePaths = mkForce ["/run/phpfpm"];
+    systemd = {
+      services = {
+        freshrss-config.serviceConfig = {
+          User = mkForce "freshrss";
+          Group = mkForce "freshrss";
+          WorkingDirectory = config.services.freshrss.package;
+          StateDirectory = "freshrss";
+          ReadWritePaths = mkForce ["/run/phpfpm"];
 
-        PrivateNetwork = true;
-        UMask = mkForce "0027";
+          PrivateNetwork = true;
+          UMask = mkForce "0027";
+        };
+
+        phpfpm-freshrss.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {
+          workdir = config.services.freshrss.package;
+          datadir = "/var/lib/freshrss";
+        });
       };
 
-      phpfpm-freshrss.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {
-        workdir = config.services.freshrss.package;
-        datadir = "/var/lib/freshrss";
-      });
+      tmpfiles.rules = [
+        "d /var/lib/freshrss 0750 freshrss freshrss -"
+        "Z /var/lib/freshrss 0750 freshrss freshrss -"
+      ];
     };
 
     services = {
@@ -57,7 +64,7 @@ in {
       };
 
       freshrss = {
-        inherit (cfg) user;
+        user = "freshrss";
 
         extensions = with pkgs.freshrssExts; [
           official
