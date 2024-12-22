@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkDefault mkIf mkForce;
+  inherit (lib) mkIf mkForce;
   inherit (lib.options) mkOption mkEnableOption;
   wwwCfg = config.my.www;
   cfg = wwwCfg.grocy;
@@ -17,23 +17,15 @@ in {
       type = lib.types.str;
     };
 
-    user = mkOption {
-      default = wwwCfg.user;
-    };
-
-    group = mkOption {
-      default = wwwCfg.group;
-    };
-
     phpfpm.settings = mkOption {
       type = with lib.types; attrsOf (oneOf [int str bool]);
       default = {
         "pm" = "dynamic";
         "php_admin_value[error_log]" = "stderr";
         "php_admin_flag[log_errors]" = true;
-        "listen.owner" = cfg.user;
-        "listen.group" = cfg.group;
-        "listen.mode" = "0600";
+        "listen.owner" = "grocy";
+        "listen.group" = "grocy";
+        "listen.mode" = "0666";
         "catch_workers_output" = true;
         "pm.max_children" = "32";
         "pm.start_servers" = "2";
@@ -41,18 +33,8 @@ in {
         "pm.max_spare_servers" = "4";
         "pm.max_requests" = "500";
       };
-
       description = ''
         Options for grocy's PHPFPM pool.
-      '';
-    };
-
-    dataDir = mkOption {
-      default = "/var/lib/grocy";
-      type = lib.types.str;
-      description = ''
-        Home directory of the `grocy` user which contains
-        the application's state.
       '';
     };
 
@@ -111,19 +93,6 @@ in {
       systemPackages = [pkgs.grocy];
     };
 
-    users = {
-      users.${cfg.user} = mkIf (cfg.user != wwwCfg.user) {
-        isSystemUser = mkDefault true;
-        createHome = mkDefault true;
-        home = mkDefault cfg.dataDir;
-        group = mkDefault cfg.group;
-      };
-
-      groups.${cfg.group} =
-        mkIf (cfg.group != wwwCfg.group) {
-        };
-    };
-
     security.acme.certs.${wwwCfg.hostname}.extraDomainNames = [
       "${cfg.subdomain}.${wwwCfg.hostname}"
       "www.${cfg.subdomain}.${wwwCfg.hostname}"
@@ -131,8 +100,8 @@ in {
 
     systemd = {
       tmpfiles.rules =
-        ["d '${cfg.dataDir}' - ${cfg.user} ${cfg.group} - -"]
-        ++ (map (dirName: "d '${cfg.dataDir}/${dirName}' - ${cfg.user} ${cfg.group} - -") [
+        ["d /var/lib/grocy - root root - -"]
+        ++ (map (dirName: "d '/var/lib/grocy/${dirName}' - root root - -") [
           "viewcache"
           "plugins"
           "settingoverrides"
@@ -146,36 +115,37 @@ in {
           serviceConfig =
             config.my.systemdHardening
             // {
-              User = mkForce cfg.user;
-              Group = mkForce cfg.group;
-              WorkingDirectory = cfg.dataDir;
-              ReadWritePaths = cfg.dataDir + "/viewcache";
+              User = mkForce "grocy";
+              Group = mkForce "grocy";
+              WorkingDirectory = config.services.grocy.package;
+              StateDirectory = "grocy";
 
               PrivateNetwork = true;
             };
           script = ''
-            rm -rf ${lib.strings.escapeShellArg cfg.dataDir}/viewcache/*
+            rm -rf "$STATE_DIRECTORY"/viewcache/*
           '';
         };
 
         phpfpm-grocy.serviceConfig = config.my.hardenPHPFPM {
           workdir = config.services.grocy.package;
-          datadir = cfg.dataDir;
+          datadir = "/var/lib/grocy";
         };
       };
     };
 
     services = {
       phpfpm.pools.grocy = {
-        inherit (cfg) user group;
+        user = "grocy";
+        group = "grocy";
         inherit (cfg.phpfpm) settings;
         phpPackage = pkgs.php82;
         phpEnv = {
           GROCY_CONFIG_FILE = "/etc/grocy/config.php";
-          GROCY_DB_FILE = "${cfg.dataDir}/grocy.db";
-          GROCY_STORAGE_DIR = "${cfg.dataDir}/storage";
-          GROCY_PLUGIN_DIR = "${cfg.dataDir}/plugins";
-          GROCY_CACHE_DIR = "${cfg.dataDir}/viewcache";
+          GROCY_DB_FILE = "/var/lib/grocy/grocy.db";
+          GROCY_STORAGE_DIR = "/var/lib/grocy/storage";
+          GROCY_PLUGIN_DIR = "/var/lib/grocy/plugins";
+          GROCY_CACHE_DIR = "/var/lib/grocy/viewcache";
         };
       };
 
@@ -226,6 +196,16 @@ in {
           };
         };
       };
+    };
+
+    users = {
+      users.grocy = {
+        group = "grocy";
+        isSystemUser = true;
+        shell = lib.getExe' pkgs.util-linux "nologin";
+      };
+
+      groups.grocy = {};
     };
   };
 }
