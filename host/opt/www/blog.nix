@@ -18,7 +18,7 @@ in {
     systemd.tmpfiles.rules =
       [
         "d ${cfg.root}/${cfg.hostname} 0775 ${cfg.user} ${cfg.group} -"
-        "e ${cfg.root}/${cfg.hostname} 0775 ${cfg.user} ${cfg.group} -"
+        "Z ${cfg.root}/${cfg.hostname} 0775 ${cfg.user} ${cfg.group} -"
       ]
       ++ optional cfg.adventofcode "d ${cfg.root}/advent2023 0775 ${cfg.user} ${cfg.group} -"
       ++ optional cfg.aftgraphs "d ${cfg.root}/simulations 0775 ${cfg.user} ${cfg.group} -";
