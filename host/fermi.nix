@@ -44,6 +44,7 @@ in {
       aftgraphs = true;
       blog = true;
       coffeepasteLocation = "litterbox";
+      forgejo.enable = true;
       kanidm.enable = true;
       searx.enable = true;
       grocy.enable = true;
