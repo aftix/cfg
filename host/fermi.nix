@@ -44,6 +44,7 @@ in {
       aftgraphs = true;
       blog = true;
       coffeepasteLocation = "litterbox";
+      kanidm.enable = true;
       searx.enable = true;
       grocy.enable = true;
 
@@ -96,14 +97,14 @@ in {
 
   services = {
     atticd.enable = true;
+    barcodebuddy.enable = true;
     bpftune.enable = true;
-    openssh.settings.AllowUsers = ["aftix"];
     coffeepaste = {
       enable = true;
       url = "https://${config.my.www.hostname}/${config.my.www.coffeepasteLocation}";
     };
     freshrss.enable = true;
-    barcodebuddy.enable = true;
+    openssh.settings.AllowUsers = ["aftix"];
     youtube-operational-api = {
       enable = true;
       keysFile = config.sops.templates.youtubeapi_keys.path;
