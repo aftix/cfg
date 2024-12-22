@@ -123,7 +123,7 @@ in {
         settings = {
           "listen.owner" = cfg.user;
           "listen.group" = cfg.group;
-          "listen.mode" = "0600";
+          "listen.mode" = "0666";
           pm = "dynamic";
           "pm.max_children" = 32;
           "pm.max_requests" = 500;

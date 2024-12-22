@@ -109,7 +109,6 @@ in {
     youtube-operational-api = {
       enable = true;
       keysFile = config.sops.templates.youtubeapi_keys.path;
-      inherit (config.my.www) user group;
     };
   };
 
