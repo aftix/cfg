@@ -115,6 +115,7 @@ in {
             LOCAL_ROOT_URL = "http://unix/";
             UNIX_SOCKET_PERMISSION = "0666";
             SSH_DOMAIN = fullHostname;
+            LANDING_PAGE = "explore";
           };
         };
       };
