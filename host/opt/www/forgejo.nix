@@ -112,7 +112,9 @@ in {
             DOMAIN = fullHostname;
             PROTOCOL = "http+unix";
             ROOT_URL = "https://${fullHostname}";
+            LOCAL_ROOT_URL = "http://unix/";
             UNIX_SOCKET_PERMISSION = "0666";
+            SSH_DOMAIN = fullHostname;
           };
         };
       };
