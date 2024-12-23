@@ -24,7 +24,7 @@ jobs:
         run: |
           nix eval '.#extra.substituters' --apply 'builtins.toString' | tr -d '"' | awk '{print "substituters="$0}' | tee -a "$GITHUB_OUTPUT"
           nix eval '.#extra.trusted-public-keys' --apply 'builtins.toString' | tr -d '"' | awk '{print "trustedPublicKeys="$0}' | tee -a "$GITHUB_OUTPUT"
-          nix eval '.#extra.extra-experimental-features' --apply 'builtins.toString' | tr -d '"' | sed 's/pipe-operator/pipe-operators/' | awk '{print "experimentalFeatures="$0}' | tee -a "$GITHUB_OUTPUT"
+          nix eval '.#extra.extra-experimental-features' --apply 'builtins.toString' | tr -d '"' | awk '{print "experimentalFeatures="$0}' | tee -a "$GITHUB_OUTPUT"
 
   attic:
     name: Build attic-client
