@@ -94,6 +94,7 @@ in {
           PASSWD = config.sops.secrets.forgejo_smtp_password.path;
         };
         settings = {
+          admin.SEND_NOTIFICATION_EMAIL_ON_NEW_USER = true;
           database = {
             socket = config.services.postgresql.settings.unix_socket_directories;
             type = "postgresql";
@@ -101,6 +102,11 @@ in {
           mailer = {
             ENABLED = true;
             PROTOCOL = "smtps";
+          };
+          service = {
+            DISABLE_REGISTRATION = true;
+            REGISTER_EMAIL_CONFIRM = true;
+            ENABLE_NOTIFY_MAIL = true;
           };
           server = {
             DOMAIN = fullHostname;
