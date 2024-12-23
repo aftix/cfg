@@ -94,11 +94,12 @@ in {
           PASSWD = config.sops.secrets.forgejo_smtp_password.path;
         };
         settings = {
-          admin.SEND_NOTIFICATION_EMAIL_ON_NEW_USER = true;
-          database = {
-            socket = config.services.postgresql.settings.unix_socket_directories;
-            type = "postgresql";
+          DEFAULT = {
+            APP_NAME = "aftforge";
+            APP_SLOGAN = "Bespoke artisinal software";
           };
+
+          admin.SEND_NOTIFICATION_EMAIL_ON_NEW_USER = true;
           mailer = {
             ENABLED = true;
             PROTOCOL = "smtps";
@@ -117,32 +118,8 @@ in {
             SSH_DOMAIN = fullHostname;
             LANDING_PAGE = "explore";
           };
+          federation.ENABLED = true;
         };
-      };
-
-      postgresql = {
-        enable = true;
-        ensureDatabases = ["forgejo"];
-        ensureUsers = [
-          {
-            name = serviceCfg.user;
-            ensureDBOwnership = true;
-            ensureClauses = {
-              login = true;
-              replication = true;
-            };
-          }
-        ];
-        identMap = lib.mkOverride 60 ''
-          superuser_map root postgres
-          superuser_map postgres postgres
-          superuser_map /^(.*)$ \1
-        '';
-        authentication = lib.mkOverride 60 ''
-          #type database DBuser auth-method
-          local sameuser all peer map=superuser_map
-        '';
-        settings.unix_socket_directories = "/var/run/postgresql";
       };
     };
   };
