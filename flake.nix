@@ -472,6 +472,7 @@
             attic
             attic-client
             attic-server
+            matrix-synapse-unwrapped
             nixt
             nixd
             ;

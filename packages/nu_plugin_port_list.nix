@@ -5,15 +5,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_port_list";
-  version = "1.4.5-unstable-2024-11-16";
+  version = "1.0.0-unstable-2024-12-23";
 
   src = fetchFromGitHub {
     owner = "FMotalleb";
     repo = pname;
-    rev = "a53277429a39aff7afbbae2562e10ed24d62b132";
-    sha256 = "sha256-Ihcg7ped7tuIYrg0/zpqp/ruGvkoOY1QUM+P2Pb30GY=";
+    rev = "db81c56738aecef3414a285bc2cacb1921a7f81d";
+    sha256 = "sha256-AdODXvou8QrCUm/J6iatNAp+kIe9uVcCdHOOf1KLog0=";
   };
-  cargoHash = "sha256-cVPJ0pirxYOBHGkXuSZet2Jlhj9AlDx5DO4UPYZgOmc=";
+  cargoHash = "sha256-Buff1aR8qWXnk8B6b/MyikTh0vG2MDH9z6OIDIb9zrw=";
 
   meta = with lib; {
     description = "A nushell plugin to display all active network connections.";
