@@ -31,7 +31,6 @@ in {
     ./opt/swaync.nix
     ./opt/transmission.nix
 
-    ./opt/cinny.nix
     ./opt/discord.nix
   ];
 
@@ -96,6 +95,8 @@ in {
   };
 
   my = {
+    matrixClient = pkgs.fractal;
+
     shell = {
       elvish.enable = true;
       nushell = {

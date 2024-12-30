@@ -27,8 +27,11 @@ in {
   options.my = {
     registerMimes = mkOption {default = true;};
 
-    element = mkOption {default = false;};
-    cinny = mkOption {default = false;};
+    matrixClient = mkOption {
+      default = null;
+
+      type = with lib.types; nullOr package;
+    };
   };
 
   config = {
@@ -37,25 +40,27 @@ in {
     home = {
       language.base = mkDefault "en_US";
 
-      packages = with pkgs; [
-        aspell
-        aspellDicts.en
-        aspellDicts.en-science
-        aspellDicts.en-computers
+      packages = with pkgs;
+        [
+          aspell
+          aspellDicts.en
+          aspellDicts.en-science
+          aspellDicts.en-computers
 
-        jq
-        # nix-doc
-        nix-tree
-        manix
-        sops
-        age
-        fzf
-        micro
+          jq
+          # nix-doc
+          nix-tree
+          manix
+          sops
+          age
+          fzf
+          micro
 
-        xz
-        zstd
-        zlib
-      ];
+          xz
+          zstd
+          zlib
+        ]
+        ++ lib.optionals (config.my.matrixClient != null) [config.my.matrixClient];
 
       sessionVariables = {
         FZF_DEFAULT_OPTS = mkDefault "--layout=reverse --height 40%";
