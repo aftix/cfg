@@ -484,11 +484,8 @@ in {
             "[workspace 8 silent] thunderbird"
             "[workspace 9 silent] keepassxc"
           ]
-          ++ optionals config.my.element [
-            "[workspace 2;group set] element-desktop"
-          ]
-          ++ optionals config.my.cinny [
-            "[workspace 2;group set] cinny"
+          ++ optionals (config.my.matrixClient != null) [
+            "[workspace 2;group set] ${lib.getExe config.my.matrixClient}"
           ]
           ++ [
             "[workspace 2] discord"
@@ -581,11 +578,8 @@ in {
               ",e,exec,thunderbird"
               ",d,exec,discord"
             ]
-            ++ optionals config.my.element [
-              "SHIFT,d,exec,element-desktop"
-            ]
-            ++ optionals config.my.cinny [
-              "SHIFT,d,exec,cinny"
+            ++ optionals (config.my.matrixClient != null) [
+              "SHIFT,d,exec,${lib.getExe config.my.matrixClient}"
             ]);
         };
     };
