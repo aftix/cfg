@@ -139,7 +139,6 @@ in {
             nu_plugin_compress
             nu_plugin_desktop_notifications
             nu_plugin_dns
-            nu_plugin_endecode
             nu_plugin_explore
             nu_plugin_port_scan
             nu_plugin_port_list
