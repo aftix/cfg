@@ -38,13 +38,13 @@ in
     };
   in {
     pname = "YouTube-operational-API";
-    version = "d238f18214e57cd011389b50d5b8bd99970b882a";
+    version = "0e6889ec5d77f2e739dd86156c5c90c2d5100a06";
 
     src = fetchFromGitHub {
       inherit owner;
       repo = self.pname;
       rev = self.version;
-      hash = "sha256-KOg3VQOojRXEX0Lzi5xqHThIStIHwGlWyL5CLFnVXB0=";
+      hash = "sha256-xBj+SN2ZXohD0keW58yThB02YVujtDj3Krjy22/JGso=";
     };
 
     buildInputs = [protobuf_27 findutils php vendorSrc];

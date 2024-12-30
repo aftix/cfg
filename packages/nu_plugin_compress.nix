@@ -7,15 +7,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_compress";
-  version = "058e7a263c3f10b749d812d864bf19c7f6199615";
+  version = "faca57a8cdfb888e1c245860c48ce709a6750a28";
 
   src = fetchFromGitHub {
     owner = "yybit";
     repo = pname;
     rev = version;
-    sha256 = "sha256-S46rXAtXxIURNGvPd9DleNjCj0/NxXHczmCSA04e3xc=";
+    sha256 = "sha256-CbvgEJ6nGbqEhLYlFCCYyERS0im7ehvtT8Zpf7PnZFA=";
   };
-  cargoHash = "sha256-jJRcsfCy7D+1Nf/QDgN0beMMadzuOTN9wvh25n2kUDA=";
+  cargoHash = "sha256-9pwePrXgDY3z5TjkMv7zxGUSoRNbYDqx0QLuZIlFwIY=";
   cargoPatches = [./nu_plugin_compress_add_lockfile.patch];
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
