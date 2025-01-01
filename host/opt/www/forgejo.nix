@@ -48,10 +48,14 @@ in {
     ];
 
     services = {
-      openssh.settings.AllowUsers =
-        lib.lists.optionals
-        (!serviceCfg.settings.server.DISABLE_SSH)
-        [serviceCfg.user];
+      openssh.settings = {
+        AcceptEnv = "GIT_PROTOCOL";
+
+        AllowUsers =
+          lib.lists.optionals
+          (!serviceCfg.settings.server.DISABLE_SSH)
+          [serviceCfg.user];
+      };
 
       nginx = {
         upstreams.forgejo = {
@@ -100,10 +104,23 @@ in {
           };
 
           admin.SEND_NOTIFICATION_EMAIL_ON_NEW_USER = true;
+
+          cache = {
+            ADAPTER = "twoqueue";
+            HOST = builtins.toJSON {
+              size = 100;
+              recent_ratio = 0.25;
+              ghost_ratio = 0.5;
+            };
+          };
+
+          database.SQLITE_JOURNAL_MODE = "WAL";
+
           mailer = {
             ENABLED = true;
             PROTOCOL = "smtps";
           };
+          security.LOGIN_REMEMBER_DAYS = 90;
           service = {
             DISABLE_REGISTRATION = true;
             REGISTER_EMAIL_CONFIRM = true;
