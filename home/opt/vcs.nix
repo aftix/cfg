@@ -72,7 +72,7 @@ in {
     })
   ];
 
-  home.packages = with pkgs; [pre-commit lazyjj pkgs.better-git-branch];
+  home.packages = with pkgs; [pre-commit pkgs.better-git-branch];
 
   my.shell.aliases = [
     {
