@@ -324,6 +324,20 @@ in {
             ];
             definedAliases = ["nixo" "@nixo" "@nixoptions"];
           };
+          "Noogle.dev" = {
+            urls = [
+              {
+                template = "https://noogle.dev/q";
+                params = [
+                  {
+                    name = "term";
+                    value = "{searchTerms}";
+                  }
+                ];
+              }
+            ];
+            definedAliases = ["ng" "@noogle"];
+          };
           "Home Manager Options" = {
             urls = [
               {
