@@ -10,7 +10,6 @@
 in {
   imports = [
     ./apparmor.nix
-    ./barcodebuddy.nix
     ./channels.nix
     ./coffeepaste.nix
     ./hostBlacklist

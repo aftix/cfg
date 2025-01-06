@@ -17,9 +17,60 @@
   bridgeRegistrationFile = "/var/lib/heisenbridge/registration.yml";
   matrixUser = "matrix-synapse";
   matrixGroup = "matrix-synapse";
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
+
+  finalDomain =
+    if cfg.domain != null
+    then cfg.domain
+    else cfg.virtualHost;
 in {
   options.my.matrix = {
     enable = mkEnableOption "matrix synapse homeserver";
+
+    domain = mkOption {
+      default = null;
+      type = with lib.types; nullOr str;
+      description = ''
+        Domain to host matrix under.
+        Sets up a new nginx virtual host.
+
+        Exactly one of ''${my.matrix.domain}
+        or ''${my.matrix.virtualHost} must
+        be non-null if ''${my.www.coffeepaste.enable}
+        is true.
+      '';
+    };
+
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = ''
+        Used if ''${my.matrix.domain} is non-null.
+
+        If non-null, use as the ACME host;
+        otherwise, use ''${my.matrix.domain} as the
+        ACME host.
+      '';
+    };
+
+    virtualHost = mkOption {
+      default = null;
+      type = with lib.types; nullOr str;
+      description = ''
+        If non-null, nginx virtual host to add ''${my.www.coffeepaste.location}
+        redirect under. Does not set up any other
+        configuration for the virtual host.
+
+        Exactly one of ''${my.matrix.domain}
+        or ''${my.matrix.virtualHost} must
+        be non-null if ''${my.matrix.enable} is true.
+      '';
+    };
+
     ircBridge = {
       enable = mkEnableOption "heisenbridge";
 
@@ -66,6 +117,25 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = (cfg.domain != null) || (cfg.virtualHost != null);
+        message = ''
+          Either ''${my.matrix.domain} or
+          ''${my.matrix.virtualHost} must be non-null.
+        '';
+      }
+
+      {
+        assertion = (cfg.domain == null) || (cfg.virtualHost == null);
+        message = ''
+          Both ''${my.matrix.domain} and
+          ''${my.matrix.domain} cannot be
+          non-null at the same time.
+        '';
+      }
+    ];
+
     sops = {
       secrets = {
         synapse_registration_token = {
@@ -247,10 +317,10 @@ in {
       };
 
       matrix-synapse = {
-        enable = assert wwwCfg.blog; assert cfg.ircBridge.enable -> cfg.enable; true;
+        enable = true;
         settings = {
-          server_name = hostname;
-          public_baseurl = "https://${hostname}/";
+          server_name = finalDomain;
+          public_baseurl = "https://${finalDomain}/";
           suppress_key_server_warning = true;
 
           database = {
@@ -293,7 +363,54 @@ in {
         extraConfigFiles = [config.sops.templates."synapse-secrets.yaml".path];
       };
 
-      nginx = {
+      nginx = let
+        mkEndpoint = data: {
+          extraConfig = ''
+            default_type application/json;
+            add_header Access-Control-Allow-Origin *;
+            add_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
+            add_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
+            return 200 '${builtins.toJSON data}';
+          '';
+        };
+
+        vhost =
+          if cfg.domain != null
+          then cfg.domain
+          else cfg.virtualHost;
+
+        primaryEndpoint = {
+          "~* ^(\\/_matrix|\\/_synapse\\/client)" = {
+            proxyPass = "http://matrix-synapse";
+            extraConfig = ''
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+
+              client_max_body_size 100M;
+            '';
+          };
+        };
+        wellKnownEndpoints = {
+          "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
+          "/.well-known/matrix/client" = mkEndpoint {
+            "m.homeserver".base_url = "https://${hostname}";
+            "org.matrix.msc3575.proxy".url = "https://${hostname}";
+          };
+          "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
+        };
+        ircBridgeEndpoint = optionalAttrs cfg.ircBridge.enable {
+          "/_heisenbridge/media/" = {
+            proxyPass = "http://heisenbridge";
+            extraConfig = ''
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+            '';
+          };
+        };
+        vhostEndpoints = primaryEndpoint // wellKnownEndpoints // ircBridgeEndpoint;
+      in {
+        enable = true;
+
         upstreams =
           {
             matrix-synapse = {
@@ -313,43 +430,22 @@ in {
             };
           };
 
-        virtualHosts.${hostname}.locations = let
-          mkEndpoint = data: {
+        virtualHosts.${vhost} =
+          if cfg.domain != null
+          then {
+            serverName = "${cfg.domain} www.${cfg.domain}";
+            kTLS = true;
+            forceSSL = true;
+            useACMEHost = acmeHost;
             extraConfig = ''
-              default_type application/json;
-              add_header Access-Control-Allow-Origin *;
-              add_header Access-Control-Allow-Methods "GET, POST, DELETE, OPTIONS";
-              add_header Access-Control-Allow-Headers "X-Requested-With, Content-Type, Authorization";
-              return 200 '${builtins.toJSON data}';
+              include /etc/nginx/bots.d/blockbots.conf;
+              include /etc/nginx/bots.d/ddos.conf;
             '';
-          };
-        in
-          {
-            "~* ^(\\/_matrix|\\/_synapse\\/client)" = {
-              proxyPass = "http://matrix-synapse";
-              extraConfig = ''
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
 
-                client_max_body_size 100M;
-              '';
-            };
-
-            "/.well-known/matrix/server" = mkEndpoint {"m.server" = "${hostname}:443";};
-            "/.well-known/matrix/client" = mkEndpoint {
-              "m.homeserver".base_url = "https://${hostname}";
-              "org.matrix.msc3575.proxy".url = "https://${hostname}";
-            };
-            "/.well-known/matrix/support" = mkEndpoint cfg.supportEndpointJSON;
+            locations = vhostEndpoints;
           }
-          // optionalAttrs cfg.ircBridge.enable {
-            "/_heisenbridge/media/" = {
-              proxyPass = "http://heisenbridge";
-              extraConfig = ''
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-              '';
-            };
+          else {
+            locations = vhostEndpoints;
           };
       };
     };

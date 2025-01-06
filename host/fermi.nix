@@ -34,27 +34,69 @@ in {
     };
   };
 
-  my = {
+  my = let
+    domain = "aftix.xyz";
+  in {
     flake = "/home/aftix/cfg";
 
     users.aftix.extraGroups = [];
 
-    www = {
-      adventofcode = true;
-      aftgraphs = true;
-      blog = true;
-      coffeepasteLocation = "litterbox";
-      forgejo.enable = true;
-      kanidm.enable = true;
-      searx.enable = true;
-      grocy.enable = true;
+    attic = {
+      enable = true;
+      domain = "attic.${domain}";
+    };
 
+    www = {
+      blog = {
+        enable = true;
+        inherit domain;
+      };
+
+      barcodebuddy = {
+        enable = true;
+        domain = "bbuddy.${domain}";
+      };
+
+      coffeepaste = {
+        enable = true;
+        virtualHost = domain;
+        location = "litterbox";
+      };
+
+      forgejo = {
+        enable = true;
+        domain = "forge.${domain}";
+      };
+
+      grocy = {
+        enable = true;
+        domain = "grocy.${domain}";
+      };
+
+      kanidm = {
+        enable = true;
+        domain = "identity.${domain}";
+      };
+
+      rss = {
+        enable = true;
+        domain = "rss.${domain}";
+      };
+
+      searx = {
+        enable = true;
+        domain = "searx.${domain}";
+      };
+
+      acmeDomain = domain;
       ip = "170.130.165.174";
       ipv6 = "2a0b:7140:8:1:5054:ff:fe84:ed8c";
     };
 
     matrix = {
       enable = true;
+      virtualHost = domain;
+
       supportEndpointJSON.contacts = [
         {
           email_address = "aftix@aftix.xyz";
@@ -97,19 +139,8 @@ in {
   ];
 
   services = {
-    atticd.enable = true;
-    barcodebuddy.enable = true;
     bpftune.enable = true;
-    coffeepaste = {
-      enable = true;
-      url = "https://${config.my.www.hostname}/${config.my.www.coffeepasteLocation}";
-    };
-    freshrss.enable = true;
     openssh.settings.AllowUsers = ["aftix"];
-    youtube-operational-api = {
-      enable = true;
-      keysFile = config.sops.templates.youtubeapi_keys.path;
-    };
   };
 
   users = {
