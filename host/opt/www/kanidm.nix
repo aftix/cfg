@@ -6,14 +6,18 @@
 }: let
   inherit (lib.options) mkOption mkEnableOption;
 
-  cfg = config.my.www;
-  fullHostname = "${cfg.kanidm.subdomain}.${cfg.hostname}";
+  wwwCfg = config.my.www;
+  cfg = config.my.www.kanidm;
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
 in {
   options.my.www.kanidm = {
     enable = mkEnableOption "kanidm";
 
-    subdomain = mkOption {
-      default = "identity";
+    domain = mkOption {
       type = lib.types.str;
     };
 
@@ -21,17 +25,33 @@ in {
       default = 8998;
       type = lib.types.ints.positive;
     };
+
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = "null to use \${my.www.kanidm.domain}";
+    };
   };
 
-  config = lib.mkIf cfg.kanidm.enable {
-    security.acme.certs.${cfg.hostname}.extraDomainNames = [
-      "${fullHostname}"
-      "www.${fullHostname}"
-    ];
+  config = lib.mkIf cfg.enable {
+    security.acme.certs =
+      if (acmeHost != cfg.domain)
+      then {
+        ${acmeHost}.extraDomainNames = [
+          "${cfg.domain}"
+          "www.${cfg.domain}"
+        ];
+      }
+      else {
+        ${acmeHost} = {
+          inherit (wwwCfg) group;
+          extraDomainNames = ["www.${cfg.domain}"];
+        };
+      };
 
     services = {
       kanidm = {
-        clientSettings.uri = "https://${fullHostname}";
+        clientSettings.uri = "https://${cfg.domain}";
         enableClient = true;
         enableServer = true;
         package = pkgs.kanidm_1_4.override {enableSecretProvisioning = true;};
@@ -39,37 +59,40 @@ in {
           enable = true;
           adminPasswordFile = config.sops.secrets.kanidm_admin_password.path;
           idmAdminPasswordFile = config.sops.secrets.kanidm_idmadmin_password.path;
-          instanceUrl = "https://localhost:${builtins.toString cfg.kanidm.port}";
+          instanceUrl = "https://localhost:${builtins.toString cfg.port}";
         };
         serverSettings = {
-          bindaddress = "127.0.0.1:${builtins.toString cfg.kanidm.port}";
-          domain = fullHostname;
+          inherit (cfg) domain;
+          bindaddress = "127.0.0.1:${builtins.toString cfg.port}";
           online_backup.versions = 7;
-          origin = "https://${fullHostname}";
-          tls_key = "/var/lib/acme/${cfg.hostname}/key.pem";
-          tls_chain = "/var/lib/acme/${cfg.hostname}/fullchain.pem";
+          origin = "https://${cfg.domain}";
+          tls_key = "/var/lib/acme/${acmeHost}/key.pem";
+          tls_chain = "/var/lib/acme/${acmeHost}/fullchain.pem";
           trust_x_forward_for = true;
         };
       };
 
-      nginx.virtualHosts.${fullHostname} = {
-        serverName = "${fullHostname} www.${fullHostname}";
-        kTLS = true;
-        forceSSL = true;
-        useACMEHost = cfg.hostname;
-        extraConfig = ''
-          include /etc/nginx/bots.d/blockbots.conf;
-          include /etc/nginx/bots.d/ddos.conf;
-        '';
-
-        locations."/" = {
-          proxyPass = "https://localhost:${builtins.toString cfg.kanidm.port}";
+      nginx = {
+        enable = true;
+        virtualHosts.${cfg.domain} = {
+          serverName = "${cfg.domain} www.${cfg.domain}";
+          kTLS = true;
+          forceSSL = true;
+          useACMEHost = acmeHost;
           extraConfig = ''
-            proxy_http_version 1.1;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            include /etc/nginx/bots.d/blockbots.conf;
+            include /etc/nginx/bots.d/ddos.conf;
           '';
+
+          locations."/" = {
+            proxyPass = "https://localhost:${builtins.toString cfg.port}";
+            extraConfig = ''
+              proxy_http_version 1.1;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+            '';
+          };
         };
       };
     };
@@ -86,7 +109,7 @@ in {
     };
 
     users.users.kanidm = {
-      extraGroups = [cfg.group];
+      extraGroups = [wwwCfg.group];
       shell = lib.getExe' pkgs.util-linux "nologin";
     };
   };

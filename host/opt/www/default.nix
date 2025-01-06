@@ -28,6 +28,25 @@ in {
       type = lib.types.str;
     };
 
+    acmeDomain = mkOption {
+      default = null;
+      type = with lib.types; nullOr str;
+      description = ''
+        If non-null, will set the acmeDomain option
+        values for every www service.
+      '';
+    };
+
+    root = mkOption {
+      default = "/srv";
+      type = lib.types.str;
+      description = ''
+        Home directory of the ''${my.www.user} user.
+        www services that are not proxy passes (to e.g. phpfpm)
+        should serve files from subdirectories of this root directory.
+      '';
+    };
+
     ip = mkOption {
       default = "";
       type = lib.types.str;
@@ -37,40 +56,34 @@ in {
       type = lib.types.str;
     };
 
-    root = mkOption {
-      default = "/srv";
-      type = lib.types.str;
-    };
-
     user = mkOption {
       default = "www";
       type = lib.types.str;
+      description = "User to run nginx as";
     };
 
     group = mkOption {
       default = "www";
       type = lib.types.str;
+      description = "Group to run nginx as";
     };
 
     keys = mkOption {
       default = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMmFgG1EuQDoJb8pQcxnhjqbncrpJGZ3iNon/gu0bXiE aftix@aftix.xyz"
       ];
+      type = with lib.types; listOf str;
+      description = "List of public ssh keys for remote login as \${my.www.user}";
     };
 
     streamConfig = mkOption {
       default = [];
-      type = lib.types.listOf lib.types.str;
-    };
-
-    putRequestCode = mkOption {
-      default = 599;
-      type = lib.types.ints.positive;
+      type = with lib.types; listOf str;
     };
 
     nginxBlockerPatches = mkOption {
       default = [];
-      type = lib.types.listOf lib.types.path;
+      type = with lib.types; listOf path;
     };
   };
 
@@ -107,7 +120,6 @@ in {
     services = {
       nginx = {
         inherit (cfg) user group;
-        enable = true;
         enableReload = true;
 
         additionalModules = with pkgs.nginxModules; [fancyindex];
@@ -144,11 +156,6 @@ in {
           PORKBUN_SECRET_API_KEY_FILE = config.sops.secrets.porkbun_secret_api_key.path;
           PORKBUN_API_KEY_FILE = config.sops.secrets.porkbun_api_key.path;
         };
-      };
-
-      certs.${cfg.hostname} = {
-        inherit (cfg) group;
-        extraDomainNames = ["www.${cfg.hostname}"];
       };
     };
   };
