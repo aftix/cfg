@@ -6,26 +6,50 @@
 }: let
   inherit (lib) mkIf mkOverride mkForce;
   inherit (lib.attrsets) filterAttrs;
-  inherit (lib.options) mkOption;
+  inherit (lib.options) mkEnableOption mkOption;
 
-  inherit (config.services.freshrss) enable;
-  cfg = config.my.www;
+  wwwCfg = config.my.www;
+  cfg = config.my.www.rss;
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
 in {
-  options.my.www.rssSubdomain = mkOption {
-    default = "rss";
-    type = lib.types.str;
+  options.my.www.rss = {
+    enable = mkEnableOption "rss";
+
+    domain = mkOption {
+      type = lib.types.str;
+    };
+
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = "null to use \${my.www.rss.domain}";
+    };
   };
 
-  config = mkIf enable {
+  config = mkIf cfg.enable {
     sops.secrets."freshrss_password" = {
       owner = "freshrss";
       group = "freshrss";
     };
 
-    security.acme.certs.${cfg.hostname}.extraDomainNames = [
-      "${cfg.rssSubdomain}.${cfg.hostname}"
-      "www.${cfg.rssSubdomain}.${cfg.hostname}"
-    ];
+    security.acme.certs =
+      if (acmeHost != cfg.domain)
+      then {
+        ${acmeHost}.extraDomainNames = [
+          "${cfg.domain}"
+          "www.${cfg.domain}"
+        ];
+      }
+      else {
+        ${acmeHost} = {
+          inherit (wwwCfg) group;
+          extraDomainNames = ["www.${cfg.domain}"];
+        };
+      };
 
     systemd = {
       services = {
@@ -64,6 +88,8 @@ in {
       };
 
       freshrss = {
+        enable = true;
+
         user = "freshrss";
 
         extensions = with pkgs.freshrssExts; [
@@ -80,23 +106,32 @@ in {
 
         defaultUser = mkOverride 990 "aftix";
         passwordFile = mkOverride 990 config.sops.secrets."freshrss_password".path;
-        baseUrl = mkOverride 990 "https://${cfg.rssSubdomain}.${cfg.hostname}";
-        virtualHost = "${cfg.rssSubdomain}.${cfg.hostname}";
+        baseUrl = mkOverride 990 "https://${cfg.domain}";
+        virtualHost = cfg.domain;
         database = {
           user = mkOverride 990 null;
           host = mkOverride 990 null;
         };
       };
 
-      nginx.virtualHosts."${cfg.rssSubdomain}.${cfg.hostname}" = {
-        serverName = "${cfg.rssSubdomain}.${cfg.hostname} www.${cfg.rssSubdomain}.${cfg.hostname}";
-        kTLS = true;
-        forceSSL = true;
-        useACMEHost = cfg.hostname;
-        extraConfig = ''
-          include /etc/nginx/bots.d/blockbots.conf;
-          include /etc/nginx/bots.d/ddos.conf;
-        '';
+      nginx = {
+        enable = true;
+
+        virtualHosts.${cfg.domain} = {
+          serverName = "${cfg.domain} www.${cfg.domain}";
+          kTLS = true;
+          forceSSL = true;
+          useACMEHost = acmeHost;
+          extraConfig = ''
+            include /etc/nginx/bots.d/blockbots.conf;
+            include /etc/nginx/bots.d/ddos.conf;
+          '';
+        };
+      };
+
+      youtube-operational-api = {
+        enable = true;
+        keysFile = config.sops.templates.youtubeapi_keys.path;
       };
     };
 

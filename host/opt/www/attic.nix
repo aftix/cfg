@@ -3,23 +3,36 @@
   lib,
   ...
 }: let
-  inherit (lib.options) mkOption;
+  inherit (lib.options) mkEnableOption mkOption;
 
   atticdCfg = config.services.atticd;
+
   cfg = config.my.attic;
   wwwCfg = config.my.www;
+
   strPort = builtins.toString cfg.port;
-  fullHostname = "${cfg.subdomain}.${wwwCfg.hostname}";
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
 in {
   options.my.attic = {
+    enable = mkEnableOption "atticd";
+
+    domain = mkOption {
+      type = lib.types.str;
+    };
+
     port = mkOption {
       default = 8888;
       type = lib.types.ints.positive;
     };
 
-    subdomain = mkOption {
-      default = "attic";
-      type = lib.types.str;
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = "null to use \${my.attic.domain}";
     };
 
     region = mkOption {
@@ -38,12 +51,23 @@ in {
     };
   };
 
-  config = lib.mkIf atticdCfg.enable {
+  config = lib.mkIf cfg.enable {
     my.www.nginxBlockerPatches = [./attic_client_user_agent.patch];
-    security.acme.certs.${wwwCfg.hostname}.extraDomainNames = [
-      fullHostname
-      "www.${fullHostname}"
-    ];
+
+    security.acme.certs =
+      if (acmeHost != cfg.domain)
+      then {
+        ${acmeHost}.extraDomainNames = [
+          "${cfg.domain}"
+          "www.${cfg.domain}"
+        ];
+      }
+      else {
+        ${acmeHost} = {
+          inherit (wwwCfg) group;
+          extraDomainNames = ["www.${cfg.domain}"];
+        };
+      };
 
     sops = {
       secrets = {
@@ -64,10 +88,11 @@ in {
 
     services = {
       atticd = {
+        enable = true;
         environmentFile = config.sops.templates.attic_creds.path;
         settings = {
-          allowed-hosts = ["localhost:${strPort}" fullHostname "www.${fullHostname}"];
-          api-endpoint = "https://${fullHostname}/";
+          allowed-hosts = ["localhost:${strPort}" cfg.domain "www.${cfg.domain}"];
+          api-endpoint = "https://${cfg.domain}/";
           listen = "0.0.0.0:${strPort}";
 
           database.url = "postgresql:///${atticdCfg.user}?host=${config.services.postgresql.settings.unix_socket_directories}";
@@ -86,25 +111,28 @@ in {
         };
       };
 
-      nginx.virtualHosts.${fullHostname} = {
-        serverName = "${fullHostname} www.${fullHostname}";
-        kTLS = true;
-        forceSSL = true;
-        useACMEHost = wwwCfg.hostname;
-        extraConfig = ''
-          include /etc/nginx/bots.d/blockbots.conf;
-          include /etc/nginx/bots.d/ddos.conf;
-        '';
-
-        locations."/" = {
-          proxyPass = "http://localhost:${strPort}";
+      nginx = {
+        enable = true;
+        virtualHosts.${cfg.domain} = {
+          serverName = "${cfg.domain} www.${cfg.domain}";
+          kTLS = true;
+          forceSSL = true;
+          useACMEHost = acmeHost;
           extraConfig = ''
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-
-            client_max_body_size 16G;
+            include /etc/nginx/bots.d/blockbots.conf;
+            include /etc/nginx/bots.d/ddos.conf;
           '';
+
+          locations."/" = {
+            proxyPass = "http://localhost:${strPort}";
+            extraConfig = ''
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+
+              client_max_body_size 16G;
+            '';
+          };
         };
       };
 

@@ -7,31 +7,42 @@
   inherit (lib.options) mkOption mkEnableOption;
   inherit (lib.strings) escapeShellArg;
 
-  cfg = config.services.znc;
-  inherit (config.my.www) hostname;
-  inherit (config.my.znc) subdomain;
+  cfg = config.my.znc;
+  wwwCfg = config.my.www;
+  serviceCfg = config.services.znc;
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
 in {
   options.my.znc = {
     enable = mkEnableOption "znc";
-    subdomain = mkOption {
-      default = "irc";
+
+    domain = mkOption {
       type = lib.types.str;
+    };
+
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = "null to use \${my.znc.domain}";
     };
   };
 
-  config = lib.mkIf config.my.znc.enable {
+  config = lib.mkIf cfg.enable {
     sops.secrets = {
       znc_password = {
-        inherit (cfg) group;
-        owner = cfg.user;
+        inherit (serviceCfg) group;
+        owner = serviceCfg.user;
       };
       znc_passwordsalt = {
-        inherit (cfg) group;
-        owner = cfg.user;
+        inherit (serviceCfg) group;
+        owner = serviceCfg.user;
       };
       znc_twitchoauth = {
-        inherit (cfg) group;
-        owner = cfg.user;
+        inherit (serviceCfg) group;
+        owner = serviceCfg.user;
       };
     };
 
@@ -47,9 +58,9 @@ in {
 
           ssl_protocols TLSv1.2 TLSv1.3;
           ssl_ciphers  ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA384:DHE-DSS-AES256-GCM-SHA384:DHE-DSS-AES256-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256;
-          ssl_certificate /var/lib/acme/${hostname}/fullchain.pem;
-          ssl_certificate_key /var/lib/acme/${hostname}/key.pem;
-          ssl_trusted_certificate /var/lib/acme/${hostname}/chain.pem;
+          ssl_certificate /var/lib/acme/${acmeHost}/fullchain.pem;
+          ssl_certificate_key /var/lib/acme/${acmeHost}/key.pem;
+          ssl_trusted_certificate /var/lib/acme/${acmeHost}/chain.pem;
           ssl_conf_command Options KTLS;
 
           proxy_pass znc;
@@ -62,19 +73,29 @@ in {
       allowedUDPPorts = [6697];
     };
 
-    security.acme.certs.${hostname}.extraDomainNames = [
-      "${subdomain}.${hostname}"
-      "www.${subdomain}.${hostname}"
-    ];
+    security.acme.certs =
+      if (acmeHost != cfg.domain)
+      then {
+        ${acmeHost}.extraDomainNames = [
+          "${cfg.domain}"
+          "www.${cfg.domain}"
+        ];
+      }
+      else {
+        ${acmeHost} = {
+          inherit (wwwCfg) group;
+          extraDomainNames = ["www.${cfg.domain}"];
+        };
+      };
 
     systemd = {
       tmpfiles.rules = [
-        "d ${cfg.dataDir} 0750 ${cfg.user} ${cfg.group} -"
-        "d ${cfg.dataDir}/configs 0750 ${cfg.user} ${cfg.group} -"
+        "d ${serviceCfg.dataDir} 0750 ${serviceCfg.user} ${serviceCfg.group} -"
+        "d ${serviceCfg.dataDir}/configs 0750 ${serviceCfg.user} ${serviceCfg.group} -"
       ];
 
       services.znc = {
-        after = ["acme-${hostname}.service"];
+        after = ["acme-${acmeHost}.service"];
         preStart = let
           inherit (lib.strings) optionalString;
           modules = pkgs.buildEnv {
@@ -90,43 +111,45 @@ in {
           bash
           */
           ''
-            mkdir -p ${cfg.dataDir}/configs
+            mkdir -p ${serviceCfg.dataDir}/configs
 
             # If mutable, regenerate conf file every time.
-            ${optionalString (!cfg.mutable) ''
+            ${optionalString (!serviceCfg.mutable) ''
               echo "znc is set to be system-managed. Now deleting old znc.conf file to be regenerated."
-              rm -f ${cfg.dataDir}/configs/znc.conf
+              rm -f ${serviceCfg.dataDir}/configs/znc.conf
             ''}
 
             # Ensure essential files exist.
-            if [[ ! -f ${cfg.dataDir}/configs/znc.conf ]]; then
-                echo "No znc.conf file found in ${cfg.dataDir}. Creating one now."
-                cp --no-preserve=ownership --no-clobber ${cfg.configFile} ${cfg.dataDir}/configs/znc.conf
-                chmod u+rw ${cfg.dataDir}/configs/znc.conf
+            if [[ ! -f ${serviceCfg.dataDir}/configs/znc.conf ]]; then
+                echo "No znc.conf file found in ${serviceCfg.dataDir}. Creating one now."
+                cp --no-preserve=ownership --no-clobber ${serviceCfg.configFile} ${serviceCfg.dataDir}/configs/znc.conf
+                chmod u+rw ${serviceCfg.dataDir}/configs/znc.conf
             fi
 
-            if [[ ! -f ${cfg.dataDir}/znc.pem ]]; then
-              echo "No znc.pem file found in ${cfg.dataDir}. Creating one now."
-              ${lib.getExe pkgs.znc} --makepem --datadir ${cfg.dataDir}
+            if [[ ! -f ${serviceCfg.dataDir}/znc.pem ]]; then
+              echo "No znc.pem file found in ${serviceCfg.dataDir}. Creating one now."
+              ${lib.getExe pkgs.znc} --makepem --datadir ${serviceCfg.dataDir}
             fi
 
             # Symlink modules
-            rm ${cfg.dataDir}/modules || true
-            ln -fs ${modules}/lib/znc ${cfg.dataDir}/modules
+            rm ${serviceCfg.dataDir}/modules || true
+            ln -fs ${modules}/lib/znc ${serviceCfg.dataDir}/modules
 
             # Insert secrets
             [[ -f ${passwordSecretPath} ]] || exit 1
             [[ -f ${passwordSaltSecretPath} ]] || exit 1
             [[ -f ${twitchOauthSecretPath} ]] || exit 1
-            mv ${cfg.dataDir}/configs/znc.conf ${cfg.dataDir}/configs/znc.conf.old
-            ${lib.getExe pkgs.gnused} -e "s/__PASSWORD__/$(cat ${passwordSecretPath})/g" -e "s/__SALT__/$(cat ${passwordSaltSecretPath})/g" -e "s/__TWITCHOAUTH__/$(cat ${twitchOauthSecretPath})/g" ${cfg.dataDir}/configs/znc.conf.old > ${cfg.dataDir}/configs/znc.conf
-            rm ${cfg.dataDir}/configs/znc.conf.old
+            mv ${serviceCfg.dataDir}/configs/znc.conf ${serviceCfg.dataDir}/configs/znc.conf.old
+            ${lib.getExe pkgs.gnused} -e "s/__PASSWORD__/$(cat ${passwordSecretPath})/g" -e "s/__SALT__/$(cat ${passwordSaltSecretPath})/g" -e "s/__TWITCHOAUTH__/$(cat ${twitchOauthSecretPath})/g" ${serviceCfg.dataDir}/configs/znc.conf.old > ${serviceCfg.dataDir}/configs/znc.conf
+            rm ${serviceCfg.dataDir}/configs/znc.conf.old
           '';
       };
     };
 
     services = {
       nginx = {
+        enable = true;
+
         upstreams.znc = {
           servers."[::1]:7000" = {};
           extraConfig = ''
@@ -135,11 +158,11 @@ in {
           '';
         };
 
-        virtualHosts."${subdomain}.${hostname}" = {
-          serverName = "${subdomain}.${hostname} www.${subdomain}.${hostname}";
+        virtualHosts.${cfg.domain} = {
+          serverName = "${cfg.domain} www.${cfg.domain}";
           kTLS = true;
           forceSSL = true;
-          useACMEHost = hostname;
+          useACMEHost = acmeHost;
 
           locations."/" = {
             proxyPass = "http://znc";
@@ -157,7 +180,6 @@ in {
       };
 
       znc = {
-        inherit (config.my.www) user group;
         enable = true;
         mutable = false;
         modulePackages = with pkgs.zncModules; [
@@ -295,5 +317,9 @@ in {
         };
       };
     };
+
+    users.users.${serviceCfg.user}.extraGroups = lib.lists.optionals (serviceCfg.user != wwwCfg.user) [
+      wwwCfg.group
+    ];
   };
 }
