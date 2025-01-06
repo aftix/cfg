@@ -5,15 +5,38 @@
 }: let
   inherit (lib) mkIf mkForce;
   inherit (lib.options) mkOption mkEnableOption;
+
   wwwCfg = config.my.www;
   cfg = wwwCfg.searx;
+
   socket = "/run/uwsgi/searx.socket";
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
 in {
   options.my.www.searx = {
     enable = mkEnableOption "searx";
-    subdomain = mkOption {
-      default = "searx";
+
+    domain = mkOption {
       type = lib.types.str;
+    };
+
+    addSubpathTo = mkOption {
+      default = null;
+      type = with lib.types; nullOr str;
+      description = ''
+        If non-null, add a path /searx/ redirect
+        to ''${my.www.searx.domain} under
+        the given nginx virtual host.
+      '';
+    };
+
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = "null to use \${my.www.searx.domain}";
     };
   };
 
@@ -27,10 +50,20 @@ in {
 
     users.users.searx.extraGroups = [wwwCfg.group];
 
-    security.acme.certs.${wwwCfg.hostname}.extraDomainNames = [
-      "${cfg.subdomain}.${wwwCfg.hostname}"
-      "www.${cfg.subdomain}.${wwwCfg.hostname}"
-    ];
+    security.acme.certs =
+      if (acmeHost != cfg.domain)
+      then {
+        ${acmeHost}.extraDomainNames = [
+          "${cfg.domain}"
+          "www.${cfg.domain}"
+        ];
+      }
+      else {
+        ${acmeHost} = {
+          inherit (wwwCfg) group;
+          extraDomainNames = ["www.${cfg.domain}"];
+        };
+      };
 
     systemd.tmpfiles.rules = let
       inherit (config.services.searx.uwsgiConfig) immediate-uid immediate-gid;
@@ -60,24 +93,34 @@ in {
     systemd.services.searx-init.serviceConfig.User = mkForce config.services.searx.uwsgiConfig.immediate-uid;
 
     services = {
-      nginx.virtualHosts."${cfg.subdomain}.${wwwCfg.hostname}" = {
-        serverName = "${cfg.subdomain}.${wwwCfg.hostname} www.${cfg.subdomain}.${wwwCfg.hostname}";
-        kTLS = true;
-        forceSSL = true;
-        useACMEHost = wwwCfg.hostname;
-        extraConfig = ''
-          include /etc/nginx/bots.d/blockbots.conf;
-          include /etc/nginx/bots.d/ddos.conf;
-        '';
+      nginx = {
+        enable = true;
 
-        locations = {
-          "/".extraConfig = ''
-            include uwsgi_params;
-            uwsgi_pass unix:${socket};
-          '';
+        virtualHosts =
+          {
+            ${cfg.domain} = {
+              serverName = "${cfg.domain} www.${cfg.domain}";
+              kTLS = true;
+              forceSSL = true;
+              useACMEHost = acmeHost;
+              extraConfig = ''
+                include /etc/nginx/bots.d/blockbots.conf;
+                include /etc/nginx/bots.d/ddos.conf;
+              '';
 
-          "/static/".alias = "${config.services.searx.package}/share/static/";
-        };
+              locations = {
+                "/".extraConfig = ''
+                  include uwsgi_params;
+                  uwsgi_pass unix:${socket};
+                '';
+
+                "/static/".alias = "${config.services.searx.package}/share/static/";
+              };
+            };
+          }
+          // lib.attrsets.optionalAttrs (cfg.addSubpathTo != null) {
+            ${cfg.addSubpathTo}.locations."/searx/".return = "https://${cfg.domain}/?$args";
+          };
       };
 
       redis.servers.searx.user = mkForce config.services.searx.uwsgiConfig.immediate-uid;

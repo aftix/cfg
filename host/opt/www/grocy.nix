@@ -8,13 +8,23 @@
   inherit (lib.options) mkOption mkEnableOption;
   wwwCfg = config.my.www;
   cfg = wwwCfg.grocy;
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
 in {
   options.my.www.grocy = {
     enable = mkEnableOption "grocy";
 
-    subdomain = mkOption {
-      default = "grocy";
+    domain = mkOption {
       type = lib.types.str;
+    };
+
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = "null to use \${my.www.grocy.domain}";
     };
 
     phpfpm.settings = mkOption {
@@ -93,10 +103,20 @@ in {
       systemPackages = [pkgs.grocy];
     };
 
-    security.acme.certs.${wwwCfg.hostname}.extraDomainNames = [
-      "${cfg.subdomain}.${wwwCfg.hostname}"
-      "www.${cfg.subdomain}.${wwwCfg.hostname}"
-    ];
+    security.acme.certs =
+      if (acmeHost != cfg.domain)
+      then {
+        ${acmeHost}.extraDomainNames = [
+          "${cfg.domain}"
+          "www.${cfg.domain}"
+        ];
+      }
+      else {
+        ${acmeHost} = {
+          inherit (wwwCfg) group;
+          extraDomainNames = ["www.${cfg.domain}"];
+        };
+      };
 
     systemd = {
       tmpfiles.rules =
@@ -159,6 +179,8 @@ in {
       };
 
       nginx = {
+        enable = true;
+
         upstreams.grocy = {
           servers."unix:${config.services.phpfpm.pools.grocy.socket}" = {};
           extraConfig = ''
@@ -166,12 +188,12 @@ in {
           '';
         };
 
-        virtualHosts."${cfg.subdomain}.${wwwCfg.hostname}" = {
+        virtualHosts.${cfg.domain} = {
           root = "${pkgs.grocy}/public";
-          serverName = "${cfg.subdomain}.${wwwCfg.hostname} www.${cfg.subdomain}.${wwwCfg.hostname}";
+          serverName = "${cfg.domain} www.${cfg.domain}";
           kTLS = true;
           forceSSL = true;
-          useACMEHost = wwwCfg.hostname;
+          useACMEHost = acmeHost;
 
           extraConfig = ''
             try_files $uri /index.php;

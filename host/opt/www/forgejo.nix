@@ -5,20 +5,30 @@
 }: let
   inherit (lib.options) mkOption mkEnableOption;
 
-  cfg = config.my.www;
+  wwwCfg = config.my.www;
+  cfg = config.my.www.forgejo;
   serviceCfg = config.services.forgejo;
-  fullHostname = "${cfg.forgejo.subdomain}.${cfg.hostname}";
+
+  acmeHost =
+    if cfg.acmeDomain == null
+    then cfg.domain
+    else cfg.acmeDomain;
 in {
   options.my.www.forgejo = {
     enable = mkEnableOption "forgejo";
 
-    subdomain = mkOption {
-      default = "forge";
+    domain = mkOption {
       type = lib.types.str;
+    };
+
+    acmeDomain = mkOption {
+      default = wwwCfg.acmeDomain;
+      type = with lib.types; nullOr str;
+      description = "null to use \${my.www.forgejo.domain}";
     };
   };
 
-  config = lib.mkIf cfg.forgejo.enable {
+  config = lib.mkIf cfg.enable {
     sops.secrets = {
       forgejo_from_addr = {
         owner = serviceCfg.user;
@@ -42,10 +52,20 @@ in {
       };
     };
 
-    security.acme.certs.${cfg.hostname}.extraDomainNames = [
-      "${fullHostname}"
-      "www.${fullHostname}"
-    ];
+    security.acme.certs =
+      if (acmeHost != cfg.domain)
+      then {
+        ${acmeHost}.extraDomainNames = [
+          "${cfg.domain}"
+          "www.${cfg.domain}"
+        ];
+      }
+      else {
+        ${acmeHost} = {
+          inherit (wwwCfg) group;
+          extraDomainNames = ["www.${cfg.domain}"];
+        };
+      };
 
     services = {
       openssh.settings = {
@@ -58,6 +78,8 @@ in {
       };
 
       nginx = {
+        enable = true;
+
         upstreams.forgejo = {
           servers."unix:${serviceCfg.settings.server.HTTP_ADDR}" = {};
           extraConfig = ''
@@ -65,11 +87,11 @@ in {
           '';
         };
 
-        virtualHosts.${fullHostname} = {
-          serverName = "${fullHostname} www.${fullHostname}";
+        virtualHosts.${cfg.domain} = {
+          serverName = "${cfg.domain} www.${cfg.domain}";
           kTLS = true;
           forceSSL = true;
-          useACMEHost = cfg.hostname;
+          useACMEHost = acmeHost;
           extraConfig = ''
             include /etc/nginx/bots.d/blockbots.conf;
             include /etc/nginx/bots.d/ddos.conf;
@@ -127,12 +149,12 @@ in {
             ENABLE_NOTIFY_MAIL = true;
           };
           server = {
-            DOMAIN = fullHostname;
+            DOMAIN = cfg.domain;
             PROTOCOL = "http+unix";
-            ROOT_URL = "https://${fullHostname}";
+            ROOT_URL = "https://${cfg.domain}";
             LOCAL_ROOT_URL = "http://unix/";
             UNIX_SOCKET_PERMISSION = "0666";
-            SSH_DOMAIN = fullHostname;
+            SSH_DOMAIN = cfg.domain;
             LANDING_PAGE = "explore";
           };
           federation.ENABLED = true;
