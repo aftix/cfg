@@ -6,7 +6,6 @@
 }: let
   inherit (lib) mkOverride;
   inherit (lib.lists) optionals;
-  inherit (config.dep-inject) inputs;
 
   devCfg =
     {
@@ -104,7 +103,7 @@
       PATH="${lib.strings.makeBinPath [pkgs.yq]}:$PATH"
 
       TMP="$(${lib.getExe pkgs.mktemp})"
-      cat "${inputs.helix}/languages.toml" > "$TMP"
+      cat "${config.programs.helix.package.src}/languages.toml" > "$TMP"
       ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
       ${addNixdConfig}
       ${addSteelConfig}

@@ -67,7 +67,6 @@
     };
 
     attic.url = "github:zhaofengli/attic";
-    helix.url = "github:helix-editor/helix";
 
     hostsBlacklist = {
       url = "github:Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist";
@@ -98,13 +97,11 @@
 
     substituters = [
       "https://nix-community.cachix.org"
-      "https://helix.cachix.org"
       "https://cache.nixos.org"
       "https://attic.aftix.xyz/cfg-actions"
     ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "cfg-actions:R9aJEQdcJT8NrUh1yox2FgZfmzRrKi6MAobbfuRvv3g="
     ];
@@ -143,7 +140,6 @@
       nixpkgs = {
         overlays = [
           nur.overlays.default
-          inputs.helix.overlays.default
           inputs.attic.overlays.default
           overlay
         ];
@@ -443,7 +439,6 @@
         inherit (pkgsCfg.nixpkgs) config;
         overlays = [
           nur.overlays.default
-          inputs.helix.overlays.default
           (_: _: {inherit (inputs) nginxBlacklist;})
         ];
       };
