@@ -60,6 +60,50 @@ in {
           adminPasswordFile = config.sops.secrets.kanidm_admin_password.path;
           idmAdminPasswordFile = config.sops.secrets.kanidm_idmadmin_password.path;
           instanceUrl = "https://localhost:${builtins.toString cfg.port}";
+
+          groups = {
+            administrators = {
+              present = true;
+              members = ["administrator"];
+            };
+
+            forgejo_users = {
+              present = true;
+              members = [
+                "administrator"
+                "aftix"
+              ];
+            };
+          };
+
+          persons = {
+            administrator = {
+              displayName = "Administrator";
+              groups = [
+                "administrators"
+                "forgejo_users"
+              ];
+              present = true;
+            };
+
+            aftix = {
+              displayName = "aftix";
+              groups = [
+                "forgejo_users"
+              ];
+              mailAddresses = ["aftix@aftix.xyz"];
+              present = true;
+            };
+          };
+
+          systems.oauth2.forgejo = {
+            allowInsecureClientDisablePkce = true;
+            displayName = "Forgejo";
+            present = true;
+            originLanding = "https://forge.aftix.xyz/";
+            originUrl = "https://forge.aftix.xyz/user/oauth2/kanidm/callback";
+            scopeMaps.forgejo_users = ["email" "groups" "openid" "profile"];
+          };
         };
         serverSettings = {
           inherit (cfg) domain;
