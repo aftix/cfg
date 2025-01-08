@@ -17,17 +17,40 @@ in {
     ];
   };
 
-  systemd.tmpfiles.rules = let
-    inherit (config.users.users.aftix) home;
+  systemd.tmpfiles.settings."10-root-home-persist" = let
+    inherit (config.users.users.aftix or {home = "";}) home;
   in
-    lib.mkIf config.preservation.enable
-    [
-      "d ${home}/.local 0755 root root -"
-      "d ${home}/.local/persist 0755 root root -"
-      "d ${home}/.local/persist/root 0755 root root -"
-      "d ${home}/.local/persist/root/.config 0755 root root -"
-      "d ${home}/.local/persist/root/.config/sops 0755 root root -"
-    ];
+    lib.mkIf (config.preservation.enable && (home != "")) {
+      "${home}/.local".d = {
+        mode = "0755";
+        user = "aftix";
+        group = "users";
+      };
+
+      "${home}/.local/persist".d = {
+        mode = "0755";
+        user = "aftix";
+        group = "users";
+      };
+
+      "${home}/.local/persist/root".d = {
+        mode = "0755";
+        user = "root";
+        group = "root";
+      };
+
+      "${home}/.local/persist/root/.config".d = {
+        mode = "0755";
+        user = "root";
+        group = "root";
+      };
+
+      "${home}/.local/persist/root/.config/sops".d = {
+        mode = "0755";
+        user = "root";
+        group = "root";
+      };
+    };
 
   users.users.root = {
     shell = mkOverride 900 pkgs.zsh;

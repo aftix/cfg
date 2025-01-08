@@ -3,6 +3,7 @@
   config,
   ...
 }: let
+  inherit (lib.attrsets) optionalAttrs mergeAttrsList;
   inherit (lib.options) mkOption;
   inherit (lib.lists) optional;
 
@@ -64,9 +65,10 @@ in {
       optional attrs.enable
       "${name}=${toDir attrs}";
 
-    toTmpfilesRule = mod: attrs:
-      optional attrs.enable
-      "L+ ${toDir attrs} - - - - ${mod}";
+    toTmpfilesSetting = mod: attrs:
+      optionalAttrs attrs.enable {
+        ${toDir attrs}."L+".argument = builtins.toString mod;
+      };
   in
     lib.mkIf cfg.enable {
       nix.nixPath =
@@ -74,9 +76,10 @@ in {
         ++ (toNixPath "stablepkgs" cfg.stablepkgs)
         ++ (toNixPath "home-manager" cfg.home-manager);
 
-      systemd.tmpfiles.rules =
-        (toTmpfilesRule inputs.nixpkgs cfg.nixpkgs)
-        ++ (toTmpfilesRule inputs.stablepkgs cfg.stablepkgs)
-        ++ (toTmpfilesRule inputs.home-manager cfg.home-manager);
+      systemd.tmpfiles.settings."10-nix-channels" = mergeAttrsList [
+        (toTmpfilesSetting inputs.nixpkgs cfg.nixpkgs)
+        (toTmpfilesSetting inputs.stablepkgs cfg.stablepkgs)
+        (toTmpfilesSetting inputs.home-manager cfg.home-manager)
+      ];
     };
 }
