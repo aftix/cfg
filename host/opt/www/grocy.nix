@@ -119,23 +119,30 @@ in {
       };
 
     systemd = {
-      tmpfiles.rules =
-        [
-          "d /var/lib/grocy - grocy grocy - -"
-          "Z /var/lib/grocy - grocy grocy - -"
-        ]
-        ++ (map (dirName: "d '/var/lib/grocy/${dirName}' - grocy grocy - -") [
-          "viewcache"
-          "plugins"
-          "settingoverrides"
-          "storage"
-        ])
-        ++ (map (dirName: "Z '/var/lib/grocy/${dirName}' - grocy grocy - -") [
-          "viewcache"
-          "plugins"
-          "settingoverrides"
-          "storage"
-        ]);
+      tmpfiles.settings."10-grocy" = let
+        dirRule = {
+          user = "grocy";
+          group = "grocy";
+        };
+
+        dirLst = [
+          ""
+          "/viewcache"
+          "/plugins"
+          "/settingoverrides"
+          "/storage"
+        ];
+      in
+        lib.pipe dirLst [
+          (builtins.map (name: "/var/lib/grocy${name}"))
+          (builtins.map (dirName: {
+            ${dirName} = {
+              d = dirRule;
+              Z = dirRule;
+            };
+          }))
+          lib.attrsets.mergeAttrsList
+        ];
 
       services = {
         grocy-setup = {

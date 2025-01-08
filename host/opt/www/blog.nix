@@ -5,7 +5,7 @@
 }: let
   inherit (lib) mkIf;
   inherit (lib.options) mkEnableOption mkOption;
-  inherit (lib.lists) optional;
+  inherit (lib.lists) optionals;
   wwwCfg = config.my.www;
   cfg = config.my.www.blog;
 
@@ -32,13 +32,28 @@ in {
   };
 
   config = mkIf cfg.enable {
-    systemd.tmpfiles.rules =
-      [
-        "d ${wwwCfg.root}/${cfg.domain} 0775 ${wwwCfg.user} ${wwwCfg.group} -"
-        "Z ${wwwCfg.root}/${cfg.domain} 0775 ${wwwCfg.user} ${wwwCfg.group} -"
-      ]
-      ++ optional cfg.adventofcode "d ${wwwCfg.root}/advent2023 0775 ${wwwCfg.user} ${wwwCfg.group} -"
-      ++ optional cfg.aftgraphs "d ${wwwCfg.root}/simulations 0775 ${wwwCfg.user} ${wwwCfg.group} -";
+    systemd.tmpfiles.settings."10-nginx-blog" = let
+      dirRule = {
+        mode = "0755";
+        inherit (wwwCfg) user group;
+      };
+
+      dirLst =
+        [
+          "${wwwCfg.root}/cfg.domain"
+        ]
+        ++ optionals cfg.adventofcode ["${wwwCfg.root}/advent2023"]
+        ++ optionals cfg.aftgraphs ["${wwwCfg.root}/simulations"];
+    in
+      lib.pipe dirLst [
+        (builtins.map (dirName: {
+          ${dirName} = {
+            d = dirRule;
+            Z = dirRule;
+          };
+        }))
+        lib.attrsets.mergeAttrsList
+      ];
 
     security.acme.certs =
       if (acmeHost != cfg.domain)
