@@ -70,10 +70,14 @@ in {
         });
       };
 
-      tmpfiles.rules = [
-        "d /var/lib/freshrss 0750 freshrss freshrss -"
-        "Z /var/lib/freshrss 0750 freshrss freshrss -"
-      ];
+      tmpfiles.settings."10-freshrss"."/var/lib/freshrss" = rec {
+        d = {
+          mode = "0750";
+          user = "freshrss";
+          group = "freshrss";
+        };
+        Z = d;
+      };
     };
 
     services = {

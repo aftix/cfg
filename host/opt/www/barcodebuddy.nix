@@ -157,9 +157,9 @@ in {
     };
 
     systemd = {
-      tmpfiles.rules = [
-        "d '${cfg.dataDir}' - '${cfg.user}' '${cfg.group}' - -"
-      ];
+      tmpfiles.settings."10-bbuddy".${cfg.dataDir}.d = {
+        inherit (cfg) user group;
+      };
 
       services = {
         phpfpm-barcodebuddy.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {

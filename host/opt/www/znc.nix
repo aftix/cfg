@@ -89,10 +89,17 @@ in {
       };
 
     systemd = {
-      tmpfiles.rules = [
-        "d ${serviceCfg.dataDir} 0750 ${serviceCfg.user} ${serviceCfg.group} -"
-        "d ${serviceCfg.dataDir}/configs 0750 ${serviceCfg.user} ${serviceCfg.group} -"
-      ];
+      tmpfiles.settings."10-znc" = {
+        ${serviceCfg.dataDir}.d = {
+          mode = "0750";
+          inherit (serviceCfg) user group;
+        };
+
+        "${serviceCfg.dataDir}/configs".d = {
+          mode = "0750";
+          inherit (serviceCfg) user group;
+        };
+      };
 
       services.znc = {
         after = ["acme-${acmeHost}.service"];

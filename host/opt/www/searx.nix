@@ -65,11 +65,13 @@ in {
         };
       };
 
-    systemd.tmpfiles.rules = let
+    systemd.tmpfiles.settings."10-searx".${builtins.dirOf socket}.d = let
       inherit (config.services.searx.uwsgiConfig) immediate-uid immediate-gid;
-    in [
-      "d ${builtins.dirOf socket} 0775 ${immediate-uid} ${immediate-gid} -"
-    ];
+    in {
+      mode = "0755";
+      user = immediate-uid;
+      group = immediate-gid;
+    };
 
     environment.etc."nginx/uwsgi_params".text = ''
       uwsgi_param  QUERY_STRING       $query_string;
