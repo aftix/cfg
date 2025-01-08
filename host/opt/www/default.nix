@@ -136,14 +136,20 @@ in {
       openssh.settings.AllowUsers = [cfg.user];
     };
 
-    systemd.tmpfiles.rules = let
+    systemd.tmpfiles.settings."10-nginx-conf" = let
       blockerPkg = pkgs.nginx_blocker.overrideAttrs {patches = cfg.nginxBlockerPatches;};
-    in [
-      "d ${cfg.root} 0775 ${cfg.user} ${cfg.group} -"
-      "Z ${cfg.root} 0775 ${cfg.user} ${cfg.group} -"
-      "L+ /etc/nginx/conf.d - - - - ${blockerPkg}/conf.d"
-      "L+ /etc/nginx/bots.d - - - - ${blockerPkg}/bots.d"
-    ];
+    in {
+      ${cfg.root} = rec {
+        d = {
+          mode = "0755";
+          inherit (cfg) user group;
+        };
+        Z = d;
+      };
+
+      "/etc/nginx/conf.d"."L+".argument = "${blockerPkg}/conf.d";
+      "/etc/nginx/bots.d"."L+".argument = "${blockerPkg}/bots.d";
+    };
 
     security.acme = {
       acceptTerms = true;
