@@ -29,6 +29,7 @@ in {
     ./hydra.nix
     ./kanidm.nix
     ./matrix.nix
+    ./metrics.nix
     ./rss.nix
     ./searx.nix
     ./znc.nix
@@ -164,6 +165,19 @@ in {
     };
 
     services = {
+      postgresql = {
+        identMap = lib.mkForce ''
+          superuser_map root postgres
+          superuser_map postgres postgres
+          superuser_map /^(.*)$ \1
+        '';
+        authentication = lib.mkForce ''
+          #type database DBuser auth-method
+          local sameuser all peer map=superuser_map
+        '';
+        settings.unix_socket_directories = "/var/run/postgresql";
+      };
+
       nginx = {
         inherit (cfg) user group;
         enableReload = true;

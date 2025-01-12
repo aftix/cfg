@@ -85,6 +85,14 @@ in {
                 "aftix"
               ];
             };
+
+            grafana_users = {
+              present = true;
+              members = [
+                "administrator"
+                "aftix"
+              ];
+            };
           };
 
           persons = {
@@ -94,6 +102,7 @@ in {
                 "administrators"
                 "forgejo_users"
                 "hydra_users"
+                "grafana_users"
               ];
               present = true;
             };
@@ -103,19 +112,30 @@ in {
               groups = [
                 "forgejo_users"
                 "hydra_users"
+                "grafana_users"
               ];
               mailAddresses = ["aftix@aftix.xyz"];
               present = true;
             };
           };
 
-          systems.oauth2.forgejo = {
-            allowInsecureClientDisablePkce = true;
-            displayName = "Forgejo";
-            present = true;
-            originLanding = "https://forge.aftix.xyz/";
-            originUrl = "https://forge.aftix.xyz/user/oauth2/kanidm/callback";
-            scopeMaps.forgejo_users = ["email" "groups" "openid" "profile"];
+          systems.oauth2 = {
+            forgejo = {
+              allowInsecureClientDisablePkce = true;
+              displayName = "Forgejo";
+              present = true;
+              originLanding = "https://forge.aftix.xyz/";
+              originUrl = "https://forge.aftix.xyz/user/oauth2/kanidm/callback";
+              scopeMaps.forgejo_users = ["email" "groups" "openid" "profile"];
+            };
+
+            grafana = {
+              displayName = "Grafana";
+              present = true;
+              originLanding = "https://metrics.aftix.xyz/";
+              originUrl = "https://metrics.aftix.xyz/login/generic_oauth";
+              scopeMaps.grafana_users = ["email" "groups" "openid" "profile"];
+            };
           };
         };
         serverSettings = {

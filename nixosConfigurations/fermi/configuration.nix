@@ -26,6 +26,12 @@ in {
       restic_fermi_password = {};
       restic_fermi_aws_id = {};
       restic_fermi_aws_secret = {};
+
+      grafana_oauth_secret = {
+        mode = "0400";
+        owner = "grafana";
+        group = "grafana";
+      };
     };
 
     templates = {
@@ -98,6 +104,23 @@ in {
       };
 
       kanidm.enable = true;
+
+      metrics = {
+        enable = true;
+        domain = "metrics.${domain}";
+
+        oidc = {
+          enable = true;
+          url = config.my.www.kanidm.domain;
+          client-id = "grafana";
+          client-secret = config.sops.placeholder.grafana_oauth_secret;
+        };
+
+        otel = {
+          http = true;
+          grpc = true;
+        };
+      };
 
       rss = {
         enable = true;
