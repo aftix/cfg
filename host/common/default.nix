@@ -256,6 +256,12 @@ in {
       };
     };
 
+    systemd.services.nix-daemon.serviceConfig = {
+      MemoryHigh = "75%";
+      MemoryMax = "87.5%";
+      MemorySwapMax = "75%";
+    };
+
     documentation = {
       man = {
         enable = true;

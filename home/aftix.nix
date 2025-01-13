@@ -107,8 +107,7 @@ in {
             arguments = ''
               --soft: string
               --hard: string
-              --soft-swap: string
-              --hard-swap: string
+              --swap: string
               ...args
             '';
             body = ''
@@ -117,13 +116,10 @@ in {
                 $args = ["-p" $"MemoryHigh=($soft)" ...$args]
               }
               if $hard != null {
-                $args = ["-p" $"MemoryHigh=($hard)" ...$args]
+                $args = ["-p" $"MemoryMax=($hard)" ...$args]
               }
-              if $soft_swap != null {
-                $args = ["-p" $"MemoryHigh=($soft_swap)" ...$args]
-              }
-              if $hard_swap != null {
-                $args = ["-p" $"MemoryHigh=($hard_swap)" ...$args]
+              if $swap != null {
+                $args = ["-p" $"MemorySwapMax=($swap)" ...$args]
               }
               systemd-run --user --slice-inherit -dtP ...$args
             '';
