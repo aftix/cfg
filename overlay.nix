@@ -5,7 +5,7 @@ inputs: final: prev:
 
   carapace = prev.carapace.overrideAttrs {
     src = inputs.carapace;
-    vendorHash = "sha256-d/qXBHN0/f4SZi5V+g51vDlVo5GRdNRYcq/am/qk/tM=";
+    vendorHash = "sha256-kxd/bINrZxgEmgZ67KjTTfuIr9ekpd08s0/p0Sht5Ks=";
   };
 
   cinny-desktop = prev.cinny-desktop.overrideAttrs {
