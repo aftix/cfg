@@ -179,13 +179,8 @@ in {
           "std - Rust" = {
             urls = [
               {
-                template = "https://doc.rust-lang.org/stable/std";
-                params = [
-                  {
-                    name = "search";
-                    value = "{searchTerms}";
-                  }
-                ];
+                template = "https://std.rs/{searchTerms}";
+                params = [];
               }
             ];
             definedAliases = ["rstd" "@rstd" "@ruststd"];
