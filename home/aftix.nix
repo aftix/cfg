@@ -30,6 +30,7 @@ in {
     ./opt/stylix.nix
     ./opt/swaync.nix
     ./opt/transmission.nix
+    ./opt/zathura.nix
 
     ./opt/discord.nix
   ];
