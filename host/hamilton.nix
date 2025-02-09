@@ -159,15 +159,19 @@ in {
 
     oomd.enableUserSlices = true;
 
-    services.systemd-machine-id-commit = {
-      unitConfig.ConditionPathIsMountPoint = [
-        ""
-        "/persist/etc/machine-id"
-      ];
-      serviceConfig.ExecStart = [
-        ""
-        "systemd-machine-id-setup --commit --root /persist"
-      ];
+    services = {
+      nix-daemon.serviceConfig.CPUQuota = "2100%";
+
+      systemd-machine-id-commit = {
+        unitConfig.ConditionPathIsMountPoint = [
+          ""
+          "/persist/etc/machine-id"
+        ];
+        serviceConfig.ExecStart = [
+          ""
+          "systemd-machine-id-setup --commit --root /persist"
+        ];
+      };
     };
   };
 
