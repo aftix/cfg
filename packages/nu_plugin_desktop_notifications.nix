@@ -13,7 +13,8 @@ rustPlatform.buildRustPackage rec {
     rev = version;
     sha256 = "sha256-X2Sp+D4PB4U4o+zwYlewPudWsoC+gE1O4fr2vYqsWkM=";
   };
-  cargoHash = "sha256-nnUI/bQNQkdk6QuAGYi6VLFbmdrZqN6ekYEuFZvDfJU=";
+  useFetchCargoVendor = true;
+  cargoHash = "sha256-OVYal0wqYGcBPwyqhixTVRTRsdQAD68kAzffgvYDShE=";
 
   meta = with lib; {
     description = "A nushell plugin to send desktop notifications.";

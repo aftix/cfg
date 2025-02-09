@@ -15,7 +15,8 @@ rustPlatform.buildRustPackage rec {
     rev = version;
     sha256 = "sha256-Nne0xwUitm883K59ds2OXDWafsrIp2MGXKUbztcf0uM=";
   };
-  cargoHash = "sha256-0fQCEnh/pOcHN2dEKPvcQpv8R2YqPggzvBpyv1gw/0M=";
+  useFetchCargoVendor = true;
+  cargoHash = "sha256-CwPS9NeHfHTkCHlp+6QVjdI6a7DfJr2fjMm9h2fAbIw=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
