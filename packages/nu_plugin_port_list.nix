@@ -13,7 +13,8 @@ rustPlatform.buildRustPackage rec {
     rev = "db81c56738aecef3414a285bc2cacb1921a7f81d";
     sha256 = "sha256-AdODXvou8QrCUm/J6iatNAp+kIe9uVcCdHOOf1KLog0=";
   };
-  cargoHash = "sha256-Buff1aR8qWXnk8B6b/MyikTh0vG2MDH9z6OIDIb9zrw=";
+  useFetchCargoVendor = true;
+  cargoHash = "sha256-NJkE/BgwRUt1g5wmxzMpkdruphWn1eLU9wPlr5qpf2s=";
 
   meta = with lib; {
     description = "A nushell plugin to display all active network connections.";

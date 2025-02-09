@@ -16,7 +16,8 @@ rustPlatform.buildRustPackage rec {
     rev = version;
     sha256 = "sha256-5iCZWNZ1j5AdVSFyiGJ/85pkyRWV7fjFd95LMopeuZ0=";
   };
-  cargoHash = "sha256-ga6c4M8iLJ3graKK4i+W/WderIFOmeBazruqsREQQso=";
+  useFetchCargoVendor = true;
+  cargoHash = "sha256-ZNvWlF+fC2zepWCr9KyYNfJjPH4x4liZoHuj0BV+W9w=";
 
   nativeBuildInputs = [pkg-config] ++ lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
   buildInputs = [alsa-lib];
