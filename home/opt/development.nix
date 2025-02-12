@@ -63,7 +63,8 @@ in {
         ]
         ++ optionals cfg.cpp
         [
-          lldb
+          # see https://github.com/NixOS/nixpkgs/issues/380196
+          # lldb
           clang
           clang-tools
         ]
