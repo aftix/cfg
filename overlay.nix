@@ -8,25 +8,6 @@ inputs: final: prev:
     vendorHash = "sha256-dKqMn/KVB+9K+OE2/2ADncxMA8eFoOkST/IHlNTLl60=";
   };
 
-  cinny-desktop = prev.cinny-desktop.overrideAttrs {
-    postPatch = let
-      inherit (final) pkgs lib;
-      cinny' = assert lib.assertMsg (
-        pkgs.cinny.version == prev.cinny-desktop.version
-      ) "cinny.version (${pkgs.cinny.version}) != cinny-desktop.version (${prev.cinny-desktop.version})";
-        pkgs.cinny.override {
-          conf = {
-            hashRouter.enabled = true;
-          };
-        };
-    in ''
-      substituteInPlace tauri.conf.json \
-        --replace-fail '"distDir": "../cinny/dist",' '"distDir": "${cinny'}",'
-      substituteInPlace tauri.conf.json \
-        --replace-fail '"cd cinny && npm run build"' '""'
-    '';
-  };
-
   heisenbridge = prev.heisenbridge.overridePythonAttrs (oldAttrs: rec {
     version = "1.15.0";
     src = final.fetchFromGitHub {
