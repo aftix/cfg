@@ -6,13 +6,13 @@
 }: let
   inherit (lib) mkDefault mkOverride;
   inherit (lib.lists) optional;
-  inherit (config.my.lib.preservation) mkDirs;
 in {
   environment.systemPackages = let inherit (config.users.users.root) shell; in optional (!builtins.isString shell) shell;
 
   preservation.preserveAt."${config.users.users.root.home}/.local/persist".users.root = {
     home = "/root";
-    directories = mkDirs [
+    commonMountOptions = ["x-gvfs-hide"];
+    directories = [
       ".config/sops"
     ];
   };

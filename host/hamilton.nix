@@ -5,7 +5,6 @@
   ...
 }: let
   inherit (lib.strings) optionalString;
-  inherit (config.my.lib.preservation) mkDirs mkFiles;
 in {
   imports = [
     ../hardware/hamilton.nix
@@ -97,13 +96,14 @@ in {
     preserveAt = {
       # /persist is backed up (btrfs subvolume under safe/)
       "/persist" = {
-        directories = mkDirs [
+        commonMountOptions = ["x-gvfs-hide"];
+        directories = [
           "/var/lib/nixos"
           "/etc/mullvad-vpn"
           "/etc/secureboot"
           "/var/cache/mullvad-vpn"
         ];
-        files = mkFiles [
+        files = [
           {
             file = "/etc/machine-id";
             inInitrd = true;
@@ -118,7 +118,8 @@ in {
       };
       # /state is not backup up (btrfs subvolume under local)
       "/state" = {
-        directories = mkDirs [
+        commonMountOptions = ["x-gvfs-hide"];
+        directories = [
           {
             directory = "/var/log";
             inInitrd = true;
@@ -128,7 +129,7 @@ in {
           "/var/lib/systemd/timers"
           "/root/.config/rclone"
         ];
-        files = mkFiles [
+        files = [
           "/var/lib/cups/printers.conf"
           "/var/lib/cups/subscriptions.conf"
         ];
