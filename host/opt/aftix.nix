@@ -7,7 +7,6 @@
   inherit (lib.options) mkOption;
   inherit (lib) mkIf mkDefault mkOverride;
   inherit (lib.lists) optionals;
-  inherit (config.my.lib.preservation) mkDirs mkFiles;
   myCfg = config.my.users.aftix;
   cfg = config.users.users.aftix;
 in {
@@ -35,7 +34,8 @@ in {
     security.polkit.adminIdentities = ["unix-user:aftix"];
 
     preservation.preserveAt."${config.users.users.aftix.home}/.local/persist".users.aftix = {
-      directories = mkDirs [
+      commonMountOptions = ["x-gvfs-hide"];
+      directories = [
         ".config/attic"
         ".config/ario"
         ".config/Element"
@@ -48,7 +48,7 @@ in {
         ".config/transmission/resume"
         ".config/Yubico"
       ];
-      files = mkFiles [
+      files = [
         ".config/nushell/history.sqlite3"
         ".config/nushell/history.sqlite3-shm"
         ".config/nushell/history.sqlite3-wal"
