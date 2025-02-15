@@ -16,20 +16,20 @@
 in
   python3.pkgs.buildPythonApplication rec {
     pname = "matrix-synapse";
-    version = "1.121.1";
+    version = "1.124.0";
     format = "pyproject";
 
     src = fetchFromGitHub {
       owner = "element-hq";
       repo = "synapse";
       rev = "v${version}";
-      hash = "sha256-0sLzngo6jBpKyqgw8XwgPzpmSWR7pjXT58XcDJCUq0s=";
+      hash = "sha256-hL1MdngaAVqgdN8GS9m3jn4twsbX0GPFa5cq+SCJ1oI=";
     };
 
-    cargoDeps = rustPlatform.fetchCargoTarball {
+    cargoDeps = rustPlatform.fetchCargoVendor {
       inherit src;
       name = "${pname}-${version}";
-      hash = "sha256-LGFuz3NtNqH+XumJOirvflH0fyfTtqz5qgYlJx2fmAU=";
+      hash = "sha256-OIrjBhjSavJubpcMtHLrfuK7uhfNd+AHKUmHno32yo4=";
     };
 
     postPatch = ''
@@ -45,6 +45,10 @@ in
       # Don't force pillow to be 10.0.1 because we already have patched it, and
       # we don't use the pillow wheels.
       sed -i 's/Pillow = ".*"/Pillow = ">=5.4.0"/' pyproject.toml
+
+      # https://github.com/element-hq/synapse/pull/17878#issuecomment-2575412821
+      substituteInPlace tests/storage/databases/main/test_events_worker.py \
+        --replace-fail "def test_recovery" "def no_test_recovery"
     '';
 
     nativeBuildInputs = with python3.pkgs; [
@@ -107,6 +111,9 @@ in
         else [
           psycopg2
         ];
+      saml2 = [
+        pysaml2
+      ];
       oidc = [
         authlib
       ];
@@ -142,9 +149,9 @@ in
         mock
         parameterized
       ])
-      ++ lib.flatten (lib.attrValues optional-dependencies);
+      ++ builtins.filter (p: !p.meta.broken) (lib.flatten (lib.attrValues optional-dependencies));
 
-    doCheck = false;
+    doCheck = !stdenv.hostPlatform.isDarwin;
 
     checkPhase = ''
       runHook preCheck
@@ -175,6 +182,6 @@ in
       changelog = "https://github.com/element-hq/synapse/releases/tag/v${version}";
       description = "Matrix reference homeserver";
       license = licenses.agpl3Plus;
-      maintainers = teams.matrix.members;
+      maintainers = with lib.maintainers; teams.matrix.members ++ [sumnerevans];
     };
   }
