@@ -114,6 +114,7 @@ jobs:
         run: nix build '.#${{ matrix.package }}'
 
       - name: Push package ${{ matrix.package }} to attic
+        continue-on-error: true
         run: nix-store --query --requisites --include-outputs ./result | xargs attic push "ci:$ATTIC_CACHE"
   prebuild:
     name: Get nixosConfiguration outputs of the flake to populate build matrix
