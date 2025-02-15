@@ -140,8 +140,6 @@ in {
             nu_plugin_desktop_notifications
             nu_plugin_dns
             nu_plugin_explore
-            nu_plugin_port_scan
-            nu_plugin_port_list
             nu_plugin_semver
             nu_plugin_strutils
           ]);
