@@ -11,10 +11,10 @@ in {
     packages = with pkgs; [
       python3
       mypy
-      python311Packages.flake8
-      python311Packages.python-lsp-server
-      python311Packages.pyls-flake8
-      python311Packages.pylsp-mypy
+      python3Packages.flake8
+      python3Packages.python-lsp-server
+      python3Packages.pyls-flake8
+      python3Packages.pylsp-mypy
       pipx
       micromamba
     ];
