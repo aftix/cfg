@@ -21,8 +21,8 @@
         '';
       };
 
-      aria2p = final.python313Packages.aria2p.overridePythonAttrs (oldAttrs: {
-        propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [final.python313Packages.platformdirs];
+      aria2p = final.python3Packages.aria2p.overridePythonAttrs (oldAttrs: {
+        propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [final.python3Packages.platformdirs];
       });
     })
   ];
