@@ -123,7 +123,7 @@ in {
           */
           ''
             # Add homebrew prefix to path
-            $env.PATH = ($env.PATH | append $"(${brewPath} --prefix)/bin")
+            $env.PATH = ($env.PATH | prepend $"(${brewPath} --prefix)/bin")
             # Add homebrew environmental variables
             (brew shellenv
               | lines
