@@ -5,7 +5,7 @@ inputs: final: prev:
 
   carapace = prev.carapace.overrideAttrs {
     src = inputs.carapace;
-    vendorHash = "sha256-dKqMn/KVB+9K+OE2/2ADncxMA8eFoOkST/IHlNTLl60=";
+    vendorHash = "sha256-c82OWxaKvu7qnHkwF/YGBApQktEiFy0I3B3tkad2340=";
   };
 
   heisenbridge = prev.heisenbridge.overridePythonAttrs (oldAttrs: rec {
