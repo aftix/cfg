@@ -7,16 +7,32 @@
   inherit (lib) mkDefault mkIf mkMerge;
   inherit (lib.strings) hasSuffix;
 in {
-  home.sessionVariables = mkMerge [
-    (mkIf (hasSuffix "-linux" pkgs.system) {
-      MOZ_USE_XINPUT2 = "1";
-    })
+  home = {
+    activation.linkLibrewolfCfg = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      run ln ''${VERBOSE_ARG} -sf "${config.home.homeDirectory}/.mozilla/firefox" "${config.home.homeDirectory}/.librewolf"
+    '';
 
-    {BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/firefox";}
-  ];
+    packages = lib.lists.optionals (config.programs.firefox.package != null) [
+      (pkgs.runCommandLocal "firefox-alias" {
+          nativeBuildInputs = [pkgs.makeBinaryWrapper];
+        } ''
+          mkdir -p "$out/bin"
+          makeBinaryWrapper "${config.programs.firefox.finalPackage}/bin/librewolf" "$out/bin/firefox"
+        '')
+    ];
+
+    sessionVariables = mkMerge [
+      (mkIf (hasSuffix "-linux" pkgs.system) {
+        MOZ_USE_XINPUT2 = "1";
+      })
+
+      (mkIf (config.programs.firefox.package != null) {BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/librewolf";})
+    ];
+  };
 
   programs.firefox = {
     enable = true;
+    package = pkgs.librewolf;
 
     policies = {
       DontCheckDefaultBrowser = true;
