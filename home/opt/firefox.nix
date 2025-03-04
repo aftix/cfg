@@ -5,12 +5,22 @@
   ...
 }: let
   inherit (lib) mkDefault mkIf mkMerge;
-  inherit (lib.strings) hasSuffix;
+  inherit (lib.strings) hasSuffix escapeShellArg;
 in {
   home = {
-    activation.linkLibrewolfCfg = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      run ln ''${VERBOSE_ARG} -sf "${config.home.homeDirectory}/.mozilla/firefox" "${config.home.homeDirectory}/.librewolf"
-    '';
+    activation.linkLibrewolfCfg = let
+      firefoxDir =
+        if pkgs.hostPlatform.isDarwin
+        then "${config.home.homeDirectory}/Library/Application Support/Firefox"
+        else "${config.home.homeDirectory}/.mozilla/firefox";
+      librewolfDir =
+        if pkgs.hostPlatform.isDarwin
+        then "${config.home.homeDirectory}/Library/Application Support/librewolf"
+        else "${config.home.homeDirectory}/.librewolf";
+    in
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        run ln ''${VERBOSE_ARG} -sf ${escapeShellArg firefoxDir} ${escapeShellArg librewolfDir}
+      '';
 
     packages = lib.lists.optionals (config.programs.firefox.package != null) [
       (pkgs.runCommandLocal "firefox-alias" {
