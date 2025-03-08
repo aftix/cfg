@@ -149,16 +149,6 @@ in {
             };
           }
         ];
-        identMap = lib.mkOverride 60 ''
-          superuser_map root postgres
-          superuser_map postgres postgres
-          superuser_map /^(.*)$ \1
-        '';
-        authentication = lib.mkOverride 60 ''
-          #type database DBuser auth-method
-          local sameuser all peer map=superuser_map
-        '';
-        settings.unix_socket_directories = "/var/run/postgresql";
       };
     };
   };
