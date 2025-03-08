@@ -78,7 +78,7 @@ in {
         serverName = "${cfg.domain} www.${cfg.domain}";
         kTLS = true;
         forceSSL = true;
-        useACMEHost = cfg.domain;
+        useACMEHost = acmeHost;
         extraConfig = ''
           include /etc/nginx/bots.d/blockbots.conf;
           include /etc/nginx/bots.d/ddos.conf;
