@@ -13,6 +13,7 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    hydra.url = "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz";
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nur.url = "github:nix-community/NUR";
@@ -251,8 +252,10 @@
       (_: {
         nixpkgs.overlays = [
           inputs.lix-module.overlays.default
-          (_: prev: {
+          # inputs.hydra.overlays.default
+          (final: prev: {
             lix = prev.lix.override {aws-sdk-cpp = null;};
+            hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
           })
         ];
       })
@@ -467,6 +470,7 @@
             ;
 
           lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
+          hydra = inputs.hydra.packages.${sys}.default;
         };
     });
 }
