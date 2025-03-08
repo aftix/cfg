@@ -51,6 +51,7 @@ in
       srvos = (import rawInputs.srvos) // {outPath = builtins.toString rawInputs.srvos;};
       stylix = (import rawInputs.stylix) // {outPath = builtins.toString rawInputs.stylix;};
       lix = (import rawInputs.lix) // {outPath = builtins.toString rawInputs.lix;};
+      hydra = import rawInputs.hydra // {outPath = builtins.toString rawInputs.hydra;};
 
       nixpkgs = let
         # The nixpkgs flake adds this to lib

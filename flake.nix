@@ -14,6 +14,11 @@
       };
     };
 
+    hydra = {
+      url = "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nur.url = "github:nix-community/NUR";
 

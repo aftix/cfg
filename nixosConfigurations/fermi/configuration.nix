@@ -85,6 +85,11 @@ in {
         domain = "grocy.${domain}";
       };
 
+      hydra = {
+        enable = true;
+        domain = "hydra.${domain}";
+      };
+
       kanidm.enable = true;
 
       rss = {

@@ -3,6 +3,7 @@ inputs: final: prev:
   aftixLib = inputs.self.lib;
 
   lix = prev.lix.override {aws-sdk-cpp = null;};
+  hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
 
   inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;
   inherit (inputs) nginxBlacklist;
