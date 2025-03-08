@@ -13,6 +13,7 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    hydra.url = "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz";
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nur.url = "github:nix-community/NUR";

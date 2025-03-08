@@ -27,6 +27,7 @@ in
       attic-client
       attic-server
       lix
+      hydra
       matrix-synapse-unwrapped
       ;
 
