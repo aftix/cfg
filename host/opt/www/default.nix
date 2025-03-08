@@ -26,6 +26,7 @@ in {
     ./coffeepaste.nix
     ./forgejo.nix
     ./grocy.nix
+    ./hydra.nix
     ./kanidm.nix
     ./matrix.nix
     ./rss.nix

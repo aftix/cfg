@@ -1,6 +1,6 @@
 # Fetch the inputs from flake.nix, no processing is done
 let
-  inherit (builtins) readFile fromJSON fetchTarball elem;
+  inherit (builtins) readFile fromJSON fetchTarball fetchGit elem;
   flakeInputs = (import ../flake.nix).inputs;
   lockFile = fromJSON (readFile ../flake.lock);
 
@@ -15,6 +15,10 @@ let
       url = "https://github.com/${node.locked.owner}/${node.locked.repo}/archive/${node.locked.rev}.tar.gz";
       sha256 = node.locked.narHash;
     };
+  fetchFromGit = node:
+    fetchGit {
+      inherit (node.locked) url rev ref;
+    };
   fetchNode = nodeName: let
     nodeTy = lockFile.nodes.${nodeName}.locked.type;
   in
@@ -22,6 +26,11 @@ let
     then fetchFromGithub lockFile.nodes.${nodeName}
     else if nodeTy == "tarball"
     then fetchFromTarball lockFile.nodes.${nodeName}
+    else if nodeTy == "git"
+    then let
+      fetched = fetchFromGit lockFile.nodes.${nodeName};
+    in
+      assert fetched.narHash == lockFile.nodes.${nodeName}.locked.narHash; fetched
     else
       throw ''
         flake-compat/raw-inputs.nix: fetchNode: Unsupported node type ${nodeTy} for node ${nodeName}
