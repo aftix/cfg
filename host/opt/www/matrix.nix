@@ -304,16 +304,6 @@ in {
             };
           }
         ];
-        identMap = lib.mkForce ''
-          superuser_map root postgres
-          superuser_map postgres postgres
-          superuser_map /^(.*)$ \1
-        '';
-        authentication = lib.mkForce ''
-          #type database DBuser auth-method
-          local sameuser all peer map=superuser_map
-        '';
-        settings.unix_socket_directories = "/var/run/postgresql";
       };
 
       matrix-synapse = {
