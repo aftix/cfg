@@ -49,6 +49,11 @@ in {
         };
       };
 
+    networking.firewall = {
+      allowedTCPPorts = [636];
+      allowedUDPPorts = [636];
+    };
+
     services = {
       kanidm = {
         clientSettings.uri = "https://${cfg.domain}";
@@ -74,6 +79,14 @@ in {
                 "aftix"
               ];
             };
+
+            hydra_users = {
+              present = true;
+              members = [
+                "administrator"
+                "aftix"
+              ];
+            };
           };
 
           persons = {
@@ -82,6 +95,7 @@ in {
               groups = [
                 "administrators"
                 "forgejo_users"
+                "hydra_users"
               ];
               present = true;
             };
@@ -90,6 +104,7 @@ in {
               displayName = "aftix";
               groups = [
                 "forgejo_users"
+                "hydra_users"
               ];
               mailAddresses = ["aftix@aftix.xyz"];
               present = true;
@@ -107,7 +122,8 @@ in {
         };
         serverSettings = {
           inherit (cfg) domain;
-          bindaddress = "127.0.0.1:${builtins.toString cfg.port}";
+          bindaddress = "[::]:${builtins.toString cfg.port}";
+          ldapbindaddress = "0.0.0.0:636";
           online_backup.versions = 7;
           origin = "https://${cfg.domain}";
           tls_key = "/var/lib/acme/${acmeHost}/key.pem";
@@ -140,6 +156,29 @@ in {
         };
       };
     };
+
+    # Can not reverse proxy LDAPS to kanidm - see https://github.com/kanidm/kanidm/issues/3423
+    # my.www.streamConfig = [
+    #   ''
+    #     upstream kanidm_ldaps {
+    #       server [::1]:${builtins.toString cfg.ldapPort};
+    #     }
+
+    #     server {
+    #       listen 636 ssl;
+    #       listen [::]:636 ssl;
+
+    #       ssl_protocols TLSv1.2 TLSv1.3;
+    #       ssl_ciphers  ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA384:DHE-DSS-AES256-GCM-SHA384:DHE-DSS-AES256-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256;
+    #       ssl_certificate /var/lib/acme/${acmeHost}/fullchain.pem;
+    #       ssl_certificate_key /var/lib/acme/${acmeHost}/key.pem;
+    #       ssl_trusted_certificate /var/lib/acme/${acmeHost}/chain.pem;
+    #       ssl_conf_command Options KTLS;
+
+    #       proxy_pass kanidm_ldaps;
+    #     }
+    #   ''
+    # ];
 
     sops.secrets = {
       kanidm_admin_password = {
