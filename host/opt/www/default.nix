@@ -5,8 +5,19 @@
   ...
 }: let
   inherit (lib.options) mkOption;
+  inherit (lib.strings) concatLines;
 
   cfg = config.my.www;
+
+  toPsqlAuth = {
+    type,
+    database,
+    user,
+    auth-method,
+    auth-options,
+  }: let
+    options = lib.attrsets.mapAttrsToList (name: value: "${name}=${value}") auth-options;
+  in "${type} ${database} ${user} ${auth-method} ${lib.strings.concatStringsSep " " options}";
 in {
   imports = [
     ./attic.nix
@@ -85,6 +96,40 @@ in {
       default = [];
       type = with lib.types; listOf path;
     };
+
+    extraPsqlIdentMap = mkOption {
+      default = [];
+      type = with lib.types; listOf str;
+    };
+
+    extraPsqlAuthentication = mkOption {
+      default = [];
+      type = with lib.types;
+        listOf (submodule {
+          options = {
+            type = mkOption {
+              default = null;
+              type = str;
+            };
+            database = mkOption {
+              default = null;
+              type = str;
+            };
+            user = mkOption {
+              default = null;
+              type = str;
+            };
+            auth-method = mkOption {
+              default = null;
+              type = str;
+            };
+            auth-options = mkOption {
+              default = {};
+              type = attrsOf str;
+            };
+          };
+        });
+    };
   };
 
   config = {
@@ -134,6 +179,20 @@ in {
       };
 
       openssh.settings.AllowUsers = [cfg.user];
+
+      postgresql = {
+        identMap = lib.mkOverride 60 ''
+          superuser_map root postgres
+          superuser_map /^(.*)$ \1
+          ${concatLines cfg.extraPsqlIdentMap}
+        '';
+        authentication = lib.mkOverride 60 ''
+          #type database user auth-method [auth-options]
+          ${concatLines (builtins.map toPsqlAuth cfg.extraPsqlAuthentication)}
+          local sameuser all peer map=superuser_map
+        '';
+        settings.unix_socket_directories = "/var/run/postgresql";
+      };
     };
 
     systemd.tmpfiles.settings."10-nginx-conf" = let
