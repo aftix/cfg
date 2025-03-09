@@ -30,18 +30,6 @@ in {
       };
     };
 
-    stablepkgs = {
-      enable = mkOption {default = true;};
-      path = mkOption {
-        default = "nixpkgs-23.11";
-        description = "path relative to my.channels.basePath where this channel will be available";
-      };
-      relativePath = mkOption {
-        default = true;
-        description = "treat channel path as relative to my.channels.basePath";
-      };
-    };
-
     home-manager = {
       enable = mkOption {default = true;};
       path = mkOption {
@@ -73,12 +61,10 @@ in {
     lib.mkIf cfg.enable {
       nix.nixPath =
         (toNixPath "nixpkgs" cfg.nixpkgs)
-        ++ (toNixPath "stablepkgs" cfg.stablepkgs)
         ++ (toNixPath "home-manager" cfg.home-manager);
 
       systemd.tmpfiles.settings."10-nix-channels" = mergeAttrsList [
         (toTmpfilesSetting inputs.nixpkgs cfg.nixpkgs)
-        (toTmpfilesSetting inputs.stablepkgs cfg.stablepkgs)
         (toTmpfilesSetting inputs.home-manager cfg.home-manager)
       ];
     };
