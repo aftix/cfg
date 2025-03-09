@@ -15,7 +15,6 @@
     };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    stablepkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
@@ -86,7 +85,6 @@
   outputs = {
     self,
     nixpkgs,
-    stablepkgs,
     nur,
     home-manager,
     deploy-rs,
@@ -158,8 +156,6 @@
       };
     };
 
-    spkgs = stablepkgs.legacyPackages.${system};
-
     depInject = {lib, ...}: {
       options.dep-inject = lib.mkOption {
         type = with lib.types; attrsOf unspecified;
@@ -167,7 +163,7 @@
       };
 
       config.dep-inject = {
-        inherit spkgs inputs commonHmModules;
+        inherit inputs commonHmModules;
       };
     };
 
@@ -178,7 +174,7 @@
       };
 
       config.dep-inject = {
-        inherit spkgs inputs;
+        inherit inputs;
       };
     };
 
