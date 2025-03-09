@@ -64,7 +64,7 @@
   # Manually override a specific value from stylix's helix theme
   xdg.configFile."helix/themes/stylix.toml".source = let
     theme = config.lib.stylix.colors {
-      templateRepo = config.lib.stylix.templates.base16-helix;
+      templateRepo = config.stylix.inputs.base16-helix;
     };
 
     transparentTheme = pkgs.runCommandLocal "helix-transparent.toml" {} ''

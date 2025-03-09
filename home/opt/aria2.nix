@@ -20,13 +20,9 @@
           aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
         '';
       };
-
-      aria2p = final.python3Packages.aria2p.overridePythonAttrs (oldAttrs: {
-        propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [final.python3Packages.platformdirs];
-      });
     })
   ];
-  home.packages = with pkgs; [aria2 aria2d aria2p];
+  home.packages = with pkgs; [aria2 aria2d python3Packages.aria2p];
 
   my.shell = {
     aliases = [
