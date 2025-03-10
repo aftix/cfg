@@ -282,7 +282,7 @@ in {
           };
         };
         signing = {
-          sign-all = true;
+          behavior = "own";
           key = "C6F4434A6A4C3A74DC9569C247DB00554BA8E05F";
           backends.gpg.allow-expired-keys = false;
         };
