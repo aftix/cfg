@@ -56,6 +56,8 @@
       xresources.enable = false;
       sxiv.enable = false;
 
+      firefox.profileNames = ["aftix"];
+
       kde.enable = lib.strings.hasSuffix "-linux" pkgs.system;
       gnome.enable = lib.strings.hasSuffix "-linux" pkgs.system;
     };
