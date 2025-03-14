@@ -143,7 +143,7 @@ in {
       ''
       + optionalString config.services.swaync.enable ''
         #custom-notification {
-          font-family: "NotoSansMono Nerd Font";
+          font-family: "Iosevka Nerd Font";
         }
       '';
   };
