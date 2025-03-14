@@ -461,6 +461,7 @@
             attic-client
             attic-server
             matrix-synapse-unwrapped
+            pwvucontrol
             ;
 
           lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
