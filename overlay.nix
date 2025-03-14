@@ -18,9 +18,6 @@ inputs: final: prev:
     };
   });
 
-  nixt = prev.nixt.override {nix = final.nixVersions.nix_2_24;};
-  nixd = prev.nixd.override {nix = final.nixVersions.nix_2_24;};
-
   freshrssExts = final.lib.attrsets.recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
 }
 // prev.lib.filesystem.packagesFromDirectoryRecursive {

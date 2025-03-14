@@ -456,14 +456,11 @@
           inherit
             (appliedOverlay)
             carapace
-            cinny-desktop
             heisenbridge
             attic
             attic-client
             attic-server
             matrix-synapse-unwrapped
-            nixt
-            nixd
             ;
 
           lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
