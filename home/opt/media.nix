@@ -120,6 +120,7 @@
         ytdl-raw-options = "sponsorblock-remove=default";
         save-position-on-quit = true;
         sub-font = lib.mkForce "Noto Serif CJK JP";
+        sub-font-size = lib.mkForce 44;
         sub-auto = "fuzzy";
         include = config.sops.secrets.mpv.path;
       };
