@@ -119,7 +119,7 @@
         ytdl-format = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best";
         ytdl-raw-options = "sponsorblock-remove=default";
         save-position-on-quit = true;
-        sub-font = lib.mkForce "Source Han Serif JP";
+        sub-font = lib.mkForce "Noto Serif CJK JP";
         sub-auto = "fuzzy";
         include = config.sops.secrets.mpv.path;
       };
