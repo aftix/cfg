@@ -11,6 +11,7 @@
       inputs = {
         lix.follows = "lix";
         nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
       };
     };
 
@@ -30,6 +31,7 @@
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.utils.follows = "flake-utils";
     };
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -47,6 +49,7 @@
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
 
     sops-nix = {
@@ -98,31 +101,16 @@
   in
     {
       overlays.default = overlay;
-
-      nixosConfigurations = myLib.nixosConfigurationsFromDirectoryRecursive {
-        directory = ./nixosConfigurations;
-        dep-injects = myLib.dependencyInjects {
-          extraInject = {commonHmModules = self.homemanagerModules.commonModules;};
-        };
-        inherit extraSpecialArgs;
+      nixosConfigurations = import ./nixosConfigurations.nix {
+        inherit inputs myLib extraSpecialArgs;
       };
-
-      deploy.nodes.fermi = {
-        hostname = "170.130.165.174";
-        profiles.system = {
-          user = "root";
-          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.fermi;
-        };
-      };
-
+      deploy = import ./deploy.nix {inherit inputs;};
       nixosModules = import ./nixosModules.nix {
         inherit inputs overlay myLib pkgsCfg;
       };
-
       homemanagerModules = import ./homemanagerModules.nix {
         inherit inputs overlay myLib pkgsCfg;
       };
-
       extra = {
         # NOTE: you'll need to use these for some optional modules
         inherit extraSpecialArgs myLib;
