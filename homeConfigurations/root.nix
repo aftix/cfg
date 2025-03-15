@@ -1,11 +1,9 @@
 {lib, ...}: {
   imports = [
-    ./common
+    ../home/opt/sops.nix
 
-    ./opt/sops.nix
-
-    ./opt/helix.nix
-    ./opt/neoutils.nix
+    ../home/opt/helix.nix
+    ../home/opt/neoutils.nix
   ];
 
   home = {

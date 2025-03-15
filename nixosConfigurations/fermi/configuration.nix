@@ -6,17 +6,17 @@
   inherit (lib) mkForce;
 in {
   imports = [
-    ../hardware/fermi.nix
+    ../../hardware/fermi.nix
 
-    ./opt/aftix.nix
-    ./opt/basicbackup.nix
-    ./opt/docker.nix
-    ./opt/openssh.nix
-    ./opt/www
+    ../../host/opt/aftix.nix
+    ../../host/opt/basicbackup.nix
+    ../../host/opt/docker.nix
+    ../../host/opt/openssh.nix
+    ../../host/opt/www
   ];
 
   sops = {
-    defaultSopsFile = ./srv_secrets.yaml;
+    defaultSopsFile = ../../secrets/host/srv_secrets.yaml;
     age.keyFile = "/state/age/keys.txt";
 
     secrets = {
