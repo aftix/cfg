@@ -5,3 +5,4 @@ wallpaper.png
 .nixkeep-*
 .deploy-rs
 .DS_Store
+result-*
