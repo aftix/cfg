@@ -3,10 +3,6 @@
   lib,
   ...
 }: {
-  imports = [
-    ./common
-  ];
-
   users.users.root.hashedPasswordFile = null;
 
   boot = {
@@ -21,7 +17,7 @@
 
     etc."nixos-custom" = {
       mode = "0755";
-      source = ./.;
+      source = ../..;
     };
   };
 

@@ -10,29 +10,28 @@
   inherit (config.xdg) configHome dataHome;
 in {
   imports = [
-    ./common
     ../hardware/hamilton-home.nix
 
-    ./opt/sops.nix
+    ../home/opt/sops.nix
 
-    ./opt/aria2.nix
-    ./opt/development.nix
-    ./opt/helix.nix
-    ./opt/neoutils.nix
+    ../home/opt/aria2.nix
+    ../home/opt/development.nix
+    ../home/opt/helix.nix
+    ../home/opt/neoutils.nix
 
-    ./opt/firefox.nix
+    ../home/opt/firefox.nix
 
-    ./opt/email.nix
+    ../home/opt/email.nix
 
-    ./opt/hypr.nix
-    ./opt/kitty.nix
-    ./opt/media.nix
-    ./opt/stylix.nix
-    ./opt/swaync.nix
-    ./opt/transmission.nix
-    ./opt/zathura.nix
+    ../home/opt/hypr.nix
+    ../home/opt/kitty.nix
+    ../home/opt/media.nix
+    ../home/opt/stylix.nix
+    ../home/opt/swaync.nix
+    ../home/opt/transmission.nix
+    ../home/opt/zathura.nix
 
-    ./opt/discord.nix
+    ../home/opt/discord.nix
   ];
 
   nixpkgs.overlays = [

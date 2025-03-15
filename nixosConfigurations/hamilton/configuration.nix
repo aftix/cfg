@@ -7,23 +7,23 @@
   inherit (lib.strings) optionalString;
 in {
   imports = [
-    ../hardware/hamilton.nix
-    ../hardware/disko/hamilton.nix
+    ../../hardware/hamilton.nix
+    ../../hardware/disko/hamilton.nix
 
-    ./opt/aftix.nix
-    ./opt/backup.nix
-    ./opt/bluetooth.nix
-    ./opt/cups.nix
-    ./opt/display.nix
-    ./opt/docker.nix
-    ./opt/network.nix
-    ./opt/silentboot.nix
-    ./opt/sound.nix
-    ./opt/syncthing.nix
+    ../../host/opt/aftix.nix
+    ../../host/opt/backup.nix
+    ../../host/opt/bluetooth.nix
+    ../../host/opt/cups.nix
+    ../../host/opt/display.nix
+    ../../host/opt/docker.nix
+    ../../host/opt/network.nix
+    ../../host/opt/silentboot.nix
+    ../../host/opt/sound.nix
+    ../../host/opt/syncthing.nix
   ];
 
   sops = {
-    defaultSopsFile = ./secrets.yaml;
+    defaultSopsFile = ../../secrets/host/secrets.yaml;
     age.keyFile = "/home/aftix/.local/persist/home/aftix/.config/sops/age/keys.txt";
 
     secrets.gh_access_token = {};
