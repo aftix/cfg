@@ -2,6 +2,8 @@ inputs: final: prev:
 {
   myLib = import ./lib.nix inputs final.lib;
 
+  lix = prev.lix.override {aws-sdk-cpp = null;};
+
   inherit (inputs.attic.overlays.default final prev) attic attic-client attic-server;
   inherit (inputs) nginxBlacklist;
 

@@ -86,108 +86,15 @@
     self,
     nixpkgs,
     nur,
-    home-manager,
     deploy-rs,
     flake-utils,
     ...
   } @ inputs: let
-    myLib = import ./lib.nix inputs nixpkgs.lib;
-
-    substituters = [
-      "https://nix-community.cachix.org"
-      "https://cache.nixos.org"
-      "https://attic.aftix.xyz/cfg-actions"
-    ];
-    trusted-public-keys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "cfg-actions:R9aJEQdcJT8NrUh1yox2FgZfmzRrKi6MAobbfuRvv3g="
-    ];
-    extra-experimental-features = [
-      "nix-command"
-      "flakes"
-      "pipe-operator"
-    ];
-
+    myLib = import ./lib.nix inputs;
+    nixSettings = import ./nix-settings.nix;
     overlay = import ./overlay.nix inputs;
-
-    pkgsCfg = {
-      nixpkgs = {
-        overlays = [
-          nur.overlays.default
-          inputs.attic.overlays.default
-          overlay
-        ];
-        config = {
-          allowUnfreePredicate = pkg:
-            builtins.elem (nixpkgs.lib.getName pkg) [
-              "discord"
-              "pay-by-privacy"
-              "aspell-dict-en-science"
-            ];
-
-          permittedInsecurePackages = [
-            "jitsi-meet-1.0.8043"
-          ];
-        };
-      };
-    };
-
-    importNixosHomeOptions = {
-      pkgs,
-      lib,
-      ...
-    }: {options = import ./nixos-home-options.nix pkgs lib;};
-
-    commonModules = [
-      pkgsCfg
-      ({
-        lib,
-        pkgs,
-        ...
-      }: {
-        nix = {
-          package = lib.mkForce pkgs.nix;
-          settings = {inherit substituters trusted-public-keys;};
-        };
-
-        programs = {
-          nix-index-database.comma.enable = true;
-          command-not-found.enable = false;
-        };
-
-        nixpkgs.overlays = [
-          inputs.lix-module.overlays.default
-          (_: prev: {
-            lix = prev.lix.override {aws-sdk-cpp = null;};
-          })
-        ];
-      })
-      home-manager.nixosModules.home-manager
-      inputs.sops-nix.nixosModules.sops
-      inputs.nix-index-database.nixosModules.nix-index
-      inputs.srvos.nixosModules.mixins-trusted-nix-caches
-      inputs.nixos-cli.nixosModules.nixos-cli
-      inputs.preservation.nixosModules.default
-      importNixosHomeOptions
-    ];
-
-    extraSpecialArgs = {
-      inherit (inputs.sops-nix.homeManagerModules) sops;
-      inherit (inputs.stylix.homeManagerModules) stylix;
-    };
-
-    commonHmModules = [
-      pkgsCfg
-      inputs.nix-index-database.hmModules.nix-index
-      importNixosHomeOptions
-      {
-        programs = {
-          nix-index-database.comma.enable = true;
-          command-not-found.enable = false;
-        };
-      }
-    ];
+    pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs overlay;};
+    extraSpecialArgs = import ./extraSpecialArgs.nix {inherit inputs;};
   in
     {
       overlays.default = overlay;
@@ -195,7 +102,7 @@
       nixosConfigurations = myLib.nixosConfigurationsFromDirectoryRecursive {
         directory = ./nixosConfigurations;
         dep-injects = myLib.dependencyInjects {
-          extraInject = {inherit commonHmModules;};
+          extraInject = {commonHmModules = self.homemanagerModules.commonModules;};
         };
         inherit extraSpecialArgs;
       };
@@ -208,34 +115,23 @@
         };
       };
 
-      nixosModules =
-        {
-          default = {
-            imports = commonModules ++ [./host/common];
-          };
-          nix-settings = {
-            nix.settings = {inherit substituters trusted-public-keys extra-experimental-features;};
-          };
-        }
-        // (myLib.modulesFromDirectoryRecursive ./host/opt);
+      nixosModules = import ./nixosModules.nix {
+        inherit inputs overlay myLib pkgsCfg;
+      };
 
-      homemanagerModules =
-        {
-          default = {
-            imports = commonHmModules ++ [./home/common];
-          };
-        }
-        // (myLib.modulesFromDirectoryRecursive ./home/opt);
+      homemanagerModules = import ./homemanagerModules.nix {
+        inherit inputs overlay myLib pkgsCfg;
+      };
 
       extra = {
         # NOTE: you'll need to use these for some optional modules
-        inherit extraSpecialArgs;
+        inherit extraSpecialArgs myLib;
 
         inherit
+          (nixSettings)
           substituters
           trusted-public-keys
           extra-experimental-features
-          myLib
           ;
       };
     }
@@ -254,29 +150,9 @@
 
       checks = nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy);
 
-      legacyPackages.freshrssExts =
-        pkgs.lib.attrsets.recurseIntoAttrs (pkgs.callPackage ./legacyPackages/freshrss {});
-
-      packages = let
-        appliedOverlay = pkgs.extend self.overlays.default;
-      in
-        pkgs.lib.filesystem.packagesFromDirectoryRecursive {
-          inherit (pkgs) callPackage;
-          directory = ./packages;
-        }
-        // {
-          inherit
-            (appliedOverlay)
-            carapace
-            heisenbridge
-            attic
-            attic-client
-            attic-server
-            matrix-synapse-unwrapped
-            pwvucontrol
-            ;
-
-          lix = inputs.lix-module.packages.${sys}.default.override {aws-sdk-cpp = null;};
-        };
+      legacyPackages = import ./packages.nix {
+        inherit inputs overlay pkgsCfg;
+        system = sys;
+      };
     });
 }
