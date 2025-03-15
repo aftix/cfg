@@ -1,4 +1,4 @@
-{inputs}: {
+{inputs, ...}: {
   entrypoint = ./configuration.nix;
   users = {
     nixos = import ../../homeConfigurations/nixos-graphical.nix;
