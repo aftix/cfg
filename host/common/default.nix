@@ -183,7 +183,7 @@ in {
               nixosOpts
               ({pkgs, ...}: { nix.package = pkgs.nix;})
               (hmInjectNixosHomeOptions nixosCfg)
-              (import "${config.my.flake}/home/aftix.nix")
+              (import "${config.my.flake}/homeConfigurations/aftix.nix")
             ];
           in
             (mkHmCfg {

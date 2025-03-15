@@ -6,10 +6,8 @@
   inherit (lib) mkForce;
 in {
   imports = [
-    ./common
-
-    ./opt/display.nix
-    ./opt/sound.nix
+    ../../host/opt/display.nix
+    ../../host/opt/sound.nix
   ];
 
   users.users.root.hashedPasswordFile = null;
@@ -26,7 +24,7 @@ in {
 
     etc."nixos-custom" = {
       mode = "0755";
-      source = ./.;
+      source = ../..;
     };
   };
 

@@ -91,7 +91,7 @@
     flake-utils,
     ...
   } @ inputs: let
-    system = "x86_64-linux";
+    myLib = import ./lib.nix inputs nixpkgs.lib;
 
     substituters = [
       "https://nix-community.cachix.org"
@@ -110,29 +110,6 @@
     ];
 
     overlay = import ./overlay.nix inputs;
-    getModules = atPath: let
-      getFilename = path: nixpkgs.lib.lists.last (nixpkgs.lib.strings.split "/" (builtins.toString path));
-      mapAppendPath = path: f: p: v: f (nixpkgs.lib.path.append path p) v;
-      recursiveGetModules = path: val:
-        if val == "regular" && nixpkgs.lib.strings.hasSuffix ".nix" path
-        then
-          (
-            let
-              fName = getFilename path;
-              name = nixpkgs.lib.strings.removeSuffix ".nix" fName;
-            in {${name} = import path;}
-          )
-        else if val != "directory" || nixpkgs.lib.strings.hasPrefix "_" (getFilename path)
-        then {}
-        else
-          (let
-            subdir = builtins.readDir path;
-          in
-            if subdir ? "default.nix"
-            then {${getFilename path} = import path;}
-            else nixpkgs.lib.attrsets.concatMapAttrs (mapAppendPath path recursiveGetModules) subdir);
-    in
-      nixpkgs.lib.attrsets.concatMapAttrs (mapAppendPath atPath recursiveGetModules) (builtins.readDir atPath);
 
     pkgsCfg = {
       nixpkgs = {
@@ -156,99 +133,29 @@
       };
     };
 
-    depInject = {lib, ...}: {
-      options.dep-inject = lib.mkOption {
-        type = with lib.types; attrsOf unspecified;
-        default = {};
-      };
-
-      config.dep-inject = {
-        inherit inputs commonHmModules;
-      };
-    };
-
-    depInjectHm = {lib, ...}: {
-      options.dep-inject = lib.mkOption {
-        type = with lib.types; attrsOf unspecified;
-        default = {};
-      };
-
-      config.dep-inject = {
-        inherit inputs;
-      };
-    };
-
-    # Options that are for home-manager, but should be set on a per-host basis
-    nixosHomeOptions = pkgs: lib: {
-      my = {
-        development.nixdConfig = lib.mkOption {
-          default = {};
-          description = "Configuration for the nixd LSP";
-          type = with lib.types; attrsOf anything;
-        };
-
-        swayosd = {
-          enable = lib.mkEnableOption "swayosd";
-          package = lib.mkPackageOption pkgs "swayosd" {
-            default = ["swayosd"];
-          };
-        };
-      };
-    };
-
-    # Nixos module for nixosHomeOptions
-    # Allows nixos configurations to set options to propagate into each home-manager configuration
-    nixosHomeModule = {
-      lib,
+    importNixosHomeOptions = {
       pkgs,
-      ...
-    }: {options = nixosHomeOptions pkgs lib;};
-
-    # Inject config from nixosHomeOptions into home-manager
-    # Leaves a my.nixosCfg option set to the total system configuration, and
-    # recursively picks out the options defined in nixosHomeOptions and injects them into the home-manager
-    # configuration so those options in particular won't need a "my.nixosCfg" before the config path.
-    # Downstream users should get this from the `extra` flake output and use it to generate a hm module
-    # with their sysCfg injected. The nixos side is already in the default flake nixosModule, so nothing
-    # extra is needed beyond that.
-    hmInjectNixosHomeOptions = sysCfg: {
       lib,
-      pkgs,
       ...
-    }: let
-      homeOpts = nixosHomeOptions pkgs lib;
-    in {
-      imports = [{options = homeOpts;}];
-
-      options.my.nixosCfg = lib.mkOption {
-        description = "The NixOS configuration";
-        readOnly = true;
-        type = lib.types.raw;
-      };
-
-      config = let
-        inherit (lib.attrsets) mapAttrsRecursiveCond hasAttrByPath getAttrFromPath;
-      in
-        lib.mkMerge [
-          (
-            mapAttrsRecursiveCond
-            # Do not recurse into attrsets that are option definitions
-            (attrs: !(attrs ? "_type" && attrs._type == "option"))
-            (optPath: _:
-              if hasAttrByPath optPath sysCfg
-              then getAttrFromPath optPath sysCfg
-              else null)
-            homeOpts
-          )
-          {
-            my.nixosCfg = sysCfg;
-          }
-        ];
-    };
+    }: {options = import ./nixos-home-options.nix pkgs lib;};
 
     commonModules = [
       pkgsCfg
-      (_: {
+      ({
+        lib,
+        pkgs,
+        ...
+      }: {
+        nix = {
+          package = lib.mkForce pkgs.nix;
+          settings = {inherit substituters trusted-public-keys;};
+        };
+
+        programs = {
+          nix-index-database.comma.enable = true;
+          command-not-found.enable = false;
+        };
+
         nixpkgs.overlays = [
           inputs.lix-module.overlays.default
           (_: prev: {
@@ -262,24 +169,7 @@
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
       inputs.nixos-cli.nixosModules.nixos-cli
       inputs.preservation.nixosModules.default
-      nixosHomeModule
-      depInject
-      {
-        programs = {
-          nix-index-database.comma.enable = true;
-          command-not-found.enable = false;
-        };
-      }
-      ({
-        pkgs,
-        lib,
-        ...
-      }: {
-        nix = {
-          package = lib.mkForce pkgs.nix;
-          settings = {inherit substituters trusted-public-keys;};
-        };
-      })
+      importNixosHomeOptions
     ];
 
     extraSpecialArgs = {
@@ -290,101 +180,24 @@
     commonHmModules = [
       pkgsCfg
       inputs.nix-index-database.hmModules.nix-index
+      importNixosHomeOptions
       {
-        imports = [depInjectHm];
         programs = {
           nix-index-database.comma.enable = true;
           command-not-found.enable = false;
         };
       }
     ];
-
-    genNixosSystem = {
-      modules,
-      users,
-      extraAttrs ? {},
-    }:
-      nixpkgs.lib.nixosSystem ({
-          modules =
-            [
-              self.nixosModules.default
-              self.nixosModules.nix-settings
-            ]
-            ++ modules
-            ++ [
-              ({config, ...}: let
-                nixosHomeOptions = hmInjectNixosHomeOptions config;
-              in {
-                home-manager = {
-                  useUserPackages = true;
-                  inherit extraSpecialArgs users;
-
-                  sharedModules = [
-                    nixosHomeOptions
-                    self.homemanagerModules.default
-                  ];
-                };
-              })
-            ];
-        }
-        // extraAttrs);
   in
     {
       overlays.default = overlay;
 
-      nixosConfigurations = {
-        hamilton = genNixosSystem {
-          modules = [
-            inputs.disko.nixosModules.disko
-            inputs.lanzaboote.nixosModules.lanzaboote
-            ./host/hamilton.nix
-          ];
-          users = {
-            aftix = import ./home/aftix.nix;
-            root = import ./home/root.nix;
-          };
+      nixosConfigurations = myLib.nixosConfigurationsFromDirectoryRecursive {
+        directory = ./nixosConfigurations;
+        dep-injects = myLib.dependencyInjects {
+          extraInject = {inherit commonHmModules;};
         };
-
-        fermi = genNixosSystem {
-          modules = [
-            inputs.srvos.nixosModules.server
-            inputs.srvos.nixosModules.mixins-nginx
-
-            ./host/fermi.nix
-          ];
-          users = {
-            aftix = import ./home/aftix-minimal.nix;
-            root = import ./home/root.nix;
-          };
-        };
-
-        "iso-minimal" = genNixosSystem {
-          modules = [
-            {nixpkgs.hostPlatform = system;}
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-            inputs.disko.nixosModules.disko
-            ./host/iso-minimal.nix
-          ];
-          users = {
-            root = ./home/root.nix;
-            nixos = ./home/nixos.nix;
-          };
-        };
-
-        "iso-graphical" = genNixosSystem {
-          modules = [
-            {nixpkgs.hostPlatform = system;}
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-            inputs.disko.nixosModules.disko
-            ./host/iso-graphical.nix
-          ];
-          users = {
-            root = ./home/root.nix;
-            nixos = ./home/nixos-graphical.nix;
-          };
-        };
+        inherit extraSpecialArgs;
       };
 
       deploy.nodes.fermi = {
@@ -404,7 +217,7 @@
             nix.settings = {inherit substituters trusted-public-keys extra-experimental-features;};
           };
         }
-        // getModules ./host/opt;
+        // (myLib.modulesFromDirectoryRecursive ./host/opt);
 
       homemanagerModules =
         {
@@ -412,7 +225,7 @@
             imports = commonHmModules ++ [./home/common];
           };
         }
-        // getModules ./home/opt;
+        // (myLib.modulesFromDirectoryRecursive ./home/opt);
 
       extra = {
         # NOTE: you'll need to use these for some optional modules
@@ -422,8 +235,7 @@
           substituters
           trusted-public-keys
           extra-experimental-features
-          nixosHomeOptions
-          hmInjectNixosHomeOptions
+          myLib
           ;
       };
     }

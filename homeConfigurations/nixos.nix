@@ -1,12 +1,10 @@
 {lib, ...}: {
   imports = [
-    ./common
+    ../home/opt/sops.nix
 
-    ./opt/sops.nix
-
-    ./opt/development.nix
-    ./opt/helix.nix
-    ./opt/neoutils.nix
+    ../home/opt/development.nix
+    ../home/opt/helix.nix
+    ../home/opt/neoutils.nix
   ];
 
   xdg.userDirs.createDirectories = lib.mkForce false;

@@ -1,5 +1,7 @@
 inputs: final: prev:
 {
+  myLib = import ./lib.nix inputs final.lib;
+
   inherit (inputs.attic.overlays.default final prev) attic attic-client attic-server;
   inherit (inputs) nginxBlacklist;
 

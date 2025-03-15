@@ -1,20 +1,18 @@
 {lib, ...}: {
   imports = [
-    ./common
+    ../home/opt/sops.nix
 
-    ./opt/sops.nix
+    ../home/opt/development.nix
+    ../home/opt/helix.nix
+    ../home/opt/neoutils.nix
 
-    ./opt/development.nix
-    ./opt/helix.nix
-    ./opt/neoutils.nix
+    ../home/opt/firefox.nix
 
-    ./opt/firefox.nix
-
-    ./opt/dunst.nix
-    ./opt/hypr.nix
-    ./opt/kitty.nix
-    ./opt/media.nix
-    ./opt/stylix.nix
+    ../home/opt/dunst.nix
+    ../home/opt/hypr.nix
+    ../home/opt/kitty.nix
+    ../home/opt/media.nix
+    ../home/opt/stylix.nix
   ];
 
   xdg.userDirs.createDirectories = lib.mkForce false;
