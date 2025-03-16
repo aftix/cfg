@@ -59,7 +59,7 @@ in {
         clientSettings.uri = "https://${cfg.domain}";
         enableClient = true;
         enableServer = true;
-        package = pkgs.kanidm_1_4.override {enableSecretProvisioning = true;};
+        package = pkgs.kanidm_1_5.override {enableSecretProvisioning = true;};
         provision = {
           enable = true;
           adminPasswordFile = config.sops.secrets.kanidm_admin_password.path;
