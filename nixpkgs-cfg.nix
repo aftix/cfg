@@ -1,5 +1,6 @@
 {
   inputs ? (import ./flake-compat/inputs.nix),
+  myLib ? (import ./lib.nix inputs),
   overlay ? (import ./overlay.nix inputs),
 }: {
   nixpkgs = {
@@ -7,6 +8,7 @@
       inputs.nur.overlays.default
       inputs.attic.overlays.default
       inputs.lix-module.overlays.default
+      myLib.libpkgsOverlay
       overlay
     ];
     config = {
