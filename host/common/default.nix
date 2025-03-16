@@ -14,6 +14,7 @@ in {
     ./hostBlacklist
     ./root.nix
     ./sleep.nix
+    ./statics.nix
     ./swayosd.nix
     ./youtube_operational_api.nix
   ];

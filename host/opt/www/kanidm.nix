@@ -11,15 +11,13 @@
 
   acmeHost =
     if cfg.acmeDomain == null
-    then cfg.domain
+    then identityService
     else cfg.acmeDomain;
+
+  inherit (config.aftix.statics) identityService;
 in {
   options.my.www.kanidm = {
     enable = mkEnableOption "kanidm";
-
-    domain = mkOption {
-      type = lib.types.str;
-    };
 
     port = mkOption {
       default = 8998;
@@ -29,23 +27,23 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.www.kanidm.domain}";
+      description = "null to use \${aftix.statics.identityService}";
     };
   };
 
   config = lib.mkIf cfg.enable {
     security.acme.certs =
-      if (acmeHost != cfg.domain)
+      if (acmeHost != identityService)
       then {
         ${acmeHost}.extraDomainNames = [
-          "${cfg.domain}"
-          "www.${cfg.domain}"
+          "${identityService}"
+          "www.${identityService}"
         ];
       }
       else {
         ${acmeHost} = {
           inherit (wwwCfg) group;
-          extraDomainNames = ["www.${cfg.domain}"];
+          extraDomainNames = ["www.${identityService}"];
         };
       };
 
@@ -56,7 +54,7 @@ in {
 
     services = {
       kanidm = {
-        clientSettings.uri = "https://${cfg.domain}";
+        clientSettings.uri = "https://${identityService}";
         enableClient = true;
         enableServer = true;
         package = pkgs.kanidm_1_5.override {enableSecretProvisioning = true;};
@@ -121,11 +119,11 @@ in {
           };
         };
         serverSettings = {
-          inherit (cfg) domain;
+          domain = identityService;
           bindaddress = "[::]:${builtins.toString cfg.port}";
           ldapbindaddress = "0.0.0.0:636";
           online_backup.versions = 7;
-          origin = "https://${cfg.domain}";
+          origin = "https://${identityService}";
           tls_key = "/var/lib/acme/${acmeHost}/key.pem";
           tls_chain = "/var/lib/acme/${acmeHost}/fullchain.pem";
           trust_x_forward_for = true;
@@ -134,8 +132,8 @@ in {
 
       nginx = {
         enable = true;
-        virtualHosts.${cfg.domain} = {
-          serverName = "${cfg.domain} www.${cfg.domain}";
+        virtualHosts.${identityService} = {
+          serverName = "${identityService} www.${identityService}";
           kTLS = true;
           forceSSL = true;
           useACMEHost = acmeHost;
