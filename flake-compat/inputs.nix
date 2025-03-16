@@ -3,15 +3,12 @@
 let
   rawInputs = import ./raw-inputs.nix;
   inherit (rawInputs) lib;
+
+  thisFlake = import ../flake.nix;
 in
   lib.fix (
     inputs: let
       myLib = import ../lib.nix inputs;
-      extraSpecialArgs = import ../extraSpecialArgs.nix {inherit inputs;};
-      pkgsCfg = import ../nixpkgs-cfg.nix {
-        inherit inputs myLib;
-        overlay = inputs.self.overlays.default;
-      };
 
       # Get "lib" flake output from flake-utils
       flake-utils = {
@@ -62,31 +59,9 @@ in
         }
       );
     in {
-      # inputs.self is expected to contain the modules, configurations,
-      # deploy configurations, packages, and overlays
-      self = {
-        nixosModules = import ../nixosModules.nix {
-          inherit inputs myLib pkgsCfg;
-          overlay = inputs.self.overlays.default;
-        };
-        homemanagerModules = import ../homemanagerModules.nix {
-          inherit inputs myLib pkgsCfg;
-          inherit (inputs.self) overlay;
-        };
-
-        overlays.default = import ../overlay.nix inputs;
-
-        legacyPackages = myLib.forEachSystem (system:
-          import ../packages.nix {
-            inherit inputs myLib pkgsCfg system;
-            overlay = inputs.self.overlays.default;
-          });
-
-        nixosConfigurations = import ../nixosConfigurations.nix {
-          inherit inputs myLib extraSpecialArgs;
-        };
-        deploy = import ../deploy.nix {inherit (inputs) deploy-rs;};
-      };
+      # This will do the same fixed point magic as a normal self input for a flake instantiation
+      # This way, we only have to figure out how to import all the inputs, not set up the flake schema again
+      self = thisFlake.outputs inputs;
 
       inherit (rawInputs) carapace hostsBlacklist nginxBlacklist hyprland;
       inherit flake-utils deploy-rs nix-index-database;
@@ -100,6 +75,7 @@ in
       srvos = import rawInputs.srvos;
       stylix = import rawInputs.stylix;
       nixos-cli = import rawInputs.nixos-cli;
+
       nixpkgs = let
         # The nixpkgs flake adds this to lib
         nixpkgsNode = rawInputs.lockFile.nodes.root.inputs.nixpkgs;
