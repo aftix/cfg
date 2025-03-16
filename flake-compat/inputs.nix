@@ -8,6 +8,10 @@ in
     inputs: let
       myLib = import ../lib.nix inputs;
       extraSpecialArgs = import ../extraSpecialArgs.nix {inherit inputs;};
+      pkgsCfg = import ../nixpkgs-cfg.nix {
+        inherit inputs;
+        overlay = inputs.self.overlays.default;
+      };
 
       # Get "lib" flake output from flake-utils
       flake-utils = {
@@ -59,17 +63,25 @@ in
       );
     in {
       # inputs.self is expected to contain the modules, configurations,
-      # deploy configurations, and overlays
+      # deploy configurations, packages, and overlays
       self = {
         nixosModules = import ../nixosModules.nix {
-          inherit inputs;
-          inherit (inputs.self) overlay;
+          inherit inputs myLib pkgsCfg;
+          overlay = inputs.self.overlays.default;
         };
         homemanagerModules = import ../homemanagerModules.nix {
-          inherit inputs;
+          inherit inputs myLib pkgsCfg;
           inherit (inputs.self) overlay;
         };
-        overlay = import ../overlay.nix inputs;
+
+        overlays.default = import ../overlay.nix inputs;
+
+        legacyPackages = myLib.forEachSystem (system:
+          import ../packages.nix {
+            inherit inputs pkgsCfg system;
+            overlay = inputs.self.overlays.default;
+          });
+
         nixosConfigurations = import ../nixosConfigurations.nix {
           inherit inputs myLib extraSpecialArgs;
         };
