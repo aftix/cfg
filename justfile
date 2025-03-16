@@ -18,13 +18,24 @@ buildpkg pkg cache="cfg-actions":
 
 buildpkgs cache="cfg-actions":
     #!/usr/bin/env bash
-    NPKGS="$(nix eval '.#packages' --apply 'x: builtins.toString (builtins.attrNames x.${builtins.currentSystem})' --impure --raw)"
+    NPKGS="$(nix eval '.#legacyPackages' --apply 'x:
+        let pkgs = x.${builtins.currentSystem};
+        isDrv = v: v.type or null == "derivation";
+        in builtins.toString (builtins.attrNames
+            (builtins.removeAttrs pkgs
+                (builtins.filter (name: ! isDrv pkgs.${name})
+                    (builtins.attrNames pkgs)
+                )
+            )
+        )' --impure --raw)"
     for pkg in $NPKGS; do
         nom build ".#$pkg" || :
     done
-    OUTPATHS="$(nix eval .#packages --apply 'x:
+    OUTPATHS="$(nix eval .#legacyPackages --apply 'x:
         let y = x.${builtins.currentSystem};
-        names = builtins.attrNames y;
+        rawNames = builtins.attrNames y;
+        isDrv = v: v.type or null == "derivation";
+        names = builtins.filter (name: isDrv y.${name}) rawNames;
         all = builtins.map (name: y.${name}.all) names;
         drvs = builtins.foldl'"'"' (acc: lst: acc ++ lst) [] all;
         paths = builtins.map (drv: drv.outPath) drvs;
