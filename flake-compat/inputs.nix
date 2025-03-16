@@ -9,7 +9,7 @@ in
       myLib = import ../lib.nix inputs;
       extraSpecialArgs = import ../extraSpecialArgs.nix {inherit inputs;};
       pkgsCfg = import ../nixpkgs-cfg.nix {
-        inherit inputs;
+        inherit inputs myLib;
         overlay = inputs.self.overlays.default;
       };
 
@@ -78,7 +78,7 @@ in
 
         legacyPackages = myLib.forEachSystem (system:
           import ../packages.nix {
-            inherit inputs pkgsCfg system;
+            inherit inputs myLib pkgsCfg system;
             overlay = inputs.self.overlays.default;
           });
 
