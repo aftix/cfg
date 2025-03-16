@@ -76,47 +76,63 @@ in
       inherit (lib.path) append;
       inherit (lib.strings) hasSuffix removeSuffix;
       defaultPath = append directory defaultFilename;
-    in
-      # if a default file exists, just apply the function directly
-      if pathExists defaultPath
-      then {
-        ${builtins.baseNameOf directory} = toApply defaultPath;
-      }
-      else
-        concatMapAttrs (
-          name: type:
-          # Otherwise, for each direntry
-          let
-            path = append directory name;
-          in
-            if type == "directory"
-            then let
-              recurse =
+
+      recursedTree =
+        # if a default file exists, just apply the function directly
+        if pathExists defaultPath
+        then (toApply defaultPath)
+        else
+          concatMapAttrs (
+            name: type:
+            # Otherwise, for each direntry
+            let
+              path = append directory name;
+            in
+              if type == "directory"
+              then {
                 # recurse into directories
-                self.applyOnDirectoryRecursive {
+                ${name} = self.applyOnDirectoryRecursive {
                   inherit toApply defaultFilename flatten;
                   directory = path;
                 };
-            in
-              if flatten
-              then recurse
-              else {
-                ${name} = recurse;
               }
-            else if type == "regular" && hasSuffix ".nix" name
-            then {
-              # Import .nix files
-              ${removeSuffix ".nix" name} = toApply path;
-            }
-            else if type == "regular"
-            then
-              # ignore non-nix files
-              {}
-            else
-              throw ''
-                myLib.applyOnDirectoryRecursive: unsupported file type ${type} at path ${builtins.toString path}
-              ''
-        ) (builtins.readDir directory);
+              else if type == "regular" && hasSuffix ".nix" name
+              then {
+                # Import .nix files
+                ${removeSuffix ".nix" name} = toApply path;
+                _recurseFlatten = true;
+              }
+              else if type == "regular"
+              then
+                # ignore non-nix files
+                {}
+              else
+                throw ''
+                  myLib.applyOnDirectoryRecursive: unsupported file type ${type} at path ${builtins.toString path}
+                ''
+          ) (builtins.readDir directory);
+
+      cleanTree = name: x: (
+        if name == "_recurseFlatten"
+        then {}
+        else if ! lib.isAttrs x
+        then {${name} = x;}
+        else let
+          doFlatten = x._recurseFlatten or false && flatten;
+          removedAttrs = lib.removeAttrs x ["_recurseFlatten"];
+          fixedAttrs =
+            if x ? _recurseFlatten
+            then (concatMapAttrs cleanTree removedAttrs)
+            else x;
+        in
+          if doFlatten
+          then fixedAttrs
+          else {${name} = fixedAttrs;}
+      );
+    in
+      if lib.isAttrs recursedTree
+      then concatMapAttrs cleanTree recursedTree
+      else recursedTree;
 
     # Get nixpkgs modules recursively from a directory into a flat attrset
     # if a directory includes a "default.nix" then the entire directory is treated as one module
