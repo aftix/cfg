@@ -11,6 +11,8 @@ in {
   imports = [
     ./mylib.nix
 
+    ../../host/common/statics.nix
+
     ./bash.nix
     ./documentation.nix
     ./elvish.nix
