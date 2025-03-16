@@ -4,7 +4,7 @@ inputs: final: prev:
 
   lix = prev.lix.override {aws-sdk-cpp = null;};
 
-  inherit (inputs.attic.overlays.default final prev) attic attic-client attic-server;
+  inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;
   inherit (inputs) nginxBlacklist;
 
   carapace = prev.carapace.overrideAttrs {
