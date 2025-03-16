@@ -176,6 +176,16 @@ in
             });
       };
 
+    # Overlay for library functions that require access to a nixpkgs instance
+    # Each file in lib-pkgs should be a function that takes an instantiated nixpkgs
+    # and returns the actual lib function
+    libpkgsOverlay = final: prev:
+      self.applyOnDirectoryRecursive {
+        directory = ./lib-pkgs;
+        defaultFilename = "package.nix";
+        toApply = path: import path final;
+      };
+
     # Generates an attrset of nixpkgs modules
     # to inject flake dependencies into configurations
     dependencyInjects = {

@@ -96,7 +96,7 @@
     myLib = import ./lib.nix inputs;
     nixSettings = import ./nix-settings.nix;
     overlay = import ./overlay.nix inputs;
-    pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs overlay;};
+    pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;};
     extraSpecialArgs = import ./extraSpecialArgs.nix {inherit inputs;};
   in
     {
@@ -139,7 +139,7 @@
       checks = nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy);
 
       legacyPackages = import ./packages.nix {
-        inherit inputs overlay pkgsCfg;
+        inherit inputs myLib overlay pkgsCfg;
         system = sys;
       };
     });
