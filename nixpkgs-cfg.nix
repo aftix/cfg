@@ -1,5 +1,5 @@
 {
-  inputs,
+  inputs ? (import ./flake-compat/inputs.nix),
   overlay ? (import ./overlay.nix inputs),
 }: {
   nixpkgs = {
