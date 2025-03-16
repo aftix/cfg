@@ -28,7 +28,6 @@ in
       attic-server
       lix
       matrix-synapse-unwrapped
-      pwvucontrol
       ;
 
     freshrssExts = pkgs.lib.attrsets.recurseIntoAttrs (pkgs.callPackage ./legacyPackages/freshrss {});
