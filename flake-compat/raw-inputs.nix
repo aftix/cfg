@@ -51,14 +51,8 @@ let
     atticNode = lockFile.nodes.root.inputs.attic;
   in
     fetchNode lockFile.nodes.${atticNode}.inputs.crane;
-
-  # Get the "zig-deps-fod" input from nixos-cli
-  zig-deps-fod = let
-    nixos-cliNode = lockFile.nodes.root.inputs.nixos-cli;
-  in
-    fetchNode lockFile.nodes.${nixos-cliNode}.inputs.zig-deps-fod;
 in
   fetchedInputs
   // {
-    inherit nixpkgs nix-systems lib lockFile crane zig-deps-fod;
+    inherit nixpkgs nix-systems lib lockFile crane;
   }
