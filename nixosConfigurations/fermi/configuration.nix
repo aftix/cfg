@@ -35,7 +35,7 @@ in {
   };
 
   my = let
-    domain = "aftix.xyz";
+    domain = config.aftix.statics.primaryDomain;
   in {
     flake = "/home/aftix/cfg";
 
@@ -73,10 +73,7 @@ in {
         domain = "grocy.${domain}";
       };
 
-      kanidm = {
-        enable = true;
-        domain = "identity.${domain}";
-      };
+      kanidm.enable = true;
 
       rss = {
         enable = true;
