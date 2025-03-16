@@ -9,8 +9,8 @@ attic-push path cache="cfg-actions":
     @if [[ -e "{{path}}" ]]; then nix-store --query --requisites --include-outputs "{{path}}" | xargs attic push "{{cache}}" &> /dev/null ; fi
 
 buildpkg pkg cache="cfg-actions":
-    @nom build '.#{{pkg}}'
-    @[[ -n "{{cache}}" ]] && for OUTPATH in $(nix eval '.#{{pkg}}' --raw --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) x.all)'); do \
+    @nom build -f packages.nix '{{pkg}}'
+    @[[ -n "{{cache}}" ]] && for OUTPATH in $(nix eval -f packages.nix --raw --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) ((x {}).{{pkg}}.all))'); do \
         if [[ -e "$OUTPATH" ]]; then \
             (nix-store --query --requisites --include-outputs "$OUTPATH" | xargs attic push "{{cache}}" &> /dev/null ) || : ; \
         fi \
@@ -18,28 +18,47 @@ buildpkg pkg cache="cfg-actions":
 
 buildpkgs cache="cfg-actions":
     #!/usr/bin/env bash
-    NPKGS="$(nix eval '.#legacyPackages' --apply 'x:
-        let pkgs = x.${builtins.currentSystem};
-        isDrv = v: v.type or null == "derivation";
-        in builtins.toString (builtins.attrNames
-            (builtins.removeAttrs pkgs
-                (builtins.filter (name: ! isDrv pkgs.${name})
-                    (builtins.attrNames pkgs)
-                )
-            )
-        )' --impure --raw)"
+    NPKGS="$(nix eval -f packages.nix --apply 'x: let
+        inputs = import ./flake-compat/inputs.nix;
+        packages = x {inherit inputs;};
+        inherit (inputs.nixpkgs) lib;
+        getDrvs = lib.filterAttrs (name: value: lib.isDerivation value || value.recurseForDerivations or false);
+        drvs = lib.concatMapAttrs (
+            name: value:
+                if lib.isDerivation value then {${name} = value;}
+                else if lib.isAttrs value then {${name} = getDrvs value;}
+                else {}
+            ) packages;
+        convert = prefix: lib.mapAttrsToList (
+            name: value: let fullname = "${prefix}${lib.optionalString (prefix != "") "."}${name}"; in
+                if lib.isAttrs value && !lib.isDerivation value then
+                    convert fullname value
+                else
+                    fullname
+            );
+        drvNames = lib.flatten (convert "" drvs);
+        in lib.concatStringsSep " " drvNames' --impure --raw)"
     for pkg in $NPKGS; do
-        nom build ".#$pkg" || :
+        nom build -f packages.nix "$pkg" || :
     done
-    OUTPATHS="$(nix eval .#legacyPackages --apply 'x:
-        let y = x.${builtins.currentSystem};
-        rawNames = builtins.attrNames y;
-        isDrv = v: v.type or null == "derivation";
-        names = builtins.filter (name: isDrv y.${name}) rawNames;
-        all = builtins.map (name: y.${name}.all) names;
-        drvs = builtins.foldl'"'"' (acc: lst: acc ++ lst) [] all;
-        paths = builtins.map (drv: drv.outPath) drvs;
-        in builtins.toString paths' --impure --raw)"
+    OUTPATHS="$(nix eval -f packages.nix --apply 'x: let
+        inputs = import ./flake-compat/inputs.nix;
+        packages = x {inherit inputs;};
+        inherit (inputs.nixpkgs) lib;
+        getDrvs = lib.filterAttrs (name: value: lib.isDerivation value || value.recurseForDerivations or false);
+        drvs = lib.concatMapAttrs (
+            name: value:
+                if lib.isDerivation value then {${name} = value;}
+                else if lib.isAttrs value then {${name} = getDrvs value;}
+                else {}
+            ) packages;
+        getOutPaths = val: if lib.isDerivation val then
+                builtins.map (lib.getAttr "outPath") val.all
+            else if lib.isAttrs val then
+                lib.flatten (lib.mapAttrsToList (_: getOutPaths) val)
+            else [];
+        outPaths = lib.flatten (getOutPaths drvs);
+        in lib.concatStringsSep " " outPaths' --impure --raw)"
     for OUTPATH in $OUTPATHS ; do
         if [[ -e "$OUTPATH" ]]; then
             (nix-store --query --requisites --include-outputs "$OUTPATH" | xargs attic push "{{cache}}" &> /dev/null ) || :
@@ -47,22 +66,28 @@ buildpkgs cache="cfg-actions":
     done
 
 build host=hostname *FLAGS="":
-    @nom build ".#nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
-    @(nix eval '.#nixosConfigurations.{{host}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
-        | tr ' ' '\n' | xargs -n1 just attic-push) || :
+    #!/usr/bin/env bash
+    nom build -f flake-compat/inputs.nix "self.nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
+    (nix eval -f flake-compat/inputs.nix --apply 'inputs: let
+        build = inputs.self.nixosConfigurations.{{host}}.config.system.build.toplevel;
+        drvs = builtins.map (drv: drv.outPath) build.all;
+        in builtins.toString drvs' --raw | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 switch *FLAGS:
     @nixos apply . --use-nom {{FLAGS}}
+    # Use flakes here since the git revision is different
     @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 boot *FLAGS:
     @nixos apply . --use-nom --no-activate {{FLAGS}}
+    # Use flakes here since the git revision is different
     @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 test *FLAGS:
     @nixos apply . --use-nom --no-boot {{FLAGS}}
+    # Use flakes here since the git revision is different
     @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
@@ -83,9 +108,12 @@ rekey:
     @sops updatekeys -y home/secrets.yaml
 
 iso variant="minimal" *FLAGS="":
-    @nom build ".#nixosConfigurations.iso-{{variant}}.config.system.build.isoImage" {{FLAGS}}
-    @(nix eval '.#nixosConfigurations.iso-{{variant}}.config.system.build.isoImage' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
-        | tr ' ' '\n' | xargs -n1 just attic-push) || :
+    #!/usr/bin/env bash
+    nom build --impure --expr '(import ./flake-compat/inputs.nix).self.nixosConfigurations.iso-{{variant}}.config.system.build.isoImage' {{FLAGS}}
+    (nix eval -f flake-compat/inputs.nix --apply 'inputs: let
+        inherit (inputs.self.nixosConfigurations.iso-{{variant}}.config.system.build) isoImage;
+        drvs = builtins.map (drv: drv.outPath) isoImage.all;
+        in builtins.toString drvs' --raw --impure | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 vm variant="minimal" *FLAGS="":
     @just iso {{variant}}
