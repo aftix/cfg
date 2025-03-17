@@ -5,8 +5,9 @@ let
   inherit (rawInputs) lib;
 
   thisFlake = import ../flake.nix;
+  makeInputsExtensible = import ../makeInputsExtensible.nix lib;
 in
-  lib.fix (
+  makeInputsExtensible (
     inputs: let
       inherit (inputs.self.extra) myLib;
 
