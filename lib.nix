@@ -10,6 +10,8 @@ in
       "aarch64-darwin"
     ];
 
+    makeInputsExtensible = import ./makeInputsExtensible.nix lib;
+
     # Format number of seconds in the Unix epoch as %Y%m%d%H%M%S.
     # Taken from https://github.com/nix-community/flake-compat/blob/38fd3954cf65ce6faf3d0d45cd26059e059f07ea/default.nix
     # MIT Licensed
