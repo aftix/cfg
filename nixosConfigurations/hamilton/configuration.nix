@@ -11,7 +11,7 @@ in {
     ../../hardware/disko/hamilton.nix
 
     ../../host/opt/aftix.nix
-    ../../host/opt/backup.nix
+    ../../host/opt/backup
     ../../host/opt/bluetooth.nix
     ../../host/opt/cups.nix
     ../../host/opt/display.nix
