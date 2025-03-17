@@ -11,7 +11,6 @@
       inputs = {
         lix.follows = "lix";
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
       };
     };
 
@@ -31,10 +30,8 @@
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.utils.follows = "flake-utils";
     };
 
-    flake-utils.url = "github:numtide/flake-utils";
     srvos = {
       url = "github:numtide/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -49,7 +46,6 @@
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
     };
 
     sops-nix = {
@@ -88,9 +84,7 @@
   outputs = {
     self,
     nixpkgs,
-    nur,
     deploy-rs,
-    flake-utils,
     ...
   } @ inputs: let
     myLib = import ./lib.nix inputs;
@@ -98,49 +92,40 @@
     overlay = import ./overlay.nix inputs;
     pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;};
     extraSpecialArgs = import ./extraSpecialArgs.nix {inherit inputs;};
-  in
-    {
-      overlays.default = overlay;
-      nixosConfigurations = import ./nixosConfigurations.nix {
-        inherit inputs myLib extraSpecialArgs;
-      };
-      deploy = import ./deploy.nix {inherit inputs;};
-      nixosModules = import ./nixosModules.nix {
-        inherit inputs overlay myLib pkgsCfg;
-      };
-      homemanagerModules = import ./homemanagerModules.nix {
-        inherit inputs overlay myLib pkgsCfg;
-      };
-      extra = {
-        # NOTE: you'll need to use these for some optional modules
-        inherit extraSpecialArgs myLib;
+  in {
+    overlays.default = overlay;
+    nixosConfigurations = import ./nixosConfigurations.nix {
+      inherit inputs myLib extraSpecialArgs;
+    };
+    deploy = import ./deploy.nix {inherit inputs;};
+    nixosModules = import ./nixosModules.nix {
+      inherit inputs overlay myLib pkgsCfg;
+    };
+    homemanagerModules = import ./homemanagerModules.nix {
+      inherit inputs overlay myLib pkgsCfg;
+    };
+    extra = {
+      # NOTE: you'll need to use these for some optional modules
+      inherit extraSpecialArgs myLib;
 
-        inherit
-          (nixSettings)
-          substituters
-          trusted-public-keys
-          extra-experimental-features
-          ;
-      };
-    }
-    // flake-utils.lib.eachDefaultSystem (sys: let
-      pkgs = import nixpkgs {
-        system = sys;
-        inherit (pkgsCfg.nixpkgs) config;
-        overlays = [
-          nur.overlays.default
-          (_: _: {inherit (inputs) nginxBlacklist;})
-        ];
-      };
-    in {
-      formatter =
-        pkgs.alejandra or pkgs.nix-fmt;
+      inherit
+        (nixSettings)
+        substituters
+        trusted-public-keys
+        extra-experimental-features
+        ;
+    };
 
-      checks = nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy);
+    formatter = myLib.forEachSystem (sys: let
+      pkgs = inputs.nixpkgs.legacyPackages.${sys};
+    in
+      pkgs.alejandra or pkgs.nix-fmt);
 
-      legacyPackages = import ./packages.nix {
-        inherit inputs myLib overlay pkgsCfg;
-        system = sys;
-      };
-    });
+    checks = myLib.forEachSystem (sys: nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy));
+
+    legacyPackages = myLib.forEachSystem (system:
+      import ./packages.nix {
+        inherit inputs myLib overlay pkgsCfg system;
+      });
+  };
 }
