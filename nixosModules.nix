@@ -1,8 +1,9 @@
 {
-  inputs,
-  overlay ? (import ./overlay.nix inputs),
-  myLib ? (import ./lib.nix inputs),
-  pkgsCfg ? (import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;}),
+  inputs ? import ./inputs.nix,
+  myLib ? import ./lib.nix inputs,
+  overlay ? import ./overlay.nix inputs,
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;},
+  ...
 }: let
   nix-settings = let
     cfg = import ./nix-settings.nix;

@@ -8,7 +8,7 @@ let
 in
   lib.fix (
     inputs: let
-      myLib = import ../lib.nix inputs;
+      inherit (inputs.self.extra) myLib;
 
       # Get "lib" flake output from flake-utils
       flake-utils = {

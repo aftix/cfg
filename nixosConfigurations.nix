@@ -1,7 +1,8 @@
 {
-  inputs,
-  myLib ? (import ./lib.nix inputs),
-  extraSpecialArgs ? (import ./extraSpecialArgs.nix inputs),
+  inputs ? import ./flake-compat/inputs.nix,
+  myLib ? import ./lib.nix inputs,
+  extraSpecialArgs ? import ./extraSpecialArgs.nix inputs,
+  ...
 }:
 myLib.nixosConfigurationsFromDirectoryRecursive {
   directory = ./nixosConfigurations;

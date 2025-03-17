@@ -1,8 +1,9 @@
 {
-  inputs,
-  overlay ? (import ./overlay.nix inputs),
-  myLib ? (import ./lib.nix inputs),
-  pkgsCfg ? (import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;}),
+  inputs ? import ./flake-compat/inputs.nix,
+  overlay ? import ./overlay.nix inputs,
+  myLib ? import ./lib.nix inputs,
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;},
+  ...
 }: let
   commonModules = [
     pkgsCfg

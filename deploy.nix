@@ -1,4 +1,4 @@
-{inputs}: {
+{inputs ? import ./flake-compat/inputs.nix, ...}: {
   nodes.fermi = {
     hostname = "170.130.165.174";
     profiles.system = {

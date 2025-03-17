@@ -1,7 +1,8 @@
 {
-  inputs ? (import ./flake-compat/inputs.nix),
-  myLib ? (import ./lib.nix inputs),
-  overlay ? (import ./overlay.nix inputs),
+  inputs ? import ./flake-compat/inputs.nix,
+  myLib ? import ./lib.nix inputs,
+  overlay ? import ./overlay.nix inputs,
+  ...
 }: {
   nixpkgs = {
     overlays = [

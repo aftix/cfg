@@ -1,9 +1,10 @@
 {
-  inputs ? (import ./flake-compat/inputs.nix),
-  myLib ? (import ./lib.nix inputs),
-  overlay ? (import ./overlay.nix inputs),
-  pkgsCfg ? (import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;}),
+  inputs ? import ./flake-compat/inputs.nix,
+  myLib ? import ./lib.nix inputs,
+  overlay ? import ./overlay.nix inputs,
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;},
   system ? builtins.currentSystem or "unknown-system",
+  ...
 }: let
   pkgs = import inputs.nixpkgs {
     inherit system;
