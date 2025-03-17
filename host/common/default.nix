@@ -21,7 +21,7 @@ in {
 
   options.my = {
     flake = mkOption {
-      default = "/home/aftix/src/cfg";
+      default = ../../.;
       description = "Location of NixOS configuration flake";
     };
 
@@ -166,24 +166,25 @@ in {
 
     # Set the host-specific things in the nixd configuration
     my.development.nixdConfig.options = lib.mkIf ((config.my.flake or "") != "") {
-      nixos.expr = "(builtins.getFlake \"${config.my.flake}\").nixosConfigurations.${config.networking.hostName}.options";
+      nixos.expr = "(import \"${config.my.flake}\").nixosConfigurations.${config.networking.hostName}.options";
       home-manager.expr =
         /*
         nix
         */
         ''
           let
-            flake = builtins.getFlake "${config.my.flake}";
+            flake = import "${config.my.flake}";
             nixosCfg = flake.nixosConfigurations.${config.networking.hostName}.config;
             pkgs = import <nixpkgs> {};
             inherit (pkgs) lib;
-            inherit (flake.extra) extraSpecialArgs nixosHomeOptions hmInjectNixosHomeOptions;
+            inherit (flake.extra) extraSpecialArgs myLib;
             mkHmCfg = flake.inputs.home-manager.lib.homeManagerConfiguration;
-            nixosOpts = nixosHomeOptions lib;
-            modules = nixosCfg.dep-inject.commonHmModules ++ [
-              nixosOpts
+            dep-injects = myLib.dependencyInjects {};
+            modules = [
+              flake.homemanagerModules.default
+              (dep-injects.home-manager or {})
+              ((dep-injects.nixos-home-manager or (cfg: {})) nixosCfg)
               ({pkgs, ...}: { nix.package = pkgs.nix;})
-              (hmInjectNixosHomeOptions nixosCfg)
               (import "${config.my.flake}/homeConfigurations/aftix.nix")
             ];
           in

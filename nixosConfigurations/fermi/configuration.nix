@@ -37,8 +37,6 @@ in {
   my = let
     domain = config.aftix.statics.primaryDomain;
   in {
-    flake = "/home/aftix/cfg";
-
     users.aftix.extraGroups = [];
 
     attic = {
