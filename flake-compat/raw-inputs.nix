@@ -40,9 +40,10 @@ let
   ];
 
   # Get the "systems" input from flake-utils
+  flake-utils = fetchNode lockFile.nodes.${lockFile.nodes.root.inputs.deploy-rs}.inputs.utils;
   nix-systems = let
-    flakeUtilNode = lockFile.nodes.root.inputs.flake-utils;
-    systemsNode = lockFile.nodes.${flakeUtilNode}.inputs.systems;
+    flakeUtilsNode = lockFile.nodes.${lockFile.nodes.root.inputs.deploy-rs}.inputs.utils;
+    systemsNode = lockFile.nodes.${flakeUtilsNode}.inputs.systems;
   in
     fetchNode systemsNode;
 
@@ -54,5 +55,5 @@ let
 in
   fetchedInputs
   // {
-    inherit nixpkgs nix-systems lib lockFile crane;
+    inherit nixpkgs nix-systems flake-utils lib lockFile crane;
   }
