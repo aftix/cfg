@@ -6,8 +6,6 @@
 }:
 myLib.nixosConfigurationsFromDirectoryRecursive {
   directory = ./nixosConfigurations;
-  dep-injects = myLib.dependencyInjects {
-    extraInject = {commonHmModules = inputs.self.homemanagerModules.commonModules;};
-  };
+  dep-injects = myLib.dependencyInjects {};
   inherit extraSpecialArgs;
 }
