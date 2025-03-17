@@ -24,7 +24,7 @@ in
         deploy-rs-self:
           deploy-rs-flake.outputs {
             self = deploy-rs-self;
-            inherit flake-utils;
+            utils = flake-utils;
             inherit (inputs) nixpkgs;
           }
       );
@@ -65,7 +65,7 @@ in
       self = thisFlake.outputs inputs;
 
       inherit (rawInputs) carapace hostsBlacklist nginxBlacklist hyprland;
-      inherit flake-utils deploy-rs nix-index-database;
+      inherit deploy-rs nix-index-database;
       attic = {
         packages = attic-packages;
         overlays.default = final: _: {
@@ -134,6 +134,7 @@ in
         };
       };
 
+      lix = import "${rawInputs.lix}";
       lix-module.overlays.default = import "${rawInputs.lix-module}/overlay.nix" {
         inherit (rawInputs) lix;
         versionSuffix = let
