@@ -10,8 +10,6 @@ in
       "aarch64-darwin"
     ];
 
-    makeInputsExtensible = import ./makeInputsExtensible.nix lib;
-
     # Format number of seconds in the Unix epoch as %Y%m%d%H%M%S.
     # Taken from https://github.com/nix-community/flake-compat/blob/38fd3954cf65ce6faf3d0d45cd26059e059f07ea/default.nix
     # MIT Licensed
@@ -305,4 +303,33 @@ in
               })
             ];
         });
+
+    makeInputsExtensible = import ./lib/makeInputsExtensible.nix lib;
+
+    # Based off of lib.makeExtensibleWithCustomname
+    # from https://github.com/NixOS/nixpkgs/blob/2ba42c60e00e2fb01dac1917439c55e199661f8c/lib/fixed-points.nix#L444:C3
+    # MIT Licensed
+    # Allows the inputs to be overriden by downstream code
+    makeFlakeInput = flake: inps:
+      lib.fix' (
+        rflake:
+          flake
+          // {
+            inputs = self.makeInputsExtensible (_: inps);
+            overrideInputs = f: self.makeFlakeInput rflake (rflake.inputs.overrideInputs f);
+          }
+      );
+
+    # From a source directory, get flake.nix and apply the outputs function
+    # to get a fixed point. Also makes the inputs overridable
+    getFlakeOutputs = flakeNix: flakeInputs: let
+      flakeImport = import "${flakeNix}/flake.nix";
+      flake =
+        lib.fix (flakeSelf: flakeImport.outputs (flakeInputs // {self = flakeSelf;}))
+        // {
+          outPath = builtins.toString flakeNix;
+          inputs = self.makeInputsExtensible flakeInputs;
+        };
+    in
+      self.makeFlakeInput flake flakeInputs;
   })

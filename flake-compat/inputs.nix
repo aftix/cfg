@@ -5,77 +5,65 @@ let
   inherit (rawInputs) lib;
 
   thisFlake = import ../flake.nix;
-  makeInputsExtensible = import ../makeInputsExtensible.nix lib;
+  makeInputsExtensible = import ../lib/makeInputsExtensible.nix lib;
 in
   makeInputsExtensible (
     inputs: let
-      inherit (inputs.self.extra) myLib;
+      myLib = inputs.self.lib;
 
       # Get "lib" flake output from flake-utils
       flake-utils = {
+        outPath = builtins.toString rawInputs.flake-utils;
         lib = import "${rawInputs.flake-utils}/lib.nix" {
           defaultSystems = import rawInputs.nix-systems;
         };
       };
-
-      # get the "lib" flake output from deploy-rs
-      deploy-rs-flake = import "${rawInputs.deploy-rs}/flake.nix";
-      deploy-rs = lib.fix (
-        deploy-rs-self:
-          deploy-rs-flake.outputs {
-            self = deploy-rs-self;
-            utils = flake-utils;
-            inherit (inputs) nixpkgs;
-          }
-      );
-
-      # Get the outputs from nix-index-database
-      nix-index-database-flake = import "${rawInputs.nix-index-database}/flake.nix";
-      nix-index-database = lib.fix (nix-index-self:
-        nix-index-database-flake.outputs {
-          self = nix-index-self;
-          inherit (inputs) nixpkgs;
-        });
-
-      # Get packages from attic
-      attic-packages = myLib.forEachSystem (
-        system: let
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [
-              (final: _:
-                {
-                  craneLib = import rawInputs.crane {pkgs = final;};
-                }
-                // (import "${rawInputs.crane}/pkgs" {
-                  pkgs = final;
-                  myLib = final.craneLib;
-                }))
-            ];
-          };
-
-          atticPkgs = pkgs.callPackage "${rawInputs.attic}/crane.nix" {};
-        in {
-          inherit (atticPkgs) attic attic-client attic-server;
-        }
-      );
     in {
       # This will do the same fixed point magic as a normal self input for a flake instantiation
       # This way, we only have to figure out how to import all the inputs, not set up the flake schema again
       self = thisFlake.outputs inputs;
 
+      nix-index-database = myLib.getFlakeOutputs rawInputs.nix-index-database {inherit (inputs) nixpkgs;};
+      deploy-rs = myLib.getFlakeOutputs rawInputs.deploy-rs {
+        utils = flake-utils;
+        inherit (inputs) nixpkgs;
+      };
+
       inherit (rawInputs) carapace hostsBlacklist nginxBlacklist hyprland;
-      inherit deploy-rs nix-index-database;
+
       attic = {
-        packages = attic-packages;
+        outPath = builtins.toString rawInputs.attic;
+        packages = myLib.forEachSystem (
+          system: let
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [
+                (final: _:
+                  {
+                    craneLib = import rawInputs.crane {pkgs = final;};
+                  }
+                  // (import "${rawInputs.crane}/pkgs" {
+                    pkgs = final;
+                    myLib = final.craneLib;
+                  }))
+              ];
+            };
+
+            atticPkgs = pkgs.callPackage "${rawInputs.attic}/crane.nix" {};
+          in {
+            inherit (atticPkgs) attic attic-client attic-server;
+          }
+        );
         overlays.default = final: _: {
           inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;
         };
       };
-      lanzaboote = import rawInputs.lanzaboote;
-      srvos = import rawInputs.srvos;
-      stylix = import rawInputs.stylix;
-      nixos-cli = import rawInputs.nixos-cli;
+
+      lanzaboote = (import rawInputs.lanzaboote) // {outPath = builtins.toString rawInputs.lanzaboote;};
+      srvos = (import rawInputs.srvos) // {outPath = builtins.toString rawInputs.srvos;};
+      stylix = (import rawInputs.stylix) // {outPath = builtins.toString rawInputs.stylix;};
+      nixos-cli = (import rawInputs.nixos-cli) // {outPath = builtins.toString rawInputs.nixos-cli;};
+      lix = (import rawInputs.lix) // {outPath = builtins.toString rawInputs.lix;};
 
       nixpkgs = let
         # The nixpkgs flake adds this to lib
@@ -127,28 +115,33 @@ in
           libVersionInfoOverlay;
       };
 
-      nur.overlays.default = final: prev: {
-        nur = import rawInputs.nur {
-          nurpkgs = prev;
-          pkgs = prev;
+      nur = {
+        outPath = builtins.toString rawInputs.nur;
+        overlays.default = final: prev: {
+          nur = import rawInputs.nur {
+            nurpkgs = prev;
+            pkgs = prev;
+          };
         };
       };
 
-      lix = import "${rawInputs.lix}";
-      lix-module.overlays.default = import "${rawInputs.lix-module}/overlay.nix" {
-        inherit (rawInputs) lix;
-        versionSuffix = let
-          lixVersionJson = builtins.fromJSON (builtins.readFile "${rawInputs.lix}/version.json");
-          lixNodeName = rawInputs.lockFile.nodes.root.inputs.lix;
-          lix = rawInputs.lockFile.nodes.${lixNodeName}.locked;
-          lastModifiedDate = myLib.formatSecondsSinceEpoch lix.lastModified;
-        in
-          inputs.nixpkgs.lib.optionalString (!lixVersionJson.official_release)
-          "-pre${builtins.substring 0 8 lastModifiedDate}-${builtins.substring 0 7 lix.rev}";
+      lix-module = {
+        outPath = builtins.toString rawInputs.lix-module;
+        overlays.default = import "${rawInputs.lix-module}/overlay.nix" {
+          inherit (rawInputs) lix;
+          versionSuffix = let
+            lixVersionJson = builtins.fromJSON (builtins.readFile "${rawInputs.lix}/version.json");
+            lixNodeName = rawInputs.lockFile.nodes.root.inputs.lix;
+            lix = rawInputs.lockFile.nodes.${lixNodeName}.locked;
+            lastModifiedDate = myLib.formatSecondsSinceEpoch lix.lastModified;
+          in
+            inputs.nixpkgs.lib.optionalString (!lixVersionJson.official_release)
+            "-pre${builtins.substring 0 8 lastModifiedDate}-${builtins.substring 0 7 lix.rev}";
+        };
       };
 
       home-manager = {
-        outPath = "${rawInputs.home-manager}";
+        outPath = builtins.toString rawInputs.home-manager;
         lib = import "${rawInputs.home-manager}/lib" {inherit (inputs.nixpkgs) lib;};
         nixosModules = let
           home-manager = "${rawInputs.home-manager}/nixos";
@@ -158,21 +151,28 @@ in
         };
       };
 
-      disko.nixosModules = let
-        disko = "${rawInputs.disko}/module.nix";
-      in {
-        inherit disko;
-        default = disko;
+      disko = {
+        outPath = builtins.toString rawInputs.disko;
+        nixosModules = let
+          disko = "${rawInputs.disko}/module.nix";
+        in {
+          inherit disko;
+          default = disko;
+        };
       };
 
-      preservation.nixosModules = let
-        preservation = import "${rawInputs.preservation}/module.nix";
-      in {
-        inherit preservation;
-        default = preservation;
+      preservation = {
+        outPath = builtins.toString rawInputs.preservation;
+        nixosModules = let
+          preservation = import "${rawInputs.preservation}/module.nix";
+        in {
+          inherit preservation;
+          default = preservation;
+        };
       };
 
       sops-nix = {
+        outPath = builtins.toString rawInputs.sops-nix;
         nixosModules = let
           sops = "${rawInputs.sops-nix}/modules/sops";
         in {

@@ -106,7 +106,7 @@
     };
     extra = {
       # NOTE: you'll need to use these for some optional modules
-      inherit extraSpecialArgs myLib;
+      inherit extraSpecialArgs;
 
       inherit
         (nixSettings)
@@ -115,6 +115,8 @@
         extra-experimental-features
         ;
     };
+
+    lib = myLib;
 
     formatter = myLib.forEachSystem (sys: let
       pkgs = inputs.nixpkgs.legacyPackages.${sys};
