@@ -21,7 +21,10 @@ in {
 
   options.my = {
     flake = mkOption {
-      default = ../../.;
+      default = builtins.path {
+        path = ../../.;
+        filter = path: type: (type == "directory" || type == "regular") && !(builtins.elem path [".git" ".jj" ".DS_Store"]) && (builtins.match "result(-[[:alpha:][:digit:]])*" path == null);
+      };
       description = "Location of NixOS configuration flake";
     };
 
