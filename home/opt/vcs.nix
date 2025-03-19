@@ -1,8 +1,16 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }: let
+  allowedSigners = pkgs.writeTextFile {
+    name = "allowed-signers";
+    text = ''
+      ${config.aftix.statics.primarySSHPubkey}
+    '';
+  };
+
   better-git-branch = final:
     final.writeShellApplication {
       name = "better-git-branch";
@@ -89,10 +97,10 @@ in {
         user = {
           name = "aftix";
           email = "aftix@aftix.xyz";
-          signingkey = "C6F4434A6A4C3A74DC9569C247DB00554BA8E05F";
+          signingKey = "${config.home.homeDirectory}/.ssh/id_ed25519_sk";
           gpgsign = true;
         };
-        gpg.program = "${lib.getExe' pkgs.gnupg "gpg2"}";
+        gpg.format = "ssh";
         core = {
           untrackedcache = true;
           fsmonitor = true;
@@ -283,9 +291,10 @@ in {
         };
         signing = {
           behavior = "own";
-          key = "C6F4434A6A4C3A74DC9569C247DB00554BA8E05F";
-          backends.gpg.allow-expired-keys = false;
+          backend = "ssh";
+          key = "${config.home.homeDirectory}/.ssh/id_ed25519_sk";
         };
+        backends.ssh.allowed-signers = "${allowedSigners}";
         git.auto-local-bookmark = true;
         revsets.log = "..";
       };

@@ -42,5 +42,12 @@ in {
       readOnly = true;
       description = "Domain of HC Vault instance for centralized secrets management";
     };
+
+    primarySSHPubkey = mkOption {
+      default = "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIBXBpFwjKmSj5tu9gop+IvdQo6/PZ+q6jVyIKUy2rIpHAAAABHNzaDo= ssh:";
+      type = types.str;
+      readOnly = true;
+      description = "Public key of my FIDO2 security key SSH key.";
+    };
   };
 }

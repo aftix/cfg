@@ -75,6 +75,7 @@ in {
 
     sessionVariables = {
       WEECHAT_HOME = dataHome + "/weechat";
+      SSH_ASKPASS = lib.getExe pkgs.ssh-askpass-fullscreen;
     };
   };
 
