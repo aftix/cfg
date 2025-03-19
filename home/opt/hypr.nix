@@ -499,6 +499,11 @@ in {
           "noborder, class:^(Pinentry-)"
           "group barred deny, class:^(Pinentry-)"
 
+          "stayfocused, class:^(Ssh-askpass-fullscreen)"
+          "float, class:^(Ssh-askpass-fullscreen)"
+          "noborder, class:^(Ssh-askpass-fullscreen)"
+          "group barred deny, class:^(Ssh-askpass-fullscreen)"
+
           "idleinhibit focus, class:(mpv)"
 
           "group set, class:^(Discord)"
