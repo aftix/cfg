@@ -332,4 +332,13 @@ in
         };
     in
       self.makeFlakeInput flake flakeInputs;
+
+    # Extract the self attribute from inputs fixed point and turn it into a flake output
+    makeFlake = inps:
+      lib.fix' (flake:
+        inps.self
+        // {
+          inputs = builtins.removeAttrs inps ["self"];
+          overrideInputs = f: self.makeFlake (flake.inputs.overrideInputs f);
+        });
   })
