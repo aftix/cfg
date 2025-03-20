@@ -4,80 +4,67 @@
   config,
   ...
 }: let
-  inherit (lib.attrsets) optionalAttrs;
   inherit (lib.lists) optionals;
   inherit (lib.strings) optionalString;
 
-  waybar-dunst = final:
-    final.writeShellApplication {
-      name = "waybar-dunst";
-      runtimeInputs = with final; [dunst gnugrep];
-      text = ''
-        COUNT="$(dunstctl count waiting)"
-        ENABLED=""
-        DISABLED=""
-        if [ "$COUNT" != 0 ]; then
-          DISABLED=" $COUNT"
-        fi
+  waybar-dunst = pkgs.writeShellApplication {
+    name = "waybar-dunst";
+    runtimeInputs = with pkgs; [dunst gnugrep];
+    text = ''
+      COUNT="$(dunstctl count waiting)"
+      ENABLED=""
+      DISABLED=""
+      if [ "$COUNT" != 0 ]; then
+        DISABLED=" $COUNT"
+      fi
 
-        if dunstctl is-paused | grep -q "false" ; then
-          echo '{"class": "", "text": " '"$ENABLED"' "}'
-        else
-          echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
-        fi
-      '';
-    };
-  waybar-mullvad = final:
-    final.writeShellApplication {
-      name = "waybar-mullvad";
-      text = ''
-        if [ -d /proc/sys/net/ipv4/conf/wg0-mullvad ]; then
-         echo '{"text": " 󰖂  ", "class": ""}'
-        else
-         echo '{"text": " 󰖂  ", "class": "disconnected"}'
-        fi
-      '';
-    };
-  waybar-backup = final:
-    final.writeShellApplication {
-      name = "waybar-backup";
-      runtimeInputs = with final; [inotify-tools gnugrep];
-      text = ''
-        function active() {
-          echo '{"text": "Backing up disk"}'
-        }
-
-        function offline() {
-          echo '{}'
-        }
-
-        function wait() {
-          inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
-        }
-
-        if [ -f /var/run/backupdisk.pid ]; then
-          active
-        else
-          offline
-        fi
-
-        wait /var/run "backupdisk\\.pid" | while read -r line ; do
-          grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
-          grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
-        done
-      '';
-    };
-in {
-  nixpkgs.overlays = [
-    (final: _:
-      {
-        waybar-dunst = waybar-dunst final;
-        waybar-mullvad = waybar-mullvad final;
-        waybar-backup = waybar-backup final;
+      if dunstctl is-paused | grep -q "false" ; then
+        echo '{"class": "", "text": " '"$ENABLED"' "}'
+      else
+        echo '{"class": "disabled", "text": " '"$DISABLED"' "}'
+      fi
+    '';
+  };
+  waybar-mullvad = pkgs.writeShellApplication {
+    name = "waybar-mullvad";
+    text = ''
+      if [ -d /proc/sys/net/ipv4/conf/wg0-mullvad ]; then
+       echo '{"text": " 󰖂  ", "class": ""}'
+      else
+       echo '{"text": " 󰖂  ", "class": "disconnected"}'
+      fi
+    '';
+  };
+  waybar-backup = pkgs.writeShellApplication {
+    name = "waybar-backup";
+    runtimeInputs = with pkgs; [inotify-tools gnugrep];
+    text = ''
+      function active() {
+        echo '{"text": "Backing up disk"}'
       }
-      // optionalAttrs config.services.dunst.enable {waybar-dunst = waybar-dunst final;})
-  ];
-  home.packages = with pkgs; [waybar pkgs.waybar-dunst pkgs.waybar-mullvad pkgs.waybar-backup] ++ optionals config.services.dunst.enable [pkgs.dunst];
+
+      function offline() {
+        echo '{}'
+      }
+
+      function wait() {
+        inotifywait -m "$1" --include "$2" -e create -e delete 2>/dev/null
+      }
+
+      if [ -f /var/run/backupdisk.pid ]; then
+        active
+      else
+        offline
+      fi
+
+      wait /var/run "backupdisk\\.pid" | while read -r line ; do
+        grep -Fq '/var/run DELETE backupdisk.pid' <<< "$line" && offline
+        grep -Fq '/var/run CREATE backupdisk.pid' <<< "$line" && active
+      done
+    '';
+  };
+in {
+  home.packages = with pkgs; [waybar waybar-dunst waybar-mullvad waybar-backup] ++ optionals config.services.dunst.enable [pkgs.dunst];
 
   programs.waybar = {
     enable = true;
@@ -153,7 +140,7 @@ in {
 
     dunstNotification = {
       return-type = "json";
-      exec = lib.getExe pkgs.waybar-dunst;
+      exec = lib.getExe waybar-dunst;
       on-click = "${lib.getExe' config.services.dunst.package "dunstctl"} set-paused toggle";
       restart-interval = 1;
     };
@@ -276,7 +263,7 @@ in {
 
       "custom/backup" = {
         return-type = "json";
-        exec = "${pkgs.waybar-backup}/bin/waybar-backup";
+        exec = lib.getExe waybar-backup;
         restart-interval = 60;
         format = "{}";
         tooltip-format = "Backup status";
@@ -284,7 +271,7 @@ in {
 
       "custom/mullvad" = {
         return-type = "json";
-        exec = "${pkgs.waybar-mullvad}/bin/waybar-mullvad";
+        exec = lib.getExe waybar-mullvad;
         on-click = "if [ -e /proc/sys/net/ipv4/wg0-mullvad ]; then ${mullvad} disconnect ; else  ${mullvad} connect ; fi";
         interval = 1;
         tooltip-format = "VPN connection status";
