@@ -5,16 +5,15 @@
   ...
 }: let
   inherit (lib.lists) optional;
-  inherit (lib.strings) optionalString concatMapStringsSep;
 
   cfg = config.my.docs;
 
   builder = let
     inherit (lib.attrsets) mapAttrsToList;
     inherit (lib.strings) escapeShellArg;
-    inherit (config.my.lib) manPage;
+    inherit (pkgs.aftixLib) manPage;
     titlePrefix = cfg.prefix;
-    renderedDocs = builtins.mapAttrs manPage cfg.pages;
+    renderedDocs = builtins.mapAttrs (manPage titlePrefix) cfg.pages;
   in
     pkgs.stdenv.mkDerivation {
       pname = "aftix-docs";
@@ -45,7 +44,7 @@
         ++ (mapAttrsToList (title: docs: "echo ${escapeShellArg docs} > \"${titlePrefix}-${title}.man\"") renderedDocs)
         ++ optional cfg.enable (
           let
-            page = escapeShellArg (manPage titlePrefix {
+            page = escapeShellArg (manPage titlePrefix titlePrefix {
               _docsName = titlePrefix + " \\- Configuration documentation for my NixOS install";
               _docsSeeAlso = mapAttrsToList (title: _: {name = "${titlePrefix}-${title}";}) cfg.pages;
             });
@@ -115,81 +114,7 @@ in {
     };
   };
 
-  config = {
-    home.packages = lib.mkIf cfg.enable [builder];
-
-    my.lib = let
-      inherit (lib.strings) toUpper;
-      inherit (lib.attrsets) mapAttrsToList;
-    in rec {
-      tagged = {
-        tag,
-        content,
-        ...
-      }: ".TP\n\\fB${tag}\\fP\n${content}";
-      mergeTagged = concatMapStringsSep "\n" tagged;
-      mergeTaggedAttrs = attrs: mergeTagged (mapAttrsToList (_: value: value) attrs);
-
-      URI = uri: ".UR ${uri}\n.UE\n";
-      mailto = address: ".MT ${address}\n.ME\n";
-
-      # For references to other man pages
-      manURI = {
-        name,
-        mansection ? 7,
-      }: ".MR ${name} ${builtins.toString mansection}";
-      mergeManURIs = concatMapStringsSep "\n" manURI;
-
-      pageTitle = name: let
-        title =
-          if cfg.prefix == name
-          then name
-          else "${cfg.prefix}-${name}";
-      in ".TH \"${toUpper title}\" 7 \"{{date}}\"";
-
-      section = title: content: ".SH ${title}\n${content}";
-      subsection = title: content: ".SS ${title}\n${content}";
-      mergeSubsections = attrs: builtins.concatStringsSep "\n" (mapAttrsToList subsection attrs);
-      paragraph = text: ".PP\n" + text;
-
-      example = caption: content: ''
-        Example: ${caption}
-        .EX
-        .RS 8
-        ${content}
-        .RE
-        .EE
-      '';
-
-      manPage = title: {
-        _docsName,
-        _docsSynopsis ? "",
-        _docsExtraSections ? {},
-        _docsExamples ? "",
-        _docsSeeAlso ? [],
-        ...
-      }:
-        builtins.concatStringsSep "\n" ([
-            (pageTitle title)
-            (section "NAME" _docsName)
-            (
-              optionalString (_docsSynopsis != "")
-              (section "SYNOPSIS" _docsSynopsis)
-            )
-            (
-              optionalString (_docsExamples != "")
-              (section "SYNOPSIS" _docsExamples)
-            )
-          ]
-          ++ (mapAttrsToList section _docsExtraSections)
-          ++ [
-            (section "SEE ALSO" (
-              mergeManURIs
-              (
-                _docsSeeAlso ++ optional (title != cfg.prefix) {name = cfg.prefix;}
-              )
-            ))
-          ]);
-    };
+  config = lib.mkIf cfg.enable {
+    home.packages = [builder];
   };
 }

@@ -198,7 +198,7 @@ in {
   xdg = {
     configFile."helix/languages.toml".source = "${helixLanguages}";
 
-    mimeApps.defaultApplications = config.my.lib.registerMimes [
+    mimeApps.defaultApplications = pkgs.aftixLib.registerMimes [
       {
         application = "Helix";
         mimetypes = [

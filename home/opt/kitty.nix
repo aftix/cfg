@@ -470,7 +470,7 @@
       attrs
     );
 
-  inherit (config.my.lib) paragraph example mergeTaggedAttrs mergeSubsections;
+  inherit (pkgs.aftixLib) paragraph example mergeTaggedAttrs mergeSubsections;
 in {
   home = {
     packages = with pkgs; [kitty-img kitty-themes];

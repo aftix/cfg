@@ -12,7 +12,7 @@ in {
   home.packages = lib.mkIf cfg.enable ([pkgs.nushell] ++ cfg.plugins);
 
   my.docs.pages.nushell = let
-    inherit (config.my.lib) mergeTagged;
+    inherit (pkgs.aftixLib) mergeTagged;
   in {
     _docsName = "Extra shell functions and modules for nushell";
     _docsExtraSections =
