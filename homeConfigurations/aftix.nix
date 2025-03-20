@@ -8,6 +8,29 @@
   inherit (lib.strings) escapeShellArg;
 
   inherit (config.xdg) configHome dataHome;
+
+  link-gh-hosts = let
+    hostTemplate = escapeShellArg (builtins.toJSON {
+      "github.com" = {
+        users.aftix.oauth_token = "PLACEHOLDER";
+        git_protocol = "ssh";
+        user = "aftix";
+        oauth_token = "PLACEHOLDER";
+      };
+    });
+    secretPath = escapeShellArg config.sops.secrets.gh_oauth_token.path;
+    cfg = escapeShellArg configHome;
+  in
+    pkgs.writeShellApplication {
+      name = "link-gh-hosts";
+      runtimeInputs = with pkgs; [gnused];
+      text = ''
+        [[ -f ${secretPath} ]] || exit 1
+        TOKEN="$(cat ${secretPath})"
+        echo ${hostTemplate} > ${cfg}/gh/hosts.yml
+        sed -i"" -e "s/PLACEHOLDER/$TOKEN/g" ${cfg}/gh/hosts.yml
+      '';
+    };
 in {
   imports = [
     ../hardware/hamilton-home.nix
@@ -32,34 +55,6 @@ in {
     ../home/opt/zathura.nix
 
     ../home/opt/discord.nix
-  ];
-
-  nixpkgs.overlays = [
-    (final: _: let
-      hostTemplate = escapeShellArg (builtins.toJSON {
-        "github.com" = {
-          users.aftix.oauth_token = "PLACEHOLDER";
-          git_protocol = "ssh";
-          user = "aftix";
-          oauth_token = "PLACEHOLDER";
-        };
-      });
-
-      secretPath = escapeShellArg config.sops.secrets.gh_oauth_token.path;
-
-      cfg = escapeShellArg configHome;
-    in {
-      link-gh-hosts = final.writeShellApplication {
-        name = "link-gh-hosts";
-        runtimeInputs = with final; [gnused];
-        text = ''
-          [[ -f ${secretPath} ]] || exit 1
-          TOKEN="$(cat ${secretPath})"
-          echo ${hostTemplate} > ${cfg}/gh/hosts.yml
-          sed -i"" -e "s/PLACEHOLDER/$TOKEN/g" ${cfg}/gh/hosts.yml
-        '';
-      };
-    })
   ];
 
   sops.secrets.gh_oauth_token = {};
@@ -90,7 +85,7 @@ in {
       Type = "oneshot";
       Restart = "on-failure";
       RestartSec = "1s";
-      ExecStart = "${lib.getExe pkgs.link-gh-hosts}";
+      ExecStart = lib.getExe link-gh-hosts;
     };
     Install.WantedBy = ["default.target"];
   };
