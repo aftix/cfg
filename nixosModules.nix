@@ -1,8 +1,7 @@
 {
   inputs ? import ./inputs.nix,
-  myLib ? import ./lib.nix inputs,
   overlay ? import ./overlay.nix inputs,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;},
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs overlay;},
   ...
 }: let
   nix-settings = let
@@ -45,4 +44,4 @@ in
     inherit nix-settings;
     default = {imports = commonModules ++ [./host/common];};
   }
-  // (myLib.modulesFromDirectoryRecursive ./host/opt)
+  // (inputs.self.lib.modulesFromDirectoryRecursive ./host/opt)
