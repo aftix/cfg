@@ -78,9 +78,6 @@ in {
       id = 0;
       isDefault = true;
 
-      bookmarks = [
-      ];
-
       extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
         multi-account-containers
         clearurls
@@ -99,10 +96,10 @@ in {
         force = true;
 
         engines = {
-          Google.metadata.hidden = true;
-          Bing.metadata.hidden = true;
+          google.metadata.hidden = true;
+          bing.metadata.hidden = true;
 
-          DuckDuckGo = {
+          duckduckgo = {
             urls = [
               {
                 template = "https://duckduckgo.com";
@@ -116,7 +113,7 @@ in {
             ];
             definedAliases = ["@ddg" "ddg" "@duckduckgo"];
           };
-          Wikipedia = {
+          wikipedia = {
             urls = [
               {
                 template = "https://en.wikipedia.org/w/index.php";
@@ -160,7 +157,7 @@ in {
             ];
             definedAliases = ["aw" "@aw" "@archwiki"];
           };
-          YouTube = {
+          youtube = {
             urls = [
               {
                 template = "https://www.youtube.com/results";
@@ -174,7 +171,7 @@ in {
             ];
             definedAliases = ["yt" "@yt" "@youtube"];
           };
-          Amazon = {
+          amazon = {
             urls = [
               {
                 template = "https://www.amazon.com/s";
@@ -188,7 +185,7 @@ in {
             ];
             definedAliases = ["amzn" "@amzn" "@amazon"];
           };
-          Searx = {
+          searx = {
             urls = [
               {
                 template = "https://searx.aftix.xyz/search";
@@ -239,7 +236,7 @@ in {
             ];
             definedAliases = ["rust" "@rust" "@cargo" "@crates"];
           };
-          Github = {
+          github = {
             urls = [
               {
                 template = "https://github.com/search";
@@ -257,7 +254,7 @@ in {
             ];
             definedAliases = ["gh" "@gh" "@github"];
           };
-          Merriam-Webster = {
+          merriam-webster = {
             urls = [
               {
                 template = "https://www.merriam-webster.com/dictionary/{searchTerms}";
@@ -269,7 +266,7 @@ in {
               "@merriamwebster"
             ];
           };
-          Jisho = {
+          jisho = {
             urls = [
               {
                 template = "https://jisho.org/search";
@@ -345,7 +342,7 @@ in {
             ];
             definedAliases = ["nixo" "@nixo" "@nixoptions"];
           };
-          "Noogle.dev" = {
+          "noogle.dev" = {
             urls = [
               {
                 template = "https://noogle.dev/q";
@@ -373,7 +370,7 @@ in {
             ];
             definedAliases = ["nixh" "@nixh" "@homemanager"];
           };
-          Nyaa = {
+          nyaa = {
             urls = [
               {
                 template = "https://nyaa.si";
