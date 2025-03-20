@@ -1,6 +1,6 @@
 inputs: final: prev:
 {
-  myLib = import ./lib.nix inputs final.lib;
+  myLib = inputs.self.lib;
 
   lix = prev.lix.override {aws-sdk-cpp = null;};
 
