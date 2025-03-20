@@ -399,7 +399,7 @@ in {
     };
   };
 
-  xdg.mimeApps.defaultApplications = config.my.lib.registerMimes [
+  xdg.mimeApps.defaultApplications = pkgs.aftixLib.registerMimes [
     {
       application = "firefox";
       mimetypes = [

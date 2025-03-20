@@ -24,7 +24,7 @@
   };
 in {
   my.docs.pages.dunst = let
-    inherit (config.my.lib) mergeSubsections mergeTaggedAttrs;
+    inherit (pkgs.aftixLib) mergeSubsections mergeTaggedAttrs;
   in {
     _docsName = "dunst \\- A customizable and lightweight notification-daemon";
     _docsExtraSections = {

@@ -8,7 +8,7 @@
   inherit (lib.strings) optionalString concatMapStringsSep escapeShellArg;
   inherit (lib.lists) optionals;
 
-  inherit (config.my.lib) toHyprMonitors toHyprWorkspaces toHyprCfg;
+  inherit (pkgs.aftixLib) toHyprMonitors toHyprWorkspaces toHyprCfg;
   cfg = config.my.hyprland;
   hyprPackage = config.wayland.windowManager.hyprland.package;
 
@@ -131,69 +131,15 @@ in {
       })
     ];
 
-    my = {
-      hyprland.transforms = {
-        normal = "0";
-        "90" = "1";
-        "180" = "2";
-        "270" = "3";
-        flipped = "4";
-        "flipped-90" = "5";
-        "flipped-180" = "6";
-        "flipped-270" = "7";
-      };
-
-      lib = {
-        toHyprMonitors = builtins.map (
-          {
-            desc ? "",
-            mode ? "preferred",
-            position ? "auto",
-            scale ? "1",
-            transform ? "",
-          }: let
-            description =
-              optionalString (desc != "") "desc:" + desc;
-            orientation =
-              optionalString (transform != "")
-              ",transform,"
-              + transform;
-          in "${description},${mode},${position},${scale}${orientation}"
-        );
-
-        toHyprWorkspaces = builtins.map ({
-          name,
-          options,
-        }:
-          builtins.concatStringsSep "," ([name] ++ options));
-
-        toHyprCfg = let
-          inherit (config.my.lib) stringify;
-          toCfgInner = tabstop: v:
-            lib.foldlAttrs (
-              acc: name: value:
-                if builtins.isAttrs value
-                then ''
-                  ${acc}${tabstop}${name} {${toCfgInner "${tabstop}  " value}
-                  ${tabstop}}
-                ''
-                else if builtins.isList value
-                then
-                  acc
-                  + (
-                    concatMapStringsSep "" (
-                      elem: (toCfgInner tabstop {"${name}" = elem;})
-                    )
-                    value
-                  )
-                else ''
-                  ${acc}
-                  ${tabstop}${name} = ${stringify value}''
-            ) ""
-            v;
-        in
-          toCfgInner "";
-      };
+    my.hyprland.transforms = {
+      normal = "0";
+      "90" = "1";
+      "180" = "2";
+      "270" = "3";
+      flipped = "4";
+      "flipped-90" = "5";
+      "flipped-180" = "6";
+      "flipped-270" = "7";
     };
 
     home = {

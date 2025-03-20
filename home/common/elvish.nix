@@ -12,7 +12,7 @@ in {
   home.packages = lib.mkIf cfg.enable [pkgs.elvish];
 
   my.docs.pages.elvish = let
-    inherit (config.my.lib) mergeTagged;
+    inherit (pkgs.aftixLib) mergeTagged;
   in {
     _docsName = "Extra shell functions and modules for elvish";
     _docsExtraSections =

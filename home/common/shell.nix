@@ -200,7 +200,7 @@ in {
 
     my = {
       docs.pages.shell = let
-        inherit (config.my.lib) mergeTagged;
+        inherit (pkgs.aftixLib) mergeTagged;
       in {
         _docsName = "Common shell aliases and functions";
         _docsExtraSections = {
