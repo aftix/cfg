@@ -1,8 +1,7 @@
 {
   inputs ? import ./flake-compat/inputs.nix,
   overlay ? import ./overlay.nix inputs,
-  myLib ? import ./lib.nix inputs,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;},
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs overlay;},
   ...
 }: let
   commonModules = [
@@ -27,4 +26,4 @@ in
     commonModules = {imports = commonModules;};
     default = {imports = commonModules ++ [./home/common];};
   }
-  // (myLib.modulesFromDirectoryRecursive ./home/opt)
+  // (inputs.self.lib.modulesFromDirectoryRecursive ./home/opt)

@@ -1,11 +1,10 @@
 {
   inputs ? import ./flake-compat/inputs.nix,
-  myLib ? import ./lib.nix inputs,
   extraSpecialArgs ? import ./extraSpecialArgs.nix inputs,
   ...
 }:
-myLib.nixosConfigurationsFromDirectoryRecursive {
+inputs.self.lib.nixosConfigurationsFromDirectoryRecursive {
   directory = ./nixosConfigurations;
-  dep-injects = myLib.dependencyInjects {};
+  dep-injects = inputs.self.lib.dependencyInjects {};
   inherit extraSpecialArgs;
 }

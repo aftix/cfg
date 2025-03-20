@@ -180,7 +180,8 @@ in {
             nixosCfg = flake.nixosConfigurations.${config.networking.hostName}.config;
             pkgs = import <nixpkgs> {};
             inherit (pkgs) lib;
-            inherit (flake.extra) extraSpecialArgs myLib;
+            inherit (flake.extra) extraSpecialArgs;
+            myLib = flake.lib;
             mkHmCfg = flake.inputs.home-manager.lib.homeManagerConfiguration;
             dep-injects = myLib.dependencyInjects {};
             modules = [
