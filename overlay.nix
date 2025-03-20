@@ -1,6 +1,6 @@
 inputs: final: prev:
 {
-  myLib = inputs.self.lib;
+  aftixLib = inputs.self.lib;
 
   lix = prev.lix.override {aws-sdk-cpp = null;};
 

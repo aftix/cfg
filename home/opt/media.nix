@@ -153,7 +153,7 @@
   };
 
   xdg = {
-    mimeApps.defaultApplications = config.my.lib.registerMimes [
+    mimeApps.defaultApplications = pkgs.aftixLib.registerMimes [
       {
         application = "feh";
         mimetypes = [
