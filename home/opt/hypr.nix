@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib.options) mkOption;
-  inherit (lib.strings) optionalString concatMapStringsSep escapeShellArg;
+  inherit (lib.strings) escapeShellArg;
   inherit (lib.lists) optionals;
 
   inherit (pkgs.aftixLib) toHyprMonitors toHyprWorkspaces toHyprCfg;
@@ -38,6 +38,58 @@
       mute = "${pw} mute on";
       unmute = "${pw} mute off";
       muteToggle = "${pw} mute toggle";
+    };
+
+  screenshot = pkgs.writeShellApplication {
+    name = "screenshot";
+    runtimeInputs = with pkgs; [wl-clipboard grim slurp libnotify tofi systemd satty];
+    text = ''
+      shopt -s globstar nullglob
+      # shellcheck source=/dev/null
+      source <(systemctl --user show-environment | grep -v PATH=)
+
+      grim -g "$(slurp -o -r -c '#ff0000ff')" - | \
+      satty --filename - --fullscreen --output-filename ~/media/screenshots/satty-"$(date '+%Y%m%d-%H:%M:%S')".png \
+      --early-exit --initial-tool crop --copy-command wl-copy
+    '';
+  };
+
+  zenith-popup = pkgs.writeShellApplication {
+    name = "zenith-popup";
+    runtimeInputs = with pkgs; [zenith];
+    text = ''
+      [ -n "$1" ] && "$1" -e ${escapeShellArg (lib.getExe pkgs.zenith)}
+    '';
+  };
+
+  mpv-play-clipboard = let
+    vpnEnable =
+      if config.my ? nixosCfg
+      then config.my.nixosCfg.services.mullvad-vpn.enable
+      else false;
+    vpnExclude = lib.strings.optionalString vpnEnable "mullvad-exclude";
+    excludeRegexs = ["youtu\\.?be"];
+    excludeChecks = lib.strings.concatLines (builtins.map (regex: ''
+        if [[ "$URL" =~ ${regex} ]]; then
+          ${vpnExclude} mpv --no-resume-playback "$URL" || notify-send --app-name mpv "mpv" "Failed to play $URL"
+          exit 0
+        fi
+      '')
+      excludeRegexs);
+  in
+    pkgs.writeShellApplication {
+      name = "mpv-play-clipboard";
+      runtimeInputs = with pkgs; [config.programs.mpv.finalPackage wl-clipboard libnotify];
+      text = ''
+        if wl-paste -n &>/dev/null; then
+          URL="$(wl-paste -n)"
+          notify-send --app-name mpv --urgency low "mpv" "Playing $URL with mpv"
+          ${excludeChecks}
+          mpv --no-resume-playback "$URL" || notify-send --app-name mpv "mpv" "Failed to play $URL"
+        else
+          notify-send --app-name mpv "mpv" "Clipboard is empty"
+        fi
+      '';
     };
 in {
   imports = [./waybar.nix];
@@ -75,62 +127,6 @@ in {
   };
 
   config = {
-    nixpkgs.overlays = [
-      (final: _: {
-        screenshot = final.writeShellApplication {
-          name = "screenshot";
-          runtimeInputs = with final; [wl-clipboard grim slurp libnotify tofi systemd satty];
-          text = ''
-            shopt -s globstar nullglob
-            # shellcheck source=/dev/null
-            source <(systemctl --user show-environment | grep -v PATH=)
-
-            grim -g "$(slurp -o -r -c '#ff0000ff')" - | \
-            satty --filename - --fullscreen --output-filename ~/media/screenshots/satty-"$(date '+%Y%m%d-%H:%M:%S')".png \
-            --early-exit --initial-tool crop --copy-command wl-copy
-          '';
-        };
-
-        zenith-popup = final.writeShellApplication {
-          name = "zenith-popup";
-          runtimeInputs = with final; [zenith];
-          text = ''
-            [ -n "$1" ] && "$1" -e ${escapeShellArg final.zenith}/bin/zenith
-          '';
-        };
-
-        mpv-play-clipboard = let
-          vpnEnable =
-            if config.my ? nixosCfg
-            then config.my.nixosCfg.services.mullvad-vpn.enable
-            else false;
-          vpnExclude = lib.strings.optionalString vpnEnable "mullvad-exclude";
-          excludeRegexs = ["youtu\\.?be"];
-          excludeChecks = lib.strings.concatLines (builtins.map (regex: ''
-              if [[ "$URL" =~ ${regex} ]]; then
-                ${vpnExclude} mpv --no-resume-playback "$URL" || notify-send --app-name mpv "mpv" "Failed to play $URL"
-                exit 0
-              fi
-            '')
-            excludeRegexs);
-        in
-          final.writeShellApplication {
-            name = "mpv-play-clipboard";
-            runtimeInputs = with final; [config.programs.mpv.finalPackage wl-clipboard libnotify];
-            text = ''
-              if wl-paste -n &>/dev/null; then
-                URL="$(wl-paste -n)"
-                notify-send --app-name mpv --urgency low "mpv" "Playing $URL with mpv"
-                ${excludeChecks}
-                mpv --no-resume-playback "$URL" || notify-send --app-name mpv "mpv" "Failed to play $URL"
-              else
-                notify-send --app-name mpv "mpv" "Clipboard is empty"
-              fi
-            '';
-          };
-      })
-    ];
-
     my.hyprland.transforms = {
       normal = "0";
       "90" = "1";
@@ -353,11 +349,11 @@ in {
 
             # Misc keybinds
             "$mainMod, P, exec, keepassxc"
-            "$mainMod, S, exec, ${lib.getExe pkgs.screenshot}"
-            "$mainMod SHIFT, S, exec, [float;group barred deny] ${lib.getExe pkgs.zenith-popup}"
+            "$mainMod, S, exec, ${lib.getExe screenshot}"
+            "$mainMod SHIFT, S, exec, [float;group barred deny] ${lib.getExe zenith-popup}"
             "$mainMod, C, exec, ${lib.getExe pkgs.clipman} pick --tool CUSTOM -T ${lib.getExe pkgs.tofi}"
             "$mainMod SHIFT, C, exec, ${lib.getExe pkgs.clipman} clear --tool CUSTOM -T \"${lib.getExe pkgs.tofi} --auto-accept-single=false\""
-            "$mainMod, Z, exec, [fullscreen;group barred deny] ${lib.getExe pkgs.mpv-play-clipboard}"
+            "$mainMod, Z, exec, [fullscreen;group barred deny] ${lib.getExe mpv-play-clipboard}"
 
             # Supmap binds
             "$mainMod ALT, T, submap, group"

@@ -49,7 +49,14 @@ pkgs: {
   };
 in
   pkgs.writeTextFile {
-    inherit name meta passthru derivationArgs;
+    inherit name passthru derivationArgs;
+
+    meta =
+      {
+        mainProgram = name;
+      }
+      // meta;
+
     executable = true;
     destination = "/bin/${name}";
     allowSubstitutes = true;

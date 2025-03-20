@@ -3,26 +3,23 @@
   pkgs,
   lib,
   ...
-}: {
-  nixpkgs.overlays = [
-    (final: _: {
-      aria2d = final.writeShellApplication {
-        name = "aria2d";
-        runtimeInputs = with final; [aria2];
-        text = let
-          rpcDir = "${config.xdg.configHome}/aria2";
-          rpcFile = "${rpcDir}/aria2d.env";
-        in ''
-          mkdir -p "${rpcDir}"
-          dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > "${rpcFile}"
-          # shellcheck source=/dev/null
-          source "${rpcFile}"
-          aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
-        '';
-      };
-    })
-  ];
-  home.packages = with pkgs; [aria2 aria2d python3Packages.aria2p];
+}: let
+  aria2d = pkgs.writeShellApplication {
+    name = "aria2d";
+    runtimeInputs = with pkgs; [aria2];
+    text = let
+      rpcDir = "${config.xdg.configHome}/aria2";
+      rpcFile = "${rpcDir}/aria2d.env";
+    in ''
+      mkdir -p "${rpcDir}"
+      dd if=/dev/urandom of=/dev/stdout bs=64 count=1 2>/dev/null | base64 | tr -d '\n=*' | xargs printf "ARIA2_RPC_TOKEN=%s" > "${rpcFile}"
+      # shellcheck source=/dev/null
+      source "${rpcFile}"
+      aria2c --conf-path="${rpcDir}/aria2d.conf" --rpc-secret="$ARIA2_RPC_TOKEN"
+    '';
+  };
+in {
+  home.packages = [pkgs.aria2 aria2d pkgs.python3Packages.aria2p];
 
   my.shell = {
     aliases = [
@@ -65,7 +62,7 @@
     Unit.Description = "aria2 Daemon";
     Service = {
       Type = "forking";
-      ExecStart = "${lib.getExe pkgs.aria2d}";
+      ExecStart = lib.getExe aria2d;
     };
     Install.WantedBy = ["default.target"];
   };

@@ -7,6 +7,48 @@
   inherit (lib.options) mkOption;
   inherit (lib.strings) escapeShellArg removePrefix concatLines optionalString;
   cfg = config.my.backup;
+
+  my-basic-backup = pkgs.writeShellApplication {
+    name = "backup.bash";
+    runtimeInputs = with pkgs; [gnugrep rclone util-linux mktemp];
+    text = let
+      excludes = optionalString (cfg.excludes != []) (builtins.concatStringsSep " " (builtins.map (s: "--exclude " + escapeShellArg s) cfg.excludes));
+      dirName = s: escapeShellArg (removePrefix "/" s);
+      backups = map (dir:
+        /*
+        bash
+        */
+        ''
+          rclone --config ${config.sops.templates."rclone.conf".path} \
+            sync ${escapeShellArg dir} "backblaze:$BUCKET/LATEST/"${dirName dir} \
+            --links -P --backup-dir "backblaze:$BUCKET/$DATE/"${dirName dir} \
+            ${excludes} --delete-excluded || :
+        '')
+      cfg.directories;
+    in
+      /*
+      bash
+      */
+      ''
+        shopt -s nullglob globstar
+
+        if [ "$(id -u)" != 0 ]; then
+          echo "Error: Must run ''${0} as root" >&2
+          exit 1
+        fi
+
+        function cleanup() {
+          [[ -f /var/run/backupdisk.pid ]] && (rm /var/run/backupdisk.pid || :)
+        }
+        trap cleanup EXIT
+        echo "$$" > /var/run/backupdisk.pid
+
+        BUCKET=${escapeShellArg cfg.bucket}
+        DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
+
+        ${concatLines backups}
+      '';
+  };
 in {
   options.my.backup = {
     bucket = mkOption {
@@ -20,52 +62,6 @@ in {
   };
 
   config = {
-    nixpkgs.overlays = [
-      (final: _: {
-        my-basic-backup = final.writeShellApplication {
-          name = "backup.bash";
-          runtimeInputs = with final; [gnugrep rclone util-linux mktemp];
-          text = let
-            excludes = optionalString (cfg.excludes != []) (builtins.concatStringsSep " " (builtins.map (s: "--exclude " + escapeShellArg s) cfg.excludes));
-            dirName = s: escapeShellArg (removePrefix "/" s);
-            backups = map (dir:
-              /*
-              bash
-              */
-              ''
-                rclone --config ${config.sops.templates."rclone.conf".path} \
-                  sync ${escapeShellArg dir} "backblaze:$BUCKET/LATEST/"${dirName dir} \
-                  --links -P --backup-dir "backblaze:$BUCKET/$DATE/"${dirName dir} \
-                  ${excludes} --delete-excluded || :
-              '')
-            cfg.directories;
-          in
-            /*
-            bash
-            */
-            ''
-              shopt -s nullglob globstar
-
-              if [ "$(id -u)" != 0 ]; then
-                echo "Error: Must run ''${0} as root" >&2
-                exit 1
-              fi
-
-              function cleanup() {
-                [[ -f /var/run/backupdisk.pid ]] && (rm /var/run/backupdisk.pid || :)
-              }
-              trap cleanup EXIT
-              echo "$$" > /var/run/backupdisk.pid
-
-              BUCKET=${escapeShellArg cfg.bucket}
-              DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
-
-              ${concatLines backups}
-            '';
-        };
-      })
-    ];
-
     sops = {
       secrets = {
         backblaze_key_id = {};
@@ -114,7 +110,7 @@ in {
           _prepare_locking
 
           _lock xn || exit 1
-          ${lib.getExe pkgs.my-basic-backup} >/var/log/backup 2>/var/log/backup.err
+          ${lib.getExe my-basic-backup} >/var/log/backup 2>/var/log/backup.err
         '';
         serviceConfig = {
           Type = "simple";
