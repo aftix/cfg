@@ -6,33 +6,29 @@
 }: let
   inherit (lib) mkDefault mkIf;
   inherit (config.xdg) dataHome;
+
+  pinentry-custom = pkgs.writeShellApplication {
+    name = "pinentry-custom";
+    runtimeInputs = with pkgs; [pinentry-qt];
+    text = ''
+      if [ -z "''${PINENTRY_USER_DATA-}" ] ; then
+        exec pinentry-curses "$@"
+        exit 0
+      fi
+
+      case $PINENTRY_USER_DATA in
+      qt)
+        exec pinentry-qt "$@"
+        ;;
+      none)
+        exit 1
+        ;;
+      *)
+        exec pinentry-curses "$@"
+      esac
+    '';
+  };
 in {
-  nixpkgs.overlays = [
-    (final: _: {
-      pinentry-custom = final.writeShellApplication {
-        name = "pinentry-custom";
-        runtimeInputs = with final; [pinentry-qt];
-        text = ''
-          if [ -z "''${PINENTRY_USER_DATA-}" ] ; then
-            exec pinentry-curses "$@"
-            exit 0
-          fi
-
-          case $PINENTRY_USER_DATA in
-          qt)
-            exec pinentry-qt "$@"
-            ;;
-          none)
-            exit 1
-            ;;
-          *)
-            exec pinentry-curses "$@"
-          esac
-        '';
-      };
-    })
-  ];
-
   home.packages = with pkgs;
     mkIf (lib.strings.hasSuffix "-linux" pkgs.system) [
       pinentry-qt
@@ -55,7 +51,7 @@ in {
     enable = lib.strings.hasSuffix "-linux" pkgs.system;
     enableSshSupport = enable;
     extraConfig = mkDefault ''
-      pinentry-program ${lib.getExe pkgs.pinentry-custom}
+      pinentry-program ${lib.getExe pinentry-custom}
     '';
   };
 

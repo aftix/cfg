@@ -7,6 +7,55 @@
   inherit (lib.options) mkOption;
   inherit (lib.strings) escapeShellArg;
   cfg = config.my.backup;
+
+  my-snapshot = pkgs.writeNushellApplication {
+    name = "snapshot.nu";
+    runtimeInputs = with pkgs; [util-linux btrfs-progs];
+    text = builtins.readFile ./btrfs-snapshot.nu;
+  };
+
+  my-backup = pkgs.writeShellApplication {
+    name = "backup.bash";
+    runtimeInputs = with pkgs; [util-linux gnugrep rclone mktemp];
+    text = ''
+      shopt -s nullglob globstar
+
+      if [ "$(id -u)" != 0 ]; then
+        echo "Error: Must run ''${0} as root" >&2
+        exit 1
+      fi
+
+      function cleanup() {
+        [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
+        [[ -f /var/run/backupdisk.pid ]] && (rm /var/run/backupdisk.pid || :)
+      }
+      trap cleanup EXIT
+      echo "$$" > /var/run/backupdisk.pid
+
+      NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
+      MNT="$(mktemp -d)"
+      BUCKET=${escapeShellArg cfg.bucket}
+      DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
+      SNAPSHOT_DIR="$MNT/"${escapeShellArg cfg.snapshotPrefix}
+
+      mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT"
+      mkdir -p "$MNT/safe"
+
+      for snap in "$SNAPSHOT_DIR/"*; do
+        [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
+        [[ -d "$snap" ]] || continue
+        NAME="$(basename "$snap")"
+        grep --quiet "\\." <<< "$NAME" && continue
+
+        rclone --config ${config.sops.templates."rclone.conf".path}  \
+          sync "$snap" "backblaze:$BUCKET/LATEST/$NAME" --links -P --backup-dir \
+          "backblaze:$BUCKET/$DATE/$NAME" || :
+      done
+
+      umount "$MNT"
+      rmdir "$MNT"
+    '';
+  };
 in {
   options.my.backup = {
     bucket = mkOption {default = "";};
@@ -22,59 +71,6 @@ in {
   };
 
   config = {
-    nixpkgs.overlays = [
-      (final: _: {
-        my-snapshot = final.writeNushellApplication {
-          name = "snapshot.nu";
-          runtimeInputs = with final; [util-linux btrfs-progs];
-          text = builtins.readFile ./btrfs-snapshot.nu;
-        };
-
-        my-backup = final.writeShellApplication {
-          name = "backup.bash";
-          runtimeInputs = with final; [util-linux gnugrep rclone mktemp];
-          text = ''
-            shopt -s nullglob globstar
-
-            if [ "$(id -u)" != 0 ]; then
-              echo "Error: Must run ''${0} as root" >&2
-              exit 1
-            fi
-
-            function cleanup() {
-              [[ -f "$NOSLEEP" ]] && (rm "$NOSLEEP" || :)
-              [[ -f /var/run/backupdisk.pid ]] && (rm /var/run/backupdisk.pid || :)
-            }
-            trap cleanup EXIT
-            echo "$$" > /var/run/backupdisk.pid
-
-            NOSLEEP="$(mktemp --tmpdir=/var/run/prevent-sleep.d)"
-            MNT="$(mktemp -d)"
-            BUCKET=${escapeShellArg cfg.bucket}
-            DATE="$(date '+%Y-%m-%d-%H:%M:%S')"
-            SNAPSHOT_DIR="$MNT/"${escapeShellArg cfg.snapshotPrefix}
-
-            mount ${escapeShellArg cfg.localSnapshotDrive} "$MNT"
-            mkdir -p "$MNT/safe"
-
-            for snap in "$SNAPSHOT_DIR/"*; do
-              [[ "$snap" == "$SNAPSHOT_DIR/*" ]] && break
-              [[ -d "$snap" ]] || continue
-              NAME="$(basename "$snap")"
-              grep --quiet "\\." <<< "$NAME" && continue
-
-              rclone --config ${config.sops.templates."rclone.conf".path}  \
-                sync "$snap" "backblaze:$BUCKET/LATEST/$NAME" --links -P --backup-dir \
-                "backblaze:$BUCKET/$DATE/$NAME" || :
-            done
-
-            umount "$MNT"
-            rmdir "$MNT"
-          '';
-        };
-      })
-    ];
-
     sops = {
       secrets = {
         backblaze_key_id = {};
@@ -137,7 +133,7 @@ in {
             ${lib.getExe' pkgs.systemd "systemd-inhibit"} \
               --no-ask-password --what="sleep:idle" --mode="block" \
               --who="btrfs-snapshots.service" --why="Snapshotting ${cfg.localDrive} to ${cfg.localSnapshotDrive}" \
-              ${lib.getExe pkgs.my-snapshot} \
+              ${lib.getExe my-snapshot} \
               ${escapeShellArg cfg.localDrive} \
               ${escapeShellArg cfg.localSnapshotDrive} \
               --delete-older-than ${escapeShellArg cfg.deleteOlderThan} \
@@ -166,7 +162,7 @@ in {
             _prepare_locking
 
             _lock xn || exit 1
-            ${lib.getExe pkgs.my-backup} >/var/log/backupdisk 2>/var/log/backupdisk.err
+            ${lib.getExe my-backup} >/var/log/backupdisk 2>/var/log/backupdisk.err
           '';
           path = [pkgs.nix];
           serviceConfig = {
