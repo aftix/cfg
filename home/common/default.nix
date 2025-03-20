@@ -9,8 +9,6 @@
   inherit (config.xdg) configHome dataHome stateHome;
 in {
   imports = [
-    ./mylib.nix
-
     ../../host/common/statics.nix
 
     ./bash.nix
@@ -27,8 +25,6 @@ in {
   ];
 
   options.my = {
-    registerMimes = mkOption {default = true;};
-
     matrixClient = mkOption {
       default = null;
 
