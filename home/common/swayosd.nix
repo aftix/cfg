@@ -1,9 +1,9 @@
 {
-  config,
+  osConfig,
   lib,
   ...
 }: let
-  cfg = config.my.nixosCfg.my.swayosd;
+  cfg = osConfig.my.swayosd;
 in {
   config = lib.mkIf cfg.enable {
     home.packages = [cfg.package];

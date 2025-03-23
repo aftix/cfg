@@ -208,7 +208,12 @@ in (
                 };
             };
 
-            home-manager = {lib, ...}: {
+            home-manager = {
+              lib,
+              pkgs,
+              osConfig,
+              ...
+            }: {
               options = {
                 dep-inject = lib.mkOption {
                   type = with lib.types; attrsOf unspecified;
@@ -216,51 +221,22 @@ in (
                 };
               };
 
-              config.dep-inject =
-                extraHmInject
-                // {
-                  inherit inputs;
-                };
-            };
-
-            # Inject config from nixosHomeOptions into home-manager
-            # Leaves a my.nixosCfg option set to the total system configuration, and
-            # recursively picks out the options defined in nixosHomeOptions and injects them into the home-manager
-            # configuration so those options in particular won't need a "my.nixosCfg" before the config path.
-            # Downstream users should get this from the `extra` flake output and use it to generate a hm module
-            # with their sysCfg injected. The nixos side is already in the default flake nixosModule, so nothing
-            # extra is needed beyond that.
-            nixos-home-manager = sysCfg: {
-              lib,
-              pkgs,
-              ...
-            }: let
-              homeOptions = import ./nixos-home-options.nix pkgs lib;
-            in {
-              options.my.nixosCfg = lib.mkOption {
-                description = "The NixOS configuration";
-                readOnly = true;
-                type = lib.types.raw;
-              };
-
-              config = let
-                inherit (lib.attrsets) mapAttrsRecursiveCond hasAttrByPath getAttrFromPath;
-              in
-                lib.mkMerge [
-                  (
-                    mapAttrsRecursiveCond
-                    # Do not recurse into attrsets that are option definitions
-                    (attrs: !(attrs ? "_type" && attrs._type == "option"))
-                    (optPath: _:
-                      if hasAttrByPath optPath sysCfg
-                      then getAttrFromPath optPath sysCfg
-                      else null)
-                    homeOptions
-                  )
-                  {
-                    my.nixosCfg = sysCfg;
-                  }
-                ];
+              config =
+                {
+                  dep-inject = extraHmInject // {inherit inputs;};
+                }
+                // (let
+                  homeOptions = import ./nixos-home-options.nix pkgs lib;
+                  inherit (lib.attrsets) mapAttrsRecursiveCond hasAttrByPath getAttrFromPath;
+                in
+                  mapAttrsRecursiveCond
+                  # Do not recurse into attrsets that are option definitions
+                  (attrs: !(attrs ? "_type" && attrs._type == "option"))
+                  (optPath: _:
+                    if hasAttrByPath optPath osConfig
+                    then getAttrFromPath optPath osConfig
+                    else null)
+                  homeOptions);
             };
           };
 
@@ -291,7 +267,7 @@ in (
                   ]
                   ++ extraMods
                   ++ lib.optionals (users != {}) [
-                    ({config, ...}: {
+                    {
                       home-manager = {
                         useUserPackages = true;
                         inherit extraSpecialArgs users;
@@ -299,11 +275,10 @@ in (
                           [
                             # this imports home/common
                             inputs.self.homemanagerModules.default
-                            ((dep-injects.nixos-home-manager or (cfg: {})) config)
                           ]
                           ++ extraHmMods;
                       };
-                    })
+                    }
                   ];
               });
 

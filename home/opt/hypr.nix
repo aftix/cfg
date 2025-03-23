@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  osConfig,
   lib,
   ...
 }: let
@@ -13,10 +14,10 @@
   hyprPackage = config.wayland.windowManager.hyprland.package;
 
   volumeCmds = let
-    osd = lib.getExe' config.my.nixosCfg.my.swayosd.package "swayosd-client";
+    osd = lib.getExe' osConfig.my.swayosd.package "swayosd-client";
     pw = lib.getExe pkgs.pw-volume;
   in
-    if config.my.nixosCfg.my.swayosd.enable
+    if osConfig.my.swayosd.enable
     then {
       raise = "${osd} --output-volume raise";
       raiseMid = "${osd} --output-volume +3";
@@ -64,9 +65,7 @@
 
   mpv-play-clipboard = let
     vpnEnable =
-      if config.my ? nixosCfg
-      then config.my.nixosCfg.services.mullvad-vpn.enable
-      else false;
+      osConfig.services.mullvad-vpn.enable;
     vpnExclude = lib.strings.optionalString vpnEnable "mullvad-exclude";
     excludeRegexs = ["youtu\\.?be"];
     excludeChecks = lib.strings.concatLines (builtins.map (regex: ''
