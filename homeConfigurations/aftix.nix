@@ -1,5 +1,6 @@
 {
   config,
+  osConfig,
   pkgs,
   lib,
   ...
@@ -126,7 +127,7 @@ in {
     docs = {
       enable = true;
       prefix = let
-        host = config.my.nixosCfg.networking.hostName or "";
+        host = osConfig.networking.hostName or "";
       in
         if host == ""
         then "nixos"
