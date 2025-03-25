@@ -9,6 +9,7 @@
     inherit system;
     overlays = [
       inputs.nur.overlays.default
+      inputs.lix-module.overlays.default
       (_: _: {inherit (inputs) nginxBlacklist;})
     ];
     inherit (pkgsCfg.nixpkgs) config;
