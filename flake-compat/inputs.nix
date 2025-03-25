@@ -104,7 +104,7 @@ in
                       args.modules
                       ++ [
                         ({...}: {
-                          config.nixpkgs.flake.source = ../.;
+                          config.nixpkgs.flake.source = builtins.toString rawInputs.nixpkgs;
                         })
                       ];
                   }
