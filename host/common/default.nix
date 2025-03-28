@@ -130,6 +130,7 @@ in {
       systemPackages = with pkgs; [
         home-manager
         cachix
+        nixos-rebuild-ng
 
         killall
         curl
@@ -260,11 +261,6 @@ in {
       zsh.enable = true;
     };
 
-    services.nixos-cli = {
-      enable = true;
-      config.use_nvd = true;
-    };
-
     users.mutableUsers = false;
     i18n = rec {
       defaultLocale = "en_US.UTF-8";
@@ -274,5 +270,7 @@ in {
       };
     };
     console.font = "Lat2-Terminus16";
+
+    system.rebuild.enableNg = true;
   };
 }
