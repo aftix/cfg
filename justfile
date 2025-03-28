@@ -9,7 +9,9 @@ attic-push path cache="cfg-actions":
     @if [[ -e "{{path}}" ]]; then nix-store --query --requisites --include-outputs "{{path}}" | xargs attic push "{{cache}}" &> /dev/null ; fi
 
 buildpkg pkg cache="cfg-actions":
+    # Build the package
     @nom build -f packages.nix '{{pkg}}'
+    # Push the package build to attic
     @[[ -n "{{cache}}" ]] && for OUTPATH in $(nix eval -f packages.nix --raw --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) ((x {}).{{pkg}}.all))'); do \
         if [[ -e "$OUTPATH" ]]; then \
             (nix-store --query --requisites --include-outputs "$OUTPATH" | xargs attic push "{{cache}}" &> /dev/null ) || : ; \
@@ -18,6 +20,7 @@ buildpkg pkg cache="cfg-actions":
 
 buildpkgs cache="cfg-actions":
     #!/usr/bin/env bash
+    echo "Determining package list"
     NPKGS="$(nix eval -f packages.nix --apply 'x: let
         inputs = import ./flake-compat/inputs.nix;
         packages = x {inherit inputs;};
@@ -38,9 +41,12 @@ buildpkgs cache="cfg-actions":
             );
         drvNames = lib.flatten (convert "" drvs);
         in lib.concatStringsSep " " drvNames' --impure --raw)"
+    echo "Building packages"
     for pkg in $NPKGS; do
-        nom build -f packages.nix "$pkg" || :
+        echo "Building $pkg"
+        nom build -f packages.nix "$pkg" --no-link || :
     done
+    echo "Determing derivations to push to attic"
     OUTPATHS="$(nix eval -f packages.nix --apply 'x: let
         inputs = import ./flake-compat/inputs.nix;
         packages = x {inherit inputs;};
@@ -59,36 +65,49 @@ buildpkgs cache="cfg-actions":
             else [];
         outPaths = lib.flatten (getOutPaths drvs);
         in lib.concatStringsSep " " outPaths' --impure --raw)"
-    for OUTPATH in $OUTPATHS ; do
-        if [[ -e "$OUTPATH" ]]; then
-            (nix-store --query --requisites --include-outputs "$OUTPATH" | xargs attic push "{{cache}}" &> /dev/null ) || :
-        fi
-    done
+    if [[ -n "{{cache}}" ]]; then
+        echo "Pushing derivations to attic"
+        for OUTPATH in $OUTPATHS ; do
+            if [[ -e "$OUTPATH" ]]; then
+                (nix-store --query --requisites --include-outputs "$OUTPATH" | xargs attic push "{{cache}}" &> /dev/null ) || :
+            fi
+        done
+    fi
 
 build host=hostname *FLAGS="":
-    #!/usr/bin/env bash
-    nom build -f flake-compat/inputs.nix "self.nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
-    (nix eval -f flake-compat/inputs.nix --apply 'inputs: let
-        build = inputs.self.nixosConfigurations.{{host}}.config.system.build.toplevel;
-        drvs = builtins.map (drv: drv.outPath) build.all;
+    # Build configuration
+    @nom build -f . "nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
+    # Push configuration build to attic
+    @(nix eval -f . --apply 'self: let \
+        build = self.nixosConfigurations.{{host}}.config.system.build.toplevel; \
+        drvs = builtins.map (drv: drv.outPath) build.all; \
         in builtins.toString drvs' --raw | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 switch *FLAGS:
-    @nixos apply . --use-nom {{FLAGS}}
-    # Use flakes here since the git revision is different
-    @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
+    # Build configuration
+    @nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
+    # Run nixos-rebuild-ng
+    @run0 nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" switch
+    # Push configuration build to attic
+    @(nix eval -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 boot *FLAGS:
-    @nixos apply . --use-nom --no-activate {{FLAGS}}
-    # Use flakes here since the git revision is different
-    @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
+    # Build configuration
+    @nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
+    # Run nixos-rebuild-ng
+    @run0 nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" boot
+    # Push configuration build to attic
+    @(nix eval -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 test *FLAGS:
-    @nixos apply . --use-nom --no-boot {{FLAGS}}
-    # Use flakes here since the git revision is different
-    @(nix eval '.#nixosConfigurations.{{hostname}}.config.system.build.toplevel' --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
+    # Build configuration
+    @nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
+    # Run nixos-rebuild-ng
+    @run0 nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" test
+    # Push configuration build to attic
+    @(nix eval -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
         | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 check *FLAGS:
@@ -108,17 +127,20 @@ rekey:
     @sops updatekeys -y home/secrets.yaml
 
 iso variant="minimal" *FLAGS="":
-    #!/usr/bin/env bash
-    nom build --impure --expr '(import ./flake-compat/inputs.nix).self.nixosConfigurations.iso-{{variant}}.config.system.build.isoImage' {{FLAGS}}
-    (nix eval -f flake-compat/inputs.nix --apply 'inputs: let
-        inherit (inputs.self.nixosConfigurations.iso-{{variant}}.config.system.build) isoImage;
-        drvs = builtins.map (drv: drv.outPath) isoImage.all;
+    # Build ISO
+    @nom build --impure --expr '(import ./.).nixosConfigurations.iso-{{variant}}.config.system.build.isoImage' {{FLAGS}}
+    # Push ISO build to attic
+    @(nix eval -f . --apply 'self: let \
+        inherit (self.nixosConfigurations.iso-{{variant}}.config.system.build) isoImage; \
+        drvs = builtins.map (drv: drv.outPath) isoImage.all; \
         in builtins.toString drvs' --raw --impure | tr ' ' '\n' | xargs -n1 just attic-push) || :
 
 vm variant="minimal" *FLAGS="":
     @just iso {{variant}}
+    # Run VM
     @find result/iso -type f -name "*.iso" | head -n1 | xargs -I% nix run 'nixpkgs#qemu_kvm' -- -boot d -smbios type=0,uefi=on -m 2G -cdrom % {{FLAGS}}
 
 serialvm variant="minimal" *FLAGS="":
     @just iso {{variant}}
+    # Run VM
     @find result/iso -type f -name "*.iso" | head -n1 | xargs -I% nix run 'nixpkgs#qemu_kvm' -- -boot d -smbios type=0,uefi=on -m 2G -nographic -serial mon:stdio -cdrom % {{FLAGS}}

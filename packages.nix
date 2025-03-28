@@ -32,7 +32,5 @@ in
       matrix-synapse-unwrapped
       ;
 
-    inherit (inputs.nixos-cli.packages.${pkgs.hostPlatform.system}) nixos;
-
     freshrssExts = pkgs.lib.attrsets.recurseIntoAttrs (pkgs.callPackage ./legacyPackages/freshrss {});
   }
