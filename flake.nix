@@ -57,8 +57,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-cli.url = "github:water-sucks/nixos";
-
     carapace = {
       url = "github:carapace-sh/carapace-bin";
       flake = false;

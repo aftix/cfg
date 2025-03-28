@@ -29,7 +29,6 @@
     inputs.sops-nix.nixosModules.sops
     inputs.nix-index-database.nixosModules.nix-index
     inputs.srvos.nixosModules.mixins-trusted-nix-caches
-    inputs.nixos-cli.nixosModules.nixos-cli
     inputs.preservation.nixosModules.default
     ({
       pkgs,

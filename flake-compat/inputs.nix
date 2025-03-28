@@ -62,7 +62,6 @@ in
       lanzaboote = (import rawInputs.lanzaboote) // {outPath = builtins.toString rawInputs.lanzaboote;};
       srvos = (import rawInputs.srvos) // {outPath = builtins.toString rawInputs.srvos;};
       stylix = (import rawInputs.stylix) // {outPath = builtins.toString rawInputs.stylix;};
-      nixos-cli = (import rawInputs.nixos-cli) // {outPath = builtins.toString rawInputs.nixos-cli;};
       lix = (import rawInputs.lix) // {outPath = builtins.toString rawInputs.lix;};
 
       nixpkgs = let
