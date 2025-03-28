@@ -44,7 +44,9 @@ in {
       domain = "attic.${domain}";
     };
 
-    www = {
+    www = let
+      node = (import ../../nodes.nix).fermi;
+    in {
       blog = {
         enable = true;
         inherit domain;
@@ -84,8 +86,7 @@ in {
       };
 
       acmeDomain = domain;
-      ip = "170.130.165.174";
-      ipv6 = "2a0b:7140:8:1:5054:ff:fe84:ed8c";
+      inherit (node) ip ipv6;
     };
 
     matrix = {

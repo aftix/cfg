@@ -61,4 +61,4 @@ jobs:
     
       - name: Deploy fermi
         run: |
-          ./.github/deploy-node.bash "fermi" "170.130.165.174"
+          ./.github/deploy-node.bash "fermi"
