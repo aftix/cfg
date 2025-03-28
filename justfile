@@ -113,13 +113,26 @@ test *FLAGS:
 check *FLAGS:
     @nix flake check {{FLAGS}}
 
-deploy node="fermi" *FLAGS="":
-    @nom build {{FLAGS}} --out-link .deploy-rs 'github:serokell/deploy-rs'
-    @just attic-push "./.deploy-rs" || :
-    @nix run {{FLAGS}} 'github:serokell/deploy-rs' '.#{{node}}' -- -- --impure
-
-deploy-override node="fermi":
-    @just deploy {{node}} --inputs-from .
+deploy node="fermi" mode="switch" *FLAGS="":
+    #!/usr/bin/env bash
+    IP="$(nix eval --raw -f nodes.nix --apply 'x: x.{{node}}.ip')"
+    BUILD_USER="$(nix eval --raw -f nodes.nix --apply 'x: x.{{node}}.user')"
+    BUILD_HOST="--build-host ${BUILD_USER}@${IP}"
+    if [[ "$(nix eval --impure --raw -E 'builtins.currentSystem')" = \
+        "$(nix eval --raw -f . --apply 'x: x.nixosConfigurations.{{node}}.config.nixpkgs.hostPlatform.system')" ]]; then
+        echo "Building {{node}} configuration locally"
+        nom build -f . "nixosConfigurations.{{node}}.config.system.build.toplevel" --no-link {{FLAGS}}
+        BUILD_HOST=""
+        echo "Pushing {{node}} derivations to attic"
+        (nix eval -f . "nixosConfigurations.{{node}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
+            | tr ' ' '\n' | xargs -n1 just attic-push) || :
+    fi
+    SUDO="--sudo"
+    [[ "$BUILD_USER" = "root" ]] && SUDO=""
+    echo "BUILD_HOST: $BUILD_HOST"
+    echo "SUDO: $SUDO"
+    echo "TARGET_HOST: $TARGET_HOST"
+    nixos-rebuild-ng $BUILD_HOST --target-host "${BUILD_USER}@${IP}" $SUDO --attr "nixosConfigurations.{{node}}" "{{mode}}"
 
 rekey:
     @sops updatekeys -y host/secrets.yaml

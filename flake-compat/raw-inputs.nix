@@ -39,14 +39,6 @@ let
     (mapAttrs (name: nodeName: fetchNode nodeName))
   ];
 
-  # Get the "systems" input from flake-utils
-  flake-utils = fetchNode lockFile.nodes.${lockFile.nodes.root.inputs.deploy-rs}.inputs.utils;
-  nix-systems = let
-    flakeUtilsNode = lockFile.nodes.${lockFile.nodes.root.inputs.deploy-rs}.inputs.utils;
-    systemsNode = lockFile.nodes.${flakeUtilsNode}.inputs.systems;
-  in
-    fetchNode systemsNode;
-
   # Get the "crane" input from attic
   crane = let
     atticNode = lockFile.nodes.root.inputs.attic;
@@ -55,5 +47,5 @@ let
 in
   fetchedInputs
   // {
-    inherit nixpkgs nix-systems flake-utils lib lockFile crane;
+    inherit nixpkgs lib lockFile crane;
   }

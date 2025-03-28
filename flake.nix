@@ -27,11 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     srvos = {
       url = "github:numtide/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -82,7 +77,6 @@
   outputs = {
     self,
     nixpkgs,
-    deploy-rs,
     ...
   } @ inputs: let
     myLib = import ./lib.nix inputs;
@@ -121,11 +115,11 @@
     in
       pkgs.alejandra or pkgs.nix-fmt);
 
-    checks = myLib.forEachSystem (sys: nixpkgs.lib.attrsets.optionalAttrs (deploy-rs.lib ? "${sys}") (deploy-rs.lib.${sys}.deployChecks self.deploy));
-
     legacyPackages = myLib.forEachSystem (system:
       import ./packages.nix {
         inherit inputs overlay pkgsCfg system;
       });
+
+    nodes = import ./nodes.nix;
   };
 }

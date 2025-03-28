@@ -10,24 +10,12 @@ in
   makeInputsExtensible (
     inputs: let
       myLib = inputs.self.lib;
-
-      # Get "lib" flake output from flake-utils
-      flake-utils = {
-        outPath = builtins.toString rawInputs.flake-utils;
-        lib = import "${rawInputs.flake-utils}/lib.nix" {
-          defaultSystems = import rawInputs.nix-systems;
-        };
-      };
     in {
       # This will do the same fixed point magic as a normal self input for a flake instantiation
       # This way, we only have to figure out how to import all the inputs, not set up the flake schema again
       self = thisFlake.outputs inputs;
 
       nix-index-database = myLib.getFlakeOutputs rawInputs.nix-index-database {inherit (inputs) nixpkgs;};
-      deploy-rs = myLib.getFlakeOutputs rawInputs.deploy-rs {
-        utils = flake-utils;
-        inherit (inputs) nixpkgs;
-      };
 
       inherit (rawInputs) carapace hostsBlacklist nginxBlacklist hyprland;
 
