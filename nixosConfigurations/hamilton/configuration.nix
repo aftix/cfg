@@ -11,7 +11,7 @@ in {
     ../../hardware/disko/hamilton.nix
 
     ../../host/opt/aftix.nix
-    ../../host/opt/backup
+    ../../host/opt/btrfs-snapshots
     ../../host/opt/bluetooth.nix
     ../../host/opt/cups.nix
     ../../host/opt/display.nix
@@ -26,13 +26,28 @@ in {
     defaultSopsFile = ../../secrets/host/secrets.yaml;
     age.keyFile = "/home/aftix/.local/persist/home/aftix/.config/sops/age/keys.txt";
 
-    secrets.gh_access_token = {};
+    secrets = {
+      gh_access_token = {};
+      restic_hamilton_password = {};
+      restic_hamilton_aws_id = {};
+      restic_hamilton_aws_secret = {};
+    };
 
-    templates.nixAccessTokens = {
-      mode = "0444";
-      content = ''
-        extra-access-tokens = github.com=${config.sops.placeholder.gh_access_token}
-      '';
+    templates = {
+      nixAccessTokens = {
+        mode = "0444";
+        content = ''
+          extra-access-tokens = github.com=${config.sops.placeholder.gh_access_token}
+        '';
+      };
+
+      restic = {
+        mode = "0400";
+        content = ''
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder.restic_hamilton_aws_id}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.restic_hamilton_aws_secret}
+        '';
+      };
     };
   };
 
@@ -60,8 +75,6 @@ in {
         ];
       };
     };
-
-    backup.bucket = "aftix-hamilton-backup";
 
     greeterCfgExtra = ''
       monitor=desc:ASUSTek COMPUTER INC ASUS VG27W 0x0001995C,preferred,0x0,1
@@ -262,6 +275,48 @@ in {
     udev.packages = with pkgs; [yubikey-personalization android-udev-rules];
     xserver.videoDrivers = ["modesetting"];
   };
+
+  services.restic.backups.backblaze = {
+    backupPrepareCommand = lib.getExe (pkgs.writeNushellApplication {
+      name = "get-restic-paths";
+      runtimeInputs = [pkgs.util-linux];
+      text =
+        /*
+        nu
+        */
+        ''
+          $nu.pid | save -f /var/run/backupdisk.pid
+          mkdir /restic-backblaze-backup /var/run
+          mount -t btrfs -o subvolid=5 ${config.my.backup.localSnapshotDrive} /restic-backblaze-backup
+        '';
+    });
+    backupCleanupCommand = lib.getExe (pkgs.writeShellApplication {
+      name = "cleanup-restic-backup";
+      runtimeInputs = [pkgs.util-linux];
+      text = ''
+        umount /restic-backblaze-backup
+        rmdir /restic-backblaze-backup || :
+        rm /var/run/restic-backblaze-backup-files || :
+        rm /var/run/backupdisk.pid || :
+      '';
+    });
+
+    paths = ["/restic-backblaze-backup/${config.my.backup.snapshotPrefix}"];
+    exclude = ["/restic-backblaze-backup/${config.my.backup.snapshotPrefix}/*.[0-9]*-[0-9]*-[0-9]*"];
+
+    environmentFile = config.sops.templates.restic.path;
+    passwordFile = config.sops.secrets.restic_hamilton_password.path;
+    repository = "s3:s3.us-east-005.backblazeb2.com/aftix-hamilton-restic";
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+    inhibitsSleep = true;
+    initialize = true;
+    pruneOpts = ["--keep-last 156"];
+    checkOpts = ["--with-cache"];
+  };
+  systemd.services.restic-backups-backblaze.after = ["btrfs-snapshots.service"];
 
   # Hardware specific settings
 
