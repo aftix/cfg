@@ -18,7 +18,9 @@ in {
         "libvirtd"
         "lp"
         "dialout"
+        "lock-sessions"
       ];
+      type = with lib.types; listOf str;
     };
 
     uid = mkOption {default = 1000;};
@@ -111,6 +113,8 @@ in {
       extraGroups =
         [
           "wheel"
+          "power-management"
+          "idle-inhibit"
         ]
         ++ optionals myCfg.enable
         myCfg.extraGroups;
