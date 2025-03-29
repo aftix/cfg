@@ -40,7 +40,7 @@ in {
     disko = {
       rootDrive = {
         name = "nvme0n1";
-        mountOptions = ["discard=async"];
+        mountOptions = ["discard=async" "nosuid" "noexec" "relatime" "nodiratime"];
 
         xdgSubvolumeUsers = ["aftix"];
       };
@@ -142,7 +142,6 @@ in {
     login.u2fAuth = true;
     polkit-1.u2fAuth = true;
     su.u2fAuth = true;
-    sudo.u2fAuth = true;
     swaylock.u2fAuth = true;
   };
 

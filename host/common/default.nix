@@ -12,6 +12,7 @@ in {
     ./channels.nix
     ./coffeepaste.nix
     ./hostBlacklist
+    ./polkit.nix
     ./root.nix
     ./sleep.nix
     ./statics.nix
@@ -144,6 +145,13 @@ in {
         openssh
 
         python3
+
+        (pkgs.runCommandNoCCLocal "sudo-run0-wrapper" {
+            nativeBuildInputs = [pkgs.makeWrapper];
+          } ''
+            mkdir -p "$out/bin"
+            makeWrapper ${lib.escapeShellArg (lib.getExe' pkgs.systemd "run0")} "$out/bin/sudo"
+          '')
       ];
 
       pathsToLink = ["/share/zsh" "/share/bash-completion"];
@@ -233,11 +241,7 @@ in {
         pamMount = false;
       };
 
-      sudo = {
-        enable = true;
-        execWheelOnly = true;
-        extraConfig = "Defaults lecture = never";
-      };
+      sudo.enable = false;
     };
 
     systemd.services.nix-daemon.serviceConfig = {

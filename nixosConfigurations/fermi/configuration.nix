@@ -37,7 +37,7 @@ in {
   my = let
     domain = config.aftix.statics.primaryDomain;
   in {
-    users.aftix.extraGroups = [];
+    users.aftix.extraGroups = lib.mkForce ["manage-units"];
 
     attic = {
       enable = true;
@@ -121,18 +121,6 @@ in {
       ];
     };
   };
-
-  security.sudo.extraRules = [
-    {
-      groups = ["wheel"];
-      commands = [
-        {
-          command = "ALL";
-          options = ["NOPASSWD"];
-        }
-      ];
-    }
-  ];
 
   services = {
     bpftune.enable = true;
