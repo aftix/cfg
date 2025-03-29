@@ -131,7 +131,6 @@ in {
       enable = true;
       settings = {
         aliases.ss = ["show" "--stat"];
-        backend = "gpg";
         user = {
           name = "aftix";
           email = "aftix@aftix.xyz";
