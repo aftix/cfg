@@ -140,7 +140,6 @@ in {
           "/var/lib/bluetooth"
           "/var/lib/systemd/coredump"
           "/var/lib/systemd/timers"
-          "/root/.config/rclone"
         ];
         files = [
           "/var/lib/cups/printers.conf"

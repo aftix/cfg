@@ -9,7 +9,6 @@ in {
     ../../hardware/fermi.nix
 
     ../../host/opt/aftix.nix
-    ../../host/opt/basicbackup.nix
     ../../host/opt/docker.nix
     ../../host/opt/openssh.nix
     ../../host/opt/www
@@ -22,15 +21,28 @@ in {
     secrets = {
       freshrss_password = {};
       youtube_api_key = {};
+      restic_fermi_password = {};
+      restic_fermi_aws_id = {};
+      restic_fermi_aws_secret = {};
     };
 
-    templates.youtubeapi_keys = {
-      mode = "0400";
-      owner = config.my.www.user;
-      inherit (config.my.www) group;
-      content = ''
-        ${config.sops.placeholder.youtube_api_key}
-      '';
+    templates = {
+      youtubeapi_keys = {
+        mode = "0400";
+        owner = config.my.www.user;
+        inherit (config.my.www) group;
+        content = ''
+          ${config.sops.placeholder.youtube_api_key}
+        '';
+      };
+
+      restic = {
+        mode = "0400";
+        content = ''
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder.restic_fermi_aws_id}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.restic_fermi_aws_secret}
+        '';
+      };
     };
   };
 
@@ -106,25 +118,29 @@ in {
         identd.enable = true;
       };
     };
-
-    backup = {
-      bucket = "fermi-backup";
-      directories = [
-        "/var/lib"
-        "/var/log"
-        "/srv"
-        "/home"
-        "/state"
-      ];
-      excludes = [
-        "/var/lib/coffeepaste/**"
-      ];
-    };
   };
 
   services = {
     bpftune.enable = true;
     openssh.settings.AllowUsers = ["aftix"];
+  };
+
+  services.restic.backups.backblaze = {
+    paths = [
+      "/var/lib"
+      "/var/log"
+      "/srv"
+      "/home"
+      "/state"
+    ];
+    exclude = ["/var/lib/coffeepaste/**"];
+    environmentFile = config.sops.templates.restic.path;
+    passwordFile = config.sops.secrets.restic_fermi_password.path;
+    repository = "s3:s3.us-east-005.backblazeb2.com/aftix-fermi-restic";
+    inhibitsSleep = true;
+    initialize = true;
+    pruneOpts = ["--keep-last 156"];
+    checkOpts = ["--with-cache"];
   };
 
   users = {
