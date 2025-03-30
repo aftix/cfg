@@ -64,7 +64,7 @@ in {
                               "nodev"
                               "nosuid"
                             ]
-                            ++ cfg.rootDrive.mountOptions;
+                            ++ (builtins.filter (opt: opt != "noexec") cfg.rootDrive.mountOptions);
                         };
                         "local/${username}/cache" = {
                           mountpoint = "${home}/.cache";
@@ -87,7 +87,7 @@ in {
                         };
                         "local/nix" = {
                           mountpoint = "/nix";
-                          inherit (cfg.rootDrive) mountOptions;
+                          mountOptions = builtins.filter (opt: opt != "noexec") cfg.rootDrive.mountOptions;
                         };
                         "local/state" = {
                           mountpoint = "/state";
