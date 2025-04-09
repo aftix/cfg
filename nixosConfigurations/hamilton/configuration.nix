@@ -55,7 +55,7 @@ in {
     disko = {
       rootDrive = {
         name = "nvme0n1";
-        mountOptions = ["discard=async" "nosuid" "noexec" "relatime" "nodiratime"];
+        mountOptions = ["discard=async" "nosuid" "relatime" "nodiratime"];
 
         xdgSubvolumeUsers = ["aftix"];
       };
