@@ -285,7 +285,7 @@ in {
         */
         ''
           $nu.pid | save -f /var/run/backupdisk.pid
-          mkdir /restic-backblaze-backup /var/run
+          mkdir /restic-backblaze-backup /var/run /var/run/restic-backups-backblaze
           mount -t btrfs -o subvolid=5 ${config.my.backup.localSnapshotDrive} /restic-backblaze-backup
         '';
     });
