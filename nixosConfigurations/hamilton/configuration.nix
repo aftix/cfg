@@ -31,6 +31,26 @@ in {
       restic_hamilton_password = {};
       restic_hamilton_aws_id = {};
       restic_hamilton_aws_secret = {};
+
+      hydra_store_bucket = {
+        sopsFile = ../../secrets/host/srv_secrets.yaml;
+      };
+      hydra_store_url = {
+        sopsFile = ../../secrets/host/srv_secrets.yaml;
+      };
+      hydra_store_key_id = {
+        sopsFile = ../../secrets/host/srv_secrets.yaml;
+      };
+      hydra_store_token = {
+        sopsFile = ../../secrets/host/srv_secrets.yaml;
+      };
+      hydra_store_secret_key = {
+        sopsFile = ../../secrets/host/srv_secrets.yaml;
+      };
+      hydra_store_public_key = {
+        sopsFile = ../../secrets/host/srv_secrets.yaml;
+        mode = "0444";
+      };
     };
 
     templates = {
@@ -38,6 +58,14 @@ in {
         mode = "0444";
         content = ''
           extra-access-tokens = github.com=${config.sops.placeholder.gh_access_token}
+        '';
+      };
+
+      hydraStore = {
+        mode = "0400";
+        content = ''
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder.hydra_store_key_id}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.hydra_store_token}
         '';
       };
 

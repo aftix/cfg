@@ -15,6 +15,13 @@ in {
       description = "My primary domain name";
     };
 
+    codeForge = mkOption {
+      default = "forge.${statics.primaryDomain}";
+      type = types.str;
+      readOnly = true;
+      description = "Domain of my forgejo instance";
+    };
+
     identityService = mkOption {
       default = "identity.${statics.primaryDomain}";
       type = types.str;

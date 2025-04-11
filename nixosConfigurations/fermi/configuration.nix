@@ -11,6 +11,7 @@ in {
     ../../host/opt/aftix.nix
     ../../host/opt/docker.nix
     ../../host/opt/openssh.nix
+    ../../host/opt/pull-updates.nix
     ../../host/opt/www
   ];
 
@@ -45,6 +46,8 @@ in {
       };
     };
   };
+
+  aftix.pull-updates.enable = true;
 
   my = let
     domain = config.aftix.statics.primaryDomain;

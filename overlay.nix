@@ -10,7 +10,6 @@ inputs: final: prev: let
       freshrssExts = recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
     };
   aftixOverlayedPkgs = {
-    lix = prev.lix.override {aws-sdk-cpp = null;};
     hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
 
     inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;

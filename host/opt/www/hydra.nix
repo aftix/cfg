@@ -15,6 +15,8 @@
 
   psqlDir = "/var/run/postgresql";
 in {
+  imports = [../hydra-substituter.nix];
+
   options.my.www.hydra = {
     enable = mkEnableOption "hydra";
 
@@ -185,50 +187,71 @@ in {
     sops = {
       secrets = {
         hydra_gha_token = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
 
         hydra_forgejo_user = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
         hydra_forgejo_token = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
 
         hydra_smtp_user = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
         hydra_smtp_password = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
         hydra_smtp_port = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
 
         hydra_ldap_bindpw = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
 
         hydra_store_bucket = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
         hydra_store_url = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
         hydra_store_key_id = {
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
         };
         hydra_store_token = {
+          mode = "0440";
+          owner = "hydra";
+          group = "hydra";
+        };
+        hydra_store_secret_key = {
+          mode = "0440";
+          owner = "hydra";
+          group = "hydra";
+        };
+        hydra_store_public_key = {
+          mode = "0444";
           owner = "hydra";
           group = "hydra";
         };
@@ -240,13 +263,13 @@ in {
           owner = "hydra";
           group = "hydra";
           content = ''
+            store_uri = ${config.aftix.hydra-substituter.store-uri}
             <github_authorization>
-            NixOS = Bearer ${config.sops.placeholder.hydra_gha_token}
+              NixOS = Bearer ${config.sops.placeholder.hydra_gha_token}
             </github_authorization>
             <gitea_authorization>
               ${config.sops.placeholder.hydra_forgejo_user}=${config.sops.placeholder.hydra_forgejo_token}
             </gitea_authorization>
-            store_uri = s3://${config.sops.placeholder.hydra_store_bucket}?compression=zstd&parallel-compression=true&write-nar-listing=1&ls-compression=br&log-compression=br&secret-key=${config.sops.templates.hydraStore.path}&scheme=https&endpoint=${config.sops.placeholder.hydra_store_url}
           '';
         };
 
@@ -264,13 +287,13 @@ in {
           owner = "hydra";
           group = "hydra";
           content = ''
-            aws_access_key_id=${config.sops.placeholder.hydra_store_key_id}
-            aws_secret_access_key=${config.sops.placeholder.hydra_store_token}
+            AWS_ACCESS_KEY_ID=${config.sops.placeholder.hydra_store_key_id}
+            AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.hydra_store_token}
           '';
         };
 
         hydraEnv = {
-          mode = "0400";
+          mode = "0440";
           owner = "hydra";
           group = "hydra";
           content = ''
@@ -282,11 +305,19 @@ in {
       };
     };
 
-    systemd.services = {
-      hydra-notify.serviceConfig.EnvironmentFile = config.sops.templates.hydraEnv.path;
+    systemd.services = let
+      credsFile = config.aftix.hydra-substituter.credentials-file-path;
+    in
+      {
+        hydra-notify.serviceConfig.EnvironmentFile = config.sops.templates.hydraEnv.path;
 
-      # Since DBI string isn't exactly what the module expects, this isn't added by it
-      hydra-init.after = ["postgresql.service"];
-    };
+        # Since DBI string isn't exactly what the module expects, this isn't added by it
+        hydra-init.after = ["postgresql.service"];
+      }
+      // lib.optionalAttrs (credsFile != null) {
+        hydra-evaluator.serviceConfig.EnvironmentFile = credsFile;
+        hydra-notify.serviceConfig.EnvironmentFile = credsFile;
+        hydra-queue-runner.serviceConfig.EnvironmentFile = credsFile;
+      };
   };
 }
