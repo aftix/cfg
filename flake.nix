@@ -79,11 +79,7 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    ...
-  } @ inputs: let
+  outputs = inputs: let
     myLib = import ./lib.nix inputs;
     nixSettings = import ./nix-settings.nix;
     overlay = import ./overlay.nix inputs;
@@ -126,5 +122,10 @@
       });
 
     nodes = import ./nodes.nix;
+
+    hydraJobs = import ./hydraJobs.nix {
+      inherit inputs pkgsCfg;
+      system = "x86_64-linux";
+    };
   };
 }

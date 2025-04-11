@@ -70,7 +70,7 @@ in
 
     meta = with lib; {
       description = "YouTube operational API works when YouTube Data API v3 fails.";
-      homepage = "https://github.com/${owner}/${pname}";
+      homepage = "https://github.com/${owner}/${self.pname}";
       license = licenses.mit;
       platforms = with platforms; linux;
     };
