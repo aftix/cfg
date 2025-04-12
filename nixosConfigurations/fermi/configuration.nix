@@ -186,6 +186,12 @@ in {
 
   programs.dconf.enable = true;
 
+  systemd.services.hydra-evaluator.serviceConfig = {
+    MemoryHigh = "80%";
+    MemoryMax = "90%";
+    MemorySwapMax = "75%";
+  };
+
   networking = {
     hostName = "fermi";
 
