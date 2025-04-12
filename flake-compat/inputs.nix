@@ -29,6 +29,7 @@ in
                 (final: _:
                   {
                     craneLib = import rawInputs.crane {pkgs = final;};
+                    nix = final.nixVersions.nix_2_24;
                   }
                   // (import "${rawInputs.crane}/pkgs" {
                     pkgs = final;
