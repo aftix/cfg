@@ -16,6 +16,7 @@ in {
     ../../host/opt/cups.nix
     ../../host/opt/display.nix
     ../../host/opt/docker.nix
+    ../../host/opt/hydra-substituter.nix
     ../../host/opt/network.nix
     ../../host/opt/silentboot.nix
     ../../host/opt/sound.nix

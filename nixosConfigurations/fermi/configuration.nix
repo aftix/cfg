@@ -10,6 +10,7 @@ in {
 
     ../../host/opt/aftix.nix
     ../../host/opt/docker.nix
+    ../../host/opt/hydra-substituter.nix
     ../../host/opt/openssh.nix
     ../../host/opt/pull-updates.nix
     ../../host/opt/www
