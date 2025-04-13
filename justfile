@@ -15,14 +15,6 @@ attic-push path cache="cfg-actions":
 buildpkg pkg cache="cfg-actions":
     # Build the package
     @systemd-inhibit --mode=block --why="Building package {{pkg}}" --who="$(pwd)/justfile" nom build -f packages.nix '{{pkg}}'
-    # Push the package build to attic
-    @[[ -n "{{cache}}" ]] && for OUTPATH in $(nix eval -f packages.nix --raw --apply 'x: builtins.toString (builtins.map (pkg: pkg.outPath) ((x {}).{{pkg}}.all))'); do \
-        if [[ -e "$OUTPATH" ]]; then \
-            (nix-store --query --requisites --include-outputs "$OUTPATH" | \
-                systemd-inhibit --mode=block --why="Pushing artifacts" --who="$(pwd)/justfile" \
-                    xargs attic push "{{cache}}" &> /dev/null ) || : ; \
-        fi \
-    done
 
 buildpkgs cache="cfg-actions":
     #!/usr/bin/env bash
@@ -52,45 +44,11 @@ buildpkgs cache="cfg-actions":
         echo "Building $pkg"
         systemd-inhibit --mode=block --why="Building package $pkg" --who="$(pwd)/justfile" nom build -f packages.nix "$pkg" --no-link || :
     done
-    echo "Determing derivations to push to attic"
-    OUTPATHS="$(nix eval -f packages.nix --apply 'x: let
-        inputs = import ./flake-compat/inputs.nix;
-        packages = x {inherit inputs;};
-        inherit (inputs.nixpkgs) lib;
-        getDrvs = lib.filterAttrs (name: value: lib.isDerivation value || value.recurseForDerivations or false);
-        drvs = lib.concatMapAttrs (
-            name: value:
-                if lib.isDerivation value then {${name} = value;}
-                else if lib.isAttrs value then {${name} = getDrvs value;}
-                else {}
-            ) packages;
-        getOutPaths = val: if lib.isDerivation val then
-                builtins.map (lib.getAttr "outPath") val.all
-            else if lib.isAttrs val then
-                lib.flatten (lib.mapAttrsToList (_: getOutPaths) val)
-            else [];
-        outPaths = lib.flatten (getOutPaths drvs);
-        in lib.concatStringsSep " " outPaths' --impure --raw)"
-    if [[ -n "{{cache}}" ]]; then
-        echo "Pushing derivations to attic"
-        for OUTPATH in $OUTPATHS ; do
-            if [[ -e "$OUTPATH" ]]; then
-                (nix-store --query --requisites --include-outputs "$OUTPATH" | systemd-inhibit --mode=block --why="Pushing artifacts" --who="$(pwd)/justfile" \
-                    xargs attic push "{{cache}}" &> /dev/null ) || :
-            fi
-        done
-    fi
 
 build host=hostname *FLAGS="":
     # Build configuration
     @systemd-inhibit --mode=block --why="Building configuration {{host}}" --who="$(pwd)/justfile" \
         nom build -f . "nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
-    # Push configuration build to attic
-    @(nix eval -f . --apply 'self: let \
-        build = self.nixosConfigurations.{{host}}.config.system.build.toplevel; \
-        drvs = builtins.map (drv: drv.outPath) build.all; \
-        in builtins.toString drvs' --raw | tr ' ' '\n' | systemd-inhibit --mode=block --why="Pushing artifacts" --who="$(pwd)/justfile" \
-            xargs -n1 just attic-push) || :
 
 switch *FLAGS:
     # Build configuration
@@ -99,9 +57,6 @@ switch *FLAGS:
     # Run nixos-rebuild-ng
     @run0 systemd-inhibit --mode=block --why="Switching to new configuration" --who="$(pwd)/justfile" \
         nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" switch
-    # Push configuration build to attic
-    @(nix eval -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
-        | tr ' ' '\n' | systemd-inhibit --mode=block --why="Pushing artifacts" --who="$(pwd)/justfile" xargs -n1 just attic-push) || :
 
 boot *FLAGS:
     # Build configuration
@@ -110,9 +65,6 @@ boot *FLAGS:
     # Run nixos-rebuild-ng
     @run0 systemd-inhibit --mode=block --why="Switching boot menu default" --who="$(pwd)/justfile" \
         nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" boot
-    # Push configuration build to attic
-    @(nix eval -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
-        | tr ' ' '\n' | systemd-inhibit --mode=block --why="Pushing artifacts" --who="$(pwd)/justfile" xargs -n1 just attic-push) || :
 
 test *FLAGS:
     # Build configuration
@@ -121,9 +73,6 @@ test *FLAGS:
     # Run nixos-rebuild-ng
     @run0 systemd-inhibit --mode=block --why="Activating new configuration" --who="$(pwd)/justfile" \
         nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" test
-    # Push configuration build to attic
-    @(nix eval -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
-        | tr ' ' '\n' | systemd-inhibit --mode=block --why="Pushing artifacts" --who="$(pwd)/justfile" xargs -n1 just attic-push) || :
 
 check *FLAGS:
     @nix flake check {{FLAGS}}
@@ -139,9 +88,6 @@ deploy node="fermi" mode="switch" *FLAGS="":
         systemd-inhibit --mode=block --why="Building configuration {{node}}" --who="$(pwd)/justfile" \
             nom build -f . "nixosConfigurations.{{node}}.config.system.build.toplevel" --no-link {{FLAGS}}
         BUILD_HOST=""
-        echo "Pushing {{node}} derivations to attic"
-        (nix eval -f . "nixosConfigurations.{{node}}.config.system.build.toplevel" --apply 'x: builtins.toString (builtins.map (drv: drv.outPath) x.all)' --raw \
-            | tr ' ' '\n' | systemd-inhibit --mode=block --why="Pushing artifacts" --who="$(pwd)/justfile" xargs -n1 just attic-push) || :
     fi
     SUDO="--sudo"
     [[ "$BUILD_USER" = "root" ]] && SUDO=""
