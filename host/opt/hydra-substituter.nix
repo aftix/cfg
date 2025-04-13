@@ -49,7 +49,7 @@ in {
   config = {
     sops.templates = {
       hydraSubstituter = {
-        mode = "0400";
+        mode = "0444";
         content = ''
           extra-substituters = ${cfg.store-uri}
         '';

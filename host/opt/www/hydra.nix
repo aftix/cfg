@@ -283,7 +283,7 @@ in {
         };
 
         hydraStore = {
-          mode = "0400";
+          mode = "0444";
           owner = "hydra";
           group = "hydra";
           content = ''

@@ -63,7 +63,7 @@ in {
       };
 
       hydraStore = {
-        mode = "0400";
+        mode = "0444";
         content = ''
           AWS_ACCESS_KEY_ID=${config.sops.placeholder.hydra_store_key_id}
           AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.hydra_store_token}
