@@ -48,10 +48,11 @@
               };
           });
 
-    packageJobs = packagePlatforms (import ./packages.nix {
-      inherit inputs pkgs;
-      overlay = _: _: {};
-    });
+    packageJobs = packagePlatforms ((import ./packages.nix {
+        inherit inputs pkgs;
+        overlay = _: _: {};
+      })
+      // {inherit (pkgs) lix;});
     nixosJobs =
       concatMapAttrs (name: cfg: {
         "nixos-configuration-${name}" =
