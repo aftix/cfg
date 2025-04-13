@@ -62,6 +62,7 @@
               description = "Build job for nixos configuration ${name}";
               homepage = "https://forgejo.aftix.xyz/aftix/cfg";
               schedulingPriority = 50;
+              license = lib.licenses.eupl12;
             };
           };
       })
