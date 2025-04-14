@@ -14,7 +14,6 @@ in {
     ./hostBlacklist
     ./polkit.nix
     ./root.nix
-    ./sleep.nix
     ./statics.nix
     ./swayosd.nix
     ./youtube_operational_api.nix
