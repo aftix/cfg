@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }: let
   inherit (lib.options) mkOption mkEnableOption;
@@ -112,6 +113,9 @@ in {
 
       forgejo = {
         enable = true;
+
+        package = pkgs.forgejo;
+
         secrets.mailer = {
           FROM = config.sops.secrets.forgejo_from_addr.path;
           SMTP_ADDR = config.sops.secrets.forgejo_smtp_addr.path;
@@ -136,18 +140,54 @@ in {
             };
           };
 
+          cron.ENABLED = true;
+          "cron.git_gc_repos".ENABLED = true;
+          "cron.resync_all_sshkeys".ENABLED = true;
+          "cron.delete_missing_repos".ENABLED = true;
+          "cron.update_checker".ENABLED = false;
+          "cron.delete_old_actions".ENABLED = true;
+          "cron.delete_old_system_notices".ENABLED = true;
+          "cron.delete_inactive_accounts".ENABLED = true;
+
+          indexer.REPO_INDEXER_ENABLED = true;
+
           database.SQLITE_JOURNAL_MODE = "WAL";
+
+          oauth2_client = {
+            ENABLE_AUTO_REGISTRATION = true;
+            UPDATE_AVATAR = true;
+          };
 
           mailer = {
             ENABLED = true;
             PROTOCOL = "smtps";
           };
+
+          "markup.asciidoc" = {
+            ENABLED = true;
+            NEED_POSTPROCESS = true;
+            FILE_EXTENSIONS = ".adoc,.asciidoc";
+            RENDER_COMMAND = "${lib.getExe pkgs.asciidoctor} --embedded --safe-mode=secure --out-file=- -";
+            IS_INPUT_FILE = false;
+          };
+          "markup.latex" = {
+            ENABLED = true;
+            NEED_POSTPROCESS = false;
+            FILE_EXTENSIONS = ".tex,.latex";
+            RENDER_COMMAND = "${lib.getExe pkgs.pandoc} -f latex -t html -s";
+            IS_INPUT_FILE = false;
+            RENDER_CONTENT_MODE = "iframe";
+          };
+
           security.LOGIN_REMEMBER_DAYS = 90;
+
           service = {
             DISABLE_REGISTRATION = true;
             REGISTER_EMAIL_CONFIRM = true;
             ENABLE_NOTIFY_MAIL = true;
+            ENABLE_INTERNAL_SIGNIN = false;
           };
+
           server = {
             DOMAIN = cfg.domain;
             PROTOCOL = "http+unix";
@@ -157,6 +197,7 @@ in {
             SSH_DOMAIN = cfg.domain;
             LANDING_PAGE = "explore";
           };
+
           federation.ENABLED = true;
         };
       };
