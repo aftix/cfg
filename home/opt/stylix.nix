@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   stylix,
   ...
@@ -59,8 +60,8 @@
       xresources.enable = false;
       sxiv.enable = false;
 
-      kde.enable = pkgs.system == "x86_64-linux";
-      gnome.enable = pkgs.system == "x86_64-linux";
+      kde.enable = lib.strings.hasSuffix "-linux" pkgs.system;
+      gnome.enable = lib.strings.hasSuffix "-linux" pkgs.system;
     };
   };
 

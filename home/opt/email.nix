@@ -12,9 +12,9 @@
   gpgEncryptionKey = "3D98EDD231B4337B221C92E697C4A20471616623";
 in {
   nixpkgs.overlays = [
-    (final: prev: {
-      mutt-purgecache = pkgs.writeScriptBin "mutt-purgecache" ''
-        #!${pkgs.stdenv.shell}
+    (_: prev: {
+      mutt-purgecache = prev.writeScriptBin "mutt-purgecache" ''
+        #!${prev.stdenv.shell}
         CACHE_LIMIT=512000 #KiB
 
         cd "$1" 2>/dev/null

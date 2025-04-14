@@ -36,10 +36,12 @@ in {
 
         jq
         nix-doc
+        nix-tree
         manix
         sops
         age
         fzf
+        micro
 
         xz
         zstd
@@ -54,8 +56,10 @@ in {
         LESSHISTFILE = mkDefault "-";
         ZDOTDIR = mkDefault "${configHome}/zsh";
 
-        PAGER = mkDefault "${pkgs.coreutils}/bin/less";
+        EDITOR = mkDefault "micro";
         MANPAGER = mkDefault "${pkgs.coreutils}/bin/less";
+        PAGER = mkDefault "${pkgs.coreutils}/bin/less";
+        VISUAL = mkDefault "micro";
       };
 
       sessionPath = [
@@ -74,7 +78,7 @@ in {
       command-not-found.enable = false;
     };
 
-    services.ssh-agent.enable = pkgs.system == "x86_64-linux";
+    services.ssh-agent.enable = lib.strings.hasSuffix "-linux" pkgs.system;
     systemd.user.startServices = true;
   };
 }

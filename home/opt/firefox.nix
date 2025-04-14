@@ -4,19 +4,20 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkDefault mkIf;
+  inherit (lib) mkDefault mkIf mkMerge;
+  inherit (lib.strings) hasSuffix;
 in {
-  home.sessionVariables = {
-    MOZ_USE_XINPUT2 = mkIf (pkgs.system == "x86_64-linux") "1";
-    BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/firefox";
-  };
+  home.sessionVariables = mkMerge [
+    (mkIf (hasSuffix "-linux" pkgs.system) {
+      MOZ_USE_XINPUT2 = "1";
+    })
+
+    {BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/firefox";}
+  ];
 
   programs.firefox = {
     enable = true;
-    package =
-      if pkgs.system == "x86_64-linux"
-      then (with pkgs; (wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {}))
-      else null;
+    package = mkDefault (with pkgs; wrapFirefox (firefox-unwrapped.override {pipewireSupport = true;}) {});
 
     policies = {
       DontCheckDefaultBrowser = true;
