@@ -1,4 +1,4 @@
-inputs: final: prev: let
+{inputs ? (import ./.).inputs, ...}: final: prev: let
   inherit (final.lib.attrsets) recurseIntoAttrs;
 
   aftixPkgs =

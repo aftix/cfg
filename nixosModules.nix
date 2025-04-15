@@ -1,7 +1,6 @@
 {
-  inputs ? import ./inputs.nix,
-  overlay ? import ./overlay.nix inputs,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs overlay;},
+  inputs ? (import ./.).inputs,
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
   ...
 }: let
   nix-settings = let

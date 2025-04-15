@@ -1,10 +1,6 @@
-{
-  inputs ? import ./flake-compat/inputs.nix,
-  extraSpecialArgs ? import ./extraSpecialArgs.nix inputs,
-  ...
-}:
+{inputs ? (import ./.).inputs, ...}:
 inputs.self.lib.nixosConfigurationsFromDirectoryRecursive {
   directory = ./nixosConfigurations;
   dep-injects = inputs.self.lib.dependencyInjects {};
-  inherit extraSpecialArgs;
+  inherit (inputs.self.extra) extraSpecialArgs;
 }

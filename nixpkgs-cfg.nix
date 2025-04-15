@@ -1,15 +1,11 @@
-{
-  inputs ? import ./flake-compat/inputs.nix,
-  overlay ? import ./overlay.nix inputs,
-  ...
-}: {
+{inputs ? (import ./.).inputs, ...}: {
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
       inputs.attic.overlays.default
       inputs.lix-module.overlays.default
       inputs.self.lib.libpkgsOverlay
-      overlay
+      inputs.self.overlays.default
     ];
     config = {
       allowUnfreePredicate = pkg:

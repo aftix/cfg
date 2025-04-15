@@ -20,8 +20,7 @@ buildpkgs cache="cfg-actions":
     #!/usr/bin/env bash
     echo "Determining package list"
     NPKGS="$(nix eval -f packages.nix --apply 'x: let
-        inputs = import ./flake-compat/inputs.nix;
-        packages = x {inherit inputs;};
+        packages = x {};
         inherit (inputs.nixpkgs) lib;
         getDrvs = lib.filterAttrs (name: value: lib.isDerivation value || value.recurseForDerivations or false);
         drvs = lib.concatMapAttrs (

@@ -1,6 +1,6 @@
 let
-  inputs = import ../../flake-compat/inputs.nix;
-  lib = import ../../lib.nix inputs;
+  flake = import ../..;
+  inherit (flake) lib inputs;
   pkgs = import inputs.nixpkgs {overlays = [lib.libpkgsOverlay];};
 in {
   simple = pkgs.writeNushellApplication {
@@ -16,7 +16,7 @@ in {
 
   plugin = pkgs.writeNushellApplication {
     name = "plugin";
-    nuPlugins = [inputs.self.legacyPackages.${pkgs.hostPlatform.system}.nu_plugin_strutils];
+    nuPlugins = [flake.legacyPackages.${pkgs.hostPlatform.system}.nu_plugin_strutils];
     text = "'A…C' | str deunicode";
   };
 

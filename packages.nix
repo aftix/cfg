@@ -1,7 +1,6 @@
 {
-  inputs ? import ./flake-compat/inputs.nix,
-  overlay ? import ./overlay.nix inputs,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs overlay;},
+  inputs ? (import ./.).inputs,
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
   system ? builtins.currentSystem or "unknown-system",
   pkgs ? (import inputs.nixpkgs {
     inherit system;

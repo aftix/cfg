@@ -14,6 +14,11 @@
       };
     };
 
+    nixputs = {
+      url = "https://forge.aftix.xyz/aftix/nixputs/archive/main.tar.gz";
+      flake = false;
+    };
+
     hydra = {
       url = "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -82,21 +87,16 @@
   outputs = inputs: let
     myLib = import ./lib.nix inputs;
     nixSettings = import ./nix-settings.nix;
-    overlay = import ./overlay.nix inputs;
-    pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs overlay;};
+    overlay = import ./overlay.nix {inherit inputs;};
+    pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs;};
     extraSpecialArgs = import ./extraSpecialArgs.nix {inherit inputs;};
   in {
     overlays.default = overlay;
-    nixosConfigurations = import ./nixosConfigurations.nix {
-      inherit inputs extraSpecialArgs;
-    };
-    deploy = import ./deploy.nix {inherit inputs;};
-    nixosModules = import ./nixosModules.nix {
-      inherit inputs overlay pkgsCfg;
-    };
-    homemanagerModules = import ./homemanagerModules.nix {
-      inherit inputs overlay pkgsCfg;
-    };
+
+    nixosConfigurations = import ./nixosConfigurations.nix {inherit inputs;};
+    nixosModules = import ./nixosModules.nix {inherit inputs;};
+    homemanagerModules = import ./homemanagerModules.nix {inherit inputs pkgsCfg;};
+
     extra = {
       # NOTE: you'll need to use these for some optional modules
       inherit extraSpecialArgs;
@@ -118,7 +118,7 @@
 
     legacyPackages = myLib.forEachSystem (system:
       import ./packages.nix {
-        inherit inputs overlay pkgsCfg system;
+        inherit inputs pkgsCfg system;
       });
 
     nodes = import ./nodes.nix;

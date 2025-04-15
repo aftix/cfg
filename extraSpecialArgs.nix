@@ -1,4 +1,4 @@
-{inputs ? import ./flake-compat/inputs.nix, ...}: {
+{inputs ? (import ./.).inputs, ...}: {
   inherit (inputs.sops-nix.homeManagerModules) sops;
   inherit (inputs.stylix.homeManagerModules) stylix;
 }

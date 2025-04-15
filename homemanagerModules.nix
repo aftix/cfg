@@ -1,7 +1,10 @@
 {
-  inputs ? import ./flake-compat/inputs.nix,
-  overlay ? import ./overlay.nix inputs,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs overlay;},
+  inputs ? (import ./.).inputs,
+  pkgsCfg ?
+    import ./nixpkgs-cfg.nix {
+      inherit inputs;
+      overlay = inputs.self.overlays.default;
+    },
   ...
 }: let
   commonModules = [

@@ -892,6 +892,20 @@
         "type": "github"
       }
     },
+    "nixputs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1744692731,
+        "narHash": "sha256-2GdHOCxA1DURSMCVT+QIKIf8R9Xi+7PEFkaW+OJO7Lg=",
+        "rev": "ada5ec374a276095a5d47a1b425f4182f189ee4a",
+        "type": "tarball",
+        "url": "https://forge.aftix.xyz/api/v1/repos/aftix/nixputs/archive/ada5ec374a276095a5d47a1b425f4182f189ee4a.tar.gz?rev=ada5ec374a276095a5d47a1b425f4182f189ee4a"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://forge.aftix.xyz/aftix/nixputs/archive/main.tar.gz"
+      }
+    },
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts_3",
@@ -1024,6 +1038,7 @@
         "nginxBlacklist": "nginxBlacklist",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
+        "nixputs": "nixputs",
         "nur": "nur",
         "preservation": "preservation",
         "sops-nix": "sops-nix",

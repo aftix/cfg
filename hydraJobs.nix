@@ -1,10 +1,9 @@
 {
-  inputs ? import ./flake-compat/inputs.nix,
+  inputs ? (import ./.).inputs,
   system ? builtins.currentSystem or "unknown-system",
   supportedSystems ? ["x86_64-linux"],
   scrubJobs ? true,
-  overlay ? import ./overlay.nix inputs,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs overlay;},
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
   nixpkgsArgs ? {
     config =
       pkgsCfg.nixpkgs.config
