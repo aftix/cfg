@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib) mkIf;
@@ -308,16 +309,22 @@ in {
     systemd.services = let
       credsFile = config.aftix.hydra-substituter.credentials-file-path;
     in
+      lib.recursiveUpdate
       {
-        hydra-notify.serviceConfig.EnvironmentFile = config.sops.templates.hydraEnv.path;
+        hydra-notify = {
+          serviceConfig.EnvironmentFile = [config.sops.templates.hydraEnv.path] ++ lib.optionals (credsFile != null) [credsFile];
+          path = [pkgs.msmtp];
+        };
+
+        hydra-queue-runner.path = [pkgs.msmtp];
+        hydra-server.path = [pkgs.msmtp];
 
         # Since DBI string isn't exactly what the module expects, this isn't added by it
         hydra-init.after = ["postgresql.service"];
       }
-      // lib.optionalAttrs (credsFile != null) {
+      (lib.optionalAttrs (credsFile != null) {
         hydra-evaluator.serviceConfig.EnvironmentFile = credsFile;
-        hydra-notify.serviceConfig.EnvironmentFile = credsFile;
         hydra-queue-runner.serviceConfig.EnvironmentFile = credsFile;
-      };
+      });
   };
 }
