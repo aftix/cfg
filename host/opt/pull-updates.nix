@@ -35,7 +35,7 @@
             cd $repoDir
 
             log info "Switching into ${cfg.attrPath}"
-            nixos-rebuild-ng --attr r#'${cfg.attrPath}'# switch
+            nixos-rebuild-ng --no-reexec --attr r#'${cfg.attrPath}'# switch
           } catch {
             log critical "Failed to switch to configuration"
             log info "Cleaning up"
