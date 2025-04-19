@@ -92,6 +92,18 @@ in {
       hydra = {
         enable = true;
         domain = "hydra.${domain}";
+        store_uri =
+          "s3://aftix-hydra?"
+          + lib.concatStringsSep "&" [
+            "compression=zstd"
+            "parallel-compression=true"
+            "log-compreession=br"
+            "ls-compression=br"
+            "write-nar-listing=1"
+            "secret-key=${config.sops.secrets.hydra_store_secret_key.path}"
+            "scheme=https"
+            "endpoint=s3.us-east-005.backblazeb2.com"
+          ];
       };
 
       kanidm.enable = true;
