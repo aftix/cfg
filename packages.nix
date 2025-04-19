@@ -10,9 +10,3 @@
 }:
 pkgs.aftixPkgs
 // pkgs.aftixOverlayedPkgs
-// {
-  inherit
-    (pkgs)
-    matrix-synapse-unwrapped
-    ;
-}
