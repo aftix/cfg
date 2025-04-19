@@ -21,6 +21,7 @@ buildpkgs cache="cfg-actions":
     echo "Determining package list"
     NPKGS="$(nix eval -f packages.nix --apply 'x: let
         packages = x {};
+        inputs = (import ./.).inputs;
         inherit (inputs.nixpkgs) lib;
         getDrvs = lib.filterAttrs (name: value: lib.isDerivation value || value.recurseForDerivations or false);
         drvs = lib.concatMapAttrs (
