@@ -23,6 +23,8 @@ in {
     ../../host/opt/syncthing.nix
   ];
 
+  aftix.hydra-substituter.secret-file-path = null;
+
   sops = {
     defaultSopsFile = ../../secrets/host/secrets.yaml;
     age.keyFile = "/home/aftix/.local/persist/home/aftix/.config/sops/age/keys.txt";
