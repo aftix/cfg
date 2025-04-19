@@ -35,6 +35,11 @@ in {
       default = 9998;
       type = lib.types.ints.positive;
     };
+
+    store_uri = mkOption {
+      default = null;
+      type = lib.types.nullOr (lib.types.uniq lib.types.str);
+    };
   };
 
   config = mkIf cfg.enable {
@@ -86,70 +91,78 @@ in {
 
         notificationSender = "hydra@aftix.xyz";
         hydraURL = cfg.domain;
-        smtpHost = "mailbox.org";
+        smtpHost = "smtp.mailbox.org";
         useSubstitutes = true;
         dbi = "dbi:Pg:dbname=hydra;host=${psqlDir};user=hydra;";
 
-        extraConfig = ''
-          compress_build_logs = 1
-          compress_build_logs_compression = zstd
-          <dynamicruncommand>
-            enable = 1
-          </dynamicruncommand>
-          Include ${config.sops.templates.hydraConfig.path}
-          email_notification = 1
-          <ldap>
-            <config>
-              <credential>
-                class = Password
-                password_field = password
-                password_type = self_check
-              </credential>
-              <store>
-                class = LDAP
-                ldap_server = identity.aftix.xyz
-                <ldap_server_options>
-                  scheme = ldaps
-                  timeout = 30
-                </ldap_server_options>
-                binddn = "dn=token"
-                include ${config.sops.templates.hydraLdap.path}
-                start_tls = 0
-                user_basedn = "dc=identity,dc=aftix,dc=xyz"
-                user_filter = "(&(class=posixaccount)(spn=%s@identity.aftix.xyz))"
-                user_scope = subtree
-                user_field = name
-                use_roles = 1
-                <user_search_options>
-                  attrs = name
-                  attrs = spn
-                  attrs = sn
-                  attrs = cn
-                  attrs = mail
-                </user_search_options>
-                role_basedn = "dc=identity,dc=aftix,dc=xyz"
-                role_filter = "(&(class=group)(member=%s))"
-                role_scope = subtree
-                role_field = name
-                role_value = spn
-                <role_search_options>
-                  attrs = name
-                  attrs = spn
-                  attrs = cn
-                  attrs = member
-                </role_search_options>
-                persist_in_session = all
-              </store>
-            </config>
-            <role_mapping>
-              administrators = admin
-              hydra_users = bump-to-front
-              hydra_users = restart-jobs
-              hydra_users = cancel-build
-              hydra_users = create-projects
-            </role_mapping>
-          </ldap>
-        '';
+        extraConfig =
+          (
+            lib.optionalString (cfg.store_uri != null) "store_uri = ${cfg.store_uri}\n"
+          )
+          +
+          /*
+          apache
+          */
+          ''
+            compress_build_logs = 1
+            compress_build_logs_compression = zstd
+            <dynamicruncommand>
+              enable = 1
+            </dynamicruncommand>
+            Include ${config.sops.templates.hydraConfig.path}
+            email_notification = 1
+            <ldap>
+              <config>
+                <credential>
+                  class = Password
+                  password_field = password
+                  password_type = self_check
+                </credential>
+                <store>
+                  class = LDAP
+                  ldap_server = identity.aftix.xyz
+                  <ldap_server_options>
+                    scheme = ldaps
+                    timeout = 30
+                  </ldap_server_options>
+                  binddn = "dn=token"
+                  include ${config.sops.templates.hydraLdap.path}
+                  start_tls = 0
+                  user_basedn = "dc=identity,dc=aftix,dc=xyz"
+                  user_filter = "(&(class=posixaccount)(spn=%s@identity.aftix.xyz))"
+                  user_scope = subtree
+                  user_field = name
+                  use_roles = 1
+                  <user_search_options>
+                    attrs = name
+                    attrs = spn
+                    attrs = sn
+                    attrs = cn
+                    attrs = mail
+                  </user_search_options>
+                  role_basedn = "dc=identity,dc=aftix,dc=xyz"
+                  role_filter = "(&(class=group)(member=%s))"
+                  role_scope = subtree
+                  role_field = name
+                  role_value = spn
+                  <role_search_options>
+                    attrs = name
+                    attrs = spn
+                    attrs = cn
+                    attrs = member
+                  </role_search_options>
+                  persist_in_session = all
+                </store>
+              </config>
+              <role_mapping>
+                administrators = admin
+                hydra_users = bump-to-front
+                hydra_users = restart-jobs
+                hydra_users = cancel-build
+                hydra_users = create-projects
+              </role_mapping>
+            </ldap>
+          '';
       };
 
       nginx = {
@@ -264,7 +277,6 @@ in {
           owner = "hydra";
           group = "hydra";
           content = ''
-            store_uri = ${config.aftix.hydra-substituter.store-uri}
             <github_authorization>
               NixOS = Bearer ${config.sops.placeholder.hydra_gha_token}
             </github_authorization>
@@ -301,6 +313,7 @@ in {
             EMAIL_SENDER_TRANSPORT_sasl_username=${config.sops.placeholder.hydra_smtp_user}
             EMAIL_SENDER_TRANSPORT_sasl_password=${config.sops.placeholder.hydra_smtp_password}
             EMAIL_SENDER_TRANSPORT_port=${config.sops.placeholder.hydra_smtp_port}
+            EMAIL_SENDER_TRANSPORT_ssl=1
           '';
         };
       };
