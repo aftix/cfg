@@ -23,7 +23,7 @@ in {
     };
 
     secret-file-path = mkOption {
-      default = config.sops.secrets.hydra_store_secret_key.path;
+      default = null;
       type = types.uniq (types.nullOr types.path);
     };
 
@@ -37,7 +37,7 @@ in {
         compression = "compression=zstd&parallel-compression=true&log-compression=br&ls-compression=br";
         secretKey = lib.optionalString (cfg.secret-file-path != null) "secret-key=${cfg.secret-file-path}";
       in ''
-        s3://${config.sops.placeholder.${cfg.bucket-secret}}?${compression}&write-nar-listing=1&${secretKey}&scheme=https&endpoint=${config.sops.placeholder.${cfg.store-url-secret}}
+        s3://${config.sops.placeholder.${cfg.bucket-secret}}?${compression}&write-nar-listing=0&${secretKey}&scheme=https&endpoint=${config.sops.placeholder.${cfg.store-url-secret}}
       '';
 
       type = types.uniq types.str;
