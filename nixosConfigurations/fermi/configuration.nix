@@ -163,6 +163,11 @@ in {
     initialize = true;
     pruneOpts = ["--keep-last 156"];
     checkOpts = ["--with-cache"];
+    timerConfig = {
+      OnCalendar = "03:00";
+      Persistent = true;
+      RandomizedDelaySec = "4h";
+    };
   };
 
   users = {
