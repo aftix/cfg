@@ -7,16 +7,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_explore";
-  version = "18d87a1664d4192797a61647bbac7346508d9723";
+  version = "0.102.0";
 
   src = fetchFromGitHub {
     owner = "amtoine";
     repo = pname;
-    rev = version;
-    sha256 = "sha256-9XaKwKi2mxnGEscogKUnW9ByEAqwq/LK4fKrRjB+ozM=";
+    rev = "fa5ab698463489bfc782077915f636661712a217";
+    sha256 = "sha256-ziHjjNdLDgyrXOgFcQC34zjKX4dT7SvfS5xOrr+VeMc=";
   };
   useFetchCargoVendor = true;
-  cargoHash = "sha256-oxMqJmQMc7Ns/Nt7vjZFx6vs0mmh3hOIv8BtopZ2s6Y=";
+  cargoHash = "sha256-YqmU+j1dcw9YN0p3h+s4hJpt1O6z6EYrSj8lApQX93o=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
@@ -29,6 +29,6 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "nu_plugin_explore";
     homepage = "https://github.com/amtoine/nu_plugin_explore";
     license = licenses.gpl3Only;
-    platforms = with platforms; all;
+    platforms = platforms.all;
   };
 }

@@ -18,6 +18,6 @@ stdenv.mkDerivation {
     description = "nginx ultimate bad bot blocker";
     homepage = "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker";
     license = licenses.mit;
-    platforms = with platforms; all;
+    platforms = platforms.all;
   };
 }

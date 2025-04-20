@@ -30,6 +30,6 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "nu_plugin_dns";
     homepage = "https://github.com/dead10ck/nu_plugin_dns";
     license = licenses.mpl20;
-    platforms = with platforms; all;
+    platforms = platforms.all;
   };
 }

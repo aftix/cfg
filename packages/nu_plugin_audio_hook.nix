@@ -8,16 +8,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_audio_hook";
-  version = "9a7d7d23d0aeffa11a154887541dcde17344d763";
+  version = "0.103.0-unstable-2025-03-20";
 
   src = fetchFromGitHub {
     owner = "FMotalleb";
     repo = pname;
-    rev = version;
-    sha256 = "sha256-Fw/cH2GgmWaNGkZ67nDwr2u4ujFOjQV5T6AbdY0oIyc=";
+    rev = "09a548fca38fd7a8ea3fb90502df3f4d051e60b4";
+    sha256 = "sha256-S/+K0oROQJU7ztAG46u3BdDHxFdi//2jX/J3BawU8zo=";
   };
   useFetchCargoVendor = true;
-  cargoHash = "sha256-Oa3NkVQVE94QXA5zNeXlcdoahJ51CmmIbmOIl+55xzw=";
+  cargoHash = "sha256-mdQr4Dhp+b7zrjpAlY4t4ToZJRFNAL1FP5T7YEIZ7rk=";
 
   nativeBuildInputs = [pkg-config] ++ lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
   buildInputs = [alsa-lib];
@@ -28,6 +28,6 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "nu_plugin_audio_hook";
     homepage = "https://github.com/FMotalleb/nu_plugin_audio_hook";
     license = licenses.mit;
-    platforms = with platforms; linux;
+    platforms = platforms.linux;
   };
 }

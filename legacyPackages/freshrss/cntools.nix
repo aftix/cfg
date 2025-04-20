@@ -6,7 +6,7 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-cntools";
-  version = "brach";
+  version = "0-unstable-2024-11-14";
 
   src = fetchFromGitHub {
     owner = "cn-tools";

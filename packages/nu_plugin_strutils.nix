@@ -7,7 +7,7 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_strutils";
-  version = "0.9.0-unstable-2025-02-10";
+  version = "0.10.0";
 
   src = fetchFromGitHub {
     owner = "fdncred";
@@ -29,6 +29,6 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "nu_plugin_strutils";
     homepage = "https://github.com/fdncred/nu_plugin_strutils";
     license = licenses.mit;
-    platforms = with platforms; all;
+    platforms = platforms.all;
   };
 }

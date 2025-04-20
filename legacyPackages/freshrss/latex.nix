@@ -6,7 +6,7 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-latexsupport";
-  version = "brach";
+  version = "0.1.5-unstable-2024-03-30";
 
   src = fetchFromGitHub {
     owner = "aledeg";

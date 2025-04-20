@@ -7,16 +7,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_semver";
-  version = "0.11.2";
+  version = "0.11.3";
 
   src = fetchFromGitHub {
     owner = "abusch";
     repo = pname;
     rev = "refs/tags/v${version}";
-    sha256 = "sha256-k9LHrFAb4yyJShFFwvSP8M2S+/JH92r3fCUn1NL4Nog=";
+    sha256 = "sha256-MDEYFPzMGoYWI+oin0LZRFFEHKHUG/87HEFIbuMOe54=";
   };
   useFetchCargoVendor = true;
-  cargoHash = "sha256-3u6MMmNBEUarpp6NXzLtuG3dqb6MX3tQ3zISGyiG2aI=";
+  cargoHash = "sha256-yeY++2lB84YSgpKDiCGzt1RJh/DlL/JqRXNrX1ecqC8=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
@@ -29,6 +29,6 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "nu_plugin_semver";
     homepage = "https://github.com/abusch/nu_plugin_semver";
     license = licenses.mit;
-    platforms = with platforms; all;
+    platforms = platforms.all;
   };
 }

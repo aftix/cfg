@@ -6,7 +6,7 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-autottl";
-  version = "brach";
+  version = "0.5.8";
 
   src = fetchFromGitHub {
     owner = "mgnsk";

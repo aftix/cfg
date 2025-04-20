@@ -1,6 +1,6 @@
 {
   rustPlatform,
-  fetchFromSourcehut,
+  fetchzip,
   lib,
   nix-update-script,
   pkg-config,
@@ -9,18 +9,14 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "coffeepaste";
-  version = "ab480656fdd85edbe810ebce8a43c804febb1eab";
+  version = "2.0.0";
 
-  src = fetchFromSourcehut {
-    domain = "sr.ht";
-    owner = "~mort";
-    repo = "coffeepaste";
-    rev = "92795c856c6227d334635538d5176f6fe34de988";
-    hash = "sha256-zsdLUdTiqnnYRe17HndoAfOWGGB08UBsXP6A7FpG1Sc=";
+  src = fetchzip {
+    url = "https://git.sr.ht/~mort/coffeepaste/archive/v${version}.tar.gz";
+    hash = "sha256-2SH20Iw6Y159NBAu//wudoP/ufl8Ayy4F7UQdSoR41c=";
   };
-  cargoLock = {
-    lockFile = "${src}/Cargo.lock";
-  };
+  useFetchCargoVendor = true;
+  cargoHash = "sha256-ymD5SCUpIBHGx2ViOPJfZGFPEdev4VMfllkkTZUNKz8=";
 
   buildInputs = [glib gexiv2];
   nativeBuildInputs = [pkg-config];

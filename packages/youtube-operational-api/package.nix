@@ -34,17 +34,17 @@ in
 
       outputHashAlgo = "sha256";
       outputHashMode = "recursive";
-      outputHash = "sha256-BW9f07oGbHhg7mEnz1oCHiXts9dKIxa/3ijH2o+xty8=";
+      outputHash = "sha256-ws6l6Ko8DT+mr0XEbY+TUFHT2t6g9Zgxny4gTDE0MGA=";
     };
   in {
     pname = "YouTube-operational-API";
-    version = "0e6889ec5d77f2e739dd86156c5c90c2d5100a06";
+    version = "0-unstable-2025-02-08";
 
     src = fetchFromGitHub {
       inherit owner;
       repo = self.pname;
-      rev = self.version;
-      hash = "sha256-xBj+SN2ZXohD0keW58yThB02YVujtDj3Krjy22/JGso=";
+      rev = "d1b79acfe2c8569f54d478b25ebcba650512488b";
+      hash = "sha256-8bHk6Qvuq4UNZXi0EjirVMurcBgItzOLLTLWYbxFKiQ=";
     };
 
     buildInputs = [protobuf_27 findutils php vendorSrc];
@@ -72,6 +72,6 @@ in
       description = "YouTube operational API works when YouTube Data API v3 fails.";
       homepage = "https://github.com/${owner}/${self.pname}";
       license = licenses.mit;
-      platforms = with platforms; linux;
+      platforms = platforms.linux;
     };
   })

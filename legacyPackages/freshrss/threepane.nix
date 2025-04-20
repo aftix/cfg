@@ -6,14 +6,14 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-threepane";
-  version = "brach";
+  version = "1.11-unstable-2024-12-02";
 
   src = fetchFromGitLab {
     domain = "framagit.org";
     owner = "nicofrand";
     repo = "xextension-threepanesview";
-    rev = "3863ec5e3c0acdc33f0378cb8985b20dc9c810b7";
-    hash = "sha256-3dva36Wgia3/qJB1tH/7trja7KFY9DVrnCQwD6/dNPs=";
+    rev = "cf24f7330ae509136a38f83a22f087c35f3bb9c5";
+    hash = "sha256-rv5A01QNacjGRSw/fBkrvV4HveD90T9n06QeAe7blMw=";
   };
 
   installPhase = import ./toplevel-ext.nix self.src "threepanesview";

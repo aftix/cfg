@@ -6,7 +6,7 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-reddit-image";
-  version = "brach";
+  version = "1.2.0-unstable-2024-01-11";
 
   src = fetchFromGitHub {
     owner = "aledeg";

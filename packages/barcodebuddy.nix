@@ -24,13 +24,13 @@
 in
   stdenvNoCC.mkDerivation (self: {
     pname = "barcodebuddy";
-    version = "1.8.1.8-unstable-2024-06-02";
+    version = "1.8.1.8-unstable-2025-01-10";
 
     src = fetchFromGitHub {
       owner = "Forceu";
       repo = "barcodebuddy";
-      rev = "369798d05395ed055ea4b9b03d96471b784ed106";
-      hash = "sha256-zHprV5mCFciq5XgJD7fmEgb/vHlwAWOY1TcdBoCA8Eo=";
+      rev = "ea425e19b29c788640133dfccee10f869e5c6b1a";
+      hash = "sha256-UwSF6lpYoEW583GcpJsasvGYfF2ad0GcySJGrPKETgA=";
     };
 
     nativeBuildInputs = [
