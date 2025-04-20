@@ -41,7 +41,7 @@
             log info "Cleaning up"
             cd /
             rm -rf $repoDir
-            error make {msg: "Faileed to switch to configuration"}
+            error make {msg: "Failed to switch to configuration"}
           }
 
           log info "Cleaning up"

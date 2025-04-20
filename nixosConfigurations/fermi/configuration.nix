@@ -49,6 +49,7 @@ in {
   };
 
   aftix.pull-updates.enable = true;
+  aftix.hydra-substituter.extra-credentialed-services = ["nixos-pull-updates"];
 
   my = let
     domain = config.aftix.statics.primaryDomain;

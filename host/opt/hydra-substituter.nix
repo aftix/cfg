@@ -44,6 +44,17 @@ in {
       readOnly = true;
       description = "Store URI for use in sops templates";
     };
+
+    extra-credentialed-services = mkOption {
+      default = [];
+      description = ''
+        Additional systemd services that need the hydra substituter credentials.
+        This will only be services that invoke nix in a way that
+          1) requires substituters
+          2) does not use the nix-daemon
+      '';
+      type = types.listOf types.str;
+    };
   };
 
   config = {
@@ -63,7 +74,12 @@ in {
       };
     };
 
-    systemd.services.nix-daemon.serviceConfig.EnvironmentFile = lib.mkIf (cfg.credentials-file-path != null) cfg.credentials-file-path;
+    systemd.services = let
+      mkServiceConfig = name: {${name}.serviceConfig.EnvironmentFile = cfg.credentials-file-path;};
+      serviceConfigs = lib.map mkServiceConfig (["nix-daemon"] ++ cfg.extra-credentialed-services);
+      mergedServiceConfigs = lib.mkMerge serviceConfigs;
+    in
+      lib.mkIf (cfg.credentials-file-path != null) mergedServiceConfigs;
 
     nix.extraOptions = ''
       !include ${config.sops.templates.hydraSubstituter.path}
