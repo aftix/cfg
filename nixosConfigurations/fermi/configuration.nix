@@ -69,11 +69,6 @@ in {
         inherit domain;
       };
 
-      barcodebuddy = {
-        enable = true;
-        domain = "bbuddy.${domain}";
-      };
-
       coffeepaste = {
         enable = true;
         virtualHost = domain;
@@ -83,11 +78,6 @@ in {
       forgejo = {
         enable = true;
         domain = "forge.${domain}";
-      };
-
-      grocy = {
-        enable = true;
-        domain = "grocy.${domain}";
       };
 
       hydra = {
