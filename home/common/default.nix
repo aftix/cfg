@@ -9,7 +9,7 @@
   inherit (config.xdg) configHome dataHome stateHome;
 in {
   imports = [
-    ../../host/common/statics.nix
+    ../../nixosModules/statics.nix
 
     ./bash.nix
     ./documentation.nix

@@ -94,7 +94,7 @@
     overlays.default = overlay;
 
     nixosConfigurations = import ./nixosConfigurations.nix {inherit inputs;};
-    nixosModules = import ./nixosModules.nix {inherit inputs;};
+    nixosModules = import ./nixosModules.nix {inherit inputs myLib;};
     homemanagerModules = import ./homemanagerModules.nix {inherit inputs pkgsCfg;};
 
     extra = {

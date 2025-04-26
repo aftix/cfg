@@ -1,5 +1,6 @@
 {
   inputs ? (import ./.).inputs,
+  myLib ? (import ./lib.nix inputs),
   pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
   ...
 }: let
@@ -37,9 +38,13 @@
       options = import ./nixos-home-options.nix pkgs lib;
     })
   ];
+
+  localModules = myLib.modulesFromDirectoryRecursive ./nixosModules;
+  localModuleList = inputs.nixpkgs.lib.mapAttrsToList (name: inputs.nixpkgs.lib.id) localModules;
 in
   {
     inherit nix-settings;
-    default = {imports = commonModules ++ [./host/common];};
+    inherit localModules;
+    default = {imports = commonModules ++ localModuleList;};
   }
   // (inputs.self.lib.modulesFromDirectoryRecursive ./host/opt)

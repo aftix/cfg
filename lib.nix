@@ -142,7 +142,13 @@ in (
           modulesFromDirectoryRecursive = directory:
             self.applyOnDirectoryRecursive {
               inherit directory;
-              toApply = path: import path;
+              toApply = path: let
+                base = builtins.baseNameOf path;
+              in
+                if base == "default.nix"
+                then builtins.dirOf path
+                else path;
+              flatten = true;
             };
 
           # Get nixos configuration entrypoints recursively from a directory into a flat attrset
@@ -259,7 +265,7 @@ in (
 
                 modules =
                   [
-                    # This imports host/common
+                    # This imports the nixosModules from this repo
                     inputs.self.nixosModules.default
                     inputs.self.nixosModules.nix-settings
                     (dep-injects.nixos or {})

@@ -7,18 +7,6 @@
   inherit (lib) mkDefault mkForce;
   inherit (lib.options) mkOption mkEnableOption;
 in {
-  imports = [
-    ./apparmor.nix
-    ./channels.nix
-    ./coffeepaste.nix
-    ./hostBlacklist
-    ./polkit.nix
-    ./root.nix
-    ./statics.nix
-    ./swayosd.nix
-    ./youtube_operational_api.nix
-  ];
-
   options.my = {
     flake = mkOption {
       default = builtins.path {
