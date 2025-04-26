@@ -4,10 +4,10 @@
   lib,
   ...
 }: let
-  inherit (lib.attrsets) filterAttrs mergeAttrsList optionalAttrs;
+  inherit (lib.attrsets) mergeAttrsList;
   inherit (lib.strings) escapeShellArg hasPrefix optionalString concatMapStringsSep;
   inherit (lib.lists) optionals;
-  inherit (config.xdg) stateHome cacheHome userDirs;
+  inherit (config.xdg) stateHome cacheHome;
   cfg = config.my.shell;
 in {
   programs.zsh = {
@@ -17,7 +17,7 @@ in {
     defaultKeymap = "viins";
     autocd = true;
 
-    initExtra = let
+    initContent = let
       neededDirs = concatMapStringsSep "\n" (path: "mkdir -p " + escapeShellArg path) cfg.neededDirs;
 
       homebrewPath = let
