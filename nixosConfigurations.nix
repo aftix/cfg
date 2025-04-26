@@ -1,6 +1,12 @@
-{inputs ? (import ./.).inputs, ...}:
-inputs.self.lib.nixosConfigurationsFromDirectoryRecursive {
+{
+  inputs ? import ./inputs.nix,
+  pkgsCfg ? null,
+  myLib ? import ./lib.nix {inherit inputs pkgsCfg;},
+  extraSpecialArgs ? import ./extraSpecialArgs.nix {inherit inputs;},
+  ...
+}:
+myLib.nixosConfigurationsFromDirectoryRecursive {
   directory = ./nixosConfigurations;
-  dep-injects = inputs.self.lib.dependencyInjects {};
-  inherit (inputs.self.extra) extraSpecialArgs;
+  dep-injects = myLib.dependencyInjects {};
+  inherit extraSpecialArgs;
 }

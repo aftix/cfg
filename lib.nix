@@ -1,4 +1,10 @@
-inputs: let
+{
+  inputs ? import ./inputs.nix,
+  pkgsCfg ? null,
+  nixosModules ? null,
+  homeManagerModules ? null,
+  ...
+}: let
   inherit (inputs.nixpkgs) lib;
 in (
   lib.fix
@@ -258,7 +264,39 @@ in (
             extraSpecialArgs ? {},
             extraAttrs ? {},
             dep-injects ? {},
-          }:
+          }: let
+            cfg =
+              if pkgsCfg == null
+              then
+                import ./nixpkgs-cfg.nix {
+                  inherit inputs;
+                  myLib = self;
+                  overlay = import ./overlay.nix {
+                    inherit inputs;
+                    myLib = self;
+                  };
+                }
+              else pkgsCfg;
+
+            myModules =
+              if nixosModules == null
+              then
+                import ./nixosModules.nix {
+                  inherit inputs;
+                  myLib = self;
+                  pkgsCfg = cfg;
+                }
+              else nixosModules;
+            myHmModules =
+              if homeManagerModules == null
+              then
+                import ./homemanagerModules.nix {
+                  inherit inputs;
+                  myLib = self;
+                  pkgsCfg = cfg;
+                }
+              else homeManagerModules;
+          in
             lib.nixosSystem (extraAttrs
               // {
                 inherit specialArgs;
@@ -266,8 +304,8 @@ in (
                 modules =
                   [
                     # This imports the nixosModules from this repo
-                    inputs.self.nixosModules.default
-                    inputs.self.nixosModules.nix-settings
+                    myModules.default
+                    myModules.nix-settings
                     (dep-injects.nixos or {})
                     entrypoint
                   ]
@@ -280,7 +318,7 @@ in (
                         sharedModules =
                           [
                             # this imports home/common
-                            inputs.self.homemanagerModules.default
+                            myHmModules.default
                           ]
                           ++ extraHmMods;
                       };

@@ -85,17 +85,21 @@
   };
 
   outputs = inputs: let
-    myLib = import ./lib.nix inputs;
+    myLib = import ./lib.nix {
+      inherit inputs pkgsCfg;
+      inherit (inputs.self) nixosModules homemanagerModules;
+    };
+
     nixSettings = import ./nix-settings.nix;
-    overlay = import ./overlay.nix {inherit inputs;};
-    pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs;};
+    overlay = import ./overlay.nix {inherit inputs myLib;};
+    pkgsCfg = import ./nixpkgs-cfg.nix {inherit inputs myLib overlay;};
     extraSpecialArgs = import ./extraSpecialArgs.nix {inherit inputs;};
   in {
     overlays.default = overlay;
 
-    nixosConfigurations = import ./nixosConfigurations.nix {inherit inputs;};
-    nixosModules = import ./nixosModules.nix {inherit inputs myLib;};
-    homemanagerModules = import ./homemanagerModules.nix {inherit inputs pkgsCfg;};
+    nixosConfigurations = import ./nixosConfigurations.nix {inherit inputs pkgsCfg myLib extraSpecialArgs;};
+    nixosModules = import ./nixosModules.nix {inherit inputs pkgsCfg myLib;};
+    homemanagerModules = import ./homemanagerModules.nix {inherit inputs pkgsCfg myLib;};
 
     extra = {
       # NOTE: you'll need to use these for some optional modules
