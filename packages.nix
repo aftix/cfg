@@ -1,6 +1,7 @@
 {
-  inputs ? (import ./.).inputs,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
+  inputs ? import ./inputs.nix,
+  myLib ? import ./lib.nix {inherit inputs;},
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib;},
   system ? builtins.currentSystem or "unknown-system",
   pkgs ? (import inputs.nixpkgs {
     inherit system;

@@ -1,10 +1,7 @@
 {
   inputs ? (import ./.).inputs,
-  pkgsCfg ?
-    import ./nixpkgs-cfg.nix {
-      inherit inputs;
-      overlay = inputs.self.overlays.default;
-    },
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
+  myLib ? import ./lib.nix {inherit inputs pkgsCfg;},
   ...
 }: let
   commonModules = [
@@ -29,4 +26,4 @@ in
     commonModules = {imports = commonModules;};
     default = {imports = commonModules ++ [./home/common];};
   }
-  // (inputs.self.lib.modulesFromDirectoryRecursive ./home/opt)
+  // (myLib.modulesFromDirectoryRecursive ./home/opt)

@@ -1,4 +1,8 @@
-{inputs ? (import ./.).inputs, ...}: final: prev: let
+{
+  inputs ? import ./inputs.nix,
+  myLib ? import ./lib.nix {inherit inputs;},
+  ...
+}: final: prev: let
   inherit (final.lib.attrsets) recurseIntoAttrs;
 
   aftixPkgs =
@@ -32,7 +36,7 @@
   };
 in
   {
-    aftixLib = inputs.self.lib;
+    aftixLib = myLib;
     aftixPkgs = recurseIntoAttrs aftixPkgs;
     aftixOverlayedPkgs = recurseIntoAttrs aftixOverlayedPkgs;
   }

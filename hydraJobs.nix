@@ -1,9 +1,11 @@
 {
-  inputs ? (import ./.).inputs,
+  inputs ? import ./inputs.nix,
+  myLib ? import ./lib.nix {inherit inputs;},
+  nixosConfigurations ? import ./nixosConfigurations.nix {inherit inputs myLib;},
   system ? builtins.currentSystem or "unknown-system",
   supportedSystems ? ["x86_64-linux"],
   scrubJobs ? true,
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib;},
   nixpkgsArgs ? {
     config =
       pkgsCfg.nixpkgs.config
@@ -19,7 +21,6 @@
   };
 
   inherit (release-lib) pkgs mapTestOn lib;
-  inherit (lib) concatMapAttrs;
 
   maintainers = [
     {
@@ -64,7 +65,7 @@
             license = lib.licenses.eupl12;
           };
         })
-      inputs.self.nixosConfigurations;
+      nixosConfigurations;
     };
   in
     lib.attrsets.unionOfDisjoint (addHydraMeta (mapTestOn packageJobs)) nixosJobs;

@@ -1,7 +1,7 @@
 {
-  inputs ? (import ./.).inputs,
-  myLib ? (import ./lib.nix inputs),
-  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs;},
+  inputs ? import ./inputs.nix,
+  pkgsCfg ? import ./nixpkgs-cfg.nix {inherit inputs myLib;},
+  myLib ? (import ./lib.nix {inherit inputs;}),
   ...
 }: let
   nix-settings = let
@@ -47,4 +47,4 @@ in
     inherit localModules;
     default = {imports = commonModules ++ localModuleList;};
   }
-  // (inputs.self.lib.modulesFromDirectoryRecursive ./host/opt)
+  // (myLib.modulesFromDirectoryRecursive ./host/opt)
