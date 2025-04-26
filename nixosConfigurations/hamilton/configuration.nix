@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  utils,
   ...
 }: let
   inherit (lib.strings) optionalString;
@@ -304,6 +305,7 @@ in {
     xserver.videoDrivers = ["modesetting"];
   };
 
+  # Restic backups
   services.restic.backups.backblaze = {
     backupPrepareCommand = lib.getExe (pkgs.writeNushellApplication {
       name = "get-restic-paths";
@@ -314,23 +316,18 @@ in {
         */
         ''
           $nu.pid | save -f /var/run/backupdisk.pid
-          mkdir /restic-backblaze-backup /var/run /var/run/restic-backups-backblaze
-          mount -t btrfs -o subvolid=5 ${config.my.backup.localSnapshotDrive} /restic-backblaze-backup
         '';
     });
     backupCleanupCommand = lib.getExe (pkgs.writeShellApplication {
       name = "cleanup-restic-backup";
       runtimeInputs = [pkgs.util-linux];
       text = ''
-        umount /restic-backblaze-backup
-        rmdir /restic-backblaze-backup || :
-        rm /var/run/restic-backblaze-backup-files || :
         rm /var/run/backupdisk.pid || :
       '';
     });
 
-    paths = ["/restic-backblaze-backup/${config.my.backup.snapshotPrefix}"];
-    exclude = ["/restic-backblaze-backup/${config.my.backup.snapshotPrefix}/*.[0-9]*-[0-9]*-[0-9]*"];
+    paths = ["/var/run/restic-backups-backblaze/mnt/${config.my.backup.snapshotPrefix}"];
+    exclude = ["/var/run/restic-backups-backblaze/mnt/${config.my.backup.snapshotPrefix}/*.[0-9]*-[0-9]*-[0-9]*"];
 
     environmentFile = config.sops.templates.restic.path;
     passwordFile = config.sops.secrets.restic_hamilton_password.path;
@@ -344,7 +341,20 @@ in {
     pruneOpts = ["--keep-last 156"];
     checkOpts = ["--with-cache"];
   };
-  systemd.services.restic-backups-backblaze.after = ["btrfs-snapshots.service"];
+  systemd.mounts = [
+    {
+      description = "Mount backup drive for restic syncing";
+      where = "/run/restic-backups-backblaze/mnt";
+      what = config.my.backup.localSnapshotDrive;
+      options = "subvolid=5,noexec,nosuid,relatime,nodiratime,nodev,ro";
+      mountConfig.Mode = "0500";
+      before = ["restic-backups-backblaze.service"];
+    }
+  ];
+  systemd.services.restic-backups-backblaze = {
+    after = ["btrfs-snapshots.service"];
+    bindsTo = ["${utils.escapeSystemdPath "/run/restic-backups-backblaze/mnt"}.mount"];
+  };
 
   # Hardware specific settings
 
