@@ -326,8 +326,21 @@ in {
       '';
     });
 
-    paths = ["/var/run/restic-backups-backblaze/mnt/${config.my.backup.snapshotPrefix}"];
-    exclude = ["/var/run/restic-backups-backblaze/mnt/${config.my.backup.snapshotPrefix}/*.[0-9]*-[0-9]*-[0-9]*"];
+    paths = ["."];
+    exclude = [
+      "*.[0-9]*-[0-9]*-[0-9]*"
+      "**/.local/share/Trash"
+      "**/.config/*/*Cache"
+      "**/.config/*/**/CacheStorage"
+      "**/.local/share/*/*Cache"
+      "**/.local/share/*/**/CacheStorage"
+      "**/.cache"
+      "**/cache"
+      "**/.local/share/cargo/registry"
+      "**/*.pyc"
+      "**/.local/share/go/pkg/mod"
+      "**/pnpm/store"
+    ];
 
     environmentFile = config.sops.templates.restic.path;
     passwordFile = config.sops.secrets.restic_hamilton_password.path;
@@ -354,6 +367,7 @@ in {
   systemd.services.restic-backups-backblaze = {
     after = ["btrfs-snapshots.service"];
     bindsTo = ["${utils.escapeSystemdPath "/run/restic-backups-backblaze/mnt"}.mount"];
+    serviceConfig.WorkingDirectory = "/var/run/restic-backups-backblaze/mnt/${config.my.backup.snapshotPrefix}";
   };
 
   # Hardware specific settings
