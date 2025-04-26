@@ -52,21 +52,20 @@
         overlay = _: _: {};
       })
       // {inherit (pkgs) lix;});
-    nixosJobs =
-      concatMapAttrs (name: cfg: {
-        "nixos-configuration-${name}" =
-          cfg.config.system.build.toplevel
-          // {
-            meta = {
-              inherit maintainers;
-              description = "Build job for nixos configuration ${name}";
-              homepage = "https://forgejo.aftix.xyz/aftix/cfg";
-              schedulingPriority = 200;
-              license = lib.licenses.eupl12;
-            };
+    nixosJobs = {
+      nixos-configurations = lib.mapAttrs (name: cfg:
+        cfg.config.system.build.toplevel
+        // {
+          meta = {
+            inherit maintainers;
+            description = "Build job for nixos configuration ${name}";
+            homepage = "https://forgejo.aftix.xyz/aftix/cfg";
+            schedulingPriority = 200;
+            license = lib.licenses.eupl12;
           };
-      })
+        })
       inputs.self.nixosConfigurations;
+    };
   in
     lib.attrsets.unionOfDisjoint (addHydraMeta (mapTestOn packageJobs)) nixosJobs;
 in
