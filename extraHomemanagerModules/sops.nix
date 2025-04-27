@@ -8,7 +8,7 @@ in {
   imports = [sops];
 
   sops = {
-    defaultSopsFile = ../../secrets/home/secrets.yaml;
+    defaultSopsFile = ../secrets/home/secrets.yaml;
 
     age = {inherit keyFile;};
   };

@@ -1,9 +1,9 @@
 {lib, ...}: {
   imports = [
-    ../home/opt/sops.nix
+    ../extraHomemanagerModules/sops.nix
 
-    ../home/opt/helix.nix
-    ../home/opt/neoutils.nix
+    ../extraHomemanagerModules/helix.nix
+    ../extraHomemanagerModules/neoutils.nix
   ];
 
   home = {
