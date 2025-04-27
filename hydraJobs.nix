@@ -23,6 +23,11 @@
     inherit supportedSystems scrubJobs nixpkgsArgs system;
   };
 
+  pkgsForChecks = lib.packagesFromDirectoryRecursive {
+    inherit (pkgs) callPackage;
+    directory = ./checks;
+  };
+
   inherit (release-lib) pkgs mapTestOn lib;
 
   maintainers = [
@@ -40,15 +45,13 @@
         if ! lib.isDerivation val
         then val
         else
-          val
-          // {
-            meta =
-              (val.meta or {})
-              // {
-                inherit maintainers;
-                description = "Build job for legacyPackages.${lib.last path}.${lib.concatStringsSep "." (lib.dropEnd 1 path)}";
-                homepage = "https://forgejo.aftix.xyz/aftix/cfg";
-              };
+          lib.recursiveUpdate val
+          {
+            meta = {
+              inherit maintainers;
+              description = "Build job for legacyPackages.${lib.last path}.${lib.concatStringsSep "." (lib.dropEnd 1 path)}";
+              homepage = "https://forgejo.aftix.xyz/aftix/cfg";
+            };
           });
 
     packageJobs = packagePlatforms ((import ./packages.nix {
@@ -70,7 +73,34 @@
         })
       nixosConfigurations;
     };
+
+    mkCheckJob = path: packageSet: let
+      joinedPath = lib.concatStringsSep "/" path;
+      pkgSpeculativePath = ./checks/${joinedPath};
+      contents = builtins.readDir (builtins.dirOf pkgSpeculativePath);
+      pkgBaseName = builtins.baseNameOf pkgSpeculativePath;
+      pkgPath =
+        if builtins.hasAttr (pkgBaseName + ".nix") contents
+        then ./checks/${joinedPath + ".nix"}
+        else ./checks/${joinedPath}/package.nix;
+      newlyCalled = packageSet.callPackage pkgPath {};
+      pkg =
+        if packageSet.hostPlatform == pkgs.hostPlatform
+        then lib.getAttrFromPath path pkgsForChecks
+        else newlyCalled;
+    in
+      lib.recursiveUpdate pkg {
+        meta = {
+          inherit maintainers;
+          license = lib.licenses.eupl12;
+          homepage = "https://forge.aftix.xyz/aftix/cfg";
+        };
+      };
+
+    checkJobs = {
+      checks = lib.mapAttrsRecursive (path: platforms: release-lib.testOn platforms (mkCheckJob path)) (release-lib.packagePlatforms pkgsForChecks);
+    };
   in
-    lib.attrsets.unionOfDisjoint (addHydraMeta (mapTestOn packageJobs)) nixosJobs;
+    lib.attrsets.unionOfDisjoint (lib.attrsets.unionOfDisjoint (addHydraMeta (mapTestOn packageJobs)) nixosJobs) checkJobs;
 in
   jobs

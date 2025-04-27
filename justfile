@@ -76,9 +76,6 @@ test *FLAGS:
     @run0 systemd-inhibit --mode=block --why="Activating new configuration" --who="$(pwd)/justfile" \
         nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" test
 
-check *FLAGS:
-    @nix flake check {{FLAGS}}
-
 deploy node="fermi" mode="switch" *FLAGS="":
     #!/usr/bin/env bash
     IP="$(nix eval --raw -f nodes.nix --apply 'x: x.{{node}}.ip')"
@@ -133,3 +130,49 @@ download-license LICENSE:
 
 annotate-file PATH:
     @reuse annotate -t default --copyright "aftix" --license EUPL-1.2 --year 2025 --copyright-prefix spdx-c --style python --merge-copyrights -r {{PATH}}
+
+# Build a specific check from ./checks (attrpath is relative to "checks")
+build-check check use-nom="1":
+    #!/usr/bin/env bash
+    USE_NOM_LOCAL="{{use-nom}}"
+    USE_NOM="${USE_NOM:-${USE_NOM_LOCAL}}"
+    nix-instantiate -E 'let
+        system = builtins.currentSystem;
+        jobs = import ./hydraJobs.nix {inherit system;};
+    in
+        jobs.checks.{{check}}.${system}
+    ' | while read -r drv; do
+        if [[ -n "$USE_NOM" && ! "$USE_NOM" = "0" ]]; then
+            nom-build --no-out-link "$drv"
+        else
+            nix-build --no-out-link "$drv"
+        fi
+    done
+
+check use-nom="1":
+    #!/usr/bin/env bash
+    USE_NOM_LOCAL="{{use-nom}}"
+    USE_NOM="${USE_NOM:-${USE_NOM_LOCAL}}"
+    nix-instantiate -E 'let
+        system = builtins.currentSystem;
+        jobs = (import ./hydraJobs.nix {inherit system;}).checks;
+        inputs = import ./inputs.nix;
+        matchesSystemRaw = pkgs.lib.mapAttrsRecursiveCond (as:
+            ! pkgs.lib.isDerivation as && ! builtins.hasAttr system as
+            )
+            (path: value:
+                if builtins.hasAttr system value 
+                then builtins.getAttr system value
+                else {}
+            ) jobs;
+        matchesSystem = pkgs.lib.collect pkgs.lib.isDerivation matchesSystemRaw;
+        pkgs = import inputs.nixpkgs {inherit system;};
+    in
+        pkgs.linkFarmFromDrvs "all-checks" matchesSystem
+    ' | while read -r drv; do
+        if [[ -n "$USE_NOM" && ! "$USE_NOM" = "0" ]]; then
+            nom-build --no-out-link "$drv"
+        else
+            nix-build --no-out-link "$drv"
+        fi
+    done
