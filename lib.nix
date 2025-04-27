@@ -317,7 +317,7 @@ in (
                         inherit extraSpecialArgs users;
                         sharedModules =
                           [
-                            # this imports home/common
+                            # this imports the homemanagerModules from this repo
                             myHmModules.default
                           ]
                           ++ extraHmMods;
