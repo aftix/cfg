@@ -1,4 +1,6 @@
-
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
 hostname := `hostname`
 arch := `uname -m`
 
@@ -122,3 +124,12 @@ serialvm variant="minimal" *FLAGS="":
     @just iso {{variant}}
     # Run VM
     @find result/iso -type f -name "*.iso" | head -n1 | xargs -I% nix run 'nixpkgs#qemu_kvm' -- -boot d -smbios type=0,uefi=on -m 2G -nographic -serial mon:stdio -cdrom % {{FLAGS}}
+
+licenses:
+    @reuse lint
+
+download-license LICENSE:
+    @reuse download {{LICENSE}} -o LICENSES/{{LICENSE}}.md
+
+annotate-file PATH:
+    @reuse annotate -t default --copyright "aftix" --license EUPL-1.2 --year 2025 --copyright-prefix spdx-c --style python --merge-copyrights -r {{PATH}}

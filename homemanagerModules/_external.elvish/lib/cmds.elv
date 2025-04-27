@@ -1,9 +1,7 @@
-# General Elvish utility functions
-#
+# SPDX-FileType: SOURCE
 # Copyright © 2023
-#   Ian Max Andolina - https://github.com/iandol
-#   Version: 1.03
-#   This file is licensed under the terms of the MIT license.
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
 
 use re
 use str

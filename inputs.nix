@@ -1,3 +1,6 @@
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
 let
   # Bootstrap the nixputs input
   lockFile = builtins.fromJSON (builtins.readFile ./flake.lock);

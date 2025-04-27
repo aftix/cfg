@@ -1,3 +1,7 @@
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
+
 # Send btrfs snapshot from one disk to another, with timestamp and cleanup of old snapshots
 # This script expects to be run with systemd-inhibit and with a lockfile held
 let timestamp = date now

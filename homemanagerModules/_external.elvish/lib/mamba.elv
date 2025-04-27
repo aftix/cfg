@@ -1,39 +1,7 @@
-# MAMBA/CONDA Environment Utilites for Elvish
-#
-## Copyright © 2023
-#   Ian Max Andolina - https://github.com/iandol
-#   Version: 1.03
-#   This file is licensed under the terms of the MIT license.
-#
-# Activation & deactivation methods for working with Mamba virtual
-# environments in Elvish (tested with micromamba, but as that is supposed to
-# be drop-in replacement for conda, it should work with conda and mamba).
-#
-# Note: this script not only sets the path but tries to do a simple parse of
-# the zsh script that is returned from  `conda shel activate -s zsh [name]`
-# — for standard environment variables this is fine. However, conda can also
-# run external scripts, and to solve that all we can do is to capture the
-# env before and after each script runs to work out what may be changing.
-#
-# > mamba:root — variable to store the mamba/conda root folder mamba:list —
-# > lists all environments in the envs folder of the root folder
-# > mamba:activate — activates an environment (tab autocomplete should work
-# > here) mamba:deactivate — deactivates an environment  
-#
-# Example:
-# ```
-# ~> use mamba
-# ~> set mamba:cmd = 'micromamba' # can use conda/mamba/micromamba
-# ~> set mamba:root = ~/micromamba
-# ~> mamba:list
-# Mamba ENVS in /Users/jdoe/micromamba/envs: 
-# ▶ octave
-# ▶ pupil
-# ▶ test
-# ~> mamba:activate pupil
-# ~> mamba:deactivate
-# ```
-#
+# SPDX-FileType: SOURCE
+# Copyright © 2023
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
 
 use str
 use re

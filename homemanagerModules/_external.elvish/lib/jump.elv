@@ -1,3 +1,7 @@
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
+
 # Adds bookmarks and other navigation features to elvish
 # NOTE: must be used after any changes to the starting directory
 
