@@ -6,8 +6,8 @@
   inherit (lib) mkForce;
 in {
   imports = [
-    ../../host/opt/display.nix
-    ../../host/opt/sound.nix
+    ../../extraNixosModules/display.nix
+    ../../extraNixosModules/sound.nix
   ];
 
   users.users.root.hashedPasswordFile = null;
