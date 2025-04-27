@@ -11,17 +11,17 @@ in {
     ../../hardware/hamilton.nix
     ../../hardware/disko/hamilton.nix
 
-    ../../host/opt/aftix.nix
-    ../../host/opt/btrfs-snapshots
-    ../../host/opt/bluetooth.nix
-    ../../host/opt/cups.nix
-    ../../host/opt/display.nix
-    ../../host/opt/docker.nix
-    ../../host/opt/hydra-substituter.nix
-    ../../host/opt/network.nix
-    ../../host/opt/silentboot.nix
-    ../../host/opt/sound.nix
-    ../../host/opt/syncthing.nix
+    ../../extraNixosModules/aftix.nix
+    ../../extraNixosModules/btrfs-snapshots
+    ../../extraNixosModules/bluetooth.nix
+    ../../extraNixosModules/cups.nix
+    ../../extraNixosModules/display.nix
+    ../../extraNixosModules/docker.nix
+    ../../extraNixosModules/hydra-substituter.nix
+    ../../extraNixosModules/network.nix
+    ../../extraNixosModules/silentboot.nix
+    ../../extraNixosModules/sound.nix
+    ../../extraNixosModules/syncthing.nix
   ];
 
   sops = {

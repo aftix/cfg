@@ -47,4 +47,4 @@ in
     inherit localModules;
     default = {imports = commonModules ++ localModuleList;};
   }
-  // (myLib.modulesFromDirectoryRecursive ./host/opt)
+  // (myLib.modulesFromDirectoryRecursive ./extraNixosModules)

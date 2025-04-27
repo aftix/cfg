@@ -8,12 +8,12 @@ in {
   imports = [
     ../../hardware/fermi.nix
 
-    ../../host/opt/aftix.nix
-    ../../host/opt/docker.nix
-    ../../host/opt/hydra-substituter.nix
-    ../../host/opt/openssh.nix
-    ../../host/opt/pull-updates.nix
-    ../../host/opt/www
+    ../../extraNixosModules/aftix.nix
+    ../../extraNixosModules/docker.nix
+    ../../extraNixosModules/hydra-substituter.nix
+    ../../extraNixosModules/openssh.nix
+    ../../extraNixosModules/pull-updates.nix
+    ../../extraNixosModules/www
   ];
 
   sops = {
