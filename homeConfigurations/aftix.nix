@@ -94,7 +94,7 @@ in {
     Install.WantedBy = ["default.target"];
   };
 
-  my = {
+  aftix = {
     matrixClient = pkgs.fractal;
 
     shell = {

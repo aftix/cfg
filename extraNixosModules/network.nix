@@ -6,9 +6,9 @@
   config,
   ...
 }: let
-  cfg = config.my.network;
+  cfg = config.aftix.network;
 in {
-  options.my.network = {
+  options.aftix.network = {
     interfaces = lib.options.mkOption {
       default = [
         {

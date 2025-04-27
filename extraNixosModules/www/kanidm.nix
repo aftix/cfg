@@ -9,8 +9,8 @@
 }: let
   inherit (lib.options) mkOption mkEnableOption;
 
-  wwwCfg = config.my.www;
-  cfg = config.my.www.kanidm;
+  wwwCfg = config.aftix.www;
+  cfg = config.aftix.www.kanidm;
 
   acmeHost =
     if cfg.acmeDomain == null
@@ -19,7 +19,7 @@
 
   inherit (config.aftix.statics) identityService;
 in {
-  options.my.www.kanidm = {
+  options.aftix.www.kanidm = {
     enable = mkEnableOption "kanidm";
 
     port = mkOption {
@@ -159,7 +159,7 @@ in {
     };
 
     # Can not reverse proxy LDAPS to kanidm - see https://github.com/kanidm/kanidm/issues/3423
-    # my.www.streamConfig = [
+    # aftix.www.streamConfig = [
     #   ''
     #     upstream kanidm_ldaps {
     #       server [::1]:${builtins.toString cfg.ldapPort};

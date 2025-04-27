@@ -11,11 +11,11 @@
   inherit (lib.lists) optional optionals;
   inherit (lib.options) mkOption;
   inherit (config.xdg) dataHome cacheHome stateHome;
-  cfg = config.my.development;
+  cfg = config.aftix.development;
 in {
   imports = [./vcs.nix];
 
-  options.my.development = {
+  options.aftix.development = {
     nix = mkOption {default = true;};
     rust = mkOption {default = true;};
     go = mkOption {default = true;};
@@ -105,7 +105,7 @@ in {
         "${config.home.sessionVariables.GOPATH}/bin";
     };
 
-    my = {
+    aftix = {
       shell = {
         development = true;
 

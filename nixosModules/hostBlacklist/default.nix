@@ -13,7 +13,7 @@
     name,
     file,
   }: let
-    removeCmds = lib.flip builtins.map config.my.blacklist.removeLines (regex: "sed -i'' -e '/${regex}/ d' \"$out\"");
+    removeCmds = lib.flip builtins.map config.aftix.blacklist.removeLines (regex: "sed -i'' -e '/${regex}/ d' \"$out\"");
   in
     pkgs.runCommandLocal name {
       src = file;
@@ -23,7 +23,7 @@
       ${lib.strings.concatLines removeCmds}
     '';
 in {
-  options.my.blacklist.removeLines = lib.mkOption {
+  options.aftix.blacklist.removeLines = lib.mkOption {
     default = [
       "^0.0.0.0 storage\\.googleapis\\.com$"
       "^0.0.0.0 addons\\.mozilla\\.org$"

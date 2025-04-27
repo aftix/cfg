@@ -10,7 +10,7 @@
   inherit (lib.attrsets) mergeAttrsList;
   inherit (lib.strings) escapeShellArg hasPrefix optionalString concatMapStringsSep;
   inherit (lib.lists) optionals;
-  cfg = config.my.shell;
+  cfg = config.aftix.shell;
 in {
   programs.bash = {
     enable = true;

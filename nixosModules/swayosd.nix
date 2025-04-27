@@ -6,7 +6,7 @@
   config,
   ...
 }: let
-  cfg = config.my.swayosd;
+  cfg = config.aftix.swayosd;
 in {
   config = lib.mkIf cfg.enable {
     services.dbus.packages = [cfg.package];
@@ -17,7 +17,7 @@ in {
       partOf = ["graphical.target"];
       script = lib.getExe' cfg.package "swayosd-libinput-backend";
       serviceConfig =
-        config.my.systemdHardening
+        config.aftix.systemdHardening
         // {
           BusName = "org.erikreider.swayosd";
           Restart = "on-failure";

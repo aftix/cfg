@@ -30,7 +30,7 @@
 in {
   home.packages = [pkgs.transmission_4 transmission-notify];
 
-  my.shell.aliases = [
+  aftix.shell.aliases = [
     {
       name = "trem";
       command = "transmission-remote";

@@ -10,8 +10,8 @@
   inherit (lib.options) mkOption mkEnableOption;
   inherit (lib.strings) escapeShellArg;
 
-  cfg = config.my.znc;
-  wwwCfg = config.my.www;
+  cfg = config.aftix.znc;
+  wwwCfg = config.aftix.www;
   serviceCfg = config.services.znc;
 
   acmeHost =
@@ -19,7 +19,7 @@
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.znc = {
+  options.aftix.znc = {
     enable = mkEnableOption "znc";
 
     domain = mkOption {
@@ -29,7 +29,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.znc.domain}";
+      description = "null to use \${aftix.znc.domain}";
     };
   };
 
@@ -49,7 +49,7 @@ in {
       };
     };
 
-    my.www.streamConfig = [
+    aftix.www.streamConfig = [
       ''
         upstream znc {
           server [::1]:7001;

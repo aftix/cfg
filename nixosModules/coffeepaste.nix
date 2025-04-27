@@ -73,7 +73,7 @@ in {
         DynamicUser = true;
         StateDirectory = "coffeepaste";
 
-        CapabilityBoundingSet = config.my.systemdCapabilities;
+        CapabilityBoundingSet = config.aftix.systemdCapabilities;
         LockPersonality = true;
         MemoryDenyWriteExecute = true;
         NoNewPrivileges = true;

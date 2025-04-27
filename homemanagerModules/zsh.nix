@@ -11,7 +11,7 @@
   inherit (lib.strings) escapeShellArg hasPrefix optionalString concatMapStringsSep;
   inherit (lib.lists) optionals;
   inherit (config.xdg) stateHome cacheHome;
-  cfg = config.my.shell;
+  cfg = config.aftix.shell;
 in {
   programs.zsh = {
     enable = true;

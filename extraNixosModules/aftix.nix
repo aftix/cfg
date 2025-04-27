@@ -10,10 +10,10 @@
   inherit (lib.options) mkOption;
   inherit (lib) mkIf mkDefault mkOverride;
   inherit (lib.lists) optionals;
-  myCfg = config.my.users.aftix;
+  myCfg = config.aftix.users.aftix;
   cfg = config.users.users.aftix;
 in {
-  options.my.users.aftix = {
+  options.aftix.users.aftix = {
     extraGroups = mkOption {
       default = [
         "input"
@@ -32,7 +32,7 @@ in {
   };
 
   config = {
-    my.users.aftix.enable = true;
+    aftix.users.aftix.enable = true;
 
     environment.systemPackages = [cfg.shell];
 

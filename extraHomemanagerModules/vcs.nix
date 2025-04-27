@@ -78,7 +78,7 @@
 in {
   home.packages = [pkgs.pre-commit better-git-branch];
 
-  my.shell.aliases = [
+  aftix.shell.aliases = [
     {
       name = "g";
       command = lib.getExe pkgs.git;

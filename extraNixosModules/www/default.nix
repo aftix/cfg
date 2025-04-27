@@ -10,7 +10,7 @@
   inherit (lib.options) mkOption;
   inherit (lib.strings) concatLines;
 
-  cfg = config.my.www;
+  cfg = config.aftix.www;
 
   toPsqlAuth = {
     type,
@@ -37,7 +37,7 @@ in {
     ./znc.nix
   ];
 
-  options.my.www = {
+  options.aftix.www = {
     hostname = mkOption {
       default = "aftix.xyz";
       type = lib.types.str;
@@ -56,7 +56,7 @@ in {
       default = "/srv";
       type = lib.types.str;
       description = ''
-        Home directory of the ''${my.www.user} user.
+        Home directory of the ''${aftix.www.user} user.
         www services that are not proxy passes (to e.g. phpfpm)
         should serve files from subdirectories of this root directory.
       '';
@@ -88,7 +88,7 @@ in {
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMmFgG1EuQDoJb8pQcxnhjqbncrpJGZ3iNon/gu0bXiE aftix@aftix.xyz"
       ];
       type = with lib.types; listOf str;
-      description = "List of public ssh keys for remote login as \${my.www.user}";
+      description = "List of public ssh keys for remote login as \${aftix.www.user}";
     };
 
     streamConfig = mkOption {

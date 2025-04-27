@@ -10,7 +10,7 @@
   inherit (lib) mkDefault mkForce;
   inherit (lib.options) mkOption mkEnableOption;
 in {
-  options.my = {
+  options.aftix = {
     flake = mkOption {
       default = lib.fileset.toSource {
         root = ../.;
@@ -58,7 +58,7 @@ in {
       readOnly = true;
       default = {
         CapabilityBoundingSet =
-          mkDefault config.my.systemdCapabilities;
+          mkDefault config.aftix.systemdCapabilities;
         IPAddressAllow = mkDefault "localhost";
         IPAddressDeny = mkDefault "any";
         LockPersonality = mkDefault true;
@@ -167,15 +167,15 @@ in {
     };
 
     # Set the host-specific things in the nixd configuration
-    my.development.nixdConfig.options = lib.mkIf ((config.my.flake or "") != "") {
-      nixos.expr = "(import \"${config.my.flake}\").nixosConfigurations.${config.networking.hostName}.options";
+    aftix.development.nixdConfig.options = lib.mkIf ((config.aftix.flake or "") != "") {
+      nixos.expr = "(import \"${config.aftix.flake}\").nixosConfigurations.${config.networking.hostName}.options";
       home-manager.expr =
         /*
         nix
         */
         ''
           let
-            flake = import "${config.my.flake}";
+            flake = import "${config.aftix.flake}";
             nixosCfg = flake.nixosConfigurations.${config.networking.hostName}.config;
             pkgs = import <nixpkgs> {};
             inherit (pkgs) lib;
@@ -187,7 +187,7 @@ in {
               flake.homemanagerModules.default
               (dep-injects.home-manager or {})
               ({pkgs, ...}: { nix.package = pkgs.nix;})
-              (import "${config.my.flake}/homeConfigurations/aftix.nix")
+              (import "${config.aftix.flake}/homeConfigurations/aftix.nix")
             ];
           in
             (mkHmCfg {
@@ -198,7 +198,7 @@ in {
 
     # Use the systemd-boot EFI boot loader.
     boot = {
-      loader = lib.mkIf config.my.uefi {
+      loader = lib.mkIf config.aftix.uefi {
         efi.canTouchEfiVariables = true;
         systemd-boot = {
           enable = true;

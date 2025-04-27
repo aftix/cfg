@@ -9,12 +9,12 @@
 }: let
   inherit (lib.attrsets) optionalAttrs mergeAttrsList;
   inherit (lib.strings) hasPrefix optionalString concatMapStringsSep concatLines;
-  shellCfg = config.my.shell;
+  shellCfg = config.aftix.shell;
   cfg = shellCfg.nushell;
 in {
   home.packages = lib.mkIf cfg.enable ([pkgs.nushell] ++ cfg.plugins);
 
-  my.docs.pages.nushell = let
+  aftix.docs.pages.nushell = let
     inherit (pkgs.aftixLib) mergeTagged;
   in {
     _docsName = "Extra shell functions and modules for nushell";
@@ -66,7 +66,7 @@ in {
         ];
       };
     _docsSeeAlso = let
-      inherit (config.my.docs) prefix;
+      inherit (config.aftix.docs) prefix;
     in [
       {
         name = prefix + "-shell";

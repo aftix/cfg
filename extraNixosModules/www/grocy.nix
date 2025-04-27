@@ -9,7 +9,7 @@
 }: let
   inherit (lib) mkIf mkForce;
   inherit (lib.options) mkOption mkEnableOption;
-  wwwCfg = config.my.www;
+  wwwCfg = config.aftix.www;
   cfg = wwwCfg.grocy;
 
   acmeHost =
@@ -17,7 +17,7 @@
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.www.grocy = {
+  options.aftix.www.grocy = {
     enable = mkEnableOption "grocy";
 
     domain = mkOption {
@@ -27,7 +27,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.www.grocy.domain}";
+      description = "null to use \${aftix.www.grocy.domain}";
     };
 
     phpfpm.settings = mkOption {
@@ -152,7 +152,7 @@ in {
           wantedBy = ["multi-user.target"];
           before = ["phpfpm-grocy.service"];
           serviceConfig =
-            config.my.systemdHardening
+            config.aftix.systemdHardening
             // {
               User = mkForce "grocy";
               Group = mkForce "grocy";
@@ -166,7 +166,7 @@ in {
           '';
         };
 
-        phpfpm-grocy.serviceConfig = config.my.hardenPHPFPM {
+        phpfpm-grocy.serviceConfig = config.aftix.hardenPHPFPM {
           workdir = config.services.grocy.package;
           datadir = "/var/lib/grocy";
         };

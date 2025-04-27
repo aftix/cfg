@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # Options that are for home-manager, but should be set on a per-host basis
 pkgs: lib: {
-  my = {
+  aftix = {
     development.nixdConfig = lib.mkOption {
       default = {};
       description = "Configuration for the nixd LSP";

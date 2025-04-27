@@ -34,8 +34,8 @@ in {
     templates = {
       youtubeapi_keys = {
         mode = "0400";
-        owner = config.my.www.user;
-        inherit (config.my.www) group;
+        owner = config.aftix.www.user;
+        inherit (config.aftix.www) group;
         content = ''
           ${config.sops.placeholder.youtube_api_key}
         '';
@@ -51,13 +51,11 @@ in {
     };
   };
 
-  aftix.pull-updates.enable = true;
-  aftix.hydra-substituter.extra-credentialed-services = ["nixos-pull-updates"];
-
-  my = let
+  aftix = let
     domain = config.aftix.statics.primaryDomain;
   in {
-    users.aftix.extraGroups = lib.mkForce ["manage-units"];
+    pull-updates.enable = true;
+    hydra-substituter.extra-credentialed-services = ["nixos-pull-updates"];
 
     attic = {
       enable = true;
@@ -133,6 +131,8 @@ in {
         identd.enable = true;
       };
     };
+
+    users.aftix.extraGroups = lib.mkForce ["manage-units"];
   };
 
   services = {

@@ -20,8 +20,8 @@
 
   xdg.userDirs.createDirectories = lib.mkForce false;
 
-  my = {
-    shell.elvish.enable = true;
+  aftix = {
+    shell.elvish.enable = false;
 
     docs = {
       enable = true;

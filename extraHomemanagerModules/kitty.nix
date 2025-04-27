@@ -484,7 +484,7 @@ in {
     };
   };
 
-  my.docs.pages.kitty = {
+  aftix.docs.pages.kitty = {
     _docsName = "kitty \\- The fast, feature rich terminal emulator";
     _docsExtraSections = {
       "Shortcut Format" = paragraph ''
@@ -544,9 +544,9 @@ in {
 
       kitty_mod = settings.kittyMod.value;
       shell = lib.mkDefault (
-        if config.my.shell.nushell.enable
+        if config.aftix.shell.nushell.enable
         then (lib.getExe nuWrapped)
-        else if config.my.shell.elvish.enable
+        else if config.aftix.shell.elvish.enable
         then "${lib.geteExe pkgs.elvish}"
         else "${lib.getExe pkgs.zsh}"
       );
@@ -602,7 +602,7 @@ in {
       '';
   };
 
-  my.shell.aliases = [
+  aftix.shell.aliases = [
     {
       name = "icat";
       command = "kitty +kitten icat";

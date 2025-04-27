@@ -13,14 +13,14 @@
   inherit (lib.lists) optionals;
 
   inherit (pkgs.aftixLib) toHyprMonitors toHyprWorkspaces toHyprCfg;
-  cfg = config.my.hyprland;
+  cfg = config.aftix.hyprland;
   hyprPackage = config.wayland.windowManager.hyprland.package;
 
   volumeCmds = let
-    osd = lib.getExe' osConfig.my.swayosd.package "swayosd-client";
+    osd = lib.getExe' osConfig.aftix.swayosd.package "swayosd-client";
     pw = lib.getExe pkgs.pw-volume;
   in
-    if osConfig.my.swayosd.enable
+    if osConfig.aftix.swayosd.enable
     then {
       raise = "${osd} --output-volume raise";
       raiseMid = "${osd} --output-volume +3";
@@ -96,7 +96,7 @@
 in {
   imports = [./waybar.nix];
 
-  options.my.hyprland = with lib.types; {
+  options.aftix.hyprland = with lib.types; {
     extraMonitor = mkOption {
       default = [];
       # type = listOf (attrsOf {
@@ -129,7 +129,7 @@ in {
   };
 
   config = {
-    my.hyprland.transforms = {
+    aftix.hyprland.transforms = {
       normal = "0";
       "90" = "1";
       "180" = "2";
@@ -426,8 +426,8 @@ in {
             "[workspace 8 silent] thunderbird"
             "[workspace 9 silent] keepassxc"
           ]
-          ++ optionals (config.my.matrixClient != null) [
-            "[workspace 2;group set] ${lib.getExe config.my.matrixClient}"
+          ++ optionals (config.aftix.matrixClient != null) [
+            "[workspace 2;group set] ${lib.getExe config.aftix.matrixClient}"
           ]
           ++ [
             "[workspace 2] discord"
@@ -525,8 +525,8 @@ in {
               ",e,exec,thunderbird"
               ",d,exec,discord"
             ]
-            ++ optionals (config.my.matrixClient != null) [
-              "SHIFT,d,exec,${lib.getExe config.my.matrixClient}"
+            ++ optionals (config.aftix.matrixClient != null) [
+              "SHIFT,d,exec,${lib.getExe config.aftix.matrixClient}"
             ]);
         };
     };

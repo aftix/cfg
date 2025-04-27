@@ -8,7 +8,7 @@
 }: let
   inherit (lib.attrsets) mergeAttrsList;
   inherit (lib) mkIf mkMerge;
-  cfg = config.my.disko;
+  cfg = config.aftix.disko;
 in {
   imports = [./default.nix];
 

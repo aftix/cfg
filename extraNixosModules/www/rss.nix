@@ -11,15 +11,15 @@
   inherit (lib.attrsets) filterAttrs;
   inherit (lib.options) mkEnableOption mkOption;
 
-  wwwCfg = config.my.www;
-  cfg = config.my.www.rss;
+  wwwCfg = config.aftix.www;
+  cfg = config.aftix.www.rss;
 
   acmeHost =
     if cfg.acmeDomain == null
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.www.rss = {
+  options.aftix.www.rss = {
     enable = mkEnableOption "rss";
 
     domain = mkOption {
@@ -29,7 +29,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.www.rss.domain}";
+      description = "null to use \${aftix.www.rss.domain}";
     };
   };
 
@@ -67,7 +67,7 @@ in {
           UMask = mkForce "0027";
         };
 
-        phpfpm-freshrss.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {
+        phpfpm-freshrss.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.aftix.hardenPHPFPM {
           workdir = config.services.freshrss.package;
           datadir = "/var/lib/freshrss";
         });

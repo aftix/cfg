@@ -9,12 +9,12 @@
 }: let
   inherit (lib.attrsets) mapAttrsToList mergeAttrsList optionalAttrs;
   inherit (lib.strings) escapeShellArg hasPrefix optionalString concatMapStringsSep;
-  shellCfg = config.my.shell;
+  shellCfg = config.aftix.shell;
   cfg = shellCfg.elvish;
 in {
   home.packages = lib.mkIf cfg.enable [pkgs.elvish];
 
-  my.docs.pages.elvish = let
+  aftix.docs.pages.elvish = let
     inherit (pkgs.aftixLib) mergeTagged;
   in {
     _docsName = "Extra shell functions and modules for elvish";
@@ -50,7 +50,7 @@ in {
       };
 
     _docsSeeAlso = let
-      inherit (config.my.docs) prefix;
+      inherit (config.aftix.docs) prefix;
     in [
       {
         name = prefix + "-shell";

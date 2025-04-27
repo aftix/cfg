@@ -9,7 +9,7 @@
 }: let
   inherit (lib.options) mkOption;
 in {
-  options.my.mpris.enable = mkOption {default = true;};
+  options.aftix.mpris.enable = mkOption {default = true;};
 
   config = {
     hardware.bluetooth = {
@@ -23,7 +23,7 @@ in {
       };
     };
 
-    systemd.user.services.mpris-proxy = lib.mkIf config.my.mpris.enable {
+    systemd.user.services.mpris-proxy = lib.mkIf config.aftix.mpris.enable {
       description = "Mpris proxy";
       after = ["network.target" "sound.target"];
       wantedBy = ["default.target"];

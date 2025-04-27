@@ -11,15 +11,15 @@
   inherit (lib.attrsets) filterAttrs;
   inherit (lib.options) mkOption mkEnableOption;
 
-  wwwCfg = config.my.www;
-  cfg = config.my.www.barcodebuddy;
+  wwwCfg = config.aftix.www;
+  cfg = config.aftix.www.barcodebuddy;
 
   acmeHost =
     if cfg.acmeDomain == null
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.www.barcodebuddy = {
+  options.aftix.www.barcodebuddy = {
     enable = mkEnableOption "barcodebuddy";
 
     domain = mkOption {
@@ -29,7 +29,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.www.grocy.domain}";
+      description = "null to use \${aftix.www.grocy.domain}";
     };
 
     enableWebsockets = mkOption {
@@ -165,7 +165,7 @@ in {
       };
 
       services = {
-        phpfpm-barcodebuddy.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.my.hardenPHPFPM {
+        phpfpm-barcodebuddy.serviceConfig = filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) (config.aftix.hardenPHPFPM {
           workdir = pkgs.barcodebuddy;
           datadir = cfg.dataDir;
         });
@@ -177,7 +177,7 @@ in {
           unitConfig.Description = "Barcodebuddy for grocy - websocket server";
 
           serviceConfig =
-            (filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) config.my.systemdHardening)
+            (filterAttrs (n: v: !builtins.elem n ["IPAddressAllow" "IPAddressDeny"]) config.aftix.systemdHardening)
             // {
               User = cfg.user;
               Group = cfg.group;

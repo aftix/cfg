@@ -9,15 +9,15 @@
   inherit (lib) mkIf;
   inherit (lib.attrsets) optionalAttrs;
   inherit (lib.options) mkOption mkEnableOption;
-  wwwCfg = config.my.www;
-  cfg = config.my.www.coffeepaste;
+  wwwCfg = config.aftix.www;
+  cfg = config.aftix.www.coffeepaste;
 
   acmeHost =
     if cfg.acmeDomain == null
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.www.coffeepaste = {
+  options.aftix.www.coffeepaste = {
     enable = mkEnableOption "coffeepaste";
 
     domain = mkOption {
@@ -26,9 +26,9 @@ in {
       description = ''
         Domain to host coffeepaste under.
 
-        Exactly one of ''${my.www.coffeepaste.domain}
-        or ''${my.www.coffeepaste.virtualHost} must
-        be non-null if ''${my.www.coffeepaste.enable}
+        Exactly one of ''${aftix.www.coffeepaste.domain}
+        or ''${aftix.www.coffeepaste.virtualHost} must
+        be non-null if ''${aftix.www.coffeepaste.enable}
         is true.
       '';
     };
@@ -37,10 +37,10 @@ in {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
       description = ''
-        Used if ''${my.www.coffeepaste.domain} is non-null.
+        Used if ''${aftix.www.coffeepaste.domain} is non-null.
 
         If non-null, use as the ACME host;
-        otherwise, use ''${my.www.coffeepaste.domain} as the
+        otherwise, use ''${aftix.www.coffeepaste.domain} as the
         ACME host.
       '';
     };
@@ -49,12 +49,12 @@ in {
       default = null;
       type = with lib.types; nullOr str;
       description = ''
-        If non-null, nginx virtual host to add ''${my.www.coffeepaste.location}
+        If non-null, nginx virtual host to add ''${aftix.www.coffeepaste.location}
         redirect under.
 
-        Exactly one of ''${my.www.coffeepaste.domain}
-        or ''${my.www.coffeepaste.virtualHost} must
-        be non-null if ''${my.www.coffeepaste.enable}
+        Exactly one of ''${aftix.www.coffeepaste.domain}
+        or ''${aftix.www.coffeepaste.virtualHost} must
+        be non-null if ''${aftix.www.coffeepaste.enable}
         is true.
       '';
     };
@@ -63,8 +63,8 @@ in {
       default = null;
       type = with lib.types; nullOr str;
       description = ''
-        Subpath under ''${my.www.coffeepaste.virtualHost}
-        to host coffeepaste. Must be non-null if ''${my.www.coffeepaste.virtualHost}
+        Subpath under ''${aftix.www.coffeepaste.virtualHost}
+        to host coffeepaste. Must be non-null if ''${aftix.www.coffeepaste.virtualHost}
         is non-null.
       '';
     };
@@ -84,16 +84,16 @@ in {
       {
         assertion = (cfg.domain != null) || (cfg.virtualHost != null);
         message = ''
-          Either ''${my.www.coffeepaste.domain} or
-          ''${my.www.coffeepaste.virtualHost} must be non-null.
+          Either ''${aftix.www.coffeepaste.domain} or
+          ''${aftix.www.coffeepaste.virtualHost} must be non-null.
         '';
       }
 
       {
         assertion = (cfg.domain == null) || (cfg.virtualHost == null);
         message = ''
-          Both ''${my.www.coffeepaste.domain} and
-          ''${my.www.coffeepaste.domain} cannot be
+          Both ''${aftix.www.coffeepaste.domain} and
+          ''${aftix.www.coffeepaste.domain} cannot be
           non-null at the same time.
         '';
       }

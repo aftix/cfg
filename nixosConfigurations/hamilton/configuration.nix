@@ -84,7 +84,7 @@ in {
     };
   };
 
-  my = {
+  aftix = {
     disko = {
       rootDrive = {
         name = "nvme0n1";
@@ -108,7 +108,9 @@ in {
         ];
       };
     };
+  };
 
+  aftix = {
     greeterCfgExtra = ''
       monitor=desc:ASUSTek COMPUTER INC ASUS VG27W 0x0001995C,preferred,0x0,1
       monitor=desc:ViewSonic Corporation VX2703 SERIES T8G132800478,preferred,2560x-180,1,transform,1
@@ -361,7 +363,7 @@ in {
     {
       description = "Mount backup drive for restic syncing";
       where = "/run/restic-backups-backblaze/mnt";
-      what = config.my.backup.localSnapshotDrive;
+      what = config.aftix.backup.localSnapshotDrive;
       options = "subvolid=5,noexec,nosuid,relatime,nodiratime,nodev,ro";
       mountConfig.Mode = "0500";
       before = ["restic-backups-backblaze.service"];
@@ -370,7 +372,7 @@ in {
   systemd.services.restic-backups-backblaze = {
     after = ["btrfs-snapshots.service"];
     bindsTo = ["${utils.escapeSystemdPath "/run/restic-backups-backblaze/mnt"}.mount"];
-    serviceConfig.WorkingDirectory = "/var/run/restic-backups-backblaze/mnt/${config.my.backup.snapshotPrefix}";
+    serviceConfig.WorkingDirectory = "/var/run/restic-backups-backblaze/mnt/${config.aftix.backup.snapshotPrefix}";
   };
 
   # Hardware specific settings

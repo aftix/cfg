@@ -24,7 +24,7 @@
 
   xdg.userDirs.createDirectories = lib.mkForce false;
 
-  my = {
+  aftix = {
     shell = {
       elvish.enable = false;
       gpgTtyFix = false;

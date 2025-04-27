@@ -9,7 +9,7 @@
 }: let
   inherit (lib.options) mkOption;
   inherit (lib.strings) escapeShellArg;
-  cfg = config.my.backup;
+  cfg = config.aftix.backup;
 
   my-snapshot = pkgs.writeNushellApplication {
     name = "snapshot.nu";
@@ -17,7 +17,7 @@
     text = builtins.readFile ./btrfs-snapshot.nu;
   };
 in {
-  options.my.backup = {
+  options.aftix.backup = {
     localDrive = mkOption {default = "/dev/disk/by-label/nixos";};
     localSnapshotDrive = mkOption {default = "/dev/disk/by-label/mass";};
     snapshotPrefix = mkOption {default = "safe";};

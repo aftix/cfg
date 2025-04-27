@@ -13,7 +13,7 @@
   inherit (config.dep-inject) inputs;
   hyprlandPkg = config.programs.hyprland.package;
 in {
-  options.my.greeterCfgExtra = mkOption {
+  options.aftix.greeterCfgExtra = mkOption {
     default = "";
     type = lib.types.str;
   };
@@ -98,7 +98,7 @@ in {
                 }
                 exec-once = ${lib.getExe pkgs.hyprpaper} --config ${paperCfg}
 
-                ${config.my.greeterCfgExtra}
+                ${config.aftix.greeterCfgExtra}
               '';
             };
           in {

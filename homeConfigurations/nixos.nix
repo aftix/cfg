@@ -12,7 +12,7 @@
 
   xdg.userDirs.createDirectories = lib.mkForce false;
 
-  my = {
+  aftix = {
     docs = {
       enable = true;
       prefix = "aftix-iso";

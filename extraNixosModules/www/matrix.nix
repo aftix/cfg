@@ -11,10 +11,10 @@
   inherit (lib.attrsets) optionalAttrs;
   inherit (lib.lists) optional optionals;
 
-  cfg = config.my.matrix;
-  wwwCfg = config.my.www;
+  cfg = config.aftix.matrix;
+  wwwCfg = config.aftix.www;
 
-  inherit (config.my.www) hostname;
+  inherit (config.aftix.www) hostname;
   strPort = builtins.toString cfg.port;
 
   bridgeRegistrationFile = "/var/lib/heisenbridge/registration.yml";
@@ -31,7 +31,7 @@
     then cfg.domain
     else cfg.virtualHost;
 in {
-  options.my.matrix = {
+  options.aftix.matrix = {
     enable = mkEnableOption "matrix synapse homeserver";
 
     domain = mkOption {
@@ -41,9 +41,9 @@ in {
         Domain to host matrix under.
         Sets up a new nginx virtual host.
 
-        Exactly one of ''${my.matrix.domain}
-        or ''${my.matrix.virtualHost} must
-        be non-null if ''${my.www.coffeepaste.enable}
+        Exactly one of ''${aftix.matrix.domain}
+        or ''${aftix.matrix.virtualHost} must
+        be non-null if ''${aftix.www.coffeepaste.enable}
         is true.
       '';
     };
@@ -52,10 +52,10 @@ in {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
       description = ''
-        Used if ''${my.matrix.domain} is non-null.
+        Used if ''${aftix.matrix.domain} is non-null.
 
         If non-null, use as the ACME host;
-        otherwise, use ''${my.matrix.domain} as the
+        otherwise, use ''${aftix.matrix.domain} as the
         ACME host.
       '';
     };
@@ -64,13 +64,13 @@ in {
       default = null;
       type = with lib.types; nullOr str;
       description = ''
-        If non-null, nginx virtual host to add ''${my.www.coffeepaste.location}
+        If non-null, nginx virtual host to add ''${aftix.www.coffeepaste.location}
         redirect under. Does not set up any other
         configuration for the virtual host.
 
-        Exactly one of ''${my.matrix.domain}
-        or ''${my.matrix.virtualHost} must
-        be non-null if ''${my.matrix.enable} is true.
+        Exactly one of ''${aftix.matrix.domain}
+        or ''${aftix.matrix.virtualHost} must
+        be non-null if ''${aftix.matrix.enable} is true.
       '';
     };
 
@@ -124,16 +124,16 @@ in {
       {
         assertion = (cfg.domain != null) || (cfg.virtualHost != null);
         message = ''
-          Either ''${my.matrix.domain} or
-          ''${my.matrix.virtualHost} must be non-null.
+          Either ''${aftix.matrix.domain} or
+          ''${aftix.matrix.virtualHost} must be non-null.
         '';
       }
 
       {
         assertion = (cfg.domain == null) || (cfg.virtualHost == null);
         message = ''
-          Both ''${my.matrix.domain} and
-          ''${my.matrix.domain} cannot be
+          Both ''${aftix.matrix.domain} and
+          ''${aftix.matrix.domain} cannot be
           non-null at the same time.
         '';
       }
@@ -167,7 +167,7 @@ in {
       };
     };
 
-    my.www.streamConfig = let
+    aftix.www.streamConfig = let
       sPort = builtins.toString cfg.ircBridge.identd.port;
     in
       optional cfg.ircBridge.identd.enable ''

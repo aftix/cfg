@@ -22,7 +22,7 @@
 
       nixdConfig = {};
     }
-    // (config.my.development or {});
+    // (config.aftix.development or {});
 
   helixLanguages = let
     inherit (lib.strings) escapeShellArg;
@@ -122,7 +122,7 @@ in {
         bash-language-server
       ]
       ++ (optionals devCfg.typescript [nodePackages_latest.typescript-language-server])
-      ++ (optionals config.my.shell.nushell.enable [nufmt])
+      ++ (optionals config.aftix.shell.nushell.enable [nufmt])
       ++ (optionals devCfg.nix [nixd alejandra])
       ++ (optionals devCfg.go [gopls]);
 

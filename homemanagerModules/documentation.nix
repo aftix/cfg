@@ -9,7 +9,7 @@
 }: let
   inherit (lib.lists) optional;
 
-  cfg = config.my.docs;
+  cfg = config.aftix.docs;
 
   builder = let
     inherit (lib.attrsets) mapAttrsToList;
@@ -69,7 +69,7 @@
         ]);
     };
 in {
-  options.my = {
+  options.aftix = {
     docs = let
       inherit (lib.options) mkOption mkEnableOption;
     in {
@@ -113,7 +113,7 @@ in {
         type = with lib.types; uniq str;
         readOnly = true;
       };
-      enable = mkEnableOption "my.docs";
+      enable = mkEnableOption "aftix docs";
     };
   };
 

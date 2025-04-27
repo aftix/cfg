@@ -7,7 +7,7 @@
   lib,
   ...
 }: let
-  docPrefix = config.my.docs.prefix;
+  docPrefix = config.aftix.docs.prefix;
   binds = {
     mouse_left_click = {
       tag = "Left Click";
@@ -26,7 +26,7 @@
     };
   };
 in {
-  my.docs.pages.dunst = let
+  aftix.docs.pages.dunst = let
     inherit (pkgs.aftixLib) mergeSubsections mergeTaggedAttrs;
   in {
     _docsName = "dunst \\- A customizable and lightweight notification-daemon";

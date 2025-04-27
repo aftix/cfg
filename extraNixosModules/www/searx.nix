@@ -9,7 +9,7 @@
   inherit (lib) mkIf mkForce;
   inherit (lib.options) mkOption mkEnableOption;
 
-  wwwCfg = config.my.www;
+  wwwCfg = config.aftix.www;
   cfg = wwwCfg.searx;
 
   socket = "/run/uwsgi/searx.socket";
@@ -19,7 +19,7 @@
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.www.searx = {
+  options.aftix.www.searx = {
     enable = mkEnableOption "searx";
 
     domain = mkOption {
@@ -31,7 +31,7 @@ in {
       type = with lib.types; nullOr str;
       description = ''
         If non-null, add a path /searx/ redirect
-        to ''${my.www.searx.domain} under
+        to ''${aftix.www.searx.domain} under
         the given nginx virtual host.
       '';
     };
@@ -39,7 +39,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.www.searx.domain}";
+      description = "null to use \${aftix.www.searx.domain}";
     };
   };
 

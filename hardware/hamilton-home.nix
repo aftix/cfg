@@ -2,10 +2,10 @@
 # SPDX-FileCopyrightText: (C) 2025 aftix
 # SPDX-License-Identifier: EUPL-1.2
 {config, ...}: {
-  my.hyprland = let
+  aftix.hyprland = let
     asus = "ASUSTek COMPUTER INC ASUS VG27W 0x0001995C";
     viewSonic = "ViewSonic Corporation VX2703 SERIES T8G132800478";
-    inherit (config.my.hyprland) transforms;
+    inherit (config.aftix.hyprland) transforms;
   in {
     extraMonitor = [
       {

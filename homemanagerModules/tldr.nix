@@ -4,7 +4,7 @@
 {pkgs, ...}: {
   home.packages = [pkgs.tealdeer];
 
-  my.shell.upgradeCommands = [
+  aftix.shell.upgradeCommands = [
     "tldr --update"
   ];
 

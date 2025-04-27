@@ -11,9 +11,9 @@
   inherit (lib.lists) optional;
 
   inherit (config.dep-inject) inputs;
-  cfg = config.my.channels;
+  cfg = config.aftix.channels;
 in {
-  options.my.channels = {
+  options.aftix.channels = {
     enable = mkOption {default = true;};
 
     basePath = mkOption {
@@ -25,11 +25,11 @@ in {
       enable = mkOption {default = true;};
       path = mkOption {
         default = "nixpkgs";
-        description = "path relative to my.channels.basePath where this channel will be available";
+        description = "path relative to aftix.channels.basePath where this channel will be available";
       };
       relativePath = mkOption {
         default = true;
-        description = "treat channel path as relative to my.channels.basePath";
+        description = "treat channel path as relative to aftix.channels.basePath";
       };
     };
 
@@ -37,11 +37,11 @@ in {
       enable = mkOption {default = true;};
       path = mkOption {
         default = "home-manager";
-        description = "path relative to my.channels.basePath where this channel will be available";
+        description = "path relative to aftix.channels.basePath where this channel will be available";
       };
       relativePath = mkOption {
         default = true;
-        description = "treat channel path as relative to my.channels.basePath";
+        description = "treat channel path as relative to aftix.channels.basePath";
       };
     };
   };

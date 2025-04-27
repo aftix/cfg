@@ -62,7 +62,7 @@
 
   sops.secrets.mpv = {};
 
-  my.shell = {
+  aftix.shell = {
     aliases = [
       {
         name = "mpvf";

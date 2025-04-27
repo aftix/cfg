@@ -9,8 +9,8 @@
 }: let
   inherit (lib.options) mkOption mkEnableOption;
 
-  wwwCfg = config.my.www;
-  cfg = config.my.www.forgejo;
+  wwwCfg = config.aftix.www;
+  cfg = config.aftix.www.forgejo;
   serviceCfg = config.services.forgejo;
 
   acmeHost =
@@ -18,7 +18,7 @@
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.www.forgejo = {
+  options.aftix.www.forgejo = {
     enable = mkEnableOption "forgejo";
 
     domain = mkOption {
@@ -28,7 +28,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.www.forgejo.domain}";
+      description = "null to use \${aftix.www.forgejo.domain}";
     };
   };
 

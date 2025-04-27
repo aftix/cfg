@@ -9,9 +9,9 @@
 }: let
   inherit (lib.lists) optional;
   inherit (lib.options) mkOption;
-  cfg = config.my.shell;
+  cfg = config.aftix.shell;
 in {
-  options.my.shell = {
+  options.aftix.shell = {
     aliases = mkOption {
       default = [];
       description = ''
@@ -95,7 +95,7 @@ in {
         default = [];
         description = ''
           A list of extra functions to include in elvish/rc.elv . The functions will be placed after
-          any use statements for `my.shell.elvish.extraMods` and after aliases. Each element is a set:
+          any use statements for `aftix.shell.elvish.extraMods` and after aliases. Each element is a set:
           { name, arguments, body }. Arguments is optional, but if present will be put between || automatically.
           Nothing will be quoted.
 
@@ -167,7 +167,7 @@ in {
         default = [];
         description = ''
           A list of extra commands to include in nushell/config.nu. The functions will be placed after
-          any use statements for `my.shell.nushell.extraMods` and after aliases. Each element is a set:
+          any use statements for `aftix.shell.nushell.extraMods` and after aliases. Each element is a set:
           { name, arguments, body }. Arguments is optional, but if present will be put between [] automatically.
           Nothing will be quoted.
 
@@ -201,7 +201,7 @@ in {
       };
     };
 
-    my = {
+    aftix = {
       docs.pages.shell = let
         inherit (pkgs.aftixLib) mergeTagged;
       in {
@@ -224,7 +224,7 @@ in {
         _docsSeeAlso =
           optional cfg.elvish.enable
           {
-            name = config.my.docs.prefix + "-elvish";
+            name = config.aftix.docs.prefix + "-elvish";
             mansection = 7;
           };
       };

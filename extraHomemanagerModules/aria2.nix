@@ -24,7 +24,7 @@
 in {
   home.packages = [pkgs.aria2 aria2d pkgs.python3Packages.aria2p];
 
-  my.shell = {
+  aftix.shell = {
     aliases = [
       {
         name = "aria2p";

@@ -38,7 +38,7 @@ in {
 
   programs.kitty.settings.scrollback_pager = "'${lib.getExe pkgs.moar}' -no-linenumbers";
 
-  my.shell = {
+  aftix.shell = {
     aliases = [
       {
         name = "gzip";

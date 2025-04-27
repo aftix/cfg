@@ -9,15 +9,15 @@
   inherit (lib) mkIf;
   inherit (lib.options) mkEnableOption mkOption;
   inherit (lib.lists) optionals;
-  wwwCfg = config.my.www;
-  cfg = config.my.www.blog;
+  wwwCfg = config.aftix.www;
+  cfg = config.aftix.www.blog;
 
   acmeHost =
     if cfg.acmeDomain == null
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.www.blog = {
+  options.aftix.www.blog = {
     enable = mkEnableOption "blog";
 
     domain = mkOption {
@@ -27,7 +27,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${config.my.www.blog.domain}";
+      description = "null to use \${config.aftix.www.blog.domain}";
     };
 
     adventofcode = mkEnableOption "adventofcode";

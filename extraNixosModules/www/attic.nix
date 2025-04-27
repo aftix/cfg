@@ -10,8 +10,8 @@
 
   atticdCfg = config.services.atticd;
 
-  cfg = config.my.attic;
-  wwwCfg = config.my.www;
+  cfg = config.aftix.attic;
+  wwwCfg = config.aftix.www;
 
   strPort = builtins.toString cfg.port;
 
@@ -20,7 +20,7 @@
     then cfg.domain
     else cfg.acmeDomain;
 in {
-  options.my.attic = {
+  options.aftix.attic = {
     enable = mkEnableOption "atticd";
 
     domain = mkOption {
@@ -35,7 +35,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${my.attic.domain}";
+      description = "null to use \${aftix.attic.domain}";
     };
 
     region = mkOption {
@@ -55,7 +55,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    my.www.nginxBlockerPatches = [./attic_client_user_agent.patch];
+    aftix.www.nginxBlockerPatches = [./attic_client_user_agent.patch];
 
     security.acme.certs =
       if (acmeHost != cfg.domain)

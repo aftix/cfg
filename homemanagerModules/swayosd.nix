@@ -6,7 +6,7 @@
   lib,
   ...
 }: let
-  cfg = osConfig.my.swayosd;
+  cfg = osConfig.aftix.swayosd;
 in {
   config = lib.mkIf cfg.enable {
     home.packages = [cfg.package];

@@ -13,7 +13,7 @@
 in {
   imports = [../nixosModules/statics.nix];
 
-  options.my = {
+  options.aftix = {
     matrixClient = mkOption {
       default = null;
 
@@ -47,7 +47,7 @@ in {
           zstd
           zlib
         ]
-        ++ lib.optionals (config.my.matrixClient != null) [config.my.matrixClient];
+        ++ lib.optionals (config.aftix.matrixClient != null) [config.aftix.matrixClient];
 
       sessionVariables = {
         FZF_DEFAULT_OPTS = mkDefault "--layout=reverse --height 40%";

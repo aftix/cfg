@@ -4,7 +4,7 @@
 {lib, ...}: let
   inherit (lib.options) mkOption;
 in {
-  options.my.disko = {
+  options.aftix.disko = {
     rootDrive = {
       name = mkOption {
         type = with lib.types; uniq str;

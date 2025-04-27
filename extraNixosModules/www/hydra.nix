@@ -9,8 +9,8 @@
 }: let
   inherit (lib) mkIf;
   inherit (lib.options) mkEnableOption mkOption;
-  wwwCfg = config.my.www;
-  cfg = config.my.www.hydra;
+  wwwCfg = config.aftix.www;
+  cfg = config.aftix.www.hydra;
 
   acmeHost =
     if cfg.acmeDomain == null
@@ -21,7 +21,7 @@
 in {
   imports = [../hydra-substituter.nix];
 
-  options.my.www.hydra = {
+  options.aftix.www.hydra = {
     enable = mkEnableOption "hydra";
 
     domain = mkOption {
@@ -31,7 +31,7 @@ in {
     acmeDomain = mkOption {
       default = wwwCfg.acmeDomain;
       type = with lib.types; nullOr str;
-      description = "null to use \${config.my.www.blog.domain}";
+      description = "null to use \${config.aftix.www.blog.domain}";
     };
 
     port = mkOption {
@@ -61,7 +61,7 @@ in {
         };
       };
 
-    my.www = {
+    aftix.www = {
       extraPsqlIdentMap = [
         "hydra_map root postgres"
         "hydra_map hydra-queue-runner hydra"

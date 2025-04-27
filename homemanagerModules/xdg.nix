@@ -39,7 +39,7 @@ in {
     mimeApps.enable = hasSuffix "-linux" pkgs.system;
   };
 
-  my.shell.neededDirs = with config.xdg; [
+  aftix.shell.neededDirs = with config.xdg; [
     configHome
     dataHome
     cacheHome

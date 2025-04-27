@@ -29,7 +29,7 @@ in {
     };
   };
 
-  my.shell = {
+  aftix.shell = {
     upgradeCommands = ["pipx upgrade-all"];
     neededDirs = with config.home.sessionVariables; [
       PYTHONPYCACHEPREFIX
