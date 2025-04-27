@@ -1,10 +1,10 @@
 {lib, ...}: {
   imports = [
-    ../home/opt/sops.nix
+    ../extraHomemanagerModules/sops.nix
 
-    ../home/opt/development.nix
-    ../home/opt/helix.nix
-    ../home/opt/neoutils.nix
+    ../extraHomemanagerModules/development.nix
+    ../extraHomemanagerModules/helix.nix
+    ../extraHomemanagerModules/neoutils.nix
   ];
 
   xdg.userDirs.createDirectories = lib.mkForce false;

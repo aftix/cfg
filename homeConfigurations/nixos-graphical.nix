@@ -1,18 +1,18 @@
 {lib, ...}: {
   imports = [
-    ../home/opt/sops.nix
+    ../extraHomemanagerModules/sops.nix
 
-    ../home/opt/development.nix
-    ../home/opt/helix.nix
-    ../home/opt/neoutils.nix
+    ../extraHomemanagerModules/development.nix
+    ../extraHomemanagerModules/helix.nix
+    ../extraHomemanagerModules/neoutils.nix
 
-    ../home/opt/firefox.nix
+    ../extraHomemanagerModules/firefox.nix
 
-    ../home/opt/dunst.nix
-    ../home/opt/hypr.nix
-    ../home/opt/kitty.nix
-    ../home/opt/media.nix
-    ../home/opt/stylix.nix
+    ../extraHomemanagerModules/dunst.nix
+    ../extraHomemanagerModules/hypr.nix
+    ../extraHomemanagerModules/kitty.nix
+    ../extraHomemanagerModules/media.nix
+    ../extraHomemanagerModules/stylix.nix
   ];
 
   xdg.userDirs.createDirectories = lib.mkForce false;

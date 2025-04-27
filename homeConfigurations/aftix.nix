@@ -36,26 +36,26 @@ in {
   imports = [
     ../hardware/hamilton-home.nix
 
-    ../home/opt/sops.nix
+    ../extraHomemanagerModules/sops.nix
 
-    ../home/opt/aria2.nix
-    ../home/opt/development.nix
-    ../home/opt/helix.nix
-    ../home/opt/neoutils.nix
+    ../extraHomemanagerModules/aria2.nix
+    ../extraHomemanagerModules/development.nix
+    ../extraHomemanagerModules/helix.nix
+    ../extraHomemanagerModules/neoutils.nix
 
-    ../home/opt/firefox.nix
+    ../extraHomemanagerModules/firefox.nix
 
-    ../home/opt/email.nix
+    ../extraHomemanagerModules/email.nix
 
-    ../home/opt/hypr.nix
-    ../home/opt/kitty.nix
-    ../home/opt/media.nix
-    ../home/opt/stylix.nix
-    ../home/opt/swaync.nix
-    ../home/opt/transmission.nix
-    ../home/opt/zathura.nix
+    ../extraHomemanagerModules/hypr.nix
+    ../extraHomemanagerModules/kitty.nix
+    ../extraHomemanagerModules/media.nix
+    ../extraHomemanagerModules/stylix.nix
+    ../extraHomemanagerModules/swaync.nix
+    ../extraHomemanagerModules/transmission.nix
+    ../extraHomemanagerModules/zathura.nix
 
-    ../home/opt/discord.nix
+    ../extraHomemanagerModules/discord.nix
   ];
 
   sops.secrets.gh_oauth_token = {};

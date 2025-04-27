@@ -29,4 +29,4 @@ in
     commonModules = {imports = commonModules;};
     default = {imports = commonModules ++ localModuleList;};
   }
-  // (myLib.modulesFromDirectoryRecursive ./home/opt)
+  // (myLib.modulesFromDirectoryRecursive ./extraHomemanagerModules)
