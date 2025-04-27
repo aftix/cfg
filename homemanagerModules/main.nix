@@ -8,21 +8,7 @@
   inherit (lib) mkDefault mkForce;
   inherit (config.xdg) configHome dataHome stateHome;
 in {
-  imports = [
-    ../../nixosModules/statics.nix
-
-    ./bash.nix
-    ./documentation.nix
-    ./elvish.nix
-    ./gnupg.nix
-    ./nushell.nix
-    ./python.nix
-    ./swayosd.nix
-    ./shell.nix
-    ./tldr.nix
-    ./xdg.nix
-    ./zsh.nix
-  ];
+  imports = [../nixosModules/statics.nix];
 
   options.my = {
     matrixClient = mkOption {

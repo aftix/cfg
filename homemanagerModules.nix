@@ -21,9 +21,12 @@
       options = import ./nixos-home-options.nix pkgs lib;
     })
   ];
+
+  localModules = myLib.modulesFromDirectoryRecursive ./homemanagerModules;
+  localModuleList = inputs.nixpkgs.lib.mapAttrsToList (name: inputs.nixpkgs.lib.id) localModules;
 in
   {
     commonModules = {imports = commonModules;};
-    default = {imports = commonModules ++ [./home/common];};
+    default = {imports = commonModules ++ localModuleList;};
   }
   // (myLib.modulesFromDirectoryRecursive ./home/opt)
