@@ -1,3 +1,6 @@
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
 # Add some groups for various system management actions
 {
   security.polkit = {

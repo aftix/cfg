@@ -1,3 +1,6 @@
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
 lib: self: {
   # Generate an attribute set of mimetypes usable by xdg.mimeApps
   # Input is an attribute which maps an application to a

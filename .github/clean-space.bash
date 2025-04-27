@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
+
 # Clean up as much runner disk space as possible
 # Taken from https://github.com/lilyinstarlight/foosteros/blob/aa611d0cf03bd82f6c1c701e73f86f27abb8d8e4/.github/workflows/installer.yml
 # which is MIT licensed

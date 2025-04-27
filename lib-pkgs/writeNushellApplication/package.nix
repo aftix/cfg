@@ -1,3 +1,6 @@
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
 # A version of pkgs.writeShellApplication that uses nushell instead of bash
 # A lot is taken from https://github.com/hsjobeki/nixpkgs/tree/migrate-doc-comments/pkgs/build-support/trivial-builders/default.nix#L198:C5
 # MIT Licensed

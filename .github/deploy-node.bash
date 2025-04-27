@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
+
 # Deploy configuration to node using nixos-rebuild-ng
 # Configuration name should be in $1
 # It is required to have the ATTIC_CACHE in environment and ~/.ssh/id_ed25519 populated

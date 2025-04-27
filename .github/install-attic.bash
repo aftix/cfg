@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2025 aftix
+# SPDX-License-Identifier: EUPL-1.2
+
 # Install attic-client into the nix profile
 # and setup the default cache
 echo ATTIC_CACHE="$ATTIC_CACHE" | tee -a "$GITHUB_ENV"
