@@ -125,6 +125,12 @@
         inherit inputs pkgsCfg system;
       });
 
+    devShells = myLib.forEachSystem (system: {
+      default = import ./shell.nix {
+        inherit system pkgsCfg inputs;
+      };
+    });
+
     nodes = import ./nodes.nix;
 
     hydraJobs = import ./hydraJobs.nix {
