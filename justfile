@@ -57,24 +57,24 @@ switch *FLAGS:
     @systemd-inhibit --mode=block --why="Building configuration {{hostname}}" --who="$(pwd)/justfile" \
         nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
     # Run nixos-rebuild-ng
-    @run0 systemd-inhibit --mode=block --why="Switching to new configuration" --who="$(pwd)/justfile" \
-        nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" switch
+    @systemd-inhibit --mode=block --why="Switching to new configuration" --who="$(pwd)/justfile" \
+        nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" --sudo switch
 
 boot *FLAGS:
     # Build configuration
     @systemd-inhibit --mode=block --why="Building configuration {{hostname}}" --who="$(pwd)/justfile" \
         nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
     # Run nixos-rebuild-ng
-    @run0 systemd-inhibit --mode=block --why="Switching boot menu default" --who="$(pwd)/justfile" \
-        nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" boot
+    @systemd-inhibit --mode=block --why="Switching boot menu default" --who="$(pwd)/justfile" \
+        nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" --sudo boot
 
 test *FLAGS:
     # Build configuration
     @systemd-inhibit --mode=block --why="Building configuration {{hostname}}" --who="$(pwd)/justfile" \
         nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
     # Run nixos-rebuild-ng
-    @run0 systemd-inhibit --mode=block --why="Activating new configuration" --who="$(pwd)/justfile" \
-        nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" test
+    @systemd-inhibit --mode=block --why="Activating new configuration" --who="$(pwd)/justfile" \
+        nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" --sudo test
 
 deploy node="fermi" mode="switch" *FLAGS="":
     #!/usr/bin/env bash
