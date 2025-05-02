@@ -122,6 +122,7 @@ in {
         home-manager
         cachix
         nixos-rebuild-ng
+        git
 
         killall
         curl
