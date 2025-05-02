@@ -24,6 +24,7 @@
 
     carapace = prev.carapace.overrideAttrs {
       src = inputs.carapace;
+      goSum = "${inputs.carapace}/go.sum";
       vendorHash = "sha256-APJBCUdicKb81gY3ukhMHVgapDl+4tsMdNHEwZbarKE=";
     };
 
