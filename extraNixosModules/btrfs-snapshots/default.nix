@@ -21,7 +21,7 @@ in {
     localDrive = mkOption {default = "/dev/disk/by-label/nixos";};
     localSnapshotDrive = mkOption {default = "/dev/disk/by-label/mass";};
     snapshotPrefix = mkOption {default = "safe";};
-    deleteOlderThan = mkOption {default = "2 months ago";};
+    deleteOlderThan = mkOption {default = "8wk";};
     snapshotOnCalendar = mkOption {default = "daily";};
   };
 

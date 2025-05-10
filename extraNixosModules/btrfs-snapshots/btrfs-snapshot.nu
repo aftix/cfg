@@ -24,9 +24,9 @@ def main [
   }
 
   let deleteOlderThan = try {
-    if $delete_older_than == null { "2 months ago" } else { $delete_older_than } | into datetime
+    $timestamp - (if $delete_older_than == null { "8wk" } else { $delete_older_than } | into duration)
   } catch {
-    error make { msg: $"Failed to parse deleteOlderThan string ($delete_older_than) as a datetime" }
+    error make { msg: $"Failed to parse deleteOlderThan string ($delete_older_than) as a duration" }
   }
 
   let safeSubvol = if $safe_subvolume == null { "safe" } else { $safe_subvolume }
