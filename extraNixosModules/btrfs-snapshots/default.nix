@@ -43,7 +43,7 @@ in {
 
       script = ''
         cd / || exit 1
-        LOCKFILE="/var/run/backupdisk"
+        LOCKFILE="/var/run/backupdisk.pid"
         LOCKFD=99
         _lock() { ${lib.getExe pkgs.flock} -"$1" "$LOCKFD"; }
         _no_more_locking() { _lock u ; _lock xn && rm -f "$LOCKFILE"; }
@@ -51,6 +51,7 @@ in {
         _prepare_locking
 
         _lock xn || exit 1
+        echo "$$" >&"$LOCKFD"
         ${lib.getExe' pkgs.systemd "systemd-inhibit"} \
           --no-ask-password --what="sleep:idle" --mode="block" \
           --who="btrfs-snapshots.service" --why="Snapshotting ${cfg.localDrive} to ${cfg.localSnapshotDrive}" \
