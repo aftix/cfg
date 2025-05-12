@@ -73,7 +73,7 @@ in {
 
     programs.home-manager.enable = true;
 
-    services.ssh-agent.enable = lib.strings.hasSuffix "-linux" pkgs.system;
-    systemd.user.startServices = true;
+    services.ssh-agent.enable = pkgs.hostPlatform.isLinux;
+    systemd.user.startServices = lib.mkIf pkgs.hostPlatform.isLinux true;
   };
 }

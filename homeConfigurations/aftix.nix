@@ -80,18 +80,22 @@ in {
 
   services.swaync.enable = true;
 
-  systemd.user.services.ghHosts = {
-    Unit = {
-      Description = "create gh hosts file";
-      After = ["sops-nix.service"];
+  systemd.user.services = {
+    ghHosts = {
+      Unit = {
+        Description = "create gh hosts file";
+        After = ["sops-nix.service"];
+      };
+      Service = {
+        Type = "oneshot";
+        Restart = "on-failure";
+        RestartSec = "1s";
+        ExecStart = lib.getExe link-gh-hosts;
+      };
+      Install.WantedBy = ["default.target"];
     };
-    Service = {
-      Type = "oneshot";
-      Restart = "on-failure";
-      RestartSec = "1s";
-      ExecStart = lib.getExe link-gh-hosts;
-    };
-    Install.WantedBy = ["default.target"];
+
+    ssh-agent.Service.Environment = "SSH_ASKPASS=${config.home.sessionVariables.SSH_ASKPASS}";
   };
 
   aftix = {
