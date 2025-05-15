@@ -25,5 +25,6 @@ stdenvNoCC.mkDerivation (self: {
   meta = with lib; {
     homepage = "https://github.com/kapdap/freshrss-extensions";
     license = licenses.mit;
+    updateVersion = "branch";
   };
 })

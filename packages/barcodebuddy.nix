@@ -60,5 +60,6 @@ in
       description = "Create barcodes with information for Grocy";
       homepage = "https://github.com/Forceu/barcodebuddy";
       licenes = licenses.agpl3Only;
+      updateVersion = "branch";
     };
   })

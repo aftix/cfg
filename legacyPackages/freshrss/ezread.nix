@@ -25,5 +25,6 @@ stdenvNoCC.mkDerivation (self: {
   meta = with lib; {
     homepage = "https://github.com/kalvn/freshrss-mark-previous-as-read";
     license = licenses.gpl2Only;
+    updateVersion = "branch";
   };
 })

@@ -25,5 +25,6 @@ stdenvNoCC.mkDerivation (self: {
   meta = with lib; {
     homepage = "https://github.com/cn-tools/cntools_FreshRssExtensions";
     license = licenses.mit;
+    updateVersion = "branch";
   };
 })

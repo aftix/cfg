@@ -34,5 +34,6 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/dead10ck/nu_plugin_dns";
     license = licenses.mpl20;
     platforms = platforms.all;
+    updateVersion = "branch";
   };
 }

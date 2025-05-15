@@ -55,5 +55,6 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/mattwparas/steel";
     license = licenses.apsl20;
     platforms = platforms.all;
+    updateVersion = "branch";
   };
 }

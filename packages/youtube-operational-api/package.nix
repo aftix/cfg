@@ -76,5 +76,6 @@ in
       homepage = "https://github.com/${owner}/${self.pname}";
       license = licenses.mit;
       platforms = platforms.linux;
+      updateVersion = "branch";
     };
   })

@@ -25,5 +25,6 @@ stdenvNoCC.mkDerivation (self: {
   meta = with lib; {
     homepage = "https://github.com/aledeg/xExtension-LatexSupport";
     license = licenses.agpl3Only;
+    updateVersion = "branch";
   };
 })

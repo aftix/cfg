@@ -26,5 +26,6 @@ stdenvNoCC.mkDerivation (self: {
     description = "Repository containing all the official FreshRSS extensions";
     homepage = "https://github.com/FreshRSS/Extensions";
     license = licenses.agpl3Only;
+    updateVersion = "branch";
   };
 })

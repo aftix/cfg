@@ -25,5 +25,6 @@ stdenvNoCC.mkDerivation (self: {
   meta = with lib; {
     homepage = "https://github.com/aledeg/xExtension-RedditImage";
     license = licenses.agpl3Only;
+    updateVersion = "branch";
   };
 })

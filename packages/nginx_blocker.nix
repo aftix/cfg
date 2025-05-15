@@ -22,5 +22,6 @@ stdenv.mkDerivation {
     homepage = "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker";
     license = licenses.mit;
     platforms = platforms.all;
+    updateVersion = "none";
   };
 }

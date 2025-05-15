@@ -26,5 +26,6 @@ stdenvNoCC.mkDerivation (self: {
   meta = with lib; {
     homepage = "https://framagit.org/nicofrand/xextension-threepanesview";
     license = licenses.mit;
+    updateVersion = "branch";
   };
 })

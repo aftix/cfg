@@ -25,5 +25,6 @@ stdenvNoCC.mkDerivation (self: {
   meta = with lib; {
     homepage = "https://github.com/aidistan/freshrss-extensions";
     license = licenses.mit;
+    updateVersion = "branch";
   };
 })
