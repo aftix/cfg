@@ -8,16 +8,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_desktop_notifications";
-  version = "1.2.4-unstable-2025-03-20";
+  version = "1.2.4-unstable-2025-05-05";
 
   src = fetchFromGitHub {
     owner = "FMotalleb";
     repo = pname;
-    rev = "a016a1cade04228deb4a6dacc902af8932ce9ecb";
-    sha256 = "sha256-9I0gNpAZghOhURfO6xVifnd4sijHgPfXZNqeF++4Oyo=";
+    rev = "de4464bf6ce6503977ee2bd41f11aeabc49214aa";
+    sha256 = "sha256-ZQ1zOYcGTfHhRAnDxVxcZ740yF2nccIOWL+yuShhs0Y=";
   };
   useFetchCargoVendor = true;
-  cargoHash = "sha256-wFIqy/Tsf1WL+UvoyNjdg2LzX4m4T0n6OkPRkoFxNCY=";
+  cargoHash = "sha256-DrHWdwljPsPkzbM9mok5x7gn6Op1ytwg67+HtcZg8G8=";
 
   meta = with lib; {
     description = "A nushell plugin to send desktop notifications.";
