@@ -18,8 +18,8 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "mattwparas";
     repo = pname;
-    rev = "dbf9f316e6e0d65feccef85a1037807f8ff4718e";
-    hash = "sha256-KpEH2pqTe9/EAx4fU8xsxz7PdNY3HV4qxB0kI7n1qQI=";
+    rev = "6e2865c04914748e745ff27c78f245a863fa73df";
+    hash = "sha256-oNIdtlzPolQ+UN7Q76jYHp9dwKHfgGulV0oqf4LhRbg=";
   };
   useFetchCargoVendor = true;
   cargoHash = "sha256-fHDdErlNP+y0y27jXQBYP2KLWh2q7jnoYmED9/CwhQ8=";
