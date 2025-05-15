@@ -7,6 +7,86 @@ arch := `uname -m`
 default:
     @just --list
 
+updatepkg pkg:
+    #!/usr/bin/env bash
+    if [[ "$(jj log -r @ --no-graph -T "if(self.empty(), 1, 0)")" != 1 ]]; then
+        echo 'Error: running `just updatepkg` on non-empty commit' >&2
+        exit 1
+    fi
+
+    if ! nix eval -f packages.nix '{{pkg}}' &>/dev/null ; then
+        echo 'Error: {{pkg}} not found in packages.nix' &>/dev/null
+        exit 1
+    fi
+
+    echo "Getting version-update string"
+    VERSION="$(nix eval --raw -f packages.nix --apply 'x: ((x {}).{{pkg}}.meta or {}).updateVersion or "stable"')"
+
+    if [[ "$VERSION" = "none" ]]; then
+        echo "Skipping {{pkg}} as it does not update via nix-update"
+        exit 0
+    fi
+
+    echo "Running nix-update"
+    systemd-inhibit --mode=block --why="Updating package {{pkg}}" --why="$(pwd)/justfile" \
+        nix run github:Mic92/nix-update -- -f packages.nix {{pkg}} --version="$VERSION"
+    if [[ "$?" -ne 0 ]]; then
+        echo 'Error: Failed to update package {{pkg}}' >&2
+        exit 1
+    fi
+
+    if [[ "$(jj log -r @ --no-graph -T "if(self.empty(), 1, 0)")" = 1 ]]; then
+        echo "No updates found"
+        exit 0
+    fi
+
+    echo "Checking if the package builds"
+    systemd-inhibit --mode=block --why="Building package {{pkg}}" --who="$(pwd)/justfile" \
+        nom build -f packages.nix '{{pkg}}' --no-link --print-out-paths
+
+    if [[ "$?" -eq 0 ]]; then
+        echo "Package built"
+        jj ci -m "legacyPackages.{{pkg}}: update to latest $VERSION" --quiet
+    else
+        echo "Package not built, abandoning change" >&2
+        jj abandon --quiet
+        exit 1
+    fi
+
+updatepkgs:
+    #!/usr/bin/env bash
+    echo "Determining package list"
+    NPKGS="$(nix eval -f packages.nix --apply 'x: let
+        packages = x {};
+        inputs = import ./inputs.nix;
+        inherit (inputs.nixpkgs) lib;
+        getDrvs = lib.filterAttrs (name: value: lib.isDerivation value || value.recurseForDerivations or false);
+        drvs = lib.concatMapAttrs (
+            name: value:
+                if lib.isDerivation value then {${name} = value;}
+                else if lib.isAttrs value then {${name} = getDrvs value;}
+                else {}
+            ) packages;
+        convert = prefix: lib.mapAttrsToList (
+            name: value: let fullname = "${prefix}${lib.optionalString (prefix != "") "."}${name}"; in
+                if lib.isAttrs value && !lib.isDerivation value then
+                    convert fullname value
+                else
+                    fullname
+            );
+        drvNames = lib.flatten (convert "" drvs);
+        in lib.concatStringsSep " " drvNames' --impure --raw)"
+
+    echo "Updating packages"
+    COUNTER=0
+    for pkg in $NPKGS; do
+        echo "updating $pkg"
+        just updatepkg "$pkg"
+        COUNTER=$(( COUNTER + 1 ))
+    done
+
+    echo "Updated $COUNTER packages"
+
 attic-push path cache="cfg-actions":
     @if [[ -e "{{path}}" ]]; then \
         nix-store --query --requisites --include-outputs "{{path}}" \
@@ -14,11 +94,11 @@ attic-push path cache="cfg-actions":
             xargs attic push "{{cache}}" &> /dev/null ; \
     fi
 
-buildpkg pkg cache="cfg-actions":
-    # Build the package
-    @systemd-inhibit --mode=block --why="Building package {{pkg}}" --who="$(pwd)/justfile" nom build -f packages.nix '{{pkg}}'
+buildpkg pkg:
+    @systemd-inhibit --mode=block --why="Building package {{pkg}}" --who="$(pwd)/justfile" \
+        nom build -f packages.nix '{{pkg}}' --no-link --print-out-paths
 
-buildpkgs cache="cfg-actions":
+buildpkgs:
     #!/usr/bin/env bash
     echo "Determining package list"
     NPKGS="$(nix eval -f packages.nix --apply 'x: let
@@ -44,7 +124,7 @@ buildpkgs cache="cfg-actions":
     echo "Building packages"
     for pkg in $NPKGS; do
         echo "Building $pkg"
-        systemd-inhibit --mode=block --why="Building package $pkg" --who="$(pwd)/justfile" nom build -f packages.nix "$pkg" --no-link || :
+        systemd-inhibit --mode=block --why="Building package $pkg" --who="$(pwd)/justfile" nom build -f packages.nix "$pkg" --no-link --print-out-paths || :
     done
 
 build host=hostname *FLAGS="":
