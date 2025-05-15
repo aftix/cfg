@@ -152,6 +152,7 @@ in {
           cyan = "#00ffff";
           green = "#00ff00";
 
+          bright_yellow = "#ffed29";
           bright_red = "#ee4b2b";
           bright_blue = "#0096ff";
           bright_magenta = "#ff00cd";
@@ -224,9 +225,7 @@ in {
           working_copy = {bold = true;};
           "working_copy commit_id" = bright_blue;
           "working_copy change_id" = bright_magenta;
-          # We do not use bright yellow because of how it looks on xterm's default theme.;
-          # https://github.com/martinvonz/jj/issues/528;
-          "working_copy email" = yellow;
+          "working_copy email" = bright_yellow;
           "working_copy timestamp" = bright_cyan;
           "working_copy working_copies" = bright_green;
           "working_copy branch" = bright_magenta;
