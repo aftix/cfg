@@ -88,7 +88,7 @@ in {
         description = "Pull system updates from ${cfg.repo}";
         wantedBy = ["timers.target"];
         timerConfig = {
-          OnCalendar = "daily";
+          OnCalendar = "Sun,Wed,Fri";
           Persist = true;
           RandomizedDelaySec = 1800;
         };
