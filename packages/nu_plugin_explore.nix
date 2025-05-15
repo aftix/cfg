@@ -10,7 +10,7 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_explore";
-  version = "0.102.0";
+  version = "0.101.0";
 
   src = fetchFromGitHub {
     owner = "amtoine";
