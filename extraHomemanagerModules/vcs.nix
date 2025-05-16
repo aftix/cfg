@@ -133,17 +133,45 @@ in {
     jujutsu = {
       enable = true;
       settings = {
-        aliases.ss = ["show" "--stat"];
+        aliases = {
+          credit = ["file" "annotate"];
+          s = ["show"];
+          ss = ["show" "--stat"];
+          nt = ["new" "trunk()"];
+          llog = ["log" "-T" "builtin_log_detailed"];
+          logall = ["log" "-r" ".."];
+          llogall = ["log" "-r" ".." "-T" "builtin_log_detailed"];
+
+          open = ["log" "-r" "open()"];
+          open-tree = ["log" "-r" "open_tree()"];
+          ready = ["log" "-r" "ready()"];
+          ready-tree = ["log" "-r" "ready_tree()"];
+          retrunk = ["rebase" "--destination" "trunk()"];
+          retrunk-stack = ["rebase" "--destination" "trunk()" "-s" "all:roots(trunk()..stack(@))"];
+          retrunk-open = ["rebase" "--destination" "trunk()" "-s" "all:roots(trunk()..open())"];
+          retrunk-ready = ["rebase" "--destination" "trunk()" "-s" "all:roots(trunk()..ready())"];
+          megamerge = ["log" "-r" "megamerge_fork_point()::@"];
+          megamerge-tree = ["log" "-r" "megamerge_fork_point()::"];
+          megamerge-add = ["rebase" "-B" "megamerge()" "-A" "megamerge_fork_point()" "-r"];
+          megamerge-remove = ["util" "exec" "--" "sh" "-lc" "jj rebase -s 'megamerge()' --destination \"all:megamerge()- ~ $1\"" "none"];
+          consume = ["squash" "--into" "@" "--from"];
+          eject = ["squash" "--from" "@" "--into"];
+          tug = ["bookmark" "move" "--from" "closest_bookmarked_ancestor()" "--to" "heads_nonempty()"];
+        };
+
         user = {
           name = "aftix";
           email = "aftix@aftix.xyz";
         };
+
         ui = {
           pager = "moar -quit-if-one-screen";
           diff.tool = ["kitty" "+kitten" "diff" "$left" "$right"];
           diff-editor = ":builtin";
           default-command = "log";
+          movement.edit = "true";
         };
+
         colors = let
           yellow = "#ffff00";
           red = "#ff0000";
@@ -283,17 +311,71 @@ in {
             bold = true;
           };
         };
+
         signing = {
           behavior = "drop";
           backend = "ssh";
           key = "${config.home.homeDirectory}/.ssh/id_ed25519_sk";
         };
         backends.ssh.allowed-signers = "${allowedSigners}";
+
         git = {
-          sign-on-push = true;
           auto-local-bookmark = true;
+          colocate = true;
+          push-bookmark-prefix = "aftix/push-";
+          private-commits = "local_only()";
+          sign-on-push = true;
         };
-        revsets.log = "..";
+
+        snapshot.auto-update-stale = true;
+
+        revsets = {
+          log = "stack()";
+          log-graph-prioritize = "coalesce(megamerge(), trunk())";
+        };
+
+        revset-aliases = {
+          "user(x)" = "author(x) | committer(x)";
+
+          "immutable_heads()" = "present(trunk()) | (remote_bookmarks() ~ pushes() ~ ghstack()) | tags()";
+          "pushes()" = "remote_bookmarks(glob:\"aftix/push-*\")";
+          "gh_pages()" = "ancestors(remote_bookmarks(exact:\"gh-pages\"))";
+          "ghstack()" = "remote_bookmarks(glob:\"gh/aftix/*/orig\")";
+          "trunk()" = "latest((present(main) | present(master)) & remote_bookmarks())";
+
+          "wip()" = "description(glob:\"wip:*\")";
+          "private()" = "description(glob:\"private:*\")";
+          "local_only()" = "wip() | private()";
+
+          "stack()" = "ancestors(reachable(@, mutable()), 2)";
+          "stack(x)" = "ancestors(reachable(x, mutable()), 2)";
+          "stack(x, n)" = "ancestors(reachable(x, mutable()), n)";
+
+          "open()" = "stack(trunk().. & mine(), 1)";
+          "open_tree()" = "fork_point(ancestors(open()) & mutable())::";
+          "ready()" = "open() ~ local_only()::";
+          "ready_tree()" = "fork_point(ancestors(ready()) & mutable())::";
+
+          "megamerge()" = "heads(::reachable(stack(), merges()))";
+          "megamerge(x)" = "heads(::reachable(stack(x), merges()))";
+          "megamerge_fork_point()" = "fork_point(megamerge()-)";
+          "megamerge_fork_point(x)" = "fork_point(megamerge(x)-)";
+
+          "closest_bookmarked_ancestor()" = "heads(::@- & bookmarks())";
+          "closest_bookmarked_ancestor(x)" = "heads(::x- & bookmarks())";
+
+          "heads_nonempty()" = "heads(::@ ~ empty())";
+          "heads_nonempty(x)" = "heads(::x ~ empty())";
+        };
+
+        templates = {
+          commit_trailers = ''
+            if(!trailers.contains_key("Change-Id") && config("gerrit.enable").as_boolean(), format_gerrit_change_id_trailer(self))
+          '';
+        };
+
+        # Must be set globally to a default value so the config() template function doesn't panic
+        gerrit.enable = false;
       };
     };
   };
