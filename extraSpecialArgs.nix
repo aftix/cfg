@@ -3,5 +3,5 @@
 # SPDX-License-Identifier: EUPL-1.2
 {inputs ? import ./inputs.nix, ...}: {
   inherit (inputs.sops-nix.homeManagerModules) sops;
-  inherit (inputs.stylix.homeManagerModules) stylix;
+  inherit (inputs.stylix.homeModules) stylix;
 }
