@@ -169,7 +169,7 @@ in {
           diff.tool = ["kitty" "+kitten" "diff" "$left" "$right"];
           diff-editor = ":builtin";
           default-command = "log";
-          movement.edit = "true";
+          movement.edit = true;
         };
 
         colors = let
