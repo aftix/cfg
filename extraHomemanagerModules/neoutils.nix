@@ -30,8 +30,9 @@ in {
       trashy;
 
     sessionVariables = {
-      PAGER = mkOverride 900 "${lib.getExe pkgs.moar}";
-      MANPAGER = mkOverride 900 "${lib.getExe pkgs.moar}";
+      PAGER = mkOverride 900 (lib.getExe pkgs.moar);
+      DELTA_PAGER = lib.getExe pkgs.less;
+      MANPAGER = mkOverride 900 (lib.getExe pkgs.moar);
       MOAR = mkDefault "-quit-if-one-screen";
     };
   };

@@ -76,7 +76,7 @@
     '';
   };
 in {
-  home.packages = [pkgs.pre-commit better-git-branch];
+  home.packages = [pkgs.pre-commit better-git-branch pkgs.delta];
 
   aftix.shell.aliases = [
     {
@@ -96,28 +96,45 @@ in {
           signingKey = "${config.home.homeDirectory}/.ssh/id_ed25519_sk";
           gpgsign = true;
         };
+
         gpg.format = "ssh";
+
         core = {
           untrackedcache = true;
           fsmonitor = true;
+          pager = lib.getExe pkgs.delta;
         };
+
+        pager.blame = lib.getExe pkgs.delta;
+        interactive.diffFilter = "${lib.getExe pkgs.delta} --color-only";
+        delta = {
+          navigate = true;
+          side-by-side = true;
+          line-numbers = true;
+          hyperlinks = true;
+          width = "-4";
+        };
+        merge.conflictstyle = "zdiff3";
+
         commit.gpgsign = false;
         pull.rebase = false;
         init.defaultBranch = "master";
+
         diff = {
-          tool = "kitty";
+          colorMoved = "default";
           guitool = "kitty-gui";
         };
         difftool = {
           prompt = false;
           trustExitCode = true;
         };
-        difftool.kitty.cmd = "${lib.getExe pkgs.kitty} +kitten diff $LOCAL $REMOTE";
-        difftool.kitty-gui = "${lib.getExe pkgs.kitty} kitty +kitten diff $LOCAL $REMOTE";
+        difftool.kitty-gui = "${lib.getExe pkgs.kitty} +kitten diff $LOCAL $REMOTE";
+
         rerere.enabled = true;
         column.ui = "auto";
         branch.sort = "-committerdate";
         rebase.updateRefs = true;
+
         alias = {
           bb = "!${lib.getExe better-git-branch}";
           bl = "blame -w -C -C -C";
@@ -126,6 +143,7 @@ in {
           fpush = "push --force-with-lease";
           logo = "log --oneline";
         };
+
         fetch.writeCommitGraph = true;
       };
     };
@@ -164,13 +182,24 @@ in {
           email = "aftix@aftix.xyz";
         };
 
+        "--scope" = [
+          {
+            "--when".commands = ["diff" "show"];
+            ui = {
+              pager = "${lib.getExe pkgs.delta} --file-transformation 's|.*/jj-diff-[^/]*/[^/]*/||'";
+              diff.format = "git";
+            };
+          }
+        ];
+
         ui = {
-          pager = "moar -quit-if-one-screen";
-          diff.tool = ["kitty" "+kitten" "diff" "$left" "$right"];
+          pager = "${lib.getExe pkgs.moar} -quit-if-one-screen";
           diff-editor = ":builtin";
           default-command = "log";
           movement.edit = true;
         };
+
+        merge.tools.delta.diff-expected-exit-codes = [0 1];
 
         colors = let
           yellow = "#ffff00";
