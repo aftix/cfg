@@ -12,14 +12,20 @@ in {
   home = {
     packages = with pkgs;
       [
+        ansifilter
         hyperfine
         zenith
         moar
+        mprocs
         eza
         dust
+        dua
+        ast-grep
         ripgrep
+        ripgrep-all
         rsync
         fd
+        kondo
 
         pigz
         lzip
