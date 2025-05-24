@@ -40,23 +40,23 @@ in {
           gnumake
           gawk
           just
+          tokei
         ]
         ++ optionals cfg.nix
         [statix alejandra nix-output-monitor nvd nurl]
         ++ optionals cfg.rust
         [
+          rusty-man
           rustup
           sccache
+          bacon
+          cargo-info
           cargo-nextest
           cargo-supply-chain
           cargo-update
           cargo-sort
           cargo-udeps
-          cargo-crev
         ]
-        # ++ optional
-        # (hasSuffix "-linux" pkgs.system && cfg.rust)
-        # cargo-llvm-cov
         ++ optionals cfg.go
         [
           go
