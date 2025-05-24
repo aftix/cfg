@@ -225,10 +225,10 @@ in {
             ];
             definedAliases = ["rdoc" "@rdoc" "@rustdocs"];
           };
-          "Crates.io" = {
+          "lib.rs" = {
             urls = [
               {
-                template = "https://crates.io/search";
+                template = "https://lib.rs/search";
                 params = [
                   {
                     name = "q";
