@@ -16,10 +16,17 @@
     // {
       freshrssExts = recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
     };
+
+  atticPkg = final.callPackage "${inputs.attic}/package.nix" {nix = final.nixVersions.nix_2_24;};
   aftixOverlayedPkgs = {
     hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
 
-    inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;
+    attic = atticPkg;
+    attic-server = (atticPkg.override {crates = ["attic-server"];}).overrideAttrs (oldAttrs: {
+      meta = final.lib.recursiveUpdate (oldAttrs.meta or {}) {mainProgram = "atticd";};
+    });
+    attic-client = atticPkg.override {clientOnly = true;};
+
     inherit (inputs) nginxBlacklist;
 
     carapace = prev.carapace.overrideAttrs {

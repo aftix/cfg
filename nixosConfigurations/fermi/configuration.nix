@@ -171,6 +171,11 @@ in {
         shell = "/run/current-system/sw/bin/nologin";
       };
 
+      hydra = {
+        isSystemUser = true;
+        group = "hydra";
+      };
+
       docker = {
         password = "";
         shell = "/run/current-system/sw/bin/nologin";
@@ -193,6 +198,7 @@ in {
     };
 
     groups.docker = {};
+    groups.hydra = {};
   };
 
   programs.dconf.enable = true;
