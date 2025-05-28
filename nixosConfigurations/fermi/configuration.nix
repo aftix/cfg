@@ -29,6 +29,37 @@ in {
       restic_fermi_password = {};
       restic_fermi_aws_id = {};
       restic_fermi_aws_secret = {};
+
+      hydra_store_bucket = {
+        mode = "0440";
+        owner = "hydra";
+        group = "hydra";
+      };
+      hydra_store_url = {
+        mode = "0440";
+        owner = "hydra";
+        group = "hydra";
+      };
+      hydra_store_key_id = {
+        mode = "0440";
+        owner = "hydra";
+        group = "hydra";
+      };
+      hydra_store_token = {
+        mode = "0440";
+        owner = "hydra";
+        group = "hydra";
+      };
+      hydra_store_secret_key = {
+        mode = "0440";
+        owner = "hydra";
+        group = "hydra";
+      };
+      hydra_store_public_key = {
+        mode = "0444";
+        owner = "hydra";
+        group = "hydra";
+      };
     };
 
     templates = {
@@ -46,6 +77,16 @@ in {
         content = ''
           AWS_ACCESS_KEY_ID=${config.sops.placeholder.restic_fermi_aws_id}
           AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.restic_fermi_aws_secret}
+        '';
+      };
+
+      hydraStore = {
+        mode = "0444";
+        owner = "hydra";
+        group = "hydra";
+        content = ''
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder.hydra_store_key_id}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.hydra_store_token}
         '';
       };
     };
@@ -82,7 +123,7 @@ in {
       };
 
       hydra = {
-        enable = true;
+        enable = false;
         domain = "hydra.${domain}";
         store_uri =
           "s3://aftix-hydra?"
