@@ -130,7 +130,7 @@ buildpkgs:
 build host=hostname *FLAGS="":
     # Build configuration
     @systemd-inhibit --mode=block --why="Building configuration {{host}}" --who="$(pwd)/justfile" \
-        nom build -f . "nixosConfigurations.{{host}}.config.system.build.toplevel" {{FLAGS}}
+        nom build -f . "nixosConfigurations.{{host}}.config.system.build.toplevel" --no-link --print-out-paths {{FLAGS}}
 
 switch *FLAGS:
     # Build configuration
