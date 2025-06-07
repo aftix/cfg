@@ -68,45 +68,17 @@ in {
         name = "ezal";
         command = "eza -lhb";
         external = true;
-        completer = "eza";
       }
       {
         name = "ezat";
         command = "eza --tree -lhb";
         external = true;
-        completer = "eza";
       }
 
       {
         name = "ka";
         command = "killall";
-        completer = "killall";
       }
     ];
-
-    elvish = {
-      extraFunctions = [
-        {
-          name = "restore";
-          body =
-            /*
-            bash
-            */
-            ''
-              trash list | fzf --multi | awk '{$1=$1;print}' | rev | cut -d ' ' -f1 | rev | xargs trashy restore --match=exact --force
-            '';
-        }
-        {
-          name = "empty";
-          body =
-            /*
-            bash
-            */
-            ''
-              trash list | fzf --multi | awk '{$1=$1;print}' | rev | cut -d ' ' -f1 | rev | xargs trashy empty --match=exact --force
-            '';
-        }
-      ];
-    };
   };
 }

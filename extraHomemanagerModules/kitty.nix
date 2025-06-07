@@ -23,7 +23,7 @@
   settings = {
     shell = {
       tag = "shell";
-      content = "elvish";
+      content = "nushell";
       value = config.programs.kitty.settings.shell;
     };
 
@@ -546,8 +546,6 @@ in {
       shell = lib.mkDefault (
         if config.aftix.shell.nushell.enable
         then (lib.getExe nuWrapped)
-        else if config.aftix.shell.elvish.enable
-        then "${lib.geteExe pkgs.elvish}"
         else "${lib.getExe pkgs.zsh}"
       );
       allow_remote_control = true;

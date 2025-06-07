@@ -91,7 +91,7 @@ in {
           if lib.strings.hasSuffix "-linux" pkgs.system
           then
             /*
-            elvish
+            nu
             */
             ''
               ${base}

@@ -34,24 +34,10 @@ in {
     {
       name = "trem";
       command = "transmission-remote";
-      completer = "transmission-remote";
     }
     {
       name = "tract";
       command = "transmission-remote -F '~l:done'";
-      completer = {
-        name = "tract_complete";
-        arguments = "@a";
-        body =
-          /*
-          elvish
-          */
-          ''
-            if (has-key $edit:completion:arg-completer transmission-remote) {
-              $edit:completion:arg-completer[transmission-remote] transmission-remote -F '~l:done' $@a
-            }
-          '';
-      };
     }
   ];
 

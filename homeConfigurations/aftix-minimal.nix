@@ -26,7 +26,6 @@
 
   aftix = {
     shell = {
-      elvish.enable = false;
       gpgTtyFix = false;
       xtermFix = true;
     };

@@ -82,7 +82,6 @@ in {
     {
       name = "g";
       command = lib.getExe pkgs.git;
-      completer = "git";
     }
   ];
 
