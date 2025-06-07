@@ -18,7 +18,6 @@ rustPlatform.buildRustPackage rec {
     url = "https://git.sr.ht/~mort/coffeepaste/archive/v${version}.tar.gz";
     hash = "sha256-2SH20Iw6Y159NBAu//wudoP/ufl8Ayy4F7UQdSoR41c=";
   };
-  useFetchCargoVendor = true;
   cargoHash = "sha256-ymD5SCUpIBHGx2ViOPJfZGFPEdev4VMfllkkTZUNKz8=";
 
   buildInputs = [glib gexiv2];
