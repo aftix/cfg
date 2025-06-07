@@ -6,7 +6,6 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
-  darwin,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_dns";
@@ -22,11 +21,6 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-5DBMej3NWYRTkoDs1a5qoydnhDW0TKBYanuMXeMSs5o=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
-  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    darwin.apple_sdk.frameworks.IOKit
-    darwin.apple_sdk.frameworks.CoreFoundation
-    darwin.apple_sdk.frameworks.Security
-  ];
 
   meta = with lib; {
     description = "A DNS utility for nushell.";

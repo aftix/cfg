@@ -6,7 +6,6 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
-  darwin,
   openssl,
   pkg-config,
   makeWrapper,
@@ -25,11 +24,6 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-fHDdErlNP+y0y27jXQBYP2KLWh2q7jnoYmED9/CwhQ8=";
 
   nativeBuildInputs = [makeWrapper openssl pkg-config] ++ lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
-  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    darwin.apple_sdk.frameworks.IOKit
-    darwin.apple_sdk.frameworks.CoreFoundation
-    darwin.apple_sdk.frameworks.Security
-  ];
 
   postBuild =
     /*
