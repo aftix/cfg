@@ -6,7 +6,6 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
-  darwin,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_compress";
@@ -22,10 +21,6 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-HAnqF81WIDtrkpxlcXRgrp5qRl1PMj/dYBTjSaVpgkw=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
-  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    darwin.apple_sdk.frameworks.IOKit
-    darwin.apple_sdk.frameworks.CoreFoundation
-  ];
 
   meta = with lib; {
     description = "A nushell plugin for compression and decompression, supporting zstd, gzip, bzip2, and xz.";

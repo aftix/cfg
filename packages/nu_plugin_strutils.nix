@@ -6,7 +6,6 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
-  darwin,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_strutils";
@@ -22,10 +21,6 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-4r5TH3t61TjWMoKuzStuUQM779IpD1t4K98OuOQ2L8M=";
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
-  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    darwin.apple_sdk.frameworks.IOKit
-    darwin.apple_sdk.frameworks.CoreFoundation
-  ];
 
   meta = with lib; {
     description = "Nushell plugin that implements some string utilities that are not included in nushell.";
