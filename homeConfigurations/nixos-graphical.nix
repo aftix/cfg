@@ -21,8 +21,6 @@
   xdg.userDirs.createDirectories = lib.mkForce false;
 
   aftix = {
-    shell.elvish.enable = false;
-
     docs = {
       enable = true;
       prefix = "aftix-iso";

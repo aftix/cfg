@@ -102,7 +102,6 @@ in {
     matrixClient = pkgs.fractal;
 
     shell = {
-      elvish.enable = true;
       nushell = {
         enable = true;
         extraCommands = optionals pkgs.stdenv.hostPlatform.isLinux [
