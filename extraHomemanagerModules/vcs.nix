@@ -186,7 +186,7 @@ in {
             "--when".commands = ["diff" "show"];
             ui = {
               pager = "${lib.getExe pkgs.delta} --file-transformation 's|.*/jj-diff-[^/]*/[^/]*/||'";
-              diff.format = "git";
+              diff-formatter = ":git";
             };
           }
         ];
