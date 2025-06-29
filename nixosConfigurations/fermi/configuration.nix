@@ -15,7 +15,6 @@ in {
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
     ../../extraNixosModules/openssh.nix
-    ../../extraNixosModules/pull-updates.nix
     ../../extraNixosModules/www
   ];
 
@@ -95,9 +94,6 @@ in {
   aftix = let
     domain = config.aftix.statics.primaryDomain;
   in {
-    pull-updates.enable = true;
-    hydra-substituter.extra-credentialed-services = ["nixos-pull-updates"];
-
     attic = {
       enable = true;
       domain = "attic.${domain}";
