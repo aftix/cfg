@@ -18,7 +18,7 @@
   home = {
     username = "aftix";
     homeDirectory = "/home/aftix";
-    packages = with pkgs; [attic-client kitty.terminfo];
+    packages = with pkgs; [attic-client];
     stateVersion = "23.11"; # DO NOT CHANGE
   };
 

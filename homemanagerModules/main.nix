@@ -46,6 +46,8 @@ in {
           xz
           zstd
           zlib
+
+          kitty.terminfo
         ]
         ++ lib.optionals (config.aftix.matrixClient != null) [config.aftix.matrixClient];
 
