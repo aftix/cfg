@@ -76,7 +76,7 @@ in {
 
       plugins = mkOption {
         default =
-          (with pkgs.nushellPlugins; [query gstat polars formats skim dbus])
+          (with pkgs.nushellPlugins; [query gstat polars formats skim])
           ++ (with pkgs; [
             nu_plugin_audio_hook
             nu_plugin_compress
