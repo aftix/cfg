@@ -234,10 +234,15 @@ in {
 
   programs.dconf.enable = true;
 
-  systemd.services.hydra-evaluator.serviceConfig = {
-    MemoryHigh = "80%";
-    MemoryMax = "90%";
-    MemorySwapMax = "75%";
+  systemd.services = {
+    hydra-evaluator.serviceConfig = {
+      MemoryHigh = "80%";
+      MemoryMax = "90%";
+      MemorySwapMax = "75%";
+    };
+
+    fstrim.after = ["nix-gc.service" "nix-optimise.service"];
+    nix-optimise.after = ["nix-gc.service"];
   };
 
   networking = {
