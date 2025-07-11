@@ -350,7 +350,6 @@ in {
         git = {
           auto-local-bookmark = true;
           colocate = true;
-          push-bookmark-prefix = "aftix/push-";
           private-commits = "local_only()";
           sign-on-push = true;
         };
@@ -400,6 +399,8 @@ in {
           commit_trailers = ''
             if(!trailers.contains_key("Change-Id") && config("gerrit.enable").as_boolean(), format_gerrit_change_id_trailer(self))
           '';
+
+          git_push_bookmark = "\"aftix/push-\" ++ change_id.short()";
         };
 
         # Must be set globally to a default value so the config() template function doesn't panic
