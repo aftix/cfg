@@ -25,7 +25,7 @@
     carapace = prev.carapace.overrideAttrs {
       src = inputs.carapace;
       goSum = "${inputs.carapace}/go.sum";
-      vendorHash = "sha256-kaN0eHrrLI48xe21CiI1CKOWtHE8btPAjNqlwDt4/7U=";
+      vendorHash = "sha256-kvF1wUXgih2WlqDLeBKFMoNXUJf8wAPNgb5349QlcJA=";
     };
 
     heisenbridge = prev.heisenbridge.overridePythonAttrs (oldAttrs: rec {
