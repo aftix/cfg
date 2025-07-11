@@ -227,9 +227,18 @@ in {
           }
         ];
       };
+
+      hydra = {
+        description = "Hydra";
+        group = "hydra";
+        useDefaultShell = true;
+        home = "/var/empty";
+        uid = config.ids.uids.hydra;
+      };
     };
 
     groups.docker = {};
+    groups.hydra.gid = config.ids.gids.hydra;
   };
 
   programs.dconf.enable = true;
