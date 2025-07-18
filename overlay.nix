@@ -17,7 +17,7 @@
       freshrssExts = recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
     };
   aftixOverlayedPkgs = {
-    hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
+    # hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
 
     inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;
     inherit (inputs) nginxBlacklist;
@@ -25,7 +25,7 @@
     carapace = prev.carapace.overrideAttrs {
       src = inputs.carapace;
       goSum = "${inputs.carapace}/go.sum";
-      vendorHash = "sha256-kvF1wUXgih2WlqDLeBKFMoNXUJf8wAPNgb5349QlcJA=";
+      vendorHash = "sha256-AwR+Oh1Rlg1z/pYdc9VDvp/FLH1ZiPsP/q4lks3VqqE=";
     };
 
     heisenbridge = prev.heisenbridge.overridePythonAttrs (oldAttrs: rec {

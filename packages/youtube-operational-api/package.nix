@@ -7,7 +7,7 @@
   lib,
   fetchFromGitHub,
   findutils,
-  protobuf_27,
+  protobuf_29,
 }: let
   owner = "Benjamin-Loison";
 in
@@ -50,7 +50,7 @@ in
       hash = "sha256-8bHk6Qvuq4UNZXi0EjirVMurcBgItzOLLTLWYbxFKiQ=";
     };
 
-    buildInputs = [protobuf_27 findutils php vendorSrc];
+    buildInputs = [protobuf_29 findutils php vendorSrc];
 
     postPatch = ''
       patchShebangs --host tools/*.py
