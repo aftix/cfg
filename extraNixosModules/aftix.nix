@@ -42,7 +42,7 @@ in {
       commonMountOptions = ["x-gvfs-hide"];
       directories = [
         ".config/attic"
-        ".config/ario"
+        ".config/sonata"
         ".config/Element"
         ".config/discord"
         ".config/BetterDiscord"
@@ -74,7 +74,7 @@ in {
         "d ${home}/.local/persist/home/aftix/.config 0755 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config 0755 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config/attic 0755 aftix ${group} -"
-        "d ${home}/.local/persist/home/aftix/.config/ario 0755 aftix ${group} -"
+        "d ${home}/.local/persist/home/aftix/.config/sonata 0755 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config/Element 0755 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config/discord 0755 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config/BetterDiscord 0755 aftix ${group} -"

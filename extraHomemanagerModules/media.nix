@@ -12,7 +12,7 @@
     ffmpeg_7-full
     imagemagick
 
-    ario
+    sonata
     mpc-cli
   ];
 
