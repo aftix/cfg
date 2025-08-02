@@ -27,16 +27,6 @@
       goSum = "${inputs.carapace}/go.sum";
       vendorHash = "sha256-AwR+Oh1Rlg1z/pYdc9VDvp/FLH1ZiPsP/q4lks3VqqE=";
     };
-
-    heisenbridge = prev.heisenbridge.overridePythonAttrs (oldAttrs: rec {
-      version = "1.15.0";
-      src = final.fetchFromGitHub {
-        owner = "hifi";
-        repo = oldAttrs.pname;
-        rev = "refs/tags/v${version}";
-        sha256 = "sha256-4K6Sffu/yKHkcoNENbgpci2dbJVAH3vVkogcw/IYpnw=";
-      };
-    });
   };
 in
   {
