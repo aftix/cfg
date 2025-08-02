@@ -12,15 +12,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "steel";
-  version = "0-unstable-2025-06-06";
+  version = "0-unstable-2025-08-02";
 
   src = fetchFromGitHub {
     owner = "mattwparas";
     repo = pname;
-    rev = "110b1f6c9221da0567ee7e8f9c811142b266203f";
-    hash = "sha256-D8BFhGiROU85oDiJrX0iUzQX79moZalYM1OSgHdWrWs=";
+    rev = "96175bcd029a113cb757d4012ee86743cfeb7ed7";
+    hash = "sha256-6jRat6rBOLbfcMnbH6hrpJGm3A9buND5wiy7Eroy82c=";
   };
-  cargoHash = "sha256-yLTVPCw50WSPSvNwKTt18DAp1cG18knQU7M3BlMmYGI=";
+  cargoHash = "sha256-odavZmfacQ7BY2ITiL8dEPafr7LPAAo8k687rBqvQn4=";
 
   nativeBuildInputs = [makeWrapper openssl pkg-config] ++ lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
 
