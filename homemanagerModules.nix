@@ -9,7 +9,7 @@
 }: let
   commonModules = [
     pkgsCfg
-    inputs.nix-index-database.hmModules.nix-index
+    inputs.nix-index-database.homeModules.nix-index
     {
       programs = {
         nix-index-database.comma.enable = true;
