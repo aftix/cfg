@@ -11,7 +11,6 @@
     overlays = [
       inputs.nur.overlays.default
       inputs.attic.overlays.default
-      inputs.lix-module.overlays.default
       myLib.libpkgsOverlay
       overlay
     ];

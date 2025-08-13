@@ -116,41 +116,6 @@
       };
     };
 
-  lix = {source, ...} @ args: let
-    fetched = lib.flake.defaultResolver args;
-    versionJson = builtins.fromJSON (builtins.readFile "${fetched}/version.json");
-
-    sourceInfo = {
-      official_release = versionJson.official_release;
-      inherit (source.locked) lastModified rev;
-      lastModifiedDate = lib.formatSecondsSinceEpoch source.locked.lastModified;
-      versionSuffix =
-        if versionJson.official_release
-        then ""
-        else "-pre${builtins.substring 0 8 sourceInfo.lastModifiedDate}-${builtins.substring 0 7 sourceInfo.rev}";
-    };
-  in
-    fetched
-    // sourceInfo
-    // {
-      sourceInfo = (fetched.sourceInfo or {}) // sourceInfo;
-    };
-
-  lix-module = {
-    name,
-    source,
-    inputs,
-  }: let
-    fetched = lib.flake.getSourceInfo {inherit name source;};
-  in
-    fetched
-    // {
-      overlays.default = import "${fetched}/overlay.nix" {
-        inherit (inputs) lix;
-        inherit (inputs.lix) versionSuffix;
-      };
-    };
-
   home-manager = {
     name,
     source,

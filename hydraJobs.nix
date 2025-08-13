@@ -54,11 +54,10 @@
             };
           });
 
-    packageJobs = packagePlatforms ((import ./packages.nix {
-        inherit inputs pkgs;
-        overlay = _: _: {};
-      })
-      // {inherit (pkgs) lix;});
+    packageJobs = packagePlatforms (import ./packages.nix {
+      inherit inputs pkgs;
+      overlay = _: _: {};
+    });
     nixosJobs = {
       nixos-configurations = lib.mapAttrs (name: cfg:
         cfg.config.system.build.toplevel

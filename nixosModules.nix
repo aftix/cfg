@@ -16,18 +16,12 @@
   commonModules = [
     pkgsCfg
     nix-settings
-    ({
-      lib,
-      pkgs,
-      ...
-    }: {
-      nix.package = lib.mkForce pkgs.nix;
-
+    {
       programs = {
         nix-index-database.comma.enable = true;
         command-not-found.enable = false;
       };
-    })
+    }
     inputs.home-manager.nixosModules.home-manager
     inputs.sops-nix.nixosModules.sops
     inputs.nix-index-database.nixosModules.nix-index
