@@ -404,11 +404,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1750324989,
-        "narHash": "sha256-W7Pxe9wggq3zIqIRKYvLgoYjppKkPll/FNGoFZcEwpQ=",
-        "rev": "645a0a2dc1a107c4d4e14e3a90e55625e2fb28d4",
+        "lastModified": 1754994471,
+        "narHash": "sha256-zEVtazDww0CGLO1kTSKp2pWdpr52w3VkKiPUmNr5rSg=",
+        "rev": "f4b7b64853ad0ff7e84976005b9e7f5130ae75c7",
         "type": "tarball",
-        "url": "https://git.lix.systems/api/v1/repos/lix-project/hydra/archive/645a0a2dc1a107c4d4e14e3a90e55625e2fb28d4.tar.gz?rev=645a0a2dc1a107c4d4e14e3a90e55625e2fb28d4"
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/hydra/archive/f4b7b64853ad0ff7e84976005b9e7f5130ae75c7.tar.gz?rev=f4b7b64853ad0ff7e84976005b9e7f5130ae75c7"
       },
       "original": {
         "type": "tarball",
@@ -464,6 +464,9 @@
           "flake-compat"
         ],
         "nix2container": "nix2container",
+        "nix_2_18": [
+          "hydra"
+        ],
         "nixpkgs": [
           "hydra",
           "nixpkgs"
@@ -472,11 +475,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1749682763,
-        "narHash": "sha256-DDhns3NS6L5OlYR0mSX03I5D7uGLyyd3MZegd1wTCyc=",
+        "lastModified": 1754639322,
+        "narHash": "sha256-yQbFoOT/jes5WTUUIjXmWugIacvvXRZwUnZ4ctrdr0o=",
         "ref": "refs/heads/main",
-        "rev": "ee0655240270480d7f6063dcf12ec47f04d2ded6",
-        "revCount": 18025,
+        "rev": "52ef1181f0a4e2156227a5086ca9a99c43214515",
+        "revCount": 18241,
         "type": "git",
         "url": "https://git.lix.systems/lix-project/lix"
       },
@@ -657,11 +660,11 @@
     "nixputs": {
       "flake": false,
       "locked": {
-        "lastModified": 1745038825,
-        "narHash": "sha256-WIa/LQmHYeH7bTlZ0yYxZq1JvskfIQmk7fdohKxjcP0=",
-        "rev": "20f16510806ad8c7dbd4339f17a67c642c507ff1",
+        "lastModified": 1755467685,
+        "narHash": "sha256-C6YMbOb4NuLECtgxQ2GlFq/ulY66kIIbcuDcXarqGro=",
+        "rev": "18c6a472b0f1ce605b6aa9df1ca2064c3c851f82",
         "type": "tarball",
-        "url": "https://forge.aftix.xyz/api/v1/repos/aftix/nixputs/archive/20f16510806ad8c7dbd4339f17a67c642c507ff1.tar.gz?rev=20f16510806ad8c7dbd4339f17a67c642c507ff1"
+        "url": "https://forge.aftix.xyz/api/v1/repos/aftix/nixputs/archive/18c6a472b0f1ce605b6aa9df1ca2064c3c851f82.tar.gz?rev=18c6a472b0f1ce605b6aa9df1ca2064c3c851f82"
       },
       "original": {
         "type": "tarball",
