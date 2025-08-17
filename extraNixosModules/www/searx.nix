@@ -137,7 +137,7 @@ in {
 
       searx = {
         enable = true;
-        runInUwsgi = true;
+        configureUwsgi = true;
         redisCreateLocally = true;
 
         environmentFile = config.sops.templates."searx.env".path;
