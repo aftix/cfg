@@ -20,7 +20,7 @@
         curl
         mbstring
         sqlite3
-        redis
+        valkey
         sockets
       ]);
   };
