@@ -60,7 +60,7 @@ in {
         clientSettings.uri = "https://${identityService}";
         enableClient = true;
         enableServer = true;
-        package = pkgs.kanidm_1_6.override {enableSecretProvisioning = true;};
+        package = pkgs.kanidmWithSecretProvisioning_1_7;
         provision = {
           enable = true;
           adminPasswordFile = config.sops.secrets.kanidm_admin_password.path;
