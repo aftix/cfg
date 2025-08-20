@@ -9,13 +9,13 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-ezpriorities";
-  version = "0-unstable-2024-01-22";
+  version = "0-unstable-2025-08-07";
 
   src = fetchFromGitHub {
     owner = "aidistan";
     repo = "freshrss-extensions";
-    rev = "ed569b32c31080d2f8f77a67fc6e3da0e7b7aebf";
-    hash = "sha256-FOhVZLsdRY1LszT7YlYV70WUQUelyj1uY9d3h7eTX4w=";
+    rev = "ca78729c8717881158fe3b9a49a824a78f822575";
+    hash = "sha256-RxmQnzYLT+S2IOfPoLwhEi7gqUQOxqTAQ0A+ynOoEvk=";
   };
 
   installPhase = import ./with-subdirs.nix self.src;
