@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-5DBMej3NWYRTkoDs1a5qoydnhDW0TKBYanuMXeMSs5o=";
 
-  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
+  nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
   meta = with lib; {
     description = "A DNS utility for nushell.";

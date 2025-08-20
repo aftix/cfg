@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-609w/7vmKcNv1zSfd+k6TTeU2lQuzHX3W5Y8EqKIiAM=";
 
-  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
+  nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
   meta = with lib; {
     description = "This is a plugin for the nu shell to manipulate strings representing versions that conform to the SemVer specification.";

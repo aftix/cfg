@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-HAnqF81WIDtrkpxlcXRgrp5qRl1PMj/dYBTjSaVpgkw=";
 
-  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
+  nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
   meta = with lib; {
     description = "A nushell plugin for compression and decompression, supporting zstd, gzip, bzip2, and xz.";

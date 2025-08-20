@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-4r5TH3t61TjWMoKuzStuUQM779IpD1t4K98OuOQ2L8M=";
 
-  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [rustPlatform.bindgenHook];
+  nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
   meta = with lib; {
     description = "Nushell plugin that implements some string utilities that are not included in nushell.";
