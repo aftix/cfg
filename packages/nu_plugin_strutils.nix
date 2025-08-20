@@ -21,11 +21,10 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
-  meta = with lib; {
+  meta = {
     description = "Nushell plugin that implements some string utilities that are not included in nushell.";
     mainProgram = "nu_plugin_strutils";
     homepage = "https://github.com/fdncred/nu_plugin_strutils";
-    license = licenses.mit;
-    platforms = platforms.all;
+    license = lib.licenses.mit;
   };
 }

@@ -22,9 +22,9 @@ stdenvNoCC.mkDerivation (self: {
 
   passthru.updateScript = nix-update-script {};
 
-  meta = with lib; {
+  meta = {
     homepage = "https://github.com/aledeg/xExtension-LatexSupport";
-    license = licenses.agpl3Only;
+    license = lib.licenses.agpl3Only;
     updateVersion = "branch";
   };
 })

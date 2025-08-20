@@ -22,9 +22,9 @@ stdenvNoCC.mkDerivation (self: {
 
   passthru.updateScript = nix-update-script {};
 
-  meta = with lib; {
+  meta = {
     homepage = "https://github.com/kalvn/freshrss-mark-previous-as-read";
-    license = licenses.gpl2Only;
+    license = lib.licenses.gpl2Only;
     updateVersion = "branch";
   };
 })

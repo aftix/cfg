@@ -25,12 +25,12 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [alsa-lib];
   buildFeatures = ["all-decoders"];
 
-  meta = with lib; {
+  meta = {
     description = "A nushell plugin to make and play sounds";
     mainProgram = "nu_plugin_audio_hook";
     homepage = "https://github.com/FMotalleb/nu_plugin_audio_hook";
-    license = licenses.mit;
-    platforms = platforms.linux;
+    license = lib.licenses.mit;
+    platforms = lib.platforms.linux;
     updateVersion = "branch";
   };
 }

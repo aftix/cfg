@@ -21,11 +21,10 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
-  meta = with lib; {
+  meta = {
     description = "A nushell plugin for compression and decompression, supporting zstd, gzip, bzip2, and xz.";
     mainProgram = "nu_plugin_compress";
     homepage = "https://github.com/yybit/nu_plugin_compress";
-    license = licenses.asl20;
-    platforms = platforms.all;
+    license = lib.licenses.asl20;
   };
 }

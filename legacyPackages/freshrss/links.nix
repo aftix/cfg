@@ -22,9 +22,9 @@ stdenvNoCC.mkDerivation (self: {
 
   passthru.updateScript = nix-update-script {};
 
-  meta = with lib; {
+  meta = {
     homepage = "https://github.com/kapdap/freshrss-extensions";
-    license = licenses.mit;
+    license = lib.licenses.mit;
     updateVersion = "branch";
   };
 })

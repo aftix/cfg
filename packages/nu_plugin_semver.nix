@@ -21,11 +21,10 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
-  meta = with lib; {
+  meta = {
     description = "This is a plugin for the nu shell to manipulate strings representing versions that conform to the SemVer specification.";
     mainProgram = "nu_plugin_semver";
     homepage = "https://github.com/abusch/nu_plugin_semver";
-    license = licenses.mit;
-    platforms = platforms.all;
+    license = lib.licenses.mit;
   };
 }

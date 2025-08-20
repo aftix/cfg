@@ -22,10 +22,10 @@ stdenvNoCC.mkDerivation (self: {
 
   passthru.updateScript = nix-update-script {};
 
-  meta = with lib; {
+  meta = {
     description = "Repository containing all the official FreshRSS extensions";
     homepage = "https://github.com/FreshRSS/Extensions";
-    license = licenses.agpl3Only;
+    license = lib.licenses.agpl3Only;
     updateVersion = "branch";
   };
 })

@@ -18,12 +18,12 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-XVH75ZtFAv7mCa37EqgouKa39+vxoXhodESb3yDHDfk=";
 
-  meta = with lib; {
+  meta = {
     description = "A nushell plugin to send desktop notifications.";
     mainProgram = "nu_plugin_desktop_notifications";
     homepage = "https://github.com/FMotalleb/nu_plugin_desktop_notifications";
-    license = licenses.mit;
-    platforms = platforms.linux;
+    license = lib.licenses.mit;
+    platforms = lib.platforms.linux;
     updateVersion = "branch";
   };
 }

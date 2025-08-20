@@ -17,11 +17,10 @@ stdenv.mkDerivation {
     cp -R *.d "$out/."
   '';
 
-  meta = with lib; {
+  meta = {
     description = "nginx ultimate bad bot blocker";
     homepage = "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker";
-    license = licenses.mit;
-    platforms = platforms.all;
+    license = lib.licenses.mit;
     updateVersion = "none";
   };
 }

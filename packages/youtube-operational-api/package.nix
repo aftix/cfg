@@ -71,11 +71,11 @@ in
       runHook postInstall
     '';
 
-    meta = with lib; {
+    meta = {
       description = "YouTube operational API works when YouTube Data API v3 fails.";
       homepage = "https://github.com/${owner}/${self.pname}";
-      license = licenses.mit;
-      platforms = platforms.linux;
+      license = lib.licenses.mit;
+      platforms = lib.platforms.linux;
       updateVersion = "branch";
     };
   })

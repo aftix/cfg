@@ -22,10 +22,10 @@
       pname = "aftix-docs";
       version = "0.0.1";
 
-      meta = with lib; {
+      meta = {
         description = "Automatically generated documentation for my NixOS setup";
         homepage = "https://github.com/aftix/cfg";
-        license = licenses.mit;
+        license = lib.licenses.mit;
         maintainers = [
           {
             name = "Wyatt Campbell";

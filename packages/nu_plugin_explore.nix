@@ -21,11 +21,10 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
-  meta = with lib; {
+  meta = {
     description = "A fast structured data explorer for Nushell.";
     mainProgram = "nu_plugin_explore";
     homepage = "https://github.com/amtoine/nu_plugin_explore";
-    license = licenses.gpl3Only;
-    platforms = platforms.all;
+    license = lib.licenses.gpl3Only;
   };
 }

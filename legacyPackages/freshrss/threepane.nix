@@ -23,9 +23,9 @@ stdenvNoCC.mkDerivation (self: {
 
   passthru.updateScript = nix-update-script {};
 
-  meta = with lib; {
+  meta = {
     homepage = "https://framagit.org/nicofrand/xextension-threepanesview";
-    license = licenses.mit;
+    license = lib.licenses.mit;
     updateVersion = "branch";
   };
 })

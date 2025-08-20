@@ -39,12 +39,11 @@ rustPlatform.buildRustPackage {
         --set STEEL_HOME "${steel}/share" \
     '';
 
-  meta = with lib; {
+  meta = {
     description = "An embeddable and extensible scheme dialect built in Rust";
     mainProgram = "steel-language-server";
     homepage = "https://github.com/mattwparas/steel";
-    license = licenses.apsl20;
-    platforms = platforms.all;
+    license = lib.licenses.apsl20;
     updateVersion = "branch";
   };
 }

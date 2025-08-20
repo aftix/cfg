@@ -26,10 +26,10 @@ rustPlatform.buildRustPackage rec {
   patches = [./change-url-replace.patch];
   passthru.updateScript = nix-update-script {};
 
-  meta = with lib; {
+  meta = {
     description = "A neat pastebin";
     mainProgram = "coffeepaste";
     homepage = "https://git.sr.ht/~mort/coffeepaste";
-    license = licenses.agpl3Only;
+    license = lib.licenses.agpl3Only;
   };
 }

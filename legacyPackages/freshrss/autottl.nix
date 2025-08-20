@@ -22,8 +22,8 @@ stdenvNoCC.mkDerivation (self: {
 
   passthru.updateScript = nix-update-script {};
 
-  meta = with lib; {
+  meta = {
     homepage = "https://github.com/mgnsk/FreshRSS-AutoTTL";
-    license = licenses.agpl3Only;
+    license = lib.licenses.agpl3Only;
   };
 })

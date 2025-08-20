@@ -21,12 +21,11 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
-  meta = with lib; {
+  meta = {
     description = "A DNS utility for nushell.";
     mainProgram = "nu_plugin_dns";
     homepage = "https://github.com/dead10ck/nu_plugin_dns";
-    license = licenses.mpl20;
-    platforms = platforms.all;
+    license = lib.licenses.mpl20;
     updateVersion = "branch";
   };
 }
