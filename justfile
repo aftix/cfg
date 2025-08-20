@@ -46,7 +46,7 @@ updatepkg pkg:
 
     if [[ "$?" -eq 0 ]]; then
         echo "Package built"
-        jj ci -m "legacyPackages.{{pkg}}: update to latest $VERSION" --quiet
+        jj ci -m "chore(legacyPackages.{{pkg}}): update to latest $VERSION" --quiet
     else
         echo "Package not built, abandoning change" >&2
         jj abandon --quiet
