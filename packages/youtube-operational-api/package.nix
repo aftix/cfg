@@ -37,7 +37,7 @@ in
 
       outputHashAlgo = "sha256";
       outputHashMode = "recursive";
-      outputHash = "sha256-ws6l6Ko8DT+mr0XEbY+TUFHT2t6g9Zgxny4gTDE0MGA=";
+      outputHash = "sha256-/xAY1q6i8vhE0KjK5a0H4D6SFr4wHMQttZDRitzPqtI=";
     };
   in {
     pname = "YouTube-operational-API";
