@@ -78,9 +78,9 @@ in
           return 1
         fi
 
-        # we want to split the array value into multiple args here
-        # shellcheck disable=SC2086
-        ${systemdInhibit "Updating"} nix-update ''${updateScripts["$name"]} "$name"
+        # Turn arguments into an array for explicit word splitting
+        read -ra updateArgs <<<"''${updateScripts["$name"]}"
+        ${systemdInhibit "Updating"} nix-update "''${updateArgs[@]}" "$name"
         # shellcheck disable=SC2181
         # putting command directly in the if doesn't really word with nix generation
         if [[ "$?" != 0 ]]; then
