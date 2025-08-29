@@ -213,7 +213,8 @@ in {
 
       plymouth = {
         enable = true;
-        theme = "breeze";
+        theme = "solar";
+        themePackages = [pkgs.plymouth];
       };
 
       initrd.systemd = {
