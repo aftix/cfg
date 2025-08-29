@@ -340,13 +340,6 @@ in {
           };
         };
 
-        signing = {
-          behavior = "drop";
-          backend = "ssh";
-          key = "${config.home.homeDirectory}/.ssh/id_ed25519_sk";
-        };
-        backends.ssh.allowed-signers = "${allowedSigners}";
-
         git = {
           auto-local-bookmark = true;
           colocate = true;
