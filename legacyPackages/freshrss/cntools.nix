@@ -20,11 +20,12 @@ stdenvNoCC.mkDerivation (self: {
 
   installPhase = import ./with-subdirs.nix self.src;
 
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
 
   meta = {
     homepage = "https://github.com/cn-tools/cntools_FreshRssExtensions";
     license = lib.licenses.mit;
-    updateVersion = "branch";
   };
 })

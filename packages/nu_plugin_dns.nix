@@ -6,6 +6,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_dns";
@@ -21,11 +22,14 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
+
   meta = {
     description = "A DNS utility for nushell.";
     mainProgram = "nu_plugin_dns";
     homepage = "https://github.com/dead10ck/nu_plugin_dns";
     license = lib.licenses.mpl20;
-    updateVersion = "branch";
   };
 }

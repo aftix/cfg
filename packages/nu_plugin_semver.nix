@@ -6,6 +6,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_semver";
@@ -14,12 +15,14 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "abusch";
     repo = pname;
-    rev = "refs/tags/v${version}";
+    tag = "v${version}";
     sha256 = "sha256-JF+aY7TW0NGo/E1eFVpBZQoxLxuGja8DSoJy4xgi1Lk=";
   };
   cargoHash = "sha256-609w/7vmKcNv1zSfd+k6TTeU2lQuzHX3W5Y8EqKIiAM=";
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
+
+  passthru.updateScript = nix-update-script {};
 
   meta = {
     description = "This is a plugin for the nu shell to manipulate strings representing versions that conform to the SemVer specification.";

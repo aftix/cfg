@@ -5,6 +5,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_desktop_notifications";
@@ -18,12 +19,15 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-XVH75ZtFAv7mCa37EqgouKa39+vxoXhodESb3yDHDfk=";
 
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
+
   meta = {
     description = "A nushell plugin to send desktop notifications.";
     mainProgram = "nu_plugin_desktop_notifications";
     homepage = "https://github.com/FMotalleb/nu_plugin_desktop_notifications";
     license = lib.licenses.mit;
     platforms = lib.platforms.linux;
-    updateVersion = "branch";
   };
 }

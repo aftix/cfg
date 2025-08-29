@@ -38,14 +38,17 @@ buildGoModule (finalAttrs: {
     GOOS= GOARCH= go generate ./...
   '';
 
-  passthru.updateScript = nix-update-script {};
-  passthru.tests.version = testers.testVersion {package = carapace;};
+  passthru = {
+    tests.version = testers.testVersion {package = carapace;};
+    updateScript = nix-update-script {
+      extraArgs = ["--version" "branch"];
+    };
+  };
 
   meta = {
     description = "Multi-shell multi-command argument completer";
     homepage = "https://carapace.sh/";
     license = lib.licenses.mit;
     mainProgram = "carapace";
-    updateVersion = "branch";
   };
 })

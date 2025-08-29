@@ -20,11 +20,12 @@ stdenvNoCC.mkDerivation (self: {
 
   installPhase = import ./toplevel-ext.nix self.src "LatexSupport";
 
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
 
   meta = {
     homepage = "https://github.com/aledeg/xExtension-LatexSupport";
     license = lib.licenses.agpl3Only;
-    updateVersion = "branch";
   };
 })

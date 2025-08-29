@@ -6,7 +6,6 @@
   stdenvNoCC,
   lib,
   fetchFromGitHub,
-  nix-update-script,
   valkey,
   evtest,
 }: let
@@ -53,13 +52,11 @@ in
 
     passthru = {
       inherit phpWithExts;
-      updateScript = nix-update-script {};
     };
 
     meta = {
       description = "Create barcodes with information for Grocy";
       homepage = "https://github.com/Forceu/barcodebuddy";
       licenes = lib.licenses.agpl3Only;
-      updateVersion = "branch";
     };
   })

@@ -21,11 +21,12 @@ stdenvNoCC.mkDerivation (self: {
 
   installPhase = import ./toplevel-ext.nix self.src "threepanesview";
 
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
 
   meta = {
     homepage = "https://framagit.org/nicofrand/xextension-threepanesview";
     license = lib.licenses.mit;
-    updateVersion = "branch";
   };
 })

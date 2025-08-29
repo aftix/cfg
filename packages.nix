@@ -28,8 +28,4 @@
   # SPDX-SnippetEnd
 in
   pkgs.aftixPkgs
-  // (recursiveMapPackages (pkg:
-    pkgs.lib.recursiveUpdate pkg {
-      meta.updateVersion = "none";
-    })
-  pkgs.aftixOverlayedPkgs)
+  // pkgs.aftixOverlayedPkgs

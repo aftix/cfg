@@ -6,6 +6,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_explore";
@@ -20,6 +21,8 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-YqmU+j1dcw9YN0p3h+s4hJpt1O6z6EYrSj8lApQX93o=";
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
+
+  passthru.updateScript = nix-update-script {};
 
   meta = {
     description = "A fast structured data explorer for Nushell.";

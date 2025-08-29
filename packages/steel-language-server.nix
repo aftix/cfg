@@ -11,6 +11,7 @@
   openssl,
   pkg-config,
   steel ? callPackage ./steel.nix {},
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage {
   pname = "steel-language-server";
@@ -39,11 +40,14 @@ rustPlatform.buildRustPackage {
         --set STEEL_HOME "${steel}/share" \
     '';
 
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
+
   meta = {
     description = "An embeddable and extensible scheme dialect built in Rust";
     mainProgram = "steel-language-server";
     homepage = "https://github.com/mattwparas/steel";
     license = lib.licenses.apsl20;
-    updateVersion = "branch";
   };
 }

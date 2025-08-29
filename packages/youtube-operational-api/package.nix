@@ -8,6 +8,7 @@
   fetchFromGitHub,
   findutils,
   protobuf_29,
+  nix-update-script,
 }: let
   owner = "Benjamin-Loison";
 in
@@ -71,11 +72,14 @@ in
       runHook postInstall
     '';
 
+    passthru.updateScript = nix-update-script {
+      extraArgs = ["--version" "branch"];
+    };
+
     meta = {
       description = "YouTube operational API works when YouTube Data API v3 fails.";
       homepage = "https://github.com/${owner}/${self.pname}";
       license = lib.licenses.mit;
       platforms = lib.platforms.linux;
-      updateVersion = "branch";
     };
   })

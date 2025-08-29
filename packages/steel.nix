@@ -9,6 +9,7 @@
   openssl,
   pkg-config,
   makeWrapper,
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "steel";
@@ -42,11 +43,14 @@ rustPlatform.buildRustPackage rec {
       wrapProgram "$out/bin/steel" --set STEEL_HOME "$out/share"
     '';
 
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
+
   meta = {
     description = "An embeddable and extensible scheme dialect built in Rust";
     mainProgram = "steel";
     homepage = "https://github.com/mattwparas/steel";
     license = lib.licenses.apsl20;
-    updateVersion = "branch";
   };
 }

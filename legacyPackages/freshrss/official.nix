@@ -20,12 +20,13 @@ stdenvNoCC.mkDerivation (self: {
 
   installPhase = import ./with-subdirs.nix self.src;
 
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
 
   meta = {
     description = "Repository containing all the official FreshRSS extensions";
     homepage = "https://github.com/FreshRSS/Extensions";
     license = lib.licenses.agpl3Only;
-    updateVersion = "branch";
   };
 })

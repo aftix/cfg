@@ -8,6 +8,7 @@
   fetchFromGitHub,
   pkg-config,
   alsa-lib,
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_audio_hook";
@@ -25,12 +26,15 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [alsa-lib];
   buildFeatures = ["all-decoders"];
 
+  passthru.updateScript = nix-update-script {
+    extraArgs = ["--version" "branch"];
+  };
+
   meta = {
     description = "A nushell plugin to make and play sounds";
     mainProgram = "nu_plugin_audio_hook";
     homepage = "https://github.com/FMotalleb/nu_plugin_audio_hook";
     license = lib.licenses.mit;
     platforms = lib.platforms.linux;
-    updateVersion = "branch";
   };
 }

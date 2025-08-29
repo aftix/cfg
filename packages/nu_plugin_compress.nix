@@ -6,6 +6,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_compress";
@@ -20,6 +21,8 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-HAnqF81WIDtrkpxlcXRgrp5qRl1PMj/dYBTjSaVpgkw=";
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
+
+  passthru.updateScript = nix-update-script {};
 
   meta = {
     description = "A nushell plugin for compression and decompression, supporting zstd, gzip, bzip2, and xz.";
