@@ -76,6 +76,12 @@ in {
     programs.home-manager.enable = true;
 
     services.ssh-agent.enable = pkgs.hostPlatform.isLinux;
-    systemd.user.startServices = lib.mkIf pkgs.hostPlatform.isLinux true;
+    systemd.user = lib.mkIf pkgs.hostPlatform.isLinux {
+      startServices = true;
+      services.ssh-agent.serviceConfig = {
+        ExecStartPost = "${lib.getExe' pkgs.systemd "systemctl"} --user set-environment SSH_AUTH_SOCK=%t/ssh-agent";
+        ExecStopPost = "${lib.getExe' pkgs.systemd "systemctl"} --user unset-environment SSH_AUTH_SOCK";
+      };
+    };
   };
 }
