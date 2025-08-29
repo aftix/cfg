@@ -72,24 +72,7 @@ test *FLAGS:
         nixos-rebuild-ng --attr "nixosConfigurations.{{hostname}}" --sudo test
 
 deploy node="fermi" mode="switch" *FLAGS="":
-    #!/usr/bin/env bash
-    IP="$(nix eval --raw -f nodes.nix --apply 'x: x.{{node}}.ip')"
-    BUILD_USER="$(nix eval --raw -f nodes.nix --apply 'x: x.{{node}}.user')"
-    BUILD_HOST="--build-host ${BUILD_USER}@${IP}"
-    if [[ "$(nix eval --impure --raw -E 'builtins.currentSystem')" = \
-        "$(nix eval --raw -f . --apply 'x: x.nixosConfigurations.{{node}}.config.nixpkgs.hostPlatform.system')" ]]; then
-        echo "Building {{node}} configuration locally"
-        systemd-inhibit --mode=block --why="Building configuration {{node}}" --who="$(pwd)/justfile" \
-            nom build -f . "nixosConfigurations.{{node}}.config.system.build.toplevel" --no-link {{FLAGS}}
-        BUILD_HOST=""
-    fi
-    SUDO="--sudo"
-    [[ "$BUILD_USER" = "root" ]] && SUDO=""
-    echo "BUILD_HOST: $BUILD_HOST"
-    echo "SUDO: $SUDO"
-    echo "TARGET_HOST: ${BUILD_USER}@${IP}"
-    systemd-inhibit --mode=block --why="Deploying configuration {{node}} to $IP" --who="$(pwd)/justfile" \
-        nixos-rebuild-ng --no-reexec $BUILD_HOST --target-host "${BUILD_USER}@${IP}" $SUDO --attr "nixosConfigurations.{{node}}" "{{mode}}"
+    @"$(nix build -f maintainer/deploy.nix --no-link --print-out-paths)/bin/deploy-configuration" {{node}} {{mode}} {{FLAGS}}
 
 rekey:
     @sops updatekeys -y host/secrets.yaml
