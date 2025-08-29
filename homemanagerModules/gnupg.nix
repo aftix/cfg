@@ -49,12 +49,4 @@ in {
       disable-ccid = true;
     };
   };
-
-  services.gpg-agent = rec {
-    enable = lib.strings.hasSuffix "-linux" pkgs.system;
-    enableSshSupport = enable;
-    extraConfig = mkDefault ''
-      pinentry-program ${lib.getExe pinentry-custom}
-    '';
-  };
 }
