@@ -57,28 +57,4 @@ in {
       pinentry-program ${lib.getExe pinentry-custom}
     '';
   };
-
-  systemd.user = {
-    services.keyrefresh = {
-      Unit = {
-        Description = "Refresh gpg keys";
-        Requires = ["network.target"];
-      };
-      Service = {
-        Type = "oneshot";
-        Environment = ''GNUPGHOME="${config.programs.gpg.homedir}"'';
-        ExecStart = "${lib.getExe pkgs.gnupg} --refresh-keys";
-      };
-    };
-
-    timers.keyrefresh = {
-      Unit.Description = "Refresh gpg keys every 8 hours";
-      Timer = {
-        OnCalendar = "daily";
-        Persistent = true;
-        RandomizedDelaySec = 600;
-      };
-      Install.WantedBy = ["timers.target"];
-    };
-  };
 }
