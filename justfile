@@ -27,31 +27,20 @@ buildpkg pkg:
 buildpkgs:
     #!/usr/bin/env bash
     echo "Determining package list"
-    NPKGS="$(nix eval -f packages.nix --apply 'x: let
-        packages = x {};
-        inputs = import ./inputs.nix;
-        inherit (inputs.nixpkgs) lib;
-        getDrvs = lib.filterAttrs (name: value: lib.isDerivation value || value.recurseForDerivations or false);
-        drvs = lib.concatMapAttrs (
-            name: value:
-                if lib.isDerivation value then {${name} = value;}
-                else if lib.isAttrs value then {${name} = getDrvs value;}
-                else {}
-            ) packages;
-        convert = prefix: lib.mapAttrsToList (
-            name: value: let fullname = "${prefix}${lib.optionalString (prefix != "") "."}${name}"; in
-                if lib.isAttrs value && !lib.isDerivation value then
-                    convert fullname value
-                else
-                    fullname
-            );
-        drvNames = lib.flatten (convert "" drvs);
-        in lib.concatStringsSep " " drvNames' --impure --raw)"
+    pkgs="$(nix eval -f maintainer/all-packages.nix --raw --apply 'x: x {}')"
+    counter=0
+    failcounter=0
     echo "Building packages"
-    for pkg in $NPKGS; do
+    for pkg in $pkgs; do
         echo "Building $pkg"
         systemd-inhibit --mode=block --why="Building package $pkg" --who="$(pwd)/justfile" nom build -f packages.nix "$pkg" --no-link --print-out-paths || :
+        if [[ "$?" = 0 ]]; then
+            ((counter++)) || :
+        else
+            ((failcounter++)) || :
+        fi
     done
+    echo "Successfully built $counter packages, failed to build $failcounter packages."
 
 build host=hostname *FLAGS="":
     # Build configuration
