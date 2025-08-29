@@ -53,11 +53,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    carapace = {
-      url = "github:carapace-sh/carapace-bin";
-      flake = false;
-    };
-
     attic.url = "github:zhaofengli/attic";
 
     hostsBlacklist = {

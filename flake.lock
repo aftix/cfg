@@ -90,22 +90,6 @@
         "type": "github"
       }
     },
-    "carapace": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1756322853,
-        "narHash": "sha256-XlgHU8h3D7t6VsVMP3jU4MbRhHEVDT1BmFQ8/wVP6Ao=",
-        "owner": "carapace-sh",
-        "repo": "carapace-bin",
-        "rev": "d4dbef02a7594094aa6f75cde6132d51bceb44d5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "carapace-sh",
-        "repo": "carapace-bin",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1751562746,
@@ -776,7 +760,6 @@
     "root": {
       "inputs": {
         "attic": "attic",
-        "carapace": "carapace",
         "disko": "disko",
         "home-manager": "home-manager",
         "hostsBlacklist": "hostsBlacklist",

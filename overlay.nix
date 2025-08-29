@@ -21,12 +21,6 @@
 
     inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;
     inherit (inputs) nginxBlacklist;
-
-    carapace = prev.carapace.overrideAttrs {
-      src = inputs.carapace;
-      goSum = "${inputs.carapace}/go.sum";
-      vendorHash = "sha256-LDlf8LulTOXhPR4/kjSWWKZv2W1Ug+qN+U8MlYzA/CA=";
-    };
   };
 in
   {
