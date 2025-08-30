@@ -27,7 +27,6 @@
             (final: _:
               {
                 craneLib = import inputs."attic/crane" {pkgs = final;};
-                nix = final.nixVersions.nix_2_24;
               }
               // (import "${inputs."attic/crane"}/pkgs" {
                 pkgs = final;
