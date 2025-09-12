@@ -164,13 +164,13 @@ in {
           ready = ["log" "-r" "ready()"];
           ready-tree = ["log" "-r" "ready_tree()"];
           retrunk = ["rebase" "--destination" "trunk()"];
-          retrunk-stack = ["rebase" "--destination" "trunk()" "-s" "all:roots(trunk()..stack(@))"];
-          retrunk-open = ["rebase" "--destination" "trunk()" "-s" "all:roots(trunk()..open())"];
-          retrunk-ready = ["rebase" "--destination" "trunk()" "-s" "all:roots(trunk()..ready())"];
+          retrunk-stack = ["rebase" "--destination" "trunk()" "-s" "roots(trunk()..stack(@))"];
+          retrunk-open = ["rebase" "--destination" "trunk()" "-s" "roots(trunk()..open())"];
+          retrunk-ready = ["rebase" "--destination" "trunk()" "-s" "roots(trunk()..ready())"];
           megamerge = ["log" "-r" "megamerge_fork_point()::@"];
           megamerge-tree = ["log" "-r" "megamerge_fork_point()::"];
           megamerge-add = ["rebase" "-B" "megamerge()" "-A" "megamerge_fork_point()" "-r"];
-          megamerge-remove = ["util" "exec" "--" "sh" "-lc" "jj rebase -s 'megamerge()' --destination \"all:megamerge()- ~ $1\"" "none"];
+          megamerge-remove = ["util" "exec" "--" "sh" "-lc" "jj rebase -s 'megamerge()' --destination \"megamerge()- ~ $1\"" "none"];
           consume = ["squash" "--into" "@" "--from"];
           eject = ["squash" "--from" "@" "--into"];
           tug = ["bookmark" "move" "--from" "closest_bookmarked_ancestor()" "--to" "heads_nonempty()"];
