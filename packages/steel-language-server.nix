@@ -15,15 +15,15 @@
 }:
 rustPlatform.buildRustPackage {
   pname = "steel-language-server";
-  version = "0-unstable-2025-09-06";
+  version = "0-unstable-2025-09-13";
 
   src = fetchFromGitHub {
     owner = "mattwparas";
     repo = "steel";
-    rev = "0ff387fce6fc4a02fad4cde594f7db09598ef73d";
-    hash = "sha256-1f+OhoTkdk+mW+PawrrqWYW5HpIpFZ3nO5IJP68/LzM=";
+    rev = "6e99ccfa40a5a8dbe9b4e1303999494ca0876bcc";
+    hash = "sha256-//34ZO2QAz7BgFZQIcGK/j+71dze/R8hQqW4T0a1+B0=";
   };
-  cargoHash = "sha256-a7wene1oI2lhMUo8iguosXyk1G12bhrEdK7IJ/WgRq4=";
+  cargoHash = "sha256-jitXIzGpLwodYX2faxgdafuLpDGJi+Sr9aFX9QdWHTk=";
 
   nativeBuildInputs = [makeWrapper openssl pkg-config] ++ lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
   buildInputs = [steel];
