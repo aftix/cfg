@@ -9,13 +9,13 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-latexsupport";
-  version = "0.1.5-unstable-2024-03-30";
+  version = "0.1.5-unstable-2025-09-11";
 
   src = fetchFromGitHub {
     owner = "aledeg";
     repo = "xExtension-LatexSupport";
-    rev = "c3e8a5961e47da53d112522e27586f7734b265d0";
-    hash = "sha256-DvL5tyj0FHVCL9ZcBSLuZ01shB448WDVpQmgkYLhoLs=";
+    rev = "d98fc56a7a12f04a913beea9a8ee81e463ad1b92";
+    hash = "sha256-pk4E7xl5DqujJxHiMuNO9m144As+F+9lii47nYWZbLc=";
   };
 
   installPhase = import ./toplevel-ext.nix self.src "LatexSupport";
