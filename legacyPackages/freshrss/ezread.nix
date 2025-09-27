@@ -9,13 +9,13 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-ezread";
-  version = "1.1.3-unstable-2025-08-31";
+  version = "1.1.5-unstable-2025-09-19";
 
   src = fetchFromGitHub {
     owner = "kalvn";
     repo = "freshrss-mark-previous-as-read";
-    rev = "96882240bdd33c7aaa58d041a8982c215f62da1d";
-    hash = "sha256-hF46jkQuV2fYr+8bbUEA/W+r7yvDXjseRfBkA4VuQHo=";
+    rev = "1079f7ee542059e9d12c3a46e19790c4540006aa";
+    hash = "sha256-O8cXRXp3slj4caBDwMLnLbw8sT+ouPercCE7s9eLADU=";
   };
 
   installPhase = import ./with-subdirs.nix self.src;
