@@ -239,6 +239,11 @@ in {
         "$menu" = "${menu}";
         xwayland.force_zero_scaling = true;
 
+        ecosystem = {
+          no_update_news = true;
+          no_donation_nag = true;
+        };
+
         env = [
           "XCURSOR_SIZE,32"
           "XCURSOR_PATH,/run/current-system/sw/share/icons:${config.xdg.dataHome}/icons"
@@ -310,7 +315,6 @@ in {
         };
 
         master.new_status = "inherit";
-        gestures.workspace_swipe = false;
         misc.force_default_wallpaper = 0;
 
         "$mainMod" = "SUPER";
