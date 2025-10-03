@@ -78,7 +78,7 @@ in {
           nodePackages_latest.prettier
           nodePackages_latest.typescript
         ]
-        ++ optionals cfg.steel [steel steel-language-server];
+        ++ optionals cfg.steel [steel];
 
       sessionVariables = mkMerge [
         (mkIf cfg.rust {
