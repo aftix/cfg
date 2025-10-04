@@ -48,7 +48,6 @@ in {
         [
           rusty-man
           rustup
-          sccache
           bacon
           cargo-info
           cargo-nextest
@@ -82,7 +81,6 @@ in {
 
       sessionVariables = mkMerge [
         (mkIf cfg.rust {
-          RUSTC_WRAPPER = mkDefault "${lib.getExe pkgs.sccache}";
           RUSTUP_HOME = mkDefault "${stateHome}/rustup";
           CARGO_HOME = mkDefault "${stateHome}/cargo";
           CARGO_INSTALL_ROOT = mkDefault "${dataHome}/bin";
