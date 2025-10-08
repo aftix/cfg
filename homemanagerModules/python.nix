@@ -19,7 +19,6 @@ in {
       python3Packages.pyls-flake8
       python3Packages.pylsp-mypy
       pipx
-      micromamba
     ];
 
     sessionVariables = {
