@@ -10,7 +10,6 @@
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
-      inputs.attic.overlays.default
       myLib.libpkgsOverlay
       overlay
     ];

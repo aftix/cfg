@@ -19,7 +19,6 @@
   aftixOverlayedPkgs = {
     # hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
 
-    inherit (inputs.attic.packages.${final.hostPlatform.system}) attic attic-client attic-server;
     inherit (inputs) nginxBlacklist;
   };
 in
