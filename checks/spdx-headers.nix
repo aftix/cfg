@@ -30,7 +30,7 @@
     ".github/install-attic.bash"
     ".sops.yaml"
     "extraHomemanagerModules/wallpaper.jpg"
-    "extraNixosModules/www/attic_client_user_agent.patch"
+    "nixosConfigurations/fermi/www/attic_client_user_agent.patch"
     "nixosModules/hostBlacklist/personal-blacklist"
     "packages/coffeepaste/change-url-replace.patch"
     "packages/youtube-operational-api/composer.json"

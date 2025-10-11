@@ -14,7 +14,7 @@ in {
     ../../extraNixosModules/aftix.nix
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
-    ../../extraNixosModules/www
+    ./www
   ];
 
   sops = {
