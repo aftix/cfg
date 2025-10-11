@@ -14,6 +14,8 @@
   cfg = config.users.users.aftix;
 in {
   options.aftix.users.aftix = {
+    enable = lib.mkEnableOption "aftix user account";
+
     extraGroups = mkOption {
       default = [
         "input"
@@ -31,9 +33,7 @@ in {
     mkSubGidRanges = mkOption {default = false;};
   };
 
-  config = {
-    aftix.users.aftix.enable = true;
-
+  config = mkIf myCfg.enable {
     environment.systemPackages = [cfg.shell];
 
     security.polkit.adminIdentities = ["unix-user:aftix"];

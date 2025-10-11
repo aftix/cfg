@@ -11,7 +11,6 @@ in {
   imports = [
     ../../hardware/fermi.nix
 
-    ../../extraNixosModules/aftix.nix
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
     ./www
@@ -93,6 +92,8 @@ in {
   aftix = let
     domain = config.aftix.statics.primaryDomain;
   in {
+    users.aftix.enable = true;
+
     ssh.enable = true;
 
     attic = {

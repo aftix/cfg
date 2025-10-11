@@ -19,8 +19,6 @@ in {
       description = "Location of NixOS configuration flake";
     };
 
-    users.aftix.enable = mkEnableOption "aftix";
-
     uefi = mkEnableOption "uefi";
 
     systemdCapabilities = mkOption {

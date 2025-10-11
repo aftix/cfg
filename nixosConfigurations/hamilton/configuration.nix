@@ -14,7 +14,6 @@ in {
     ../../hardware/hamilton.nix
     ../../hardware/disko/hamilton.nix
 
-    ../../extraNixosModules/aftix.nix
     ../../extraNixosModules/bluetooth.nix
     ../../extraNixosModules/cups.nix
     ../../extraNixosModules/display.nix
@@ -81,6 +80,8 @@ in {
   };
 
   aftix = {
+    users.aftix.enable = true;
+
     # Boot without scrolling boot logs
     silent-boot = true;
     sound = true;
