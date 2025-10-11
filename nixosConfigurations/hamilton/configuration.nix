@@ -16,7 +16,6 @@ in {
 
     ./cups.nix
 
-    ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
   ];
 
@@ -85,12 +84,11 @@ in {
     display-server = true;
     sound = true;
     syncthing = true;
-
-    # Enable local service to snapshot BTRFS subvolumes to HDD
-    backup.btrfs-snapshots = true;
-
+    docker = true;
     bluetooth.enable = true;
     network.enable = true;
+    # Enable local service to snapshot BTRFS subvolumes to HDD
+    backup.btrfs-snapshots = true;
 
     disko = {
       rootDrive = {

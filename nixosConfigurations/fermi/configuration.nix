@@ -11,7 +11,6 @@ in {
   imports = [
     ../../hardware/fermi.nix
 
-    ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
     ./www
   ];
@@ -95,6 +94,7 @@ in {
     users.aftix.enable = true;
 
     ssh.enable = true;
+    docker = true;
 
     attic = {
       enable = true;
