@@ -21,7 +21,6 @@ in {
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
     ../../extraNixosModules/network.nix
-    ../../extraNixosModules/sound.nix
   ];
 
   sops = {
@@ -84,7 +83,7 @@ in {
   aftix = {
     # Boot without scrolling boot logs
     silent-boot = true;
-
+    sound = true;
     syncthing = true;
 
     # Enable local service to snapshot BTRFS subvolumes to HDD

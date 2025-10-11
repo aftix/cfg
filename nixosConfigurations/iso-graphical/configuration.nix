@@ -10,10 +10,11 @@
 in {
   imports = [
     ../../extraNixosModules/display.nix
-    ../../extraNixosModules/sound.nix
   ];
 
   users.users.root.hashedPasswordFile = null;
+
+  aftix.sound = true;
 
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
