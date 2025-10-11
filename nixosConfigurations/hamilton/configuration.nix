@@ -22,7 +22,6 @@ in {
     ../../extraNixosModules/hydra-substituter.nix
     ../../extraNixosModules/network.nix
     ../../extraNixosModules/sound.nix
-    ../../extraNixosModules/syncthing.nix
   ];
 
   sops = {
@@ -85,6 +84,8 @@ in {
   aftix = {
     # Boot without scrolling boot logs
     silent-boot = true;
+
+    syncthing = true;
 
     # Enable local service to snapshot BTRFS subvolumes to HDD
     backup.btrfs-snapshots = true;
