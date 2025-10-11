@@ -16,7 +16,6 @@ in {
 
     ./cups.nix
 
-    ../../extraNixosModules/display.nix
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
   ];
@@ -83,6 +82,7 @@ in {
 
     # Boot without scrolling boot logs
     silent-boot = true;
+    display-server = true;
     sound = true;
     syncthing = true;
 

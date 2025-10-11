@@ -8,13 +8,12 @@
 }: let
   inherit (lib) mkForce;
 in {
-  imports = [
-    ../../extraNixosModules/display.nix
-  ];
-
   users.users.root.hashedPasswordFile = null;
 
-  aftix.sound = true;
+  aftix = {
+    display-server = true;
+    sound = true;
+  };
 
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
