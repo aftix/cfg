@@ -18,7 +18,6 @@ in {
     ../../extraNixosModules/display.nix
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
-    ../../extraNixosModules/network.nix
   ];
 
   sops = {
@@ -90,6 +89,7 @@ in {
     backup.btrfs-snapshots = true;
 
     bluetooth.enable = true;
+    network.enable = true;
 
     disko = {
       rootDrive = {

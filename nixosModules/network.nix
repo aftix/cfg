@@ -9,6 +9,8 @@
   cfg = config.aftix.network;
 in {
   options.aftix.network = {
+    enable = lib.mkEnableOption "network configuration";
+
     interfaces = lib.options.mkOption {
       default = [
         {
@@ -19,7 +21,7 @@ in {
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     systemd.network = {
       enable = true;
 
