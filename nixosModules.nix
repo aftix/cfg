@@ -38,10 +38,9 @@
 
   localModules = myLib.modulesFromDirectoryRecursive ./nixosModules;
   localModuleList = inputs.nixpkgs.lib.mapAttrsToList (name: inputs.nixpkgs.lib.id) localModules;
-in
-  {
-    inherit nix-settings;
-    inherit localModules;
-    default = {imports = commonModules ++ localModuleList;};
-  }
-  // (myLib.modulesFromDirectoryRecursive ./extraNixosModules)
+in {
+  inherit nix-settings;
+  inherit localModules;
+  inherit commonModules;
+  default = {imports = commonModules ++ localModuleList;};
+}

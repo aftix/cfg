@@ -11,7 +11,6 @@ in {
   imports = [
     ../../hardware/fermi.nix
 
-    ../../extraNixosModules/hydra-substituter.nix
     ./www
   ];
 

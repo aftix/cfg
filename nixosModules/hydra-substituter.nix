@@ -10,6 +10,8 @@
   cfg = config.aftix.hydra-substituter;
 in {
   options.aftix.hydra-substituter = {
+    enable = lib.mkEnableOption "custom hydra substituter";
+
     bucket-secret = mkOption {
       default = "hydra_store_bucket";
       type = types.uniq types.str;
@@ -60,33 +62,38 @@ in {
     };
   };
 
-  config = {
-    sops.templates = {
-      hydraSubstituter = {
-        mode = "0444";
-        content = ''
-          extra-substituters = ${cfg.store-uri}
-        '';
+  config = lib.mkMerge [
+    (lib.mkIf (cfg.enable && cfg.credentials-file-path != null) {
+      systemd.services = let
+        mkServiceConfig = name: {${name}.serviceConfig.EnvironmentFile = cfg.credentials-file-path;};
+        serviceConfigs = lib.map mkServiceConfig (["nix-daemon"] ++ cfg.extra-credentialed-services);
+      in
+        lib.mkMerge serviceConfigs;
+    })
+
+    (lib.mkIf cfg.enable {
+      nix.extraOptions = ''
+        !include ${config.sops.templates.hydraSubstituter.path}
+        ${lib.optionalString (cfg.public-key-secret != null) "!include ${config.sops.templates.hydraPublicKey.path}"}
+      '';
+    })
+
+    {
+      sops.templates = {
+        hydraSubstituter = {
+          mode = "0444";
+          content = ''
+            extra-substituters = ${cfg.store-uri}
+          '';
+        };
+
+        hydraPublicKey = lib.mkIf (cfg.public-key-secret != null) {
+          mode = "0444";
+          content = ''
+            extra-trusted-public-keys = ${config.sops.placeholder.${cfg.public-key-secret}}
+          '';
+        };
       };
-
-      hydraPublicKey = lib.mkIf (cfg.public-key-secret != null) {
-        mode = "0444";
-        content = ''
-          extra-trusted-public-keys = ${config.sops.placeholder.${cfg.public-key-secret}}
-        '';
-      };
-    };
-
-    systemd.services = let
-      mkServiceConfig = name: {${name}.serviceConfig.EnvironmentFile = cfg.credentials-file-path;};
-      serviceConfigs = lib.map mkServiceConfig (["nix-daemon"] ++ cfg.extra-credentialed-services);
-      mergedServiceConfigs = lib.mkMerge serviceConfigs;
-    in
-      lib.mkIf (cfg.credentials-file-path != null) mergedServiceConfigs;
-
-    nix.extraOptions = ''
-      !include ${config.sops.templates.hydraSubstituter.path}
-      ${lib.optionalString (cfg.public-key-secret != null) "!include ${config.sops.templates.hydraPublicKey.path}"}
-    '';
-  };
+    }
+  ];
 }

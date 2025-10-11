@@ -15,8 +15,6 @@ in {
     ../../hardware/disko/hamilton.nix
 
     ./cups.nix
-
-    ../../extraNixosModules/hydra-substituter.nix
   ];
 
   sops = {

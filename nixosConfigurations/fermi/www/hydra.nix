@@ -19,8 +19,6 @@
 
   psqlDir = "/var/run/postgresql";
 in {
-  imports = [../../../extraNixosModules/hydra-substituter.nix];
-
   options.aftix.www.hydra = {
     enable = mkEnableOption "hydra";
 
