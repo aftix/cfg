@@ -14,7 +14,6 @@ in {
     ../../extraNixosModules/aftix.nix
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
-    ../../extraNixosModules/openssh.nix
     ../../extraNixosModules/www
   ];
 
@@ -94,6 +93,8 @@ in {
   aftix = let
     domain = config.aftix.statics.primaryDomain;
   in {
+    ssh.enable = true;
+
     attic = {
       enable = true;
       domain = "attic.${domain}";
