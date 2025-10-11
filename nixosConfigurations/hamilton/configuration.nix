@@ -14,7 +14,6 @@ in {
     ../../hardware/hamilton.nix
     ../../hardware/disko/hamilton.nix
 
-    ../../extraNixosModules/bluetooth.nix
     ../../extraNixosModules/cups.nix
     ../../extraNixosModules/display.nix
     ../../extraNixosModules/docker.nix
@@ -89,6 +88,8 @@ in {
 
     # Enable local service to snapshot BTRFS subvolumes to HDD
     backup.btrfs-snapshots = true;
+
+    bluetooth.enable = true;
 
     disko = {
       rootDrive = {

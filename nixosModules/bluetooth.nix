@@ -6,12 +6,19 @@
   lib,
   pkgs,
   ...
-}: let
-  inherit (lib.options) mkOption;
-in {
-  options.aftix.mpris.enable = mkOption {default = true;};
+}: {
+  options.aftix.bluetooth = {
+    enable = lib.mkEnableOption "bluetooth configuration";
 
-  config = {
+    mpris = lib.mkOption {
+      default = true;
+      example = false;
+      description = "whether to enable mpris proxy support";
+      type = lib.types.bool;
+    };
+  };
+
+  config = lib.mkIf config.aftix.bluetooth.enable {
     hardware.bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -23,7 +30,7 @@ in {
       };
     };
 
-    systemd.user.services.mpris-proxy = lib.mkIf config.aftix.mpris.enable {
+    systemd.user.services.mpris-proxy = lib.mkIf config.aftix.bluetooth.mpris {
       description = "Mpris proxy";
       after = ["network.target" "sound.target"];
       wantedBy = ["default.target"];
