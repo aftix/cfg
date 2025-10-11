@@ -14,7 +14,8 @@ in {
     ../../hardware/hamilton.nix
     ../../hardware/disko/hamilton.nix
 
-    ../../extraNixosModules/cups.nix
+    ./cups.nix
+
     ../../extraNixosModules/display.nix
     ../../extraNixosModules/docker.nix
     ../../extraNixosModules/hydra-substituter.nix
