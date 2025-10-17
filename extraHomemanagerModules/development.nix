@@ -52,7 +52,6 @@ in {
           cargo-info
           cargo-nextest
           cargo-supply-chain
-          cargo-update
           cargo-sort
           cargo-udeps
         ]
@@ -111,7 +110,6 @@ in {
           optionals cfg.rust
           [
             "rustup update"
-            "cargo install-update --all"
           ];
 
         neededDirs = with config.home.sessionVariables; (
