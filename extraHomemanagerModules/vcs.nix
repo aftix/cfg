@@ -7,13 +7,6 @@
   config,
   ...
 }: let
-  allowedSigners = pkgs.writeTextFile {
-    name = "allowed-signers";
-    text = ''
-      ${config.aftix.statics.primarySSHPubkey}
-    '';
-  };
-
   better-git-branch = pkgs.writeShellApplication {
     name = "better-git-branch";
     runtimeInputs = with pkgs; [git];
@@ -88,7 +81,7 @@ in {
   programs = {
     git = {
       enable = true;
-      extraConfig = {
+      settings = {
         user = {
           name = "aftix";
           email = "aftix@aftix.xyz";

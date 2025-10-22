@@ -131,7 +131,7 @@ in {
   programs = {
     msmtp.enable = true;
 
-    git.extraConfig.sendemail = {
+    git.settings.sendemail = {
       from = let email = config.accounts.email.accounts.personal; in "${email.realName} <${email.address}>";
       sendmailCmd = "${config.programs.msmtp.package}/bin/msmtp --account=personal";
     };
