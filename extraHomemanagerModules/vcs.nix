@@ -185,7 +185,7 @@ in {
         ];
 
         ui = {
-          pager = "${lib.getExe pkgs.moar} -quit-if-one-screen";
+          pager = "${lib.getExe pkgs.moor} -quit-if-one-screen";
           diff-editor = ":builtin";
           default-command = "log";
           movement.edit = true;

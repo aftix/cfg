@@ -29,7 +29,7 @@
 
     scrollbackPager = {
       tag = "scrollback pager";
-      content = "moar";
+      content = "moor";
       value = config.programs.kitty.settings.scrollback_pager;
     };
 
@@ -107,7 +107,7 @@
     showConfig = {
       tag = "kitty_mod + slash";
       content = "Open the kitty configuration in the pager in a new window";
-      value = "new_window '${lib.getExe pkgs.moar}' -no-linenumbers $HOME/.config/kitty/kitty.conf";
+      value = "new_window '${lib.getExe pkgs.moor}' -no-linenumbers $HOME/.config/kitty/kitty.conf";
     };
 
     opacityMore = {
