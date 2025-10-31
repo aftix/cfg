@@ -13,7 +13,7 @@
     imagemagick
 
     sonata
-    mpc-cli
+    mpc
   ];
 
   services = {
