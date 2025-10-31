@@ -137,9 +137,7 @@ in {
           source-sans-pro
           source-han-mono
           source-han-sans
-          source-han-sans-japanese
           source-han-serif
-          source-han-serif-japanese
         ])
         ++ (with pkgs.nerd-fonts; [
           code-new-roman
