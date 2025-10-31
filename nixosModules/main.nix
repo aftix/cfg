@@ -135,7 +135,7 @@ in {
 
         python3
 
-        (pkgs.runCommandNoCCLocal "sudo-run0-wrapper" {
+        (pkgs.runCommandLocal "sudo-run0-wrapper" {
             nativeBuildInputs = [pkgs.makeWrapper];
           } ''
             mkdir -p "$out/bin"
