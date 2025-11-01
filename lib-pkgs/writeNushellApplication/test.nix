@@ -19,7 +19,7 @@ in {
 
   plugin = pkgs.writeNushellApplication {
     name = "plugin";
-    nuPlugins = [flake.legacyPackages.${pkgs.hostPlatform.system}.nu_plugin_strutils];
+    nuPlugins = [flake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.nu_plugin_strutils];
     text = "'A…C' | str deunicode";
   };
 

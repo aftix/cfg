@@ -50,7 +50,7 @@
     updatable;
 
   systemdInhibit = action:
-    lib.optionalString pkgs.hostPlatform.isLinux
+    lib.optionalString pkgs.stdenv.hostPlatform.isLinux
     /*
     bash
     */
@@ -58,7 +58,7 @@
 in
   pkgs.writeShellApplication {
     name = "update-package";
-    runtimeInputs = [pkgs.jujutsu pkgs.nix-output-monitor pkgs.nix-update] ++ lib.optionals pkgs.hostPlatform.isLinux [pkgs.systemd];
+    runtimeInputs = [pkgs.jujutsu pkgs.nix-output-monitor pkgs.nix-update] ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.systemd];
     text = ''
       declare -a validPaths=(${lib.escapeShellArgs updatable})
       declare -A updateScripts=(${lib.concatStringsSep " " scriptMap})

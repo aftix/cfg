@@ -84,7 +84,7 @@
         else ./checks/${joinedPath}/package.nix;
       newlyCalled = packageSet.callPackage pkgPath {};
       pkg =
-        if packageSet.hostPlatform == pkgs.hostPlatform
+        if packageSet.stdenv.hostPlatform == pkgs.stdenv.hostPlatform
         then lib.getAttrFromPath path pkgsForChecks
         else newlyCalled;
     in

@@ -45,7 +45,7 @@
     configurations;
 
   systemdInhibit = action:
-    lib.optionalString pkgs.hostPlatform.isLinux
+    lib.optionalString pkgs.stdenv.hostPlatform.isLinux
     /*
     bash
     */
@@ -53,7 +53,7 @@
 in
   pkgs.writeShellApplication {
     name = "deploy-configuration";
-    runtimeInputs = [pkgs.nix-output-monitor pkgs.nixos-rebuild-ng] ++ lib.optionals pkgs.hostPlatform.isLinux [pkgs.systemd];
+    runtimeInputs = [pkgs.nix-output-monitor pkgs.nixos-rebuild-ng] ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.systemd];
     text = ''
       if [[ $# -lt 2 ]]; then
         echo 'Error: deploy-configuration needs at least two arguments' >&2

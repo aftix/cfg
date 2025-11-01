@@ -13,11 +13,11 @@ in {
   home = {
     activation.linkLibrewolfCfg = let
       firefoxDir =
-        if pkgs.hostPlatform.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then "${config.home.homeDirectory}/Library/Application Support/Firefox"
         else "${config.home.homeDirectory}/.mozilla/firefox";
       librewolfDir =
-        if pkgs.hostPlatform.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then "${config.home.homeDirectory}/Library/Application Support/librewolf"
         else "${config.home.homeDirectory}/.librewolf";
     in
