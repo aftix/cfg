@@ -35,7 +35,7 @@ in {
     ];
 
     sessionVariables = mkMerge [
-      (mkIf (hasSuffix "-linux" pkgs.system) {
+      (mkIf pkgs.stdenv.hostPlatform.isLinux {
         MOZ_USE_XINPUT2 = "1";
       })
 

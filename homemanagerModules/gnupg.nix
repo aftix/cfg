@@ -32,11 +32,10 @@
     '';
   };
 in {
-  home.packages = with pkgs;
-    mkIf (lib.strings.hasSuffix "-linux" pkgs.system) [
-      pinentry-qt
-      pinentry-custom
-    ];
+  home.packages = mkIf (pkgs.stdenv.hostPlatform.isLinux) [
+    pkgs.pinentry-qt
+    pinentry-custom
+  ];
 
   programs.gpg = {
     enable = true;

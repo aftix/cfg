@@ -8,7 +8,7 @@
   ...
 }: let
   inherit (lib.attrsets) optionalAttrs mergeAttrsList;
-  inherit (lib.strings) hasPrefix optionalString concatMapStringsSep concatLines;
+  inherit (lib.strings) optionalString concatMapStringsSep concatLines;
   shellCfg = config.aftix.shell;
   cfg = shellCfg.nushell;
 in {
@@ -88,7 +88,7 @@ in {
             XDG_STATE_HOME = stateHome;
           });
         in
-          if lib.strings.hasSuffix "-linux" pkgs.system
+          if pkgs.stdenv.hostPlatform.isLinux
           then
             /*
             nu
@@ -116,7 +116,7 @@ in {
 
         homebrewPath = let
           brewPath =
-            if hasPrefix "x86_64" pkgs.system
+            if pkgs.stdenv.hostPlatform.isx86_64
             then "/usr/local/bin/brew"
             else "/opt/homebrew/bin/brew";
         in

@@ -8,7 +8,6 @@
   ...
 }: let
   inherit (lib) mkDefault;
-  inherit (lib.strings) hasSuffix;
   inherit (config.home) homeDirectory;
 in {
   xdg = {
@@ -21,7 +20,7 @@ in {
     stateHome = homeDirectory + "/.local/state";
 
     userDirs = {
-      enable = hasSuffix "-linux" pkgs.system;
+      enable = pkgs.stdenv.hostPlatform.isLinux;
       createDirectories = mkDefault true;
 
       desktop = mkDefault null;
@@ -35,8 +34,8 @@ in {
     };
 
     # Setup xdg default programs
-    mime.enable = hasSuffix "-linux" pkgs.system;
-    mimeApps.enable = hasSuffix "-linux" pkgs.system;
+    mime.enable = pkgs.stdenv.hostPlatform.isLinux;
+    mimeApps.enable = pkgs.stdenv.hostPlatform.isLinux;
   };
 
   aftix.shell.neededDirs = with config.xdg; [

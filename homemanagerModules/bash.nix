@@ -8,7 +8,7 @@
   ...
 }: let
   inherit (lib.attrsets) mergeAttrsList;
-  inherit (lib.strings) escapeShellArg hasPrefix optionalString concatMapStringsSep;
+  inherit (lib.strings) escapeShellArg optionalString concatMapStringsSep;
   inherit (lib.lists) optionals;
   cfg = config.aftix.shell;
 in {
@@ -20,7 +20,7 @@ in {
     bashrcExtra = let
       homebrewPath = let
         brewPath =
-          if hasPrefix "x86_64" pkgs.system
+          if pkgs.stdenv.hostPlatform.isx86_64
           then "/usr/local/bin/brew"
           else "/opt/homebrew/bin/brew";
       in

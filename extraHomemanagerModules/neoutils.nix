@@ -32,7 +32,7 @@ in {
         zstd
         pbzip2
       ]
-      ++ optional (lib.strings.hasSuffix "-linux" pkgs.system)
+      ++ optional pkgs.stdenv.hostPlatform.isLinux
       trashy;
 
     sessionVariables = {

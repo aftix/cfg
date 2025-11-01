@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: EUPL-1.2
 {
   config,
-  lib,
   pkgs,
   stylix,
   ...
@@ -62,8 +61,8 @@
 
       firefox.profileNames = ["aftix"];
 
-      kde.enable = lib.strings.hasSuffix "-linux" pkgs.system;
-      gnome.enable = lib.strings.hasSuffix "-linux" pkgs.system;
+      kde.enable = pkgs.stdenv.hostPlatform.isLinux;
+      gnome.enable = pkgs.stdenv.hostPlatform.isLinux;
     };
   };
 
