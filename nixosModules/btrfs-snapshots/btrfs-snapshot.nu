@@ -40,19 +40,18 @@ def main [
   }
 
   log debug "Ensuring passed drives are BTRFS..."
-  let blockDevices = (blkid | detect columns --no-headers)
-  let localBlockDevice = ($blockDevices | where column0 == $"(realpath $localDrive):")
-  let snapshotBlockDevice = ($blockDevices | where column0 == $"(realpath $snapshotDrive):")
+  let localBlockDevice = (blkid | grep $"^(realpath $localDrive):")
+  let snapshotBlockDevice = (blkid | grep $"^(realpath $snapshotDrive):")
   if ($localBlockDevice | is-empty) {
     error make { msg: $"Path ($localDrive) is not a block device" }
   }
   if ($snapshotBlockDevice | is-empty) {
     error make { msg: $"Path ($snapshotDrive) is not a block device" }
   }
-  if ($localBlockDevice | get column5.0) != 'TYPE="btrfs"' {
+  if not ($localBlockDevice =~ 'TYPE="btrfs"') {
     error make { msg: $"Local drive ($localDrive) is not a BTRFS filesystem"}
   }
-  if ($snapshotBlockDevice | get column5.0) != 'TYPE="btrfs"' {
+  if not ($snapshotBlockDevice =~ 'TYPE="btrfs"') {
     error make { msg: $"Snapshot drive ($snapshotDrive) is not a BTRFS filesystem"}
   }
 
