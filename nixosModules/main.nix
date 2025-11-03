@@ -150,6 +150,7 @@ in {
       nixPath = ["/nix/var/nix/profiles/per-user/root/channels"];
 
       package = pkgs.lixPackageSets.git.lix;
+      checkAllErrors = false;
 
       settings = {
         accept-flake-config = false;
