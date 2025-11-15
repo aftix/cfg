@@ -38,8 +38,15 @@
     (lib.splitString ".")
     (x: x ++ ["passthru" "updateScript"])
     (lib.flip lib.getAttrFromPath packages)
-    lib.tail # remove the script path, only keep args
-    (x: ["-f" "packages.nix"] ++ x)
+    (
+      x: let
+        cmd = lib.head x;
+        args = lib.tail x;
+      in
+        if lib.strings.hasSuffix "nix-update" cmd
+        then [cmd "-f" "packages.nix"] ++ args # Add -f packages.nix as the first two arguments to the nix-update command
+        else x # Do not modify update scripts that are not nix-update
+    )
     (lib.concatStringsSep " ")
     lib.escapeShellArg
   ];
@@ -58,7 +65,9 @@
 in
   pkgs.writeShellApplication {
     name = "update-package";
-    runtimeInputs = [pkgs.jujutsu pkgs.nix-output-monitor pkgs.nix-update] ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.systemd];
+    runtimeInputs =
+      [pkgs.jujutsu pkgs.nix-output-monitor pkgs.nix-update pkgs.coreutils-full pkgs.lixPackageSets.git.lix]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.systemd];
     text = ''
       declare -a validPaths=(${lib.escapeShellArgs updatable})
       declare -A updateScripts=(${lib.concatStringsSep " " scriptMap})
@@ -73,6 +82,26 @@ in
         exit 1
       fi
 
+      # Turn any store path for nix-update into a plain call to the one in PATH
+      replaceUpdateScript() {
+        local path="$1"
+
+        if [[ "$path" =~ ^/nix/store/[[:alnum:]]+-nix-update-[[:digit:].]+/bin/nix-update[[:space:]]*$ ]]; then
+          echo "nix-update"
+        else
+          printf '%s\n' "$path"
+        fi
+      }
+
+      # Fetch any update scripts needed
+      fetchUpdateScript () {
+        local path="$1"
+
+        [[ "$path" =~ ^/nix/store ]] || return 0
+        [[ -f "$path" ]] && return 0
+        nix --extra-experimental-features "nix-command" copy --from "https://cache.nixos.org" "$path"
+      }
+
       updatePackage() {
         local name="$1"
 
@@ -83,7 +112,10 @@ in
 
         # Turn arguments into an array for explicit word splitting
         read -ra updateArgs <<<"''${updateScripts["$name"]}"
-        ${systemdInhibit "Updating"} nix-update "''${updateArgs[@]}" "$name"
+        updateArgs[0]="$(replaceUpdateScript "''${updateArgs[0]}")"
+        fetchUpdateScript "''${updateArgs[0]}"
+
+        ${systemdInhibit "Updating"} "''${updateArgs[@]}" "$name"
         # shellcheck disable=SC2181
         # putting command directly in the if doesn't really word with nix generation
         if [[ "$?" != 0 ]]; then
