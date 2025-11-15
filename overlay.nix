@@ -20,6 +20,10 @@
     # hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
 
     inherit (inputs) nginxBlacklist;
+
+    nixos-rebuild-ng = prev.nixos-rebuild-ng.override {
+      nix = final.lixPackageSets.git.lix;
+    };
   };
 in
   {
