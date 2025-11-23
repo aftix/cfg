@@ -233,6 +233,7 @@ in {
 
       xwayland.enable = true;
       systemd.enable = true;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
 
       settings = {
         "$terminal" = "${terminal}";
