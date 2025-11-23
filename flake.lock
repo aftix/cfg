@@ -327,22 +327,6 @@
         "url": "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz"
       }
     },
-    "hyprland": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1763750925,
-        "narHash": "sha256-Q5IO8VKW2fFHb6Ix6auy6SEMA6NS6pNeuefBai4+PHY=",
-        "owner": "hyprwm",
-        "repo": "hyprland",
-        "rev": "abb2f7ee6fc99c31b6fac05568f29c92b59565df",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hyprwm",
-        "repo": "hyprland",
-        "type": "github"
-      }
-    },
     "lanzaboote": {
       "inputs": {
         "crane": "crane",
@@ -621,7 +605,6 @@
         "home-manager": "home-manager",
         "hostsBlacklist": "hostsBlacklist",
         "hydra": "hydra",
-        "hyprland": "hyprland",
         "lanzaboote": "lanzaboote",
         "nginxBlacklist": "nginxBlacklist",
         "nix-index-database": "nix-index-database",

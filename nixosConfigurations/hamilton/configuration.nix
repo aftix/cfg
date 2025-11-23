@@ -15,6 +15,7 @@ in {
     ../../hardware/disko/hamilton.nix
 
     ./cups.nix
+    ./display.nix
   ];
 
   sops = {

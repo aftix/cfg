@@ -61,11 +61,6 @@
       url = "github:mitchellkrogza/nginx-ultimate-bad-bot-blocker";
       flake = false;
     };
-
-    hyprland = {
-      url = "github:hyprwm/hyprland";
-      flake = false; # Just want the wallpaper image
-    };
   };
 
   outputs = inputs: let

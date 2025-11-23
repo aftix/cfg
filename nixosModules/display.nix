@@ -7,11 +7,8 @@
   config,
   ...
 }: let
-  inherit (lib) mkDefault mkOverride mkForce;
+  inherit (lib) mkDefault mkForce;
   inherit (lib.options) mkOption;
-
-  inherit (config.dep-inject) inputs;
-  hyprlandPkg = config.programs.hyprland.package;
 in {
   options.aftix = {
     display-server = lib.mkEnableOption "enable display server configuration";
@@ -23,17 +20,14 @@ in {
   };
 
   config = let
-    wallpaper = "${inputs.hyprland}/share/hyprland/wall2.png";
+    wallpaper = ../extraHomemanagerModules/wallpaper.jpg;
   in
     lib.mkIf config.aftix.display-server {
       environment.systemPackages = with pkgs; [
         rose-pine-cursor
-        hyprpaper
       ];
 
       programs = {
-        hyprland.enable = mkDefault true;
-
         regreet = {
           enable = true;
           settings = {
@@ -62,54 +56,7 @@ in {
           enable = true;
           settings = {
             terminal.vt = 1;
-
-            initial_session = {
-              command = "${hyprlandPkg}/bin/Hyprland";
-              user = mkOverride 990 "aftix";
-            };
-
-            default_session = let
-              paperCfg = pkgs.writeTextFile {
-                name = "hyprpaper-cfg";
-                text = ''
-                  preload = ${wallpaper}
-                  splash = false
-                  ipc = off
-                  wallpaper = ,${wallpaper}
-                '';
-              };
-
-              greetCfg = pkgs.writeTextFile {
-                name = "greetd-cfg";
-                text = ''
-                  exec-once = ${config.programs.regreet.package}/bin/regreet; ${hyprlandPkg}/bin/hyprctl dispatch exit
-
-                  monitor=,preferred,auto,1
-                  input {
-                    touchpad {
-                      natural_scroll=false
-                    }
-                    kb_layout=us
-                    kb_options=compose:prsc
-                    kb_options=caps:escape
-                    kb_variant=dvorak
-                    numlock_by_default=true
-                    repeat_delay=300
-                    repeat_rate=60
-                    sensitivity=0
-                  }
-                  misc {
-                    force_default_wallpaper=0
-                  }
-                  exec-once = ${lib.getExe pkgs.hyprpaper} --config ${paperCfg}
-
-                  ${config.aftix.greeterCfgExtra}
-                '';
-              };
-            in {
-              command = "${hyprlandPkg}/bin/Hyprland --config ${greetCfg}";
-              user = mkOverride 990 "aftix";
-            };
+            default_session.command = "${lib.getExe pkgs.cage} -s -mextend -- ${lib.getExe config.programs.regreet.package}";
           };
         };
 
