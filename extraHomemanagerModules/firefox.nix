@@ -8,7 +8,7 @@
   ...
 }: let
   inherit (lib) mkDefault mkIf mkMerge;
-  inherit (lib.strings) hasSuffix escapeShellArg;
+  inherit (lib.strings) escapeShellArg;
 in {
   home = {
     activation.linkLibrewolfCfg = let
@@ -45,7 +45,7 @@ in {
 
   programs.firefox = {
     enable = true;
-    package = pkgs.librewolf;
+    package = pkgs.librewolf-bin;
 
     policies = {
       DontCheckDefaultBrowser = true;
