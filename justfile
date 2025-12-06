@@ -13,6 +13,15 @@ updatepkg pkg:
 updatepkgs:
     "$(nix build -f maintainer/update-packages.nix --no-link --print-out-paths)/bin/update-package"
 
+updaterouter:
+    #!/usr/bin/env bash
+    ssh root@192.168.1.1 sh -s <<EOF
+    opkg update
+    opkg list-upgradable | cut -f1 -d' ' > pkgs
+    xargs -r opkg upgrade < pkgs
+    rm pkgs
+    EOF
+
 attic-push path cache="cfg-actions":
     @if [[ -e "{{path}}" ]]; then \
         nix-store --query --requisites --include-outputs "{{path}}" \
