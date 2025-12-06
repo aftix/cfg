@@ -12,15 +12,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_audio_hook";
-  version = "0.108.0-unstable-2025-11-21";
+  version = "0.109.1-unstable-2025-12-05";
 
   src = fetchFromGitHub {
     owner = "FMotalleb";
     repo = pname;
-    rev = "cba4a591128d1870a6cc2e7cd73afe48faa54e8f";
-    sha256 = "sha256-2mbzK30gyorU6nOUY/7cc/ftYtku/CtEpm05JJVL3pI=";
+    rev = "3460019b15d32acd84c2c3efb9a71d6463fb5dfd";
+    sha256 = "sha256-fI27N+aj6hxVV46Qxwb80I+wdhuNCsfcGW80lzJEXEU=";
   };
-  cargoHash = "sha256-os3j1S61HMRXmTZJPR1HAJgUZ8L9ggIlYckC3qGU754=";
+  cargoHash = "sha256-oJWYAcO/6KeG6c8JQPVFWL4DzD61MkfPkqcD5D33D3U=";
 
   nativeBuildInputs = [pkg-config] ++ lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
   buildInputs = [alsa-lib];
