@@ -333,8 +333,9 @@ in {
           };
         };
 
+        remotes.origin.auto-track-bookmarks = "glob:*";
+
         git = {
-          auto-local-bookmark = true;
           colocate = true;
           private-commits = "local_only()";
           sign-on-push = true;
