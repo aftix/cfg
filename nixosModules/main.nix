@@ -266,7 +266,5 @@ in {
       };
     };
     console.font = "Lat2-Terminus16";
-
-    system.rebuild.enableNg = true;
   };
 }

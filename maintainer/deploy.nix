@@ -102,8 +102,8 @@ in
       echo "Build host: ''${buildHost[*]}"
       echo "Sudo argument: ''${sudoArg[*]}"
       echo "Target host: $userHost"
-      # we want to split the unquoted variables into multiple args for nixos-rebuild-ng
+      # we want to split the unquoted variables into multiple args for nixos-rebuild
       # shellcheck disable=SC2086
-      ${systemdInhibit "Deploying"} nixos-rebuild-ng --no-reexec "''${buildHost[@]}" --target-host "$userHost" "''${sudoArg[@]}" --attr "nixosConfigurations.$node" "$mode"
+      ${systemdInhibit "Deploying"} nixos-rebuild --no-reexec "''${buildHost[@]}" --target-host "$userHost" "''${sudoArg[@]}" --attr "nixosConfigurations.$node" "$mode"
     '';
   }

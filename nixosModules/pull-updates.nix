@@ -14,7 +14,7 @@
 
   updateScript = pkgs.writeNushellApplication {
     name = "update-nixos.nu";
-    runtimeInputs = with pkgs; [git nixos-rebuild-ng nix];
+    runtimeInputs = with pkgs; [git nixos-rebuild nix];
     text =
       /*
       nu
@@ -38,7 +38,7 @@
             cd $repoDir
 
             log info "Switching into ${cfg.attrPath}"
-            nixos-rebuild-ng --no-reexec --attr r#'${cfg.attrPath}'# switch
+            nixos-rebuild --no-reexec --attr r#'${cfg.attrPath}'# switch
           } catch {
             log critical "Failed to switch to configuration"
             log info "Cleaning up"
