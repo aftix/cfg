@@ -95,7 +95,7 @@ in {
       ];
 
       search = {
-        default = "Searx";
+        default = "searx";
         force = true;
 
         engines = {
