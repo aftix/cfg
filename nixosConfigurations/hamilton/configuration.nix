@@ -353,6 +353,7 @@ in {
       "**/.cache"
       "**/cache"
       "**/.local/share/cargo/registry"
+      "**/.local/share/Steam"
       "**/*.pyc"
       "**/.local/share/go/pkg/mod"
       "**/pnpm/store"
