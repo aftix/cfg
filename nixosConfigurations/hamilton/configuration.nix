@@ -227,6 +227,15 @@ in {
   documentation.dev.enable = true;
   time.timeZone = "America/Chicago";
 
+  programs.steam = {
+    enable = true;
+
+    dedicatedServer.openFirewall = true;
+    extest.enable = true;
+    extraCompatPackages = [pkgs.proton-ge-bin];
+    protontricks.enable = true;
+  };
+
   services = {
     bpftune.enable = true;
     mullvad-vpn.enable = true;

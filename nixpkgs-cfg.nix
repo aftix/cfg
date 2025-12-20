@@ -19,6 +19,9 @@
           "discord"
           "pay-by-privacy"
           "aspell-dict-en-science"
+
+          "steam"
+          "steam-unwrapped"
         ];
 
       permittedInsecurePackages = [
