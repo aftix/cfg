@@ -73,7 +73,7 @@ in {
 
     services = {
       openssh.settings = {
-        AcceptEnv = "GIT_PROTOCOL";
+        AcceptEnv = ["GIT_PROTOCOL"];
 
         AllowUsers =
           lib.lists.optionals
