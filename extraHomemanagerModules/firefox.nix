@@ -92,6 +92,7 @@ in {
         sponsorblock
         return-youtube-dislikes
         ublock-origin
+        sidebery
       ];
 
       search = {
