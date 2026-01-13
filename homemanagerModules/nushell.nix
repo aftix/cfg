@@ -135,7 +135,7 @@ in {
               | str replace -r '(\w+|");\w*$' '$1'
               | str trim
               | each { split column --number 2 '=' }
-              | each { {$in.0.column1: $in.0.column2} }
+              | each { {$in.0.column0: $in.0.column1} }
               | reduce {|it, acc| $acc | merge $it}
               | load-env
             )
@@ -167,7 +167,7 @@ in {
                       | str replace -r '\w+;\w+$' ""
                       | str trim
                       | each { split column --number 2 '=' }
-                      | each { {$in.0.column1: $in.0.column2} }
+                      | each { {$in.0.column0: $in.0.column1} }
                       | reduce {|it, acc| $acc | merge $it}
                       | load-env
                     )
@@ -383,7 +383,7 @@ in {
               error make { msg: $"($src) is not a file"}
             }
 
-            open $src --raw | lines | split column '=' --number 2 | each { {$in.column1: $in.column2} } | reduce {|it| merge $it} | load-env
+            open $src --raw | lines | split column '=' --number 2 | each { {$in.column0: $in.column1} } | reduce {|it| merge $it} | load-env
           }
 
           ${devInit}
