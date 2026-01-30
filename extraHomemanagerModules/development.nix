@@ -43,7 +43,14 @@ in {
           tokei
         ]
         ++ optionals cfg.nix
-        [statix alejandra nix-output-monitor nvd nurl]
+        [
+          statix
+          alejandra
+          nix-output-monitor
+          npins
+          nvd
+          nurl
+        ]
         ++ optionals cfg.rust
         [
           rusty-man
