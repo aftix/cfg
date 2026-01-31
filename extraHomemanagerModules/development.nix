@@ -56,6 +56,7 @@ in {
           rusty-man
           rustup
           bacon
+          cargo-generate
           cargo-info
           cargo-nextest
           cargo-supply-chain
