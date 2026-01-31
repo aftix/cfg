@@ -438,37 +438,28 @@ in {
             "[workspace 2] discord"
           ];
 
-        windowrulev2 = [
-          "tile,class:(kitty)"
-
-          "suppressevent maximize, class:.*"
-
-          "stayfocused, class:^(Pinentry-)"
-          "float, class:^(Pinentry-)"
-          "noborder, class:^(Pinentry-)"
-          "group barred deny, class:^(Pinentry-)"
-
-          "stayfocused, class:^(Ssh-askpass-fullscreen)"
-          "float, class:^(Ssh-askpass-fullscreen)"
-          "noborder, class:^(Ssh-askpass-fullscreen)"
-          "group barred deny, class:^(Ssh-askpass-fullscreen)"
-
-          "idleinhibit focus, class:(mpv)"
-
-          "group set, class:^(Discord)"
-
-          "tag +filepicker, initialTitle:^(blob:.+)$"
-          "tag +filepicker, initialTitle:^(Save [A-Z][^ ]*)$"
-          "tag +filepicker, initialTitle:^(Open [A-Z][^ ]*)$"
-
-          "float, tag:filepicker"
-          "group barred deny, tag:filepicker"
-
-          "tag +thunderbirdpopup, initialTitle:^(Activity Manager)$"
-          "tag +thunderbirdpopup, initialTitle:^(About .+Thunderbird)$"
-
-          "float, tag:thunderbirdpopup"
-          "group barred deny, tag:thunderbirdpopup"
+        windowrule = [
+          "tile on, match:class kitty"
+          "suppress_event maximize, match:class .*"
+          "stay_focused on, match:class ^(Pinentry-)"
+          "float on, match:class ^(Pinentry-)"
+          "border_size 0, match:class ^(Pinentry-)"
+          "group barred deny, match:class ^(Pinentry-)"
+          "stay_focused on, match:class ^(Ssh-askpass-fullscreen)"
+          "float on, match:class ^(Ssh-askpass-fullscreen)"
+          "border_size 0, match:class ^(Ssh-askpass-fullscreen)"
+          "group barred deny, match:class ^(Ssh-askpass-fullscreen)"
+          "idle_inhibit focus, match:class (mpv)"
+          "group set, match:class ^(Discord)"
+          "tag +filepicker, match:initial_title ^(blob:.+)$"
+          "tag +filepicker, match:initial_title ^(Save [A-Z][^ ]*)$"
+          "tag +filepicker, match:initial_title ^(Open [A-Z][^ ]*)$"
+          "float on, match:tag filepicker"
+          "group barred deny, match:tag filepicker"
+          "tag +thunderbirdpopup, match:initial_title ^(Activity Manager)$"
+          "tag +thunderbirdpopup, match:initial_title ^(About .+Thunderbird)$"
+          "float on, match:tag thunderbirdpopup"
+          "group barred deny, match:tag thunderbirdpopup"
         ];
 
         workspace =
