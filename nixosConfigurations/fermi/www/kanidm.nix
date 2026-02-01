@@ -65,7 +65,7 @@ in {
           enable = true;
           adminPasswordFile = config.sops.secrets.kanidm_admin_password.path;
           idmAdminPasswordFile = config.sops.secrets.kanidm_idmadmin_password.path;
-          instanceUrl = "https://localhost:${builtins.toString cfg.port}";
+          instanceUrl = "https://localhost:${toString cfg.port}";
 
           groups = {
             administrators = {
@@ -123,13 +123,13 @@ in {
         };
         serverSettings = {
           domain = identityService;
-          bindaddress = "[::]:${builtins.toString cfg.port}";
+          bindaddress = "[::]:${toString cfg.port}";
           ldapbindaddress = "0.0.0.0:636";
           online_backup.versions = 7;
           origin = "https://${identityService}";
           tls_key = "/var/lib/acme/${acmeHost}/key.pem";
           tls_chain = "/var/lib/acme/${acmeHost}/fullchain.pem";
-          trust_x_forward_for = true;
+          http_client_address_info.x-forward-for = ["127.0.0.1" "127.0.0.0/8"];
         };
       };
 
@@ -146,7 +146,7 @@ in {
           '';
 
           locations."/" = {
-            proxyPass = "https://localhost:${builtins.toString cfg.port}";
+            proxyPass = "https://localhost:${toString cfg.port}";
             extraConfig = ''
               proxy_http_version 1.1;
               proxy_set_header X-Real-IP $remote_addr;
