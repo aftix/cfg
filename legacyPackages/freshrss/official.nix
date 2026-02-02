@@ -9,13 +9,13 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-official";
-  version = "master-unstable-2025-12-19";
+  version = "master-unstable-2026-02-01";
 
   src = fetchFromGitHub {
     owner = "FreshRSS";
     repo = "Extensions";
-    rev = "40bacef93e6a0120928b230ec7611a5def1b32ab";
-    hash = "sha256-Onl0PkR+L78rMwFGvqoGLtQUqeiGEWlMtuHNyMQQF7g=";
+    rev = "1c834233048f02985035c673aaf1e3af534fcd66";
+    hash = "sha256-Vd27vkERGo1783SVbghQI85qZFro51DppTnctZOsa/Y=";
   };
 
   installPhase = import ./with-subdirs.nix self.src;
