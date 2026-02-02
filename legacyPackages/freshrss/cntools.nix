@@ -9,13 +9,13 @@
 }:
 stdenvNoCC.mkDerivation (self: {
   pname = "freshrss-extensions-cntools";
-  version = "0-unstable-2024-11-14";
+  version = "0-unstable-2026-01-30";
 
   src = fetchFromGitHub {
     owner = "cn-tools";
     repo = "cntools_FreshRssExtensions";
-    rev = "878fb05675a90ddb8ab308b472ad2139d5725de8";
-    hash = "sha256-tKe2Ix+VE56p5zkjfsdU9AiRw3s4jDoJJufYXci6jdY=";
+    rev = "ae40a34e260e0609e49d1a338e42284383e9703b";
+    hash = "sha256-4103QhVRWVe4HYbReX/qPA4KwtHZ5AsAxwpX9hQMwCw=";
   };
 
   installPhase = import ./with-subdirs.nix self.src;
