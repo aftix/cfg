@@ -10,7 +10,7 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_strutils";
-  version = "0.17.0";
+  version = "0.18.0";
 
   src = fetchFromGitHub {
     owner = "fdncred";
