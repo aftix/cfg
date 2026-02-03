@@ -10,15 +10,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_semver";
-  version = "0.11.9";
+  version = "0.11.14";
 
   src = fetchFromGitHub {
     owner = "abusch";
     repo = pname;
     tag = "v${version}";
-    sha256 = "sha256-RdVN2KqEf/5Ir8n6+CUXYZMBb2GFenYNKcudq9Abg9g=";
+    sha256 = "sha256-mfwgwY/iYdMz8Qn6a9zfpMHWHl2n1Q8ClkT+KiCAGyk=";
   };
-  cargoHash = "sha256-/SB1jCZFM56v0bnxwOqds6N3jGuIpM7RtZaqiSk1xdE=";
+  cargoHash = "sha256-5zVqMUC+wg2joo1DKuTUdRwsC5iH7uuyML9SnB2bZCs=";
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
