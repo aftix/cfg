@@ -57,9 +57,24 @@ in {
 
     services = {
       kanidm = {
-        clientSettings.uri = "https://${identityService}";
-        enableClient = true;
-        enableServer = true;
+        client = {
+          enable = true;
+          settings.uri = "https://${identityService}";
+        };
+        server = {
+          enable = true;
+          settings = {
+            domain = identityService;
+            bindaddress = "[::]:${toString cfg.port}";
+            ldapbindaddress = "0.0.0.0:636";
+            online_backup.versions = 7;
+            origin = "https://${identityService}";
+            tls_key = "/var/lib/acme/${acmeHost}/key.pem";
+            tls_chain = "/var/lib/acme/${acmeHost}/fullchain.pem";
+            http_client_address_info.x-forward-for = ["127.0.0.1" "127.0.0.0/8"];
+          };
+        };
+
         package = pkgs.kanidmWithSecretProvisioning_1_8;
         provision = {
           enable = true;
@@ -120,16 +135,6 @@ in {
             originUrl = "https://forge.aftix.xyz/user/oauth2/kanidm/callback";
             scopeMaps.forgejo_users = ["email" "groups" "openid" "profile"];
           };
-        };
-        serverSettings = {
-          domain = identityService;
-          bindaddress = "[::]:${toString cfg.port}";
-          ldapbindaddress = "0.0.0.0:636";
-          online_backup.versions = 7;
-          origin = "https://${identityService}";
-          tls_key = "/var/lib/acme/${acmeHost}/key.pem";
-          tls_chain = "/var/lib/acme/${acmeHost}/fullchain.pem";
-          http_client_address_info.x-forward-for = ["127.0.0.1" "127.0.0.0/8"];
         };
       };
 
