@@ -108,7 +108,7 @@ in {
           links
           ezpriorities
           ezread
-          threepane
+          # threepane
         ];
 
         defaultUser = mkOverride 990 "aftix";
