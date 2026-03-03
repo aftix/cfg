@@ -23,7 +23,7 @@ in {
 
     systemdCapabilities = mkOption {
       readOnly = false;
-      default = builtins.map (s: "~CAP_" + s) [
+      default = map (s: "~CAP_" + s) [
         "SYS_TIME"
         "SYS_PACCT"
         "KILL"
@@ -245,7 +245,7 @@ in {
     documentation = {
       man = {
         enable = true;
-        generateCaches = true;
+        cache.enable = true;
       };
 
       nixos.enable = true;
