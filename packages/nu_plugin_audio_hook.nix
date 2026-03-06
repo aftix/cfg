@@ -12,13 +12,13 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_audio_hook";
-  version = "0.110.0-unstable-2026-02-27";
+  version = "0.110.0-unstable-2026-03-03";
 
   src = fetchFromGitHub {
     owner = "FMotalleb";
     repo = pname;
-    rev = "20822a1287b050b8c093daa38a355a03fb1639b1";
-    sha256 = "sha256-D1f97sgvN4+GR5JR6UWYAh3wcDKhVYvsTjL9tNGsQSg=";
+    rev = "f323497a442d709a93849ac6392976c8fd754182";
+    sha256 = "sha256-4SjwNRH611x2rSLxatBdUVdn/jpBDOSzORqjYssemc4=";
   };
   cargoHash = "sha256-sG/ga+rXm5OZmdNMN0w+1z+OfZWKGNxi/sMsqEvaBs0=";
 
