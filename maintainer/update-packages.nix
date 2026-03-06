@@ -66,7 +66,7 @@ in
   pkgs.writeShellApplication {
     name = "update-package";
     runtimeInputs =
-      [pkgs.jujutsu pkgs.nix-output-monitor pkgs.nix-update pkgs.coreutils-full pkgs.lixPackageSets.git.lix]
+      [pkgs.jujutsu pkgs.nix-output-monitor pkgs.coreutils-full pkgs.lixPackageSets.git.lix]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.systemd];
     text = ''
       declare -a validPaths=(${lib.escapeShellArgs updatable})
@@ -81,17 +81,6 @@ in
         echo 'Error: packages.nix not found' >&2
         exit 1
       fi
-
-      # Turn any store path for nix-update into a plain call to the one in PATH
-      replaceUpdateScript() {
-        local path="$1"
-
-        if [[ "$path" =~ ^/nix/store/[[:alnum:]]+-nix-update-[[:digit:].]+/bin/nix-update[[:space:]]*$ ]]; then
-          echo "nix-update"
-        else
-          printf '%s\n' "$path"
-        fi
-      }
 
       # Fetch any update scripts needed
       fetchUpdateScript () {
@@ -112,7 +101,6 @@ in
 
         # Turn arguments into an array for explicit word splitting
         read -ra updateArgs <<<"''${updateScripts["$name"]}"
-        updateArgs[0]="$(replaceUpdateScript "''${updateArgs[0]}")"
         fetchUpdateScript "''${updateArgs[0]}"
 
         ${systemdInhibit "Updating"} "''${updateArgs[@]}" "$name"
@@ -120,11 +108,13 @@ in
         # putting command directly in the if doesn't really word with nix generation
         if [[ "$?" != 0 ]]; then
           echo "Error: Failed to update package $name" >&2
+          jj abandon --quiet
           return 1
         fi
 
         if [[ "$(jj log -r @ --no-graph -T "if(self.empty(), 1, 0)")" = 1 ]]; then
             echo "No updates found for $name"
+            jj abandon --quiet
             return 1
         fi
 
