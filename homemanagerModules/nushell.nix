@@ -20,7 +20,7 @@ in {
     _docsName = "Extra shell functions and modules for nushell";
     _docsExtraSections =
       {
-        ExtraCommands = mergeTagged (builtins.map ({
+        ExtraCommands = mergeTagged (map ({
             name,
             body,
             docs ? "",
@@ -33,7 +33,7 @@ in {
               else docs;
           })
           (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.extraCommands));
-        Plugins = mergeTagged (builtins.map (pkg: {
+        Plugins = mergeTagged (map (pkg: {
             tag = "${lib.strings.getName pkg} (${lib.strings.getVersion pkg})";
             content = let
               desc =
@@ -101,7 +101,7 @@ in {
             ''
           else base;
 
-        addPlugins = concatLines (builtins.map (
+        addPlugins = concatLines (map (
             pkg:
             /*
             nu
@@ -140,15 +140,15 @@ in {
               | load-env
             )
           '';
-        addedPaths = concatLines (builtins.map (p:
+        addedPaths = concatLines (map (p:
           /*
           nu
           */
           ''
-            $env.PATH = ($env.PATH | append r#'${p}'#)
+            $env.PATH = ($env.PATH | prepend r#'${p}'#)
           '')
-        config.home.sessionPath);
-        sourceExtraEnv = concatLines (builtins.map (
+        (lib.lists.reverseList config.home.sessionPath));
+        sourceExtraEnv = concatLines (map (
             path: let
               p = "r#'${path}'#";
             in
@@ -319,7 +319,7 @@ in {
             alias kd = make DEBUG=YES -j(nproc)
           '';
 
-        aliases = concatLines (builtins.map ({
+        aliases = concatLines (map ({
               name,
               command,
               external ? false,
@@ -337,7 +337,7 @@ in {
               !builtins.elem name ["ls" "ll" "la" "mv" "du" "cp" "mkd"])
           shellCfg.aliases));
 
-        extraCommands = concatLines (builtins.map ({
+        extraCommands = concatLines (map ({
             name,
             arguments ? "",
             body,
@@ -409,7 +409,7 @@ in {
 
       "nushell/jump.nu".source = ./_external.nushell/jump.nu;
     }
-    // mergeAttrsList (builtins.map ({
+    // mergeAttrsList (map ({
       name,
       source,
       enable ? true,
