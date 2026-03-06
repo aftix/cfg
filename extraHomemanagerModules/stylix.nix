@@ -63,6 +63,7 @@
 
       kde.enable = pkgs.stdenv.hostPlatform.isLinux;
       gnome.enable = pkgs.stdenv.hostPlatform.isLinux;
+      gtksourceview.enable = false;
     };
   };
 
