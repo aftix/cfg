@@ -86,7 +86,7 @@ in {
           name = "aftix";
           email = "aftix@aftix.xyz";
           signingKey = "${config.home.homeDirectory}/.ssh/id_ed25519_sk";
-          gpgsign = true;
+          gpgsign = false;
         };
 
         gpg.format = "ssh";
@@ -338,8 +338,9 @@ in {
         git = {
           colocate = true;
           private-commits = "local_only()";
-          sign-on-push = true;
+          sign-on-push = false;
         };
+        signing.backend = "none";
 
         snapshot.auto-update-stale = true;
 
