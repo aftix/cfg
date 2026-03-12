@@ -120,7 +120,7 @@ in (
                       {}
                     else
                       throw ''
-                        aftixLib.applyOnDirectoryRecursive: unsupported file type ${type} at path ${builtins.toString path}
+                        aftixLib.applyOnDirectoryRecursive: unsupported file type ${type} at path ${toString path}
                       ''
                 ) (builtins.readDir directory);
 
@@ -152,10 +152,10 @@ in (
             self.applyOnDirectoryRecursive {
               inherit directory;
               toApply = path: let
-                base = builtins.baseNameOf path;
+                base = baseNameOf path;
               in
                 if base == "default.nix"
-                then builtins.dirOf path
+                then dirOf path
                 else path;
               flatten = true;
             };
@@ -327,46 +327,6 @@ in (
                       };
                     }
                   ];
-              });
-
-          # Imported here unlike other lib/ files because makeInputsExtensible.nix must
-          # be importable by flake-compat/inputs.nix
-          makeInputsExtensible = import ./lib/makeInputsExtensible.nix lib;
-
-          # Based off of lib.makeExtensibleWithCustomname
-          # from https://github.com/NixOS/nixpkgs/blob/2ba42c60e00e2fb01dac1917439c55e199661f8c/lib/fixed-points.nix#L444:C3
-          # MIT Licensed
-          # Allows the inputs to be overriden by downstream code
-          makeFlakeInput = flake: inps:
-            lib.fix' (
-              rflake:
-                flake
-                // {
-                  inputs = self.makeInputsExtensible (_: inps);
-                  overrideInputs = f: self.makeFlakeInput rflake (rflake.inputs.overrideInputs f);
-                }
-            );
-
-          # From a source directory, get flake.nix and apply the outputs function
-          # to get a fixed point. Also makes the inputs overridable
-          getFlakeOutputs = flakeNix: flakeInputs: let
-            flakeImport = import "${flakeNix}/flake.nix";
-            flake =
-              lib.fix (flakeSelf: flakeImport.outputs (flakeInputs // {self = flakeSelf;}))
-              // {
-                outPath = builtins.toString flakeNix;
-                inputs = self.makeInputsExtensible flakeInputs;
-              };
-          in
-            self.makeFlakeInput flake flakeInputs;
-
-          # Extract the self attribute from inputs fixed point and turn it into a flake output
-          makeFlake = inps:
-            lib.fix' (flake:
-              inps.self
-              // {
-                inputs = builtins.removeAttrs inps ["self"];
-                overrideInputs = f: self.makeFlake (flake.inputs.overrideInputs f);
               });
         }
 

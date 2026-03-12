@@ -170,6 +170,15 @@ in {
         inherit (cfg) user group;
         enableReload = true;
 
+        statusPage = true;
+        recommendedBrotliSettings = true;
+        recommendedGzipSettings = true;
+        recommendedOptimisation = true;
+        recommendedProxySettings = true;
+        recommendedTlsSettings = true;
+
+        commonHttpConfig = "access_log syslog:server=unix:/dev/log;";
+
         additionalModules = with pkgs.nginxModules; [fancyindex];
 
         appendHttpConfig = ''
@@ -191,7 +200,7 @@ in {
         '';
         authentication = lib.mkOverride 60 ''
           #type database user auth-method [auth-options]
-          ${concatLines (builtins.map toPsqlAuth cfg.extraPsqlAuthentication)}
+          ${concatLines (map toPsqlAuth cfg.extraPsqlAuthentication)}
           local sameuser all peer map=superuser_map
         '';
         settings.unix_socket_directories = "/var/run/postgresql";

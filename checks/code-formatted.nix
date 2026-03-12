@@ -10,7 +10,7 @@
 lib.recursiveUpdate (runCommand "code-formatted" {
     src = ../.;
   } ''
-    ${lib.getExe alejandra} -c "$src"
+    ${lib.getExe alejandra} -c "$src" -e "$src/npins"
     touch "$out"
   '') {
   meta = {

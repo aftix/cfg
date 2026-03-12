@@ -17,9 +17,11 @@
     ".reuse"
     "LICENSES"
     "secrets"
+    "npins"
   ];
 
   excluded = [
+    "npins"
     "LICENSE"
     "LICENSES"
     ".gitignore"

@@ -1,3 +1,6 @@
+# SPDX-FileType: SOURCE
+# SPDX-FileCopyrightText: (C) 2026 aftix
+# SPDX-License-Identifier: EUPL-1.2
 {
   config,
   lib,

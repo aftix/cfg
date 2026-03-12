@@ -1,0 +1,170 @@
+{
+  "pins": {
+    "disko": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "disko"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "7b9f7f88ab3b339f8142dc246445abb3c370d3d3",
+      "url": "https://github.com/nix-community/disko/archive/7b9f7f88ab3b339f8142dc246445abb3c370d3d3.tar.gz",
+      "hash": "sha256-khlHllTsovXgT2GZ0WxT4+RvuMjNeR5OW0UYeEHPYQo="
+    },
+    "home-manager": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "home-manager"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "4aeef1941f862fe3a70d1b8264b4e289358c2325",
+      "url": "https://github.com/nix-community/home-manager/archive/4aeef1941f862fe3a70d1b8264b4e289358c2325.tar.gz",
+      "hash": "sha256-1V+wRrZD9Sw12AQBUWk9CR+XhDZQ8q6yBE0S3Wjbd1M="
+    },
+    "hostsBlacklist": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "Ultimate-Hosts-Blacklist",
+        "repo": "Ultimate.Hosts.Blacklist"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "b3f321d3ddc1781fddfb2bf9a2b01c9d34908b17",
+      "url": "https://github.com/Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist/archive/b3f321d3ddc1781fddfb2bf9a2b01c9d34908b17.tar.gz",
+      "hash": "sha256-F4ruaVnLpwf3WIrGkuw4mOYjpAEXf5uZ7KD1JWMXExk="
+    },
+    "hydra": {
+      "type": "Tarball",
+      "url": "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz",
+      "locked_url": "https://git.lix.systems/api/v1/repos/lix-project/hydra/archive/48ba16a317c54ecdf08f0f823bd718fd0b728eee.tar.gz?rev=48ba16a317c54ecdf08f0f823bd718fd0b728eee",
+      "hash": "sha256-k5tXFGVZwRAyCIDi7tN44UPRmFI6Vm4tKeWY/egO5J0="
+    },
+    "lanzaboote": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "lanzaboote"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "v1.0.0",
+      "revision": "2fe211d9c0e2320ce23dc995a3f93666ca149d9a",
+      "url": "https://api.github.com/repos/nix-community/lanzaboote/tarball/refs/tags/v1.0.0",
+      "hash": "sha256-RJmgVDzjRI18BWVogG6wpsl1UCuV6ui8qr4DJ1LfWZ8="
+    },
+    "nginxBlacklist": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "mitchellkrogza",
+        "repo": "nginx-ultimate-bad-bot-blocker"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "1f4683b8a0915899564fa1b572b25b0d86ffc751",
+      "url": "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/archive/1f4683b8a0915899564fa1b572b25b0d86ffc751.tar.gz",
+      "hash": "sha256-m2XIAUCaQdgfeL/JOgZQuICTDCsq+XFTB9eczHfaXjA="
+    },
+    "nix-index-database": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "nix-index-database"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "1c1d8ea87b047788fd7567adf531418c5da321ec",
+      "url": "https://github.com/nix-community/nix-index-database/archive/1c1d8ea87b047788fd7567adf531418c5da321ec.tar.gz",
+      "hash": "sha256-PMt48sEQ8cgCeljQ9I/32uoBq/8t8y+7W/nAZhf72TQ="
+    },
+    "nixpkgs": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "NixOS",
+        "repo": "nixpkgs"
+      },
+      "branch": "nixos-unstable",
+      "submodules": false,
+      "revision": "62dc67aa6a52b4364dd75994ec00b51fbf474e50",
+      "url": "https://github.com/NixOS/nixpkgs/archive/62dc67aa6a52b4364dd75994ec00b51fbf474e50.tar.gz",
+      "hash": "sha256-FIqHByVqxCprNjor1NqF80F2QQoiiyqanNNefdlvOg4="
+    },
+    "nur": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "NUR"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "e4a86a2faa20b9f3a25f2224a827946fde130977",
+      "url": "https://github.com/nix-community/NUR/archive/e4a86a2faa20b9f3a25f2224a827946fde130977.tar.gz",
+      "hash": "sha256-7aMYG/8/zL1dlJwMk+q1s0q3vL/zcxDgAG+NaxFpHrM="
+    },
+    "preservation": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "willibutz",
+        "repo": "preservation"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "93416f4614ad2dfed5b0dcf12f27e57d27a5ab11",
+      "url": "https://github.com/willibutz/preservation/archive/93416f4614ad2dfed5b0dcf12f27e57d27a5ab11.tar.gz",
+      "hash": "sha256-mMI9IanU+Xw+pVogD2oT0I2kTmvz2Un/Apc5+CwUpEY="
+    },
+    "sops-nix": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "Mic92",
+        "repo": "sops-nix"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "d1ff3b1034d5bab5d7d8086a7803c5a5968cd784",
+      "url": "https://github.com/Mic92/sops-nix/archive/d1ff3b1034d5bab5d7d8086a7803c5a5968cd784.tar.gz",
+      "hash": "sha256-M3zEnq9OElB7zqc+mjgPlByPm1O5t2fbUrH3t/Hm5Ag="
+    },
+    "srvos": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "numtide",
+        "repo": "srvos"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "7f92c2bcbeb42ce87770a7565f0e6f92c8134354",
+      "url": "https://github.com/numtide/srvos/archive/7f92c2bcbeb42ce87770a7565f0e6f92c8134354.tar.gz",
+      "hash": "sha256-ro+i3wNoD2p5FloGGlkCzdmzgBDeq2LJwaIpaI9Dk7Q="
+    },
+    "stylix": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "stylix"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "c4b8e80a1020e09a1f081ad0f98ce804a6e85acf",
+      "url": "https://github.com/nix-community/stylix/archive/c4b8e80a1020e09a1f081ad0f98ce804a6e85acf.tar.gz",
+      "hash": "sha256-pAtzPsgHRKw/2Kv8HgAjSJg450FDldHPWsP3AKG/Xj0="
+    }
+  },
+  "version": 7
+}

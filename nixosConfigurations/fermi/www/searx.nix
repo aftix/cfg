@@ -100,6 +100,7 @@ in {
     services = {
       nginx = {
         enable = true;
+        recommendedUwsgiSettings = true;
 
         virtualHosts =
           {

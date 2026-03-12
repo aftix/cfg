@@ -9,6 +9,5 @@
   };
   extraMods = [
     inputs.srvos.nixosModules.server
-    inputs.srvos.nixosModules.mixins-nginx
   ];
 }
