@@ -4,7 +4,7 @@
 {
   pkgs,
   config,
-  osConfig,
+  nixosConfig,
   lib,
   ...
 }: let
@@ -17,10 +17,10 @@
   hyprPackage = config.wayland.windowManager.hyprland.package;
 
   volumeCmds = let
-    osd = lib.getExe' osConfig.aftix.swayosd.package "swayosd-client";
+    osd = lib.getExe' nixosConfig.aftix.swayosd.package "swayosd-client";
     pw = lib.getExe pkgs.pw-volume;
   in
-    if osConfig.aftix.swayosd.enable
+    if nixosConfig.aftix.swayosd.enable
     then {
       raise = "${osd} --output-volume raise";
       raiseMid = "${osd} --output-volume +3";
@@ -68,10 +68,10 @@
 
   mpv-play-clipboard = let
     vpnEnable =
-      osConfig.services.mullvad-vpn.enable;
+      nixosConfig.services.mullvad-vpn.enable;
     vpnExclude = lib.strings.optionalString vpnEnable "mullvad-exclude";
     excludeRegexs = ["youtu\\.?be"];
-    excludeChecks = lib.strings.concatLines (builtins.map (regex: ''
+    excludeChecks = lib.strings.concatLines (map (regex: ''
         if [[ "$URL" =~ ${regex} ]]; then
           ${vpnExclude} mpv --no-resume-playback "$URL" || notify-send --app-name mpv "mpv" "Failed to play $URL"
           exit 0
@@ -396,7 +396,7 @@ in {
           # Workspace controls
           builtins.concatLists (builtins.genList (
               y: let
-                x = builtins.toString y;
+                x = toString y;
               in [
                 "$mainMod, ${x}, workspace, ${x}"
                 "$mainMod SHIFT, ${x}, movetoworkspace, ${x}"

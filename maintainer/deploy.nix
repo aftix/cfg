@@ -6,11 +6,16 @@
   myLib ? import ../lib.nix {inherit inputs;},
   pkgsCfg ? import ../nixpkgs-cfg.nix {inherit inputs myLib;},
   system ? builtins.currentSystem or "unknown-system",
+  crossSystem ? null,
   extraSpecialArgs ? import ../extraSpecialArgs.nix {inherit inputs;},
-  pkgs ? (import inputs.nixpkgs {
-    inherit system;
-    inherit (pkgsCfg.nixpkgs) config overlays;
-  }),
+  pkgs ?
+    import inputs.nixpkgs (
+      inputs.nixpkgs.lib.recursiveUpdate {
+        inherit system;
+        inherit (pkgsCfg.nixpkgs) config overlays;
+      }
+      (inputs.nixpkgs.lib.optionalAttrs (crossSystem != null) {inherit crossSystem;})
+    ),
   ...
 }: let
   inherit (pkgs) lib;

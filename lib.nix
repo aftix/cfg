@@ -226,7 +226,7 @@ in (
             home-manager = {
               lib,
               pkgs,
-              osConfig,
+              nixosConfig,
               ...
             }: {
               options = {
@@ -248,8 +248,8 @@ in (
                   # Do not recurse into attrsets that are option definitions
                   (attrs: !(attrs ? "_type" && attrs._type == "option"))
                   (optPath: _:
-                    if hasAttrByPath optPath osConfig
-                    then getAttrFromPath optPath osConfig
+                    if hasAttrByPath optPath nixosConfig
+                    then getAttrFromPath optPath nixosConfig
                     else null)
                   homeOptions);
             };

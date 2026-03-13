@@ -54,31 +54,28 @@ buildpkgs:
 build host=hostname *FLAGS="":
     # Build configuration
     @systemd-inhibit --mode=block --why="Building configuration {{host}}" --who="$(pwd)/justfile" \
-        nom build -f . "nixosConfigurations.{{host}}.config.system.build.toplevel" --no-link --print-out-paths {{FLAGS}}
+        nom build -f nixosConfigurations.nix "{{host}}.config.system.build.toplevel" --no-link --print-out-paths {{FLAGS}}
 
 switch *FLAGS:
-    # Build configuration
-    @systemd-inhibit --mode=block --why="Building configuration {{hostname}}" --who="$(pwd)/justfile" \
-        nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
-    # Run nixos-rebuild
+    # Run nixos-rebuild, using nom to build configuration
     @systemd-inhibit --mode=block --why="Switching to new configuration" --who="$(pwd)/justfile" \
-        nixos-rebuild --attr "nixosConfigurations.{{hostname}}" --sudo switch
+        nixos-rebuild --no-reexec \
+        --store-path "$(nom build --no-link --print-out-paths -f nixosConfigurations.nix "{{hostname}}.config.system.build.toplevel" {{FLAGS}})" \
+        --sudo switch
 
 boot *FLAGS:
-    # Build configuration
-    @systemd-inhibit --mode=block --why="Building configuration {{hostname}}" --who="$(pwd)/justfile" \
-        nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
-    # Run nixos-rebuild
+    # Run nixos-rebuild, using nom to build configuration
     @systemd-inhibit --mode=block --why="Switching boot menu default" --who="$(pwd)/justfile" \
-        nixos-rebuild --attr "nixosConfigurations.{{hostname}}" --sudo boot
+        nixos-rebuild --no-reexec \
+        --store-path "$(nom build --no-link --print-out-paths -f nixosConfigurations.nix "{{hostname}}.config.system.build.toplevel" {{FLAGS}})" \
+        --sudo boot
 
 test *FLAGS:
-    # Build configuration
-    @systemd-inhibit --mode=block --why="Building configuration {{hostname}}" --who="$(pwd)/justfile" \
-        nom build -f . "nixosConfigurations.{{hostname}}.config.system.build.toplevel" --no-link {{FLAGS}}
-    # Run nixos-rebuild
+    # Run nixos-rebuild, using nom to build configuration
     @systemd-inhibit --mode=block --why="Activating new configuration" --who="$(pwd)/justfile" \
-        nixos-rebuild --attr "nixosConfigurations.{{hostname}}" --sudo test
+        nixos-rebuild --no-reexec \
+        --store-path "$(nom build --no-link --print-out-paths -f nixosConfigurations.nix "{{hostname}}.config.system.build.toplevel" {{FLAGS}})" \
+        --sudo test
 
 deploy node="fermi" mode="switch" *FLAGS="":
     @"$(nix build -f maintainer/deploy.nix --no-link --print-out-paths)/bin/deploy-configuration" {{node}} {{mode}} {{FLAGS}}

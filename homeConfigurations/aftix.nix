@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 {
   config,
-  osConfig,
+  nixosConfig,
   pkgs,
   lib,
   ...
@@ -133,7 +133,7 @@ in {
     docs = {
       enable = true;
       prefix = let
-        host = osConfig.networking.hostName or "";
+        host = nixosConfig.networking.hostName or "";
       in
         if host == ""
         then "nixos"

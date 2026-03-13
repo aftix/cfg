@@ -47,12 +47,12 @@ let
       in
         pkgs.alejandra or pkgs.nix-fmt);
 
-      legacyPackages = myLib.forEachSystem (system:
+      packages = myLib.forEachSystem (system:
         import ./packages.nix {
           inherit inputs pkgsCfg system;
         });
 
-      devShells = myLib.forEachSystem (system: {
+      shells = myLib.forEachSystem (system: {
         default = import ./shell.nix {
           inherit system pkgsCfg inputs;
         };

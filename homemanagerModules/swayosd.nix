@@ -2,11 +2,11 @@
 # SPDX-FileCopyrightText: (C) 2025 aftix
 # SPDX-License-Identifier: EUPL-1.2
 {
-  osConfig,
+  nixosConfig,
   lib,
   ...
 }: let
-  cfg = osConfig.aftix.swayosd;
+  cfg = nixosConfig.aftix.swayosd;
 in {
   config = lib.mkIf cfg.enable {
     home.packages = [cfg.package];

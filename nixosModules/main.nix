@@ -11,12 +11,12 @@
   inherit (lib.options) mkOption mkEnableOption;
 in {
   options.aftix = {
-    flake = mkOption {
+    config-source = mkOption {
       default = lib.fileset.toSource {
         root = ../.;
         fileset = lib.fileset.gitTracked ../.;
       };
-      description = "Location of NixOS configuration flake";
+      description = "Location of NixOS configuration";
     };
 
     uefi = mkEnableOption "uefi";
@@ -168,31 +168,36 @@ in {
     };
 
     # Set the host-specific things in the nixd configuration
-    aftix.development.nixdConfig.options = lib.mkIf ((config.aftix.flake or "") != "") {
-      nixos.expr = "(import \"${config.aftix.flake}\").nixosConfigurations.${config.networking.hostName}.options";
+    aftix.development.nixdConfig.options = lib.mkIf ((config.aftix.config-source or "") != "") {
+      nixos.expr = "(import \"${config.aftix.config-source}/nixosConfigurations.nix\").${config.networking.hostName}.options";
       home-manager.expr =
         /*
         nix
         */
         ''
           let
-            flake = import "${config.aftix.flake}";
-            nixosCfg = flake.nixosConfigurations.${config.networking.hostName}.config;
-            pkgs = import <nixpkgs> {};
+            inputs = import "${config.aftix.config-source}/inputs.nix";
+            extraSpecialArgs = import "${config.aftix.config-source}/extraSpecialArgs.nix" {inherit inputs;};
+            nixosConfigurations = import "${config.aftix.config-source}/nixosConfigurations.nix" {inherit inputs extraSpecialArgs;};
+            myLib = import "${config.aftix.config-source}/lib.nix" {inherit inputs;};
+
+            nixosCfg = nixosConfigurations.${config.networking.hostName}.config;
+            inherit (nixosConfigurations.${config.networking.hostName}) pkgs;
             inherit (pkgs) lib;
-            extraSpecialArgs = flake.extra.extraSpecialArgs // {osConfig = nixosCfg;};
-            myLib = flake.lib;
-            mkHmCfg = flake.inputs.home-manager.lib.homeManagerConfiguration;
+
+            mkHmCfg = inputs.home-manager.lib.homeManagerConfiguration;
             dep-injects = myLib.dependencyInjects {};
+
             modules = [
-              flake.homemanagerModules.default
+              (import "${config.aftix.config-source}/homemanagerModules.nix" {inherit inputs myLib;}).default
               (dep-injects.home-manager or {})
               ({pkgs, ...}: { nix.package = pkgs.nix;})
-              (import "${config.aftix.flake}/homeConfigurations/aftix.nix")
+              (import "${config.aftix.config-source}/homeConfigurations/aftix.nix")
             ];
           in
             (mkHmCfg {
-              inherit pkgs lib extraSpecialArgs modules;
+              inherit pkgs lib modules;
+              extraSpecialArgs = extraSpecialArgs // {nixosConfig = nixosCfg;};
             }).options
         '';
     };
