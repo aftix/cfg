@@ -5,7 +5,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
-  nix-update-script,
+  lix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_desktop_notifications";
@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-rg9K6v9TDrwQdSWdzLM6F61u0jLbo9Y7SQQ8HJ9iUzw=";
 
-  passthru.updateScript = nix-update-script {
+  passthru.updateScript = lix-update-script {
     extraArgs = ["--version" "branch"];
   };
 

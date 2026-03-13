@@ -4,7 +4,7 @@
 {
   stdenvNoCC,
   fetchFromGitLab,
-  nix-update-script,
+  lix-update-script,
   lib,
 }:
 stdenvNoCC.mkDerivation (self: {
@@ -21,7 +21,7 @@ stdenvNoCC.mkDerivation (self: {
 
   installPhase = import ./toplevel-ext.nix self.src "threepanesview";
 
-  passthru.updateScript = nix-update-script {
+  passthru.updateScript = lix-update-script {
     extraArgs = ["--version" "branch"];
   };
 

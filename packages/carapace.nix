@@ -9,7 +9,7 @@
   fetchFromGitHub,
   testers,
   carapace,
-  nix-update-script,
+  lix-update-script,
 }:
 buildGoModule (finalAttrs: {
   pname = "carapace";
@@ -41,7 +41,7 @@ buildGoModule (finalAttrs: {
 
   passthru = {
     tests.version = testers.testVersion {package = carapace;};
-    updateScript = nix-update-script {
+    updateScript = lix-update-script {
       extraArgs = ["--version" "branch"];
     };
   };

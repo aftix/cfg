@@ -8,7 +8,7 @@
   fetchFromGitHub,
   findutils,
   protobuf_29,
-  nix-update-script,
+  lix-update-script,
 }: let
   owner = "Benjamin-Loison";
 in
@@ -72,7 +72,7 @@ in
       runHook postInstall
     '';
 
-    passthru.updateScript = nix-update-script {
+    passthru.updateScript = lix-update-script {
       extraArgs = ["--version" "branch"];
     };
 

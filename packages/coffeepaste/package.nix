@@ -5,7 +5,7 @@
   rustPlatform,
   fetchzip,
   lib,
-  nix-update-script,
+  lix-update-script,
   pkg-config,
   glib,
   gexiv2,
@@ -24,7 +24,7 @@ rustPlatform.buildRustPackage rec {
   nativeBuildInputs = [pkg-config];
 
   patches = [./change-url-replace.patch];
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = lix-update-script {};
 
   meta = {
     description = "A neat pastebin";

@@ -6,7 +6,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
-  nix-update-script,
+  lix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_strutils";
@@ -22,7 +22,7 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = lib.optionals stdenv.cc.isClang [rustPlatform.bindgenHook];
 
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = lix-update-script {};
 
   meta = {
     description = "Nushell plugin that implements some string utilities that are not included in nushell.";

@@ -24,6 +24,9 @@
     nixos-rebuild-ng = prev.nixos-rebuild-ng.override {
       nix = final.lixPackageSets.git.lix;
     };
+
+    lix-update = final.lixPackageSets.git.nix-update;
+    lix-update-script = final.nix-update-script.override {nix-update = final.lix-update;};
   };
 in
   {

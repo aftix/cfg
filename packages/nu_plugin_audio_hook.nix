@@ -8,7 +8,7 @@
   fetchFromGitHub,
   pkg-config,
   alsa-lib,
-  nix-update-script,
+  lix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_audio_hook";
@@ -26,7 +26,7 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [alsa-lib];
   buildFeatures = ["all-decoders"];
 
-  passthru.updateScript = nix-update-script {
+  passthru.updateScript = lix-update-script {
     extraArgs = ["--version" "branch"];
   };
 

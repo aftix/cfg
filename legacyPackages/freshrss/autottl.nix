@@ -4,7 +4,7 @@
 {
   stdenvNoCC,
   fetchFromGitHub,
-  nix-update-script,
+  lix-update-script,
   lib,
 }:
 stdenvNoCC.mkDerivation (self: {
@@ -20,7 +20,7 @@ stdenvNoCC.mkDerivation (self: {
 
   installPhase = import ./toplevel-ext.nix self.src "AutoTTL";
 
-  passthru.updateScript = nix-update-script {};
+  passthru.updateScript = lix-update-script {};
 
   meta = {
     homepage = "https://github.com/mgnsk/FreshRSS-AutoTTL";
