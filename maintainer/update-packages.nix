@@ -124,7 +124,7 @@ in
         # putting command directly in the if doesn't really word with nix generation
         if [[ "$?" = 0 ]]; then
           echo "Package $name built"
-          jj ci -m "chore(legacyPackages.$name): update package using passthru.updateScript" --quiet
+          jj ci -m "chore(packages.$name): update package using passthru.updateScript" --quiet
           return 0
         else
           echo "Package $name not built, abandoning change" >&2

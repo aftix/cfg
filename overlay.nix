@@ -14,7 +14,7 @@
       directory = ./packages;
     })
     // {
-      freshrssExts = recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
+      # freshrssExts = recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
     };
   aftixOverlayedPkgs = {
     # hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
