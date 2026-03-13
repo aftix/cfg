@@ -4,7 +4,7 @@
 {
   runCommand,
   lib,
-  hostPlatform,
+  stdenv,
   reuse,
 }:
 lib.recursiveUpdate (runCommand "reuse-lint" {
@@ -18,6 +18,6 @@ lib.recursiveUpdate (runCommand "reuse-lint" {
   '') {
   meta = {
     description = "Check that licensing information passes REUSE's standards";
-    hydraPlatforms = [hostPlatform.system]; # Only check on the main platform
+    hydraPlatforms = [stdenv.hostPlatform.system]; # Only check on the main platform
   };
 }

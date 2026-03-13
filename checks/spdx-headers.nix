@@ -4,7 +4,7 @@
 {
   runCommand,
   lib,
-  hostPlatform,
+  stdenv,
   findutils,
   util-linux,
 }: let
@@ -77,6 +77,6 @@ in
     '') {
     meta = {
       description = "Check that source files contain SPDX headers";
-      hydraPlatforms = [hostPlatform.system]; # Only check on the main platform
+      hydraPlatforms = [stdenv.hostPlatform.system]; # Only check on the main platform
     };
   }

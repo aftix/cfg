@@ -4,7 +4,7 @@
 {
   runCommand,
   lib,
-  hostPlatform,
+  stdenv,
   alejandra,
 }:
 lib.recursiveUpdate (runCommand "code-formatted" {
@@ -15,6 +15,6 @@ lib.recursiveUpdate (runCommand "code-formatted" {
   '') {
   meta = {
     description = "Check that source is formatted with alejandra";
-    hydraPlatforms = [hostPlatform.system]; # Only check on the main platform
+    hydraPlatforms = [stdenv.hostPlatform.system]; # Only check on the main platform
   };
 }
