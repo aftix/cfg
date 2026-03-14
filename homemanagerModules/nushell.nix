@@ -218,8 +218,11 @@ in {
 
           # Setup the PATH environmental variable
           $env.PATH = ($env.PATH | split row (char esep))
-          ${homebrewPath}
-          ${addedPaths}
+          # Do not prepend to path if the shell is starting as a nix-shell
+          if $env.IN_NIX_SHELL? == null {
+            ${homebrewPath}
+            ${addedPaths}
+          }
 
           # Set the xdg base directory variables
           ${setXdgBases}
