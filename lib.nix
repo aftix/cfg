@@ -199,7 +199,7 @@ in (
           # and returns the actual lib function
           libpkgsOverlay = final: prev:
             self.applyOnDirectoryRecursive {
-              directory = ./lib-pkgs;
+              directory = ./lib/lib-pkgs;
               defaultFilename = "package.nix";
               toApply = path: import path final;
             };
