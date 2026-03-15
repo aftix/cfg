@@ -2,8 +2,8 @@
 # SPDX-FileCopyrightText: (C) 2025 aftix
 # SPDX-License-Identifier: EUPL-1.2
 let
-  flake = import ../..;
-  inherit (flake) lib inputs;
+  repo = import ../..;
+  inherit (repo) lib inputs;
   pkgs = import inputs.nixpkgs {overlays = [lib.libpkgsOverlay];};
 in {
   simple = pkgs.writeNushellApplication {
@@ -19,7 +19,7 @@ in {
 
   plugin = pkgs.writeNushellApplication {
     name = "plugin";
-    nuPlugins = [flake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.nu_plugin_strutils];
+    nuPlugins = [repo.packages.${pkgs.stdenv.hostPlatform.system}.nu_plugin_strutils];
     text = "'A…C' | str deunicode";
   };
 

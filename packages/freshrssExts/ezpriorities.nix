@@ -18,7 +18,7 @@ stdenvNoCC.mkDerivation (self: {
     hash = "sha256-RxmQnzYLT+S2IOfPoLwhEi7gqUQOxqTAQ0A+ynOoEvk=";
   };
 
-  installPhase = import ./with-subdirs.nix self.src;
+  installPhase = import ../../lib/freshrss-ext-with-subdirs.nix self.src;
 
   passthru.updateScript = lix-update-script {
     extraArgs = ["--version" "branch"];

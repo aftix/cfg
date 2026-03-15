@@ -8,14 +8,10 @@
 }: final: prev: let
   inherit (final.lib.attrsets) recurseIntoAttrs;
 
-  aftixPkgs =
-    (prev.lib.filesystem.packagesFromDirectoryRecursive {
-      inherit (final) callPackage;
-      directory = ./packages;
-    })
-    // {
-      # freshrssExts = recurseIntoAttrs (final.callPackage ./legacyPackages/freshrss {});
-    };
+  aftixPkgs = prev.lib.filesystem.packagesFromDirectoryRecursive {
+    inherit (final) callPackage;
+    directory = ./packages;
+  };
   aftixOverlayedPkgs = {
     # hydra = inputs.hydra.packages.${final.hostPlatform.system}.default;
 

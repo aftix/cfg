@@ -49,7 +49,7 @@
           {
             meta = {
               inherit maintainers;
-              description = "Build job for legacyPackages.${lib.last path}.${lib.concatStringsSep "." (lib.dropEnd 1 path)}";
+              description = "Build job for packages.${lib.last path}.${lib.concatStringsSep "." (lib.dropEnd 1 path)}";
               homepage = "https://forgejo.aftix.xyz/aftix/cfg";
             };
           });
