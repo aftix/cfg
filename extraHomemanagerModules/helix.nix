@@ -106,7 +106,7 @@
       PATH="${lib.strings.makeBinPath [pkgs.yq]}:$PATH"
 
       TMP="$(${lib.getExe pkgs.mktemp})"
-      cat "${config.programs.helix.package.src}/languages.toml" > "$TMP"
+      cat "${pkgs.helix-unwrapped.src}/languages.toml" > "$TMP"
       ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
       ${addNixdConfig}
       ${addSteelConfig}
