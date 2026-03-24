@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: (C) 2025 aftix
 # SPDX-License-Identifier: EUPL-1.2
 {
+  config,
   pkgs,
   lib,
   ...
@@ -21,6 +22,8 @@
     packages = with pkgs; [attic-client];
     stateVersion = "23.11"; # DO NOT CHANGE
   };
+
+  gtk.gtk4.theme = config.gtk.theme;
 
   xdg.userDirs.createDirectories = lib.mkForce false;
 

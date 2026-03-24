@@ -121,7 +121,7 @@ in {
         markdown-oxide
         bash-language-server
       ]
-      ++ (optionals devCfg.typescript [nodePackages_latest.typescript-language-server])
+      ++ (optionals devCfg.typescript [typescript-language-server])
       ++ (optionals config.aftix.shell.nushell.enable [nufmt])
       ++ (optionals devCfg.nix [nixd alejandra])
       ++ (optionals devCfg.go [gopls]);

@@ -78,11 +78,11 @@ in {
         ]
         ++ optionals cfg.typescript
         [
-          nodePackages_latest.nodejs
+          nodejs_25
+          yarn
+          prettier
+          typescript
           eslint
-          nodePackages_latest.yarn
-          nodePackages_latest.prettier
-          nodePackages_latest.typescript
         ]
         ++ optionals cfg.steel [steel];
 

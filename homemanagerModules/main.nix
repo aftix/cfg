@@ -83,5 +83,7 @@ in {
         ExecStopPost = "${lib.getExe' pkgs.systemd "systemctl"} --user unset-environment SSH_AUTH_SOCK";
       };
     };
+
+    xdg.userDirs.setSessionVariables = true;
   };
 }

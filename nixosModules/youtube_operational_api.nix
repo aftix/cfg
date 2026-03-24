@@ -16,7 +16,7 @@
     if builtins.isString x
     then "'${x}'"
     else if builtins.isPath x
-    then "'${builtins.toString x}'"
+    then "'${toString x}'"
     else if builtins.isBool x
     then
       (
@@ -25,10 +25,10 @@
         else "False"
       )
     else if builtins.isList x
-    then "[${lib.strings.concatStringsSep " " (builtins.map mkConfigValue x)}]"
+    then "[${lib.strings.concatStringsSep " " (map mkConfigValue x)}]"
     else if builtins.isInt x
-    then "${builtins.toString x}"
-    else "'${builtins.toString x}'";
+    then "${toString x}"
+    else "'${toString x}'";
   mkConfigDefine = name: x: "define('${name}', ${mkConfigValue x});";
   mkConfig = attrs: ''
     <?php
@@ -170,7 +170,7 @@ in {
 
             "= /ytPrivate/keys.txt".extraConfig = "deny all;";
             "~ /noKey".extraConfig = "rewrite ^(.*)$ /noKey/index.php;";
-            "~ ^.+?\.php(/.*)?$".extraConfig = ''
+            "~ ^.+?\\.php(/.*)?$".extraConfig = ''
               fastcgi_pass unix:${config.services.phpfpm.pools.${cfg.pool}.socket};
               fastcgi_split_path_info ^(.+\.php)(/.*)$;
               set $path_info $fastcgi_path_info;
