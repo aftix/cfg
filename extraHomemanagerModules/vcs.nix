@@ -169,7 +169,6 @@ in {
           megamerge-remove = ["util" "exec" "--" "sh" "-lc" "jj rebase -s 'megamerge()' --destination \"megamerge()- ~ $1\"" "none"];
           consume = ["squash" "--into" "@" "--from"];
           eject = ["squash" "--from" "@" "--into"];
-          tug = ["bookmark" "move" "--from" "closest_bookmarked_ancestor()" "--to" "heads_nonempty()"];
         };
 
         user = {
@@ -350,6 +349,8 @@ in {
         revsets = {
           log = "stack()";
           log-graph-prioritize = "coalesce(megamerge(), trunk())";
+          bookmark-advance-from = "closest_bookmarked_ancestor()";
+          bookmark-advance-to = "heads_nonempty()";
         };
 
         revset-aliases = {
@@ -367,7 +368,7 @@ in {
 
           "stack()" = "ancestors(reachable(@, mutable()), 2)";
           "stack(x)" = "ancestors(reachable(x, mutable()), 2)";
-          "stack(x, n)" = "ancestors(reachable(x, mutable()), n)";
+          "stack(x,n)" = "ancestors(reachable(x, mutable()), n)";
 
           "open()" = "stack(trunk().. & mine(), 1)";
           "open_tree()" = "fork_point(ancestors(open()) & mutable())::";
