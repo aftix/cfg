@@ -9,15 +9,15 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nu_plugin_desktop_notifications";
-  version = "0.111.0-unstable-2026-04-11";
+  version = "0.112.2-unstable-2026-04-23";
 
   src = fetchFromGitHub {
     owner = "FMotalleb";
     repo = pname;
-    rev = "f394d1993d0f2bfd6541476b583a8f67dcbb2858";
-    sha256 = "sha256-NFIrxgLCbdKSvZuaV6cQYteeUQ0RbcFIPmec49Cp53E=";
+    rev = "887a0fa8c6e93d85523fdbbd26f7d9155a3164cc";
+    sha256 = "sha256-ezcuELViyRcz/0m5lM2x8aL+lqOWUw5967kdNaREpQI=";
   };
-  cargoHash = "sha256-A0w5zSTFdOpoYsORbMoM8y8MeBasVy6UJ6TFjlenyqo=";
+  cargoHash = "sha256-Gwd3wvZZ0139JAAyayiNvqAv6HFSYops8GnsJVCY4Uw=";
 
   passthru.updateScript = lix-update-script {
     extraArgs = ["--version" "branch"];
