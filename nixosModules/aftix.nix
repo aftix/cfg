@@ -52,6 +52,7 @@ in {
         ".config/transmission/blocklists"
         ".config/transmission/resume"
         ".config/Yubico"
+        ".config/mozilla"
       ];
       files = [
         ".config/nushell/history.sqlite3"
@@ -92,6 +93,7 @@ in {
         "f ${home}/.local/persist/home/aftix/.config/transmission/stats.json 0600 aftix ${group} -"
         "f ${home}/.local/persist/home/aftix/.config/transmission/bandwidth-groups.json 0600 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config/Yubico 0755 aftix ${group} -"
+        "d ${home}/.local/persist/home/aftix/.config/mozilla 0755 aftix ${group} -"
       ];
       settings.preservation = let
         inherit (config.users.users.aftix) home group;

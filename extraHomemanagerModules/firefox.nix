@@ -12,10 +12,7 @@
 in {
   home = {
     activation.linkLibrewolfCfg = let
-      firefoxDir =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then "${config.home.homeDirectory}/Library/Application Support/Firefox"
-        else "${config.home.homeDirectory}/.mozilla/firefox";
+      firefoxDir = config.programs.firefox.configPath;
       librewolfDir =
         if pkgs.stdenv.hostPlatform.isDarwin
         then "${config.home.homeDirectory}/Library/Application Support/librewolf"
@@ -46,6 +43,10 @@ in {
   programs.firefox = {
     enable = true;
     package = pkgs.librewolf;
+    configPath =
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then "${config.home.homeDirectory}/Library/Application Support/Firefox"
+      else "${config.xdg.configHome}/mozilla/firefox";
 
     policies = {
       DontCheckDefaultBrowser = true;
