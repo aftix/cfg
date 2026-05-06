@@ -71,6 +71,7 @@
   xdg.configFile."helix/themes/stylix.toml".source = let
     theme = config.lib.stylix.colors {
       templateRepo = config.stylix.inputs.base16-helix;
+      target = "base16";
     };
 
     transparentTheme = pkgs.runCommandLocal "helix-transparent.toml" {} ''
