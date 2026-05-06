@@ -155,6 +155,7 @@ in {
         accept-flake-config = false;
         use-xdg-base-directories = true;
         trusted-users = ["@wheel"];
+        log-format = "multiline-with-logs";
       };
 
       gc = {
