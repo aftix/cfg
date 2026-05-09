@@ -101,7 +101,7 @@ in {
     };
 
     www = let
-      node = (import ../../nodes.nix).fermi;
+      node = builtins.fromJSON (builtins.readFile ./node.json);
     in {
       blog = {
         enable = true;
@@ -149,7 +149,8 @@ in {
       };
 
       acmeDomain = domain;
-      inherit (node) ip ipv6;
+      ip = node.ipv4;
+      inherit (node) ipv6;
     };
 
     matrix = {

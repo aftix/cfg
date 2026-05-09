@@ -36,7 +36,7 @@
       (lib.filter (v: v != null))
     ];
 
-  ipMap = mapNodeAttr "ip";
+  ipMap = mapNodeAttr "ipv4";
   userMap = mapNodeAttr "user";
 
   systemsMap =

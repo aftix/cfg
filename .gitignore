@@ -6,3 +6,4 @@ wallpaper.png
 .deploy-rs
 .DS_Store
 result-*
+.terraform
