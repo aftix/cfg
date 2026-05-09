@@ -11,6 +11,11 @@ terraform {
       source = "hetznercloud/hcloud"
       version = "~> 1.45"
     }
+
+    b2 = {
+      source = "Backblaze/b2"
+      version = "~> 0.12"
+    }
   }
 }
 
@@ -20,6 +25,11 @@ variable "dns_zone_name" {
 
 locals {
   fermi = jsondecode(file("${path.module}/node.json"))
+}
+
+resource "b2_bucket" "fermi_restic" {
+  bucket_name = "aftix-fermi-restic"
+  bucket_type = "allPrivate"
 }
 
 resource "hcloud_zone_rrset" "main" {

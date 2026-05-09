@@ -30,6 +30,11 @@ terraform {
       source = "hetznercloud/hcloud"
       version = "~> 1.45"
     }
+
+    b2 = {
+      source = "Backblaze/b2"
+      version = "~> 0.12"
+    }
   }
 }
 
@@ -37,12 +42,23 @@ terraform {
 provider "hcloud" {
 }
 
-# Resources tied to a server are split into modules
+# REQUIRED: B2_APPLICATION_KEY_ID environment variable set to $AWS_ACCESS_KEY_ID
+# REQUIRED: B2_APPLICATION_KEY environment variable set to $AWS_SECRET_ID
+provider "b2" {
+}
+
+# Resources tied to a node are split into modules
+module "hamilton" {
+  source = "./nixosConfigurations/hamilton"
+}
+
 module "fermi" {
   source = "./nixosConfigurations/fermi"
 
   dns_zone_name = hcloud_zone.main.name
 }
+
+# HETZNER HCLOUD GLOBAL RESOURCES
 
 resource "hcloud_ssh_key" "main" {
   name = "main key"
