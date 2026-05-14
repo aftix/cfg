@@ -69,14 +69,7 @@
     '';
   };
 in {
-  home.packages = [pkgs.pre-commit better-git-branch pkgs.delta];
-
-  aftix.shell.aliases = [
-    {
-      name = "g";
-      command = lib.getExe pkgs.git;
-    }
-  ];
+  home.packages = [pkgs.pre-commit better-git-branch pkgs.delta pkgs.difftastic pkgs.mergiraf];
 
   programs = {
     git = {
@@ -154,6 +147,8 @@ in {
           llog = ["log" "-T" "builtin_log_detailed"];
           logall = ["log" "-r" ".."];
           llogall = ["log" "-r" ".." "-T" "builtin_log_detailed"];
+          difft = ["diff" "--tool=difft"];
+          mergi = ["resolve" "--tool=mergiraf"];
 
           open = ["log" "-r" "open()"];
           open-tree = ["log" "-r" "open_tree()"];
@@ -176,21 +171,12 @@ in {
           email = "aftix@aftix.xyz";
         };
 
-        "--scope" = [
-          {
-            "--when".commands = ["diff" "show"];
-            ui = {
-              pager = "${lib.getExe pkgs.delta} --file-transformation 's|.*/jj-diff-[^/]*/[^/]*/||'";
-              diff-formatter = ":git";
-            };
-          }
-        ];
-
         ui = {
           pager = "${lib.getExe pkgs.moor} -quit-if-one-screen";
           diff-editor = ":builtin";
           default-command = "log";
           movement.edit = true;
+          diff-formatter = ["difft" "--color=always" "$left" "$right"];
         };
 
         merge.tools.delta.diff-expected-exit-codes = [0 1];
