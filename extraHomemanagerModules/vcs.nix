@@ -373,16 +373,7 @@ in {
           "heads_nonempty(x)" = "heads(::x ~ empty())";
         };
 
-        templates = {
-          commit_trailers = ''
-            if(!trailers.contains_key("Change-Id") && config("gerrit.enable").as_boolean(), format_gerrit_change_id_trailer(self))
-          '';
-
-          git_push_bookmark = "\"aftix/push-\" ++ change_id.short()";
-        };
-
-        # Must be set globally to a default value so the config() template function doesn't panic
-        gerrit.enable = false;
+        templates.git_push_bookmark = "\"aftix/push-\" ++ change_id.short()";
       };
     };
   };
