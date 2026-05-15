@@ -131,7 +131,6 @@ in {
     systemPackages = with pkgs; [
       btrfs-progs
 
-      pam_u2f
       yubico-pam
       yubikey-personalization
       yubikey-manager
@@ -186,12 +185,23 @@ in {
     };
   };
 
-  security.pam.services = {
-    greetd.u2fAuth = true;
-    login.u2fAuth = true;
-    polkit-1.u2fAuth = true;
-    su.u2fAuth = true;
-    swaylock.u2fAuth = true;
+  security.pam = {
+    services = {
+      greetd.u2fAuth = true;
+      login.u2fAuth = true;
+      polkit-1.u2fAuth = true;
+      su.u2fAuth = true;
+      swaylock.u2fAuth = true;
+    };
+
+    u2f = {
+      enable = true;
+      settings = {
+        pinverification = false;
+        userpresence = true;
+        cue = true;
+      };
+    };
   };
 
   networking = {
