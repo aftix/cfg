@@ -23,97 +23,6 @@
       nixdConfig = {};
     }
     // (config.aftix.development or {});
-
-  helixLanguages = let
-    inherit (lib.strings) escapeShellArg;
-    mkSelector = name: ".language[] | select(.name == \"${name}\")";
-    mkLSPSelector = name: ".\"language-server\".\"${name}\"";
-    selectNix = mkSelector "nix";
-
-    doFilter = selector: field: value: let
-      filter = escapeShellArg "(${selector}).\"${field}\" |= ${value}";
-    in
-      /*
-      bash
-      */
-      ''
-        CTMP="$(${lib.getExe pkgs.mktemp})"
-        tomlq -t ${filter} "$TMP" > "$CTMP"
-        rm -f "$TMP"
-        TMP="$CTMP"
-      '';
-    addAutoFormatter = formatter: selector: ''
-      ${doFilter selector "auto-format" "true"}
-      ${doFilter selector "formatter" formatter}
-    '';
-
-    addNixdConfig =
-      lib.strings.optionalString (
-        devCfg.nixdConfig != {}
-      ) ''
-        ${doFilter (mkLSPSelector "nixd") "config" (builtins.toJSON devCfg.nixdConfig)}
-      '';
-
-    addSteelConfig = let
-      steelCfg = {
-        name = "steel";
-        scope = "source.steel";
-        file-types = ["steel"];
-        injection-regex = "steel";
-        auto-format = false;
-        grammar = "scheme";
-        comment-tokens = ";";
-        language-servers = ["steel-language-server"];
-
-        indent = {
-          tab-width = 4;
-          unit = "    ";
-        };
-
-        auto-pairs = {
-          "(" = ")";
-          "{" = "}";
-          "[" = "]";
-          "\"" = "\"";
-        };
-      };
-    in
-      lib.strings.optionalString devCfg.steel ''
-        CTMP="$(${lib.getExe pkgs.mktemp})"
-        tomlq -t ${lib.escapeShellArg ".language |= [.[], ${builtins.toJSON steelCfg}]"} "$TMP" > "$CTMP"
-        rm -f "$TMP"
-        TMP="$CTMP"
-      '';
-
-    addSteelLSPConfig = let
-      steelCfg = {
-        command = "steel-language-server";
-        args = [];
-      };
-    in
-      lib.strings.optionalString devCfg.steel ''
-        CTMP="$(${lib.getExe pkgs.mktemp})"
-        tomlq -t ${lib.escapeShellArg "${mkLSPSelector "steel-language-server"} |= ${builtins.toJSON steelCfg}"} "$TMP" > "$CTMP"
-        rm -f "$TMP"
-        TMP="$CTMP"
-      '';
-  in
-    pkgs.runCommandLocal "helix-languages" {}
-    /*
-    bash
-    */
-    ''
-      PATH="${lib.strings.makeBinPath [pkgs.yq]}:$PATH"
-
-      TMP="$(${lib.getExe pkgs.mktemp})"
-      cat "${pkgs.helix-unwrapped.src}/languages.toml" > "$TMP"
-      ${addAutoFormatter "{\"command\": \"alejandra\"}" selectNix}
-      ${addNixdConfig}
-      ${addSteelConfig}
-      ${addSteelLSPConfig}
-      cat "$TMP" > $out
-      rm "$TMP"
-    '';
 in {
   home = {
     packages = with pkgs;
@@ -135,7 +44,6 @@ in {
   programs.helix = {
     enable = true;
     defaultEditor = true;
-    languages = mkOverride 900 {};
     settings = {
       theme = "stylix";
 
@@ -196,51 +104,94 @@ in {
         };
       };
     };
-  };
 
-  xdg = {
-    configFile."helix/languages.toml".source = "${helixLanguages}";
-
-    mimeApps.defaultApplications = pkgs.aftixLib.registerMimes [
-      {
-        application = "Helix";
-        mimetypes = [
-          "text/plain"
-          "text/csv"
-          "text/tab-separated-values"
-          "text/markdown"
-          "text/html"
-          "text/xml"
-          "text/css"
-          "text/javascript"
-          "text/ecmascript"
-          "text/rust"
-          "text/x-go"
-          "text/x-c"
-          "text/x-h"
-          "text/x-shellscript"
-          "text/x-script.csh"
-          "text/x-script.ksh"
-          "text/x-script.lisp"
-          "text/x-script.elisp"
-          "text/x-script.scheme"
-          "text/x-script.perl"
-          "text/x-script.python"
-          "text/x-script.zsh"
-          "text/x-asm"
-          "text/x-fortran"
-          "text/x-java-source"
-          "text/x-latex"
-          "text/x-m"
-          "text/x-pascal"
-          "application/x-httpd-php"
-          "application/xhtml+xml"
-          "application/atom+xml"
-          "application/xml"
-          "application/x-csh"
-          "application/json"
+    languages = lib.mkMerge [
+      (lib.mkIf (devCfg.nixdConfig != {}) {
+        language-server.nixd.config = devCfg.nixdConfig;
+      })
+      (lib.mkIf devCfg.nix {
+        language = [
+          {
+            name = "nix";
+            auto-format = true;
+            formatter = {
+              command = lib.getExe pkgs.alejandra;
+            };
+          }
         ];
-      }
+      })
+      (lib.mkIf devCfg.steel {
+        language-server.steel-language-server = {
+          command = lib.getExe pkgs.steel-language-server;
+          args = [];
+        };
+        language = [
+          {
+            name = "steel";
+            scope = "source.steel";
+            file-types = ["steel"];
+            injection-regex = "steel";
+            auto-format = false;
+            grammar = "scheme";
+            comment-tokens = ";";
+            language-servers = ["steel-language-server"];
+
+            indent = {
+              tab-width = 4;
+              unit = "    ";
+            };
+
+            auto-pairs = {
+              "(" = ")";
+              "{" = "}";
+              "[" = "]";
+              "\"" = "\"";
+            };
+          }
+        ];
+      })
     ];
   };
+
+  xdg.mimeApps.defaultApplications = pkgs.aftixLib.registerMimes [
+    {
+      application = "Helix";
+      mimetypes = [
+        "text/plain"
+        "text/csv"
+        "text/tab-separated-values"
+        "text/markdown"
+        "text/html"
+        "text/xml"
+        "text/css"
+        "text/javascript"
+        "text/ecmascript"
+        "text/rust"
+        "text/x-go"
+        "text/x-c"
+        "text/x-h"
+        "text/x-shellscript"
+        "text/x-script.csh"
+        "text/x-script.ksh"
+        "text/x-script.lisp"
+        "text/x-script.elisp"
+        "text/x-script.scheme"
+        "text/x-script.perl"
+        "text/x-script.python"
+        "text/x-script.zsh"
+        "text/x-asm"
+        "text/x-fortran"
+        "text/x-java-source"
+        "text/x-latex"
+        "text/x-m"
+        "text/x-pascal"
+        "application/x-httpd-php"
+        "application/xhtml+xml"
+        "application/atom+xml"
+        "application/xml"
+        "application/x-csh"
+        "application/json"
+      ];
+    }
+  ];
 }
