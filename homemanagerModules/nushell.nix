@@ -78,29 +78,6 @@ in {
   xdg.configFile = lib.mkIf cfg.enable (
     {
       "nushell/env.nu".text = let
-        setEnvVars = vars: "load-env ${builtins.toJSON vars}\n";
-
-        setXdgBases = let
-          base = setEnvVars (with config.xdg; {
-            XDG_CONFIG_HOME = configHome;
-            XDG_DATA_HOME = dataHome;
-            XDG_CACHE_HOME = cacheHome;
-            XDG_STATE_HOME = stateHome;
-          });
-        in
-          if pkgs.stdenv.hostPlatform.isLinux
-          then
-            /*
-            nu
-            */
-            ''
-              ${base}
-              if $env.XDG_RUNTIME_DIR? == null or $env.XDG_RUNTIME_DIR == "" {
-                $env.XDG_RUNTIME_DIR = $"/run/user/$env.EUID"
-              }
-            ''
-          else base;
-
         addPlugins = concatLines (map (
             pkg:
             /*
@@ -114,40 +91,6 @@ in {
           )
           cfg.plugins);
 
-        homebrewPath = let
-          brewPath =
-            if pkgs.stdenv.hostPlatform.isx86_64
-            then "/usr/local/bin/brew"
-            else "/opt/homebrew/bin/brew";
-        in
-          optionalString shellCfg.addHomebrewPath
-          /*
-          nu
-          */
-          ''
-            # Add homebrew prefix to path
-            $env.PATH = ($env.PATH | prepend $"(${brewPath} --prefix)/bin")
-            # Add homebrew environmental variables
-            (brew shellenv
-              | lines
-              | find -v PATH
-              | str replace -r '^export' ""
-              | str replace -r '(\w+|");\w*$' '$1'
-              | str trim
-              | each { split column --number 2 '=' }
-              | each { {$in.0.column0: $in.0.column1} }
-              | reduce {|it, acc| $acc | merge $it}
-              | load-env
-            )
-          '';
-        addedPaths = concatLines (map (p:
-          /*
-          nu
-          */
-          ''
-            $env.PATH = ($env.PATH | prepend r#'${p}'#)
-          '')
-        (lib.lists.reverseList config.home.sessionPath));
         sourceExtraEnv = concatLines (map (
             path: let
               p = "r#'${path}'#";
@@ -216,23 +159,6 @@ in {
           }
           }
 
-          # Setup the PATH environmental variable
-          $env.PATH = ($env.PATH | split row (char esep))
-          # Do not prepend to path if the shell is starting as a nix-shell
-          if $env.IN_NIX_SHELL? == null {
-            ${homebrewPath}
-            ${addedPaths}
-          }
-
-          # Set the xdg base directory variables
-          ${setXdgBases}
-
-          # Set locale environmental variables
-          ${setEnvVars shellCfg.shellLocale}
-
-          # Add home.sessionVariables to nushell environment
-          ${setEnvVars config.home.sessionVariables}
-
           # Add plugins to registry
           ${addPlugins}
 
@@ -253,15 +179,6 @@ in {
         '';
 
       "nushell/config.nu".text = let
-        fixGpg =
-          optionalString shellCfg.gpgTtyFix
-          /*
-          nu
-          */
-          ''
-            # Fix gpg pinentry
-            $env.GPG_TTY = (tty)
-          '';
         fixXterm =
           optionalString shellCfg.xtermFix
           /*
@@ -309,18 +226,6 @@ in {
           concatMapStringsSep "\n"
           (path: "^mkdir -p r#'${path}'#")
           shellCfg.neededDirs;
-
-        devInit =
-          optionalString shellCfg.development
-          /*
-          nu
-          */
-          ''
-            # Setup development aliases
-
-            alias k = make -j(nproc)
-            alias kd = make DEBUG=YES -j(nproc)
-          '';
 
         aliases = concatLines (map ({
               name,
@@ -389,8 +294,6 @@ in {
             open $src --raw | lines | split column '=' --number 2 | each { {$in.column0: $in.column1} } | reduce {|it| merge $it} | load-env
           }
 
-          ${devInit}
-
           # Setup carapace completions
           if (r#'${config.xdg.cacheHome}/carapace/init.nu'# | path expand | path type) == file {
             source r#'${config.xdg.cacheHome}/carapace/init.nu'#
@@ -398,7 +301,6 @@ in {
 
           # Disable ^S and ^Q
           stty -ixon
-          ${fixGpg}
           ${fixXterm}
 
           ${starshipInit}
