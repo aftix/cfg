@@ -3,45 +3,9 @@
 # SPDX-License-Identifier: EUPL-1.2
 {
   pkgs,
-  config,
   lib,
   ...
-}: let
-  docPrefix = config.aftix.docs.prefix;
-  binds = {
-    mouse_left_click = {
-      tag = "Left Click";
-      content = "Close the clicked notification";
-      value = "close_current";
-    };
-    mouse_middle_click = {
-      tag = "Middle Click";
-      content = "Perform Dunst action on notification";
-      value = "do_action";
-    };
-    mouse_right_click = {
-      tag = "Right Click";
-      content = "Close all active notifications";
-      value = "close_all";
-    };
-  };
-in {
-  aftix.docs.pages.dunst = let
-    inherit (pkgs.aftixLib) mergeSubsections mergeTaggedAttrs;
-  in {
-    _docsName = "dunst \\- A customizable and lightweight notification-daemon";
-    _docsExtraSections = {
-      Interaction = mergeSubsections {"Mouse Controls" = mergeTaggedAttrs binds;};
-    };
-    _docsSeeAlso = [
-      {
-        name = "dunst";
-        mansection = 1;
-      }
-      {name = docPrefix + "-hyprland";}
-    ];
-  };
-
+}: {
   services.dunst = {
     enable = true;
 

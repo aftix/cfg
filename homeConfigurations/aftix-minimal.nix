@@ -33,11 +33,6 @@
       xtermFix = true;
     };
 
-    docs = {
-      enable = true;
-      prefix = "nixos";
-    };
-
     development = {
       gh = false;
       rust = false;

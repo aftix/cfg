@@ -21,11 +21,6 @@
   xdg.userDirs.createDirectories = lib.mkForce false;
 
   aftix = {
-    docs = {
-      enable = true;
-      prefix = "aftix-iso";
-    };
-
     development = {
       rust = false;
       go = false;

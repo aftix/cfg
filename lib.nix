@@ -330,7 +330,6 @@ in (
               });
         }
 
-        (import ./lib/documentation.nix lib self)
         (import ./lib/mimetypes.nix lib self)
         (import ./lib/hypr.nix lib self)
       ]

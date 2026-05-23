@@ -3,13 +3,10 @@
 # SPDX-License-Identifier: EUPL-1.2
 {
   lib,
-  config,
   pkgs,
   ...
 }: let
-  inherit (lib.lists) optional;
   inherit (lib.options) mkOption;
-  cfg = config.aftix.shell;
 in {
   options.aftix.shell = {
     aliases = mkOption {
@@ -18,9 +15,6 @@ in {
         List of aliases, each alias being a set of {name, command}
 
         Can also contain an optional key 'external' which will prepend the command with ^ in nushell
-
-        Can also contain an optional key 'docs' which will be substituted into the manual page for the host
-          instead of the command. Set this to any non-string non-null value to skip documenting the alias
       '';
     };
 
@@ -111,8 +105,6 @@ in {
           { name, arguments, body }. Arguments is optional, but if present will be put between [] automatically.
           Nothing will be quoted.
 
-          The set may also contain a 'docs' attribute to change what is rendered in the <host>-nushell.7 man page
-
           The set may also contain an 'init' attribute which is a string to be inserted after the `use` statement
           The set may also contain an 'extra' attribute which is a string to be insterted at the end of the `use` statement (i.e. "*")
         '';
@@ -138,140 +130,6 @@ in {
           add_newline = true;
           shell.disabled = false;
         };
-      };
-    };
-
-    aftix = {
-      docs.pages.shell = let
-        inherit (pkgs.aftixLib) mergeTagged;
-      in {
-        _docsName = "Common shell aliases and functions";
-        _docsExtraSections = {
-          Aliases = mergeTagged (builtins.map ({
-              name,
-              command,
-              docs ? "",
-              ...
-            }: {
-              tag = name;
-              content =
-                if docs == ""
-                then command
-                else docs;
-            })
-            (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.aliases));
-        };
-        _docsSeeAlso =
-          optional cfg.nushell.enable
-          {
-            name = config.aftix.docs.prefix + "-nushell";
-            mansection = 7;
-          };
-      };
-
-      shell = {
-        aliases = [
-          {
-            name = "sy";
-            command = "sudo systemctl";
-          }
-          {
-            name = "sys";
-            command = "systemctl";
-            external = true;
-          }
-          {
-            name = "sysu";
-            command = "systemctl --user";
-            external = true;
-          }
-
-          {
-            name = "e";
-            command = config.home.sessionVariables.EDITOR;
-          }
-          {
-            name = "E";
-            command = "sudo ${config.home.sessionVariables.EDITOR}";
-          }
-
-          {
-            name = "xz";
-            command = "xz --threads=0";
-            external = true;
-          }
-
-          {
-            name = "rfcdate";
-            command = "date --iso-8601=seconds";
-            external = true;
-          }
-          {
-            name = "emdate";
-            command = "date -R";
-            external = true;
-          }
-          {
-            name = "diff";
-            command = "diff --color=auto";
-            external = true;
-            docs = false;
-          }
-          {
-            name = "dfx";
-            command = "df -x tmpfs -x fuse -h";
-            external = true;
-          }
-
-          {
-            name = "ls";
-            command = "ls --color=auto -F -H -h";
-            external = true;
-            docs = false;
-          }
-          {
-            name = "ll";
-            command = "ls --color=auto -l -F -H -h";
-            external = true;
-          }
-          {
-            name = "la";
-            command = "ls --color=auto -A -F -H -h";
-            external = true;
-          }
-
-          {
-            name = "mkd";
-            command = "mkdir -pv";
-            external = true;
-          }
-          {
-            name = "cp";
-            command = "cp -iv";
-            external = true;
-            docs = false;
-          }
-          {
-            name = "df";
-            command = "df -h";
-            external = true;
-            docs = false;
-          }
-          {
-            name = "du";
-            command = "du -h";
-            external = true;
-            docs = false;
-          }
-          {
-            name = "mv";
-            command = "mv -iv";
-            external = true;
-            docs = false;
-          }
-        ];
-
-        neededDirs = [config.home.sessionVariables.CREDENTIALS_DIRECTORY];
       };
     };
   };

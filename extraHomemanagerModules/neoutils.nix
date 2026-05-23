@@ -50,19 +50,16 @@ in {
       {
         name = "gzip";
         command = "${lib.getExe' pkgs.pigz "pigz"}";
-        docs = false;
       }
       {
         name = "bzip2";
         command = "${lib.getExe' pkgs.pbzip2 "pbzip2"}";
-        docs = false;
       }
 
       {
         name = "eza";
         command = "eza --icons";
         external = true;
-        docs = false;
       }
       {
         name = "ezal";

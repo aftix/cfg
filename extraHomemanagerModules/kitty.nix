@@ -472,8 +472,6 @@
       in {"${name}" = v.value;})
       attrs
     );
-
-  inherit (pkgs.aftixLib) paragraph example mergeTaggedAttrs mergeSubsections;
 in {
   home = {
     packages = with pkgs; [kitty-img kitty-themes];
@@ -482,56 +480,6 @@ in {
       TERM = "xterm-kitty";
       TERMINAL = TERM;
     };
-  };
-
-  aftix.docs.pages.kitty = {
-    _docsName = "kitty \\- The fast, feature rich terminal emulator";
-    _docsExtraSections = {
-      "Shortcut Format" = paragraph ''
-        A '+' between key names indicate the keys are pressed together. A '>' indicates
-        that they key combination to the left must be pressed then released, then the key combination to
-        the right (possible including more '>' characters) must be pressed to activate the keyboard shortcut.
-        All letters are case insensitive.
-
-        ${
-          example
-          "A shortcut that is triggered by pressing control, shift, and p together"
-          "ctrl + shift + p"
-        }
-
-        ${
-          example
-          "A shortcut that is triggered by pressing control, shift, and p together then pressing x"
-          "ctrl + shift + p > x"
-        }
-      '';
-      Miscellaneous = mergeTaggedAttrs settings;
-      Interaction = mergeSubsections {
-        "Keyboard Shortcuts" = builtins.concatStringsSep "\n" [
-          (mergeTaggedAttrs binds)
-          (
-            mergeSubsections {
-              "Hint selection shortcuts" = mergeTaggedAttrs hintBinds;
-              "Window management shortcuts" = mergeTaggedAttrs windowBinds;
-              "Tab management shortcuts" = mergeTaggedAttrs tabBinds;
-              "Layout management shortcuts" = mergeTaggedAttrs layoutBinds;
-            }
-          )
-        ];
-        "Mouse Controls" = mergeTaggedAttrs mouseBinds;
-      };
-    };
-
-    _docsSeeAlso = [
-      {
-        name = "kitty";
-        mansection = 1;
-      }
-      {
-        name = "kitty.conf";
-        mansection = 5;
-      }
-    ];
   };
 
   programs.kitty = {

@@ -14,67 +14,6 @@
 in {
   home.packages = lib.mkIf cfg.enable ([pkgs.nushell] ++ cfg.plugins);
 
-  aftix.docs.pages.nushell = let
-    inherit (pkgs.aftixLib) mergeTagged;
-  in {
-    _docsName = "Extra shell functions and modules for nushell";
-    _docsExtraSections =
-      {
-        ExtraCommands = mergeTagged (map ({
-            name,
-            body,
-            docs ? "",
-            ...
-          }: {
-            tag = name;
-            content =
-              if docs == ""
-              then body
-              else docs;
-          })
-          (builtins.filter ({docs ? "", ...}: builtins.isString docs) cfg.extraCommands));
-        Plugins = mergeTagged (map (pkg: {
-            tag = "${lib.strings.getName pkg} (${lib.strings.getVersion pkg})";
-            content = let
-              desc =
-                pkg.meta.description or "No description available.";
-              homepage = pkg.meta.homepage or "No homepage available.";
-              license =
-                if pkg.meta ? license
-                then "${pkg.meta.license.fullName or pkg.meta.license.shortName} (${pkg.meta.license.url or "no url available"})"
-                else "No license available";
-            in ''
-              Description: ${desc}
-
-              Homepage: ${homepage}
-
-              License: ${license}
-            '';
-          })
-          cfg.plugins);
-      }
-      // optionalAttrs shellCfg.development {
-        Aliases = mergeTagged [
-          {
-            tag = "k";
-            content = "make -j(nproc)";
-          }
-          {
-            tag = "kd";
-            content = "make -j(nproc) DEBUG=yes";
-          }
-        ];
-      };
-    _docsSeeAlso = let
-      inherit (config.aftix.docs) prefix;
-    in [
-      {
-        name = prefix + "-shell";
-        mansection = 7;
-      }
-    ];
-  };
-
   xdg.configFile = lib.mkIf cfg.enable (
     {
       "nushell/env.nu".text = let

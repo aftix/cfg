@@ -132,15 +132,6 @@ in {
         ];
       };
     };
-    docs = {
-      enable = true;
-      prefix = let
-        host = nixosConfig.networking.hostName or "";
-      in
-        if host == ""
-        then "nixos"
-        else host;
-    };
   };
 
   programs.gpg.settings.default-key = "294D241578ED5CD1";
