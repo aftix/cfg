@@ -18,7 +18,15 @@ in {
       python3Packages.python-lsp-server
       python3Packages.pyls-flake8
       python3Packages.pylsp-mypy
-      pipx
+      # See https://github.com/NixOS/nixpkgs/issues/522307
+      (pipx.overridePythonAttrs (old: {
+        disabledTests =
+          (old.disabledTests or [])
+          ++ [
+            "test_fix_package_name"
+            "test_parse_specifier_for_metadata"
+          ];
+      }))
     ];
 
     sessionVariables = {
