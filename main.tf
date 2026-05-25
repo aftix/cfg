@@ -7,7 +7,7 @@
 # The nodes are not immutable - they don't get remade for updates
 
 terraform {
-  # REQUIRED: AWS_ACCESS_KEY_ID and AWS_SECRET_ID environment variables
+  # REQUIRED: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables
   backend "s3" {
     bucket = "aftix-opentofu"
     key = "state"
@@ -43,7 +43,7 @@ provider "hcloud" {
 }
 
 # REQUIRED: B2_APPLICATION_KEY_ID environment variable set to $AWS_ACCESS_KEY_ID
-# REQUIRED: B2_APPLICATION_KEY environment variable set to $AWS_SECRET_ID
+# REQUIRED: B2_APPLICATION_KEY environment variable set to $AWS_SECRET_ACCESS_KEY
 provider "b2" {
 }
 
@@ -93,17 +93,17 @@ resource "hcloud_zone_rrset" "soa" {
   zone = hcloud_zone.main.name
   name = "@"
   type = "SOA"
-  records = [{value = "hydrogen.ns.hetzner.com. dns.hetzner.com. 0 86400 10800 3600000 3600"}]
+  records = [{value = "hydrogen.ns.hetzner.com. dns.hetzner.com. 0 43200 7200 1209600 3600"}]
   ttl = 3600
   change_protection = false
 }
 
-resource "hcloud_zone_rrset" "cnames" {
+resource "hcloud_zone_rrset" "dkim" {
   for_each = toset(["0001", "0002", "0003", "0004"])
   zone = hcloud_zone.main.name
   name = "mbo${each.key}._domainkey"
   type = "CNAME"
-  records = [{value = "mbo${each.key}._domainkey.mailbox.org"}]
+  records = [{value = "MBO${each.key}._domainkey.mailbox.org."}]
   ttl = 600
   change_protection = true
 }
@@ -123,6 +123,15 @@ resource "hcloud_zone_rrset" "caa" {
   type = "CAA"
   records = [{value = "0 issue \"letsencrypt.org\""}]
   ttl = 600
+  change_protection = true
+}
+
+resource "hcloud_zone_rrset" "spf" {
+  zone = hcloud_zone.main.name
+  name = "@"
+  type = "TXT"
+  records = [{value = provider::hcloud::txt_record("v=spf1 include:mailbox.org ~all")}]
+  ttl = 3600
   change_protection = true
 }
 
