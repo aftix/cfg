@@ -121,6 +121,7 @@ in {
           "power-management"
           "idle-inhibit"
         ]
+        ++ (optionals config.networking.networkmanager.enable ["networkmanager"])
         ++ optionals myCfg.enable
         myCfg.extraGroups;
 

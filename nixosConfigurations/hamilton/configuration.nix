@@ -75,6 +75,9 @@ in {
     };
   };
 
+  networking.networkmanager.enable = true;
+  networking.dhcpcd.enable = false;
+
   aftix = {
     users.aftix.enable = true;
 
@@ -130,7 +133,6 @@ in {
   environment = {
     systemPackages = with pkgs; [
       btrfs-progs
-
       yubico-pam
       yubikey-personalization
       yubikey-manager
@@ -173,6 +175,7 @@ in {
             directory = "/var/log";
             inInitrd = true;
           }
+          "/var/lib/NetworkManager"
           "/var/lib/bluetooth"
           "/var/lib/systemd/coredump"
           "/var/lib/systemd/timers"
@@ -210,12 +213,6 @@ in {
   };
 
   systemd = {
-    network.networks."10-enp6s0".networkConfig = {
-      DHCP = lib.mkForce "no";
-      Address = ["192.168.1.179/24"];
-      Gateway = "192.168.1.1";
-    };
-
     oomd.enableUserSlices = true;
 
     services = {
