@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: EUPL-1.2
 {
   config,
-  nixosConfig,
   pkgs,
   lib,
   ...
@@ -97,8 +96,6 @@ in {
 
     ssh-agent.Service.Environment = "SSH_ASKPASS=${config.home.sessionVariables.SSH_ASKPASS}";
   };
-
-  gtk.gtk4.theme = config.gtk.theme;
 
   aftix = {
     matrixClient = pkgs.fractal;

@@ -23,8 +23,6 @@
     stateVersion = "23.11"; # DO NOT CHANGE
   };
 
-  gtk.gtk4.theme = config.gtk.theme;
-
   xdg.userDirs.createDirectories = lib.mkForce false;
 
   aftix = {
