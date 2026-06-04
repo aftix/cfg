@@ -75,8 +75,14 @@ in {
     };
   };
 
-  networking.networkmanager.enable = true;
-  networking.dhcpcd.enable = false;
+  networking = {
+    networkmanager = {
+      enable = true;
+      dns = lib.mkForce "none";
+    };
+
+    dhcpcd.enable = false;
+  };
 
   aftix = {
     users.aftix.enable = true;
@@ -88,7 +94,6 @@ in {
     syncthing = true;
     docker = true;
     bluetooth.enable = true;
-    network.enable = true;
     # Enable local service to snapshot BTRFS subvolumes to HDD
     backup.btrfs-snapshots = true;
 
@@ -137,6 +142,8 @@ in {
       yubikey-personalization
       yubikey-manager
 
+      networkmanagerapplet
+
       sbctl
     ];
   };
@@ -175,6 +182,7 @@ in {
             directory = "/var/log";
             inInitrd = true;
           }
+          "/etc/NetworkManager/system-connections"
           "/var/lib/NetworkManager"
           "/var/lib/bluetooth"
           "/var/lib/systemd/coredump"
@@ -214,6 +222,8 @@ in {
 
   systemd = {
     oomd.enableUserSlices = true;
+
+    network.wait-online.enable = false;
 
     services = {
       nix-daemon.serviceConfig.CPUQuota = "2100%";
@@ -408,6 +418,8 @@ in {
         toybox
         btrfs-progs
       ];
+
+      network.wait-online.enable = false;
 
       # By default don't store state
       services.reset-fs-state = {
