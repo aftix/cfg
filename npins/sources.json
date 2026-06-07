@@ -22,9 +22,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "4c5c1e8ba14f1c7475fa31ff11bc1c19cd220974",
-      "url": "https://github.com/nix-community/home-manager/archive/4c5c1e8ba14f1c7475fa31ff11bc1c19cd220974.tar.gz",
-      "hash": "sha256-8KX2hEeOX6KP3hBBJJI8dGWVrzbOOf1rBPmg/GUG24U="
+      "revision": "b2b7db486e06e098711dc291bb25db82850e1d16",
+      "url": "https://github.com/nix-community/home-manager/archive/b2b7db486e06e098711dc291bb25db82850e1d16.tar.gz",
+      "hash": "sha256-KmRNvpNOb7QEORa06bVgjW9kITcx0VhsI7w0vhmZyD8="
     },
     "hostsBlacklist": {
       "type": "Git",
@@ -35,15 +35,16 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "aa5006cc8d9be73c73c609037d7a0b3acc0df431",
-      "url": "https://github.com/Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist/archive/aa5006cc8d9be73c73c609037d7a0b3acc0df431.tar.gz",
-      "hash": "sha256-I+pVPtiWLNmK8WGUusgMwUfMdNhfkwuSUa3AnsKOx5w="
+      "revision": "a99c9418556a758f150ab4934548b3cc3e9bba19",
+      "url": "https://github.com/Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist/archive/a99c9418556a758f150ab4934548b3cc3e9bba19.tar.gz",
+      "hash": "sha256-SuM6y/JcJ2GVOps31eJLzy3YLlZQ77pZrhfiIxp0ZYg="
     },
     "hydra": {
-      "type": "Tarball",
-      "url": "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz",
-      "locked_url": "https://git.lix.systems/api/v1/repos/lix-project/hydra/archive/ead6172b5b7583b78774b10837b99ee1aa556138.tar.gz?rev=ead6172b5b7583b78774b10837b99ee1aa556138",
-      "hash": "sha256-/QV85IVKZTYsVsK/StT7Vu/1KMT4AJyW280tObXpRtA="
+      "type": "MutableUrl",
+      "update_url": "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz",
+      "unpack": true,
+      "url": "https://s3.afnix.fr/lix-forgejo-repo-archive/repo-archive/74/75/756f7f5ee6cdcd46696e3ee0d143e65f4ca5dd42.tar.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GKd269690f28210b20c919b6fb%2F20260607%2Fglobal%2Fs3%2Faws4_request&X-Amz-Date=20260607T221155Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22hydra-main.tar.gz%22&X-Amz-Signature=3e74c7ead18ecc6ecf87fd6f26c7bfc037414c36ee3a39ef8a33907433e47521",
+      "hash": "sha256-jHcICWs1AvP6OtD4+bv25kTXdBHvRD7yf74/Exd57XE="
     },
     "lanzaboote": {
       "type": "GitRelease",
@@ -70,9 +71,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "fb3bc4d898732f8736d049291db46d91c0d6556b",
-      "url": "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/archive/fb3bc4d898732f8736d049291db46d91c0d6556b.tar.gz",
-      "hash": "sha256-mdHj5aIXS1od/lxDfMs8x/yVq7vZ9nzMfjjKOkHoUTk="
+      "revision": "f67211d0b633400bc2af9ab645e1bc01ba5d3849",
+      "url": "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/archive/f67211d0b633400bc2af9ab645e1bc01ba5d3849.tar.gz",
+      "hash": "sha256-rtvIhDPf5TARtAJbsI1+jQJdd3lSx9q+GC2s/ONY+wc="
     },
     "nix-index-database": {
       "type": "Git",
@@ -83,9 +84,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "97df9dc0b7c924344b793a15c1e8e4522ebb854e",
-      "url": "https://github.com/nix-community/nix-index-database/archive/97df9dc0b7c924344b793a15c1e8e4522ebb854e.tar.gz",
-      "hash": "sha256-4axz3OBPTKa6LIkXV8n0lc63MQU+et2CB5DGobEAi6k="
+      "revision": "1a2ea89c917781e88508d9fd2b507f2d2a0e173c",
+      "url": "https://github.com/nix-community/nix-index-database/archive/1a2ea89c917781e88508d9fd2b507f2d2a0e173c.tar.gz",
+      "hash": "sha256-0BYqs8yKWkOz2Q7+SP18N5E5gmDKSo6LSxIVIa0wWes="
     },
     "nixpkgs": {
       "type": "Git",
@@ -109,9 +110,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "bac9a07bbb2a6c86be455240d1863698dfd65159",
-      "url": "https://github.com/nix-community/NUR/archive/bac9a07bbb2a6c86be455240d1863698dfd65159.tar.gz",
-      "hash": "sha256-2HC+Ai7ZSFtoRrkJ45bULDOf9r5nsrvzdZ7h7R26dCk="
+      "revision": "8e98ac0e895d0cf89ce923d209202cc48f5beae1",
+      "url": "https://github.com/nix-community/NUR/archive/8e98ac0e895d0cf89ce923d209202cc48f5beae1.tar.gz",
+      "hash": "sha256-thS8uXH/3PFapzyjg+qfK6+/SRdShotBFMjSj0mDRqA="
     },
     "preservation": {
       "type": "Git",
@@ -135,9 +136,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "c591bf665727040c6cc5cb409079acb22dcce33c",
-      "url": "https://github.com/Mic92/sops-nix/archive/c591bf665727040c6cc5cb409079acb22dcce33c.tar.gz",
-      "hash": "sha256-VfGRo1qTBKOe3s2gOv8LSoA6Fk19PvBlwQ1ECN0Evn8="
+      "revision": "9ed65852b6257fbeae4355bc24ecfea307ca759a",
+      "url": "https://github.com/Mic92/sops-nix/archive/9ed65852b6257fbeae4355bc24ecfea307ca759a.tar.gz",
+      "hash": "sha256-Gq8KNx5A7hBB3uGJaj6eQfLDIz5YdLu92gqBcvHvoUo="
     },
     "srvos": {
       "type": "Git",
@@ -148,9 +149,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "f7378bf89f4c4c0b5e3bf18079a7366a78beba07",
-      "url": "https://github.com/numtide/srvos/archive/f7378bf89f4c4c0b5e3bf18079a7366a78beba07.tar.gz",
-      "hash": "sha256-dPoi/DCQYlMGk9MRNODrI0VKTyLw4VzXMgIijQqhRIo="
+      "revision": "bc0ca7b0f7c8ca9dc55166438fec4dc2dd74f8a4",
+      "url": "https://github.com/numtide/srvos/archive/bc0ca7b0f7c8ca9dc55166438fec4dc2dd74f8a4.tar.gz",
+      "hash": "sha256-y9aFcK8A3pctkW9G9LdppzPDsuBa3VzToADnacjir/A="
     },
     "stylix": {
       "type": "Git",
@@ -161,10 +162,10 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "525965744b770af79c985ae5c43c65e441dc8b29",
-      "url": "https://github.com/nix-community/stylix/archive/525965744b770af79c985ae5c43c65e441dc8b29.tar.gz",
-      "hash": "sha256-ptk4OrUyr3ubnjZcuqM1qL97L3q7wgnL24oudQEYUno="
+      "revision": "3a02d9f73608641b28e08b26acb0b0b47c05f14b",
+      "url": "https://github.com/nix-community/stylix/archive/3a02d9f73608641b28e08b26acb0b0b47c05f14b.tar.gz",
+      "hash": "sha256-u7AUNs6U6eD1os4+ghbr1gH4QjPWzOdKvpeM+E+XRKM="
     }
   },
-  "version": 7
+  "version": 8
 }
