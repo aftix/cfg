@@ -73,7 +73,7 @@ resource "hcloud_zone" "main" {
 
 locals {
   fermi = {
-    ipv4 = "170.130.165.174"
+    ipv4 = "95.133.229.196"
     ipv6 = "2a0b:7140:8:1:5054:ff:fe84:ed8c"
     subdomains = [
       "bbuddy",
@@ -95,7 +95,7 @@ resource "hcloud_zone_rrset" "soa" {
   type = "SOA"
   records = [{value = "hydrogen.ns.hetzner.com. dns.hetzner.com. 0 43200 7200 1209600 3600"}]
   ttl = 3600
-  change_protection = false
+  change_protection = true
 }
 
 resource "hcloud_zone_rrset" "dkim" {
@@ -114,7 +114,7 @@ resource "hcloud_zone_rrset" "mail" {
   type = "MX"
   records = [for id in range(3): { value = "0 mxext${id + 1}.mailbox.org." }]
   ttl = 600
-  change_protection = false
+  change_protection = true
 }
 
 resource "hcloud_zone_rrset" "caa" {

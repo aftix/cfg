@@ -38,7 +38,7 @@ resource "hcloud_zone_rrset" "main" {
   type = "A"
   records = [{value = local.fermi.ipv4}]
   ttl = 600
-  change_protection = true
+  change_protection = false
 }
 
 resource "hcloud_zone_rrset" "mainv6" {
@@ -47,7 +47,7 @@ resource "hcloud_zone_rrset" "mainv6" {
   type = "AAAA"
   records = [{value = local.fermi.ipv6}]
   ttl = 600
-  change_protection = true
+  change_protection = false
 }
 
 resource "hcloud_zone_rrset" "fermi" {
@@ -57,7 +57,7 @@ resource "hcloud_zone_rrset" "fermi" {
   type = "A"
   records = [{value = local.fermi.ipv4}]
   ttl = 600
-  change_protection = true
+  change_protection = false
 }
 
 resource "hcloud_zone_rrset" "fermiv6" {
@@ -67,7 +67,7 @@ resource "hcloud_zone_rrset" "fermiv6" {
   type = "AAAA"
   records = [{value = local.fermi.ipv6}]
   ttl = 600
-  change_protection = true
+  change_protection = false
 }
 
 resource "hcloud_zone_rrset" "txts" {
@@ -87,5 +87,5 @@ resource "hcloud_zone_rrset" "txts" {
   type = "TXT"
   records = [{value = provider::hcloud::txt_record(each.value)}]
   ttl = 300
-  change_protection = true
+  change_protection = false
 }
