@@ -136,15 +136,9 @@ in {
   };
 
   config = {
-    sops.secrets = {
-      porkbun_api_key = {
-        inherit (cfg) group;
-        owner = cfg.user;
-      };
-      porkbun_secret_api_key = {
-        inherit (cfg) group;
-        owner = cfg.user;
-      };
+    sops.secrets.hetzner_api_token = {
+      inherit (cfg) group;
+      owner = cfg.user;
     };
 
     users = {
@@ -227,12 +221,9 @@ in {
 
       defaults = {
         email = "aftix@aftix.xyz";
-        dnsProvider = "porkbun";
+        dnsProvider = "hetzner";
         inherit (cfg) group;
-        credentialFiles = {
-          PORKBUN_SECRET_API_KEY_FILE = config.sops.secrets.porkbun_secret_api_key.path;
-          PORKBUN_API_KEY_FILE = config.sops.secrets.porkbun_api_key.path;
-        };
+        credentialFiles.HETZNER_API_TOKEN_FILE = config.sops.secrets.hetzner_api_token.path;
       };
     };
   };
