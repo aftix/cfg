@@ -8,41 +8,20 @@
   ...
 }: let
   inherit (lib) mkDefault mkIf mkMerge;
-  inherit (lib.strings) escapeShellArg;
 in {
   home = {
-    activation.linkLibrewolfCfg = let
-      firefoxDir = config.programs.firefox.configPath;
-      librewolfDir =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then "${config.home.homeDirectory}/Library/Application Support/librewolf"
-        else "${config.home.homeDirectory}/.librewolf";
-    in
-      lib.hm.dag.entryAfter ["writeBoundary"] ''
-        run ln ''${VERBOSE_ARG} -sf ${escapeShellArg firefoxDir} ${escapeShellArg librewolfDir}
-      '';
-
-    packages = lib.lists.optionals (config.programs.firefox.package != null) [
-      (pkgs.runCommandLocal "firefox-alias" {
-          nativeBuildInputs = [pkgs.makeBinaryWrapper];
-        } ''
-          mkdir -p "$out/bin"
-          makeBinaryWrapper "${config.programs.firefox.finalPackage}/bin/librewolf" "$out/bin/firefox"
-        '')
-    ];
-
     sessionVariables = mkMerge [
       (mkIf pkgs.stdenv.hostPlatform.isLinux {
         MOZ_USE_XINPUT2 = "1";
       })
 
-      (mkIf (config.programs.firefox.package != null) {BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/librewolf";})
+      (mkIf (config.programs.firefox.package != null) {BROWSER = mkDefault "${config.programs.firefox.finalPackage}/bin/firefox";})
     ];
   };
 
   programs.firefox = {
     enable = true;
-    package = pkgs.librewolf;
+    package = pkgs.firefox;
     configPath =
       if pkgs.stdenv.hostPlatform.isDarwin
       then "${config.home.homeDirectory}/Library/Application Support/Firefox"
