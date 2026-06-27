@@ -160,8 +160,8 @@ in {
           immediate-gid = wwwCfg.group;
 
           env = [
-            "SEARX_SETTINGS_PATH=${config.services.searx.settingsFile}"
-            "SEARXNG_SETTINGS_PATH=${config.services.searx.settingsFile}"
+            "SEARX_SETTINGS_PATH=${config.services.searx.settingsPath}"
+            "SEARXNG_SETTINGS_PATH=${config.services.searx.settingsPath}"
             "LANG=C.UTF-8"
             "LANGUAGE=C.UTF-8"
             "LC_ALL=C.UTF-8"
