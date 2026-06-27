@@ -88,6 +88,19 @@
       "url": "https://github.com/nix-community/nix-index-database/archive/3017088b49efd404f78e3b104f553b97e4af786b.tar.gz",
       "hash": "sha256-h4WpMr455AfRub0FXBaon6Vcpe0waUyJ4GivIW6oyd4="
     },
+    "nixcord": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "FlameFlag",
+        "repo": "nixcord"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "e11a63804bd1b2cd9fa6f203fb9a838137a5920a",
+      "url": "https://github.com/FlameFlag/nixcord/archive/e11a63804bd1b2cd9fa6f203fb9a838137a5920a.tar.gz",
+      "hash": "sha256-xJPv6ioXUDJuDwrN7K8pNhjj0wenxxlcY0LVCJzBlsE="
+    },
     "nixpkgs": {
       "type": "Git",
       "repository": {

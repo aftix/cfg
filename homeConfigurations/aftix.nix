@@ -56,8 +56,6 @@ in {
     ../extraHomemanagerModules/swaync.nix
     ../extraHomemanagerModules/transmission.nix
     ../extraHomemanagerModules/zathura.nix
-
-    ../extraHomemanagerModules/discord.nix
   ];
 
   sops.secrets.gh_oauth_token = {};
@@ -99,6 +97,8 @@ in {
 
   aftix = {
     matrixClient = pkgs.fractal;
+
+    discord.enable = true;
 
     shell = {
       nushell = {

@@ -11,4 +11,7 @@
     inputs.disko.nixosModules.disko
     inputs.lanzaboote.nixosModules.lanzaboote
   ];
+  extraHmMods = [
+    inputs.nixcord.homeModules.nixcord
+  ];
 }

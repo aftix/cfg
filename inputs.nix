@@ -124,6 +124,50 @@ let
             });
           };
 
+        nixcord =
+          (mkModules "nixcord")
+          // {
+            homeModules = let
+              nixcordPkgs = pkgs: let
+                discordAvailable = pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform pkgs.discord;
+                docsSystems = [
+                  "x86_64-linux"
+                  "aarch64-darwin"
+                ];
+                docsArtifacts = import "${sources.nixcord}/docs" {
+                  inherit pkgs;
+                  inherit (pkgs) lib;
+                  inherit (sources.nixcord) revision;
+                };
+              in
+                (pkgs.lib.optionalAttrs discordAvailable {
+                  discord = pkgs.callPackage "${sources.nixcord}/pkgs/discord" {};
+                  discord-ptb = pkgs.callPackage "${sources.nixcord}/pkgs/discord" {branch = "ptb";};
+                  discord-canary = pkgs.callPackage "${sources.nixcord}/pkgs/discord" {branch = "canary";};
+                  discord-development = pkgs.callPackage "${sources.nixcord}/pkgs/discord" {branch = "development";};
+                })
+                // (pkgs.lib.optionalAttrs (builtins.elem pkgs.stdenv.hostPlatform.system docsSystems) {
+                  docs =
+                    docsArtifacts.html;
+                })
+                // {
+                  vencord = pkgs.callPackage "${sources.nixcord}/pkgs/vencord.nix" {};
+                  vencord-unstable = pkgs.callPackage "${sources.nixcord}/pkgs/vencord.nix" {unstable = true;};
+                  equicord = pkgs.callPackage "${sources.nixcord}/pkgs/equicord.nix" {};
+                  generate = pkgs.callPackage "${sources.nixcord}/pkgs/generate-options.nix" {};
+                  docs-json = docsArtifacts.json;
+                };
+
+              nixcord = {pkgs, ...}: {
+                imports = ["${sources.nixcord}/modules/hm"];
+                _module.args.nixcordPkgs = nixcordPkgs pkgs;
+              };
+            in {
+              inherit nixcord;
+              default = nixcord;
+            };
+          };
+
         nix-index-database =
           (mkModules "nix-index-database" "nixos-module.nix" "nix-index")
           // {
