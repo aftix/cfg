@@ -157,8 +157,8 @@ in {
         commonMountOptions = ["x-gvfs-hide"];
         directories = [
           "/var/lib/nixos"
+          "/var/lib/sbctl"
           "/etc/mullvad-vpn"
-          "/etc/secureboot"
           "/var/cache/mullvad-vpn"
         ];
         files = [
@@ -410,7 +410,7 @@ in {
     loader.systemd-boot.enable = lib.mkForce false;
     lanzaboote = {
       enable = true;
-      pkiBundle = "/persist/etc/secureboot";
+      pkiBundle = "/persist/var/lib/sbctl";
     };
 
     initrd.systemd = rec {

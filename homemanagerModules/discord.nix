@@ -32,7 +32,6 @@ in {
           betterAudioPlayer.enable = true;
           betterBlockedUsers.enable = true;
           betterForwards.enable = true;
-          betterGifLoad.enable = true;
           betterInvites.enable = true;
           cancelFriendRequest.enable = true;
           cleanerChannelGroups.enable = true;

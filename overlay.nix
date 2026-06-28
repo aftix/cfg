@@ -29,6 +29,10 @@ in
     aftixLib = myLib;
     aftixPkgs = recurseIntoAttrs aftixPkgs;
     aftixOverlayedPkgs = recurseIntoAttrs aftixOverlayedPkgs;
+
+    python314Packages = prev.python314Packages.overrideScope (_: pyprev: {
+      pylsp-mypy = pyprev.pylsp-mypy.overridePythonAttrs {doCheck = false;};
+    });
   }
   // aftixPkgs
   // aftixOverlayedPkgs

@@ -158,7 +158,7 @@ export def add_bookmark [name] {
   let conflicting_name = if ($bmarks| length) > 0 {
     ($bmarks| each {
       |b|
-      ($name | str upcase) == ($b.name | str upcase)
+      ($name | str uppercase) == ($b.name | str uppercase)
     } | reduce {|it, acc| $acc or $it})
   } else { false }
 
