@@ -156,6 +156,7 @@ in {
       "/persist" = {
         commonMountOptions = ["x-gvfs-hide"];
         directories = [
+          "/var/lib/fwupd"
           "/var/lib/nixos"
           "/var/lib/sbctl"
           "/var/lib/auto-cryptenroll"
