@@ -158,6 +158,7 @@ in {
         directories = [
           "/var/lib/nixos"
           "/var/lib/sbctl"
+          "/var/lib/auto-cryptenroll"
           "/etc/mullvad-vpn"
           "/var/cache/mullvad-vpn"
         ];
@@ -333,6 +334,7 @@ in {
     ];
 
     pcscd.enable = true;
+    fwupd.enable = true;
     udisks2.enable = true;
     udev.packages = with pkgs; [yubikey-personalization];
     xserver.videoDrivers = ["modesetting"];
@@ -410,6 +412,11 @@ in {
     loader.systemd-boot.enable = lib.mkForce false;
     lanzaboote = {
       enable = true;
+      autoEnrollKeys = {
+        enable = true;
+        autoReboot = true;
+      };
+      autoGenerateKeys.enable = true;
       pkiBundle = "/persist/var/lib/sbctl";
     };
 
