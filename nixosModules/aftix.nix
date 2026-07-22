@@ -94,6 +94,8 @@ in {
         "f ${home}/.local/persist/home/aftix/.config/transmission/bandwidth-groups.json 0600 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config/Yubico 0755 aftix ${group} -"
         "d ${home}/.local/persist/home/aftix/.config/mozilla 0755 aftix ${group} -"
+        "d ${home}/.local/persist/home/aftix/.config/jj 0755 aftix ${group} -"
+        "d ${home}/.local/persist/home/aftix/.config/jj/repos 0755 aftix ${group} -"
       ];
       settings.preservation = let
         inherit (config.users.users.aftix) home group;
@@ -103,6 +105,10 @@ in {
           inherit group;
         };
         "${home}/.config/transmission".d = {
+          user = "aftix";
+          inherit group;
+        };
+        "${home}/.config/jj/repos".d = {
           user = "aftix";
           inherit group;
         };
