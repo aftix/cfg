@@ -331,7 +331,6 @@ in (
         }
 
         (import ./lib/mimetypes.nix lib self)
-        (import ./lib/hypr.nix lib self)
       ]
   )
 )

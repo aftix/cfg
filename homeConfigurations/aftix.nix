@@ -36,8 +36,6 @@
     };
 in {
   imports = [
-    ../hardware/hamilton-home.nix
-
     ../extraHomemanagerModules/sops.nix
 
     ../extraHomemanagerModules/aria2.nix
@@ -49,11 +47,9 @@ in {
 
     ../extraHomemanagerModules/email.nix
 
-    ../extraHomemanagerModules/hypr.nix
     ../extraHomemanagerModules/kitty.nix
     ../extraHomemanagerModules/media.nix
     ../extraHomemanagerModules/stylix.nix
-    ../extraHomemanagerModules/swaync.nix
     ../extraHomemanagerModules/transmission.nix
     ../extraHomemanagerModules/zathura.nix
   ];
@@ -67,6 +63,8 @@ in {
 
     packages = with pkgs; [
       attic-client
+
+      keepassxc
     ];
 
     sessionVariables.SSH_ASKPASS = "${pkgs.openssh-askpass}/libexec/gtk-ssh-askpass";

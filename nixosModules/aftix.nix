@@ -53,6 +53,8 @@ in {
         ".config/transmission/resume"
         ".config/Yubico"
         ".config/mozilla"
+        ".config/niri"
+        ".config/noctalia"
       ];
       files = [
         ".config/nushell/history.sqlite3"

@@ -12,7 +12,6 @@
     ../extraHomemanagerModules/firefox.nix
 
     ../extraHomemanagerModules/dunst.nix
-    ../extraHomemanagerModules/hypr.nix
     ../extraHomemanagerModules/kitty.nix
     ../extraHomemanagerModules/media.nix
     ../extraHomemanagerModules/stylix.nix
