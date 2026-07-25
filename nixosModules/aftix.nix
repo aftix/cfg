@@ -108,6 +108,10 @@ in {
           user = "aftix";
           inherit group;
         };
+        "${home}/.config/jj".d = {
+          user = "aftix";
+          inherit group;
+        };
         "${home}/.config/jj/repos".d = {
           user = "aftix";
           inherit group;
