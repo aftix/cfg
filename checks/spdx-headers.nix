@@ -18,26 +18,21 @@
     "LICENSES"
     "secrets"
     "npins"
+    ".github"
   ];
 
   excluded = [
     "npins"
     "LICENSE"
     "LICENSES"
-    ".gitignore"
-    ".reuse"
-    "flake.lock"
-    ".github/clean-space.bash"
-    ".github/deploy-node.bash"
-    ".github/install-attic.bash"
-    ".sops.yaml"
-    "extraHomemanagerModules/wallpaper.jpg"
-    "nixosConfigurations/fermi/www/attic_client_user_agent.patch"
-    "nixosModules/hostBlacklist/personal-blacklist"
-    "packages/coffeepaste/change-url-replace.patch"
-    "packages/youtube-operational-api/composer.json"
-    "packages/youtube-operational-api/composer.lock"
-    "packages/youtube-operational-api/composer.patch"
+    "\\.gitignore$"
+    "\\.reuse"
+    "id_[a-zA-Z0-9]+(\\.pub)?$"
+    "flake\\.lock"
+    "\\.sops\\.yaml"
+    "\\.(jpg|jpeg|png|gif)$"
+    "\\.(patch|lock(\\.hcl)?|json)$"
+    (lib.escapeRegex "nixosModules/hostBlacklist/personal-blacklist")
   ];
 
   pruneStr = lib.optionalString (prune != []) (lib.concatStringsSep " -o " (
@@ -45,32 +40,39 @@
   ));
 
   excludeRegex = lib.optionalString ((prune ++ excluded) != []) (lib.concatStringsSep "|" (
-    lib.map lib.escapeRegex (prune ++ excluded)
+    prune ++ excluded
   ));
 in
   lib.recursiveUpdate (runCommand "spdx-headers" {
       src = workspace;
       nativeBuildInputs = [findutils util-linux];
     } ''
-      CODEFILE="$(mktemp)"
-      echo 0 > "$CODEFILE"
+      local count
+      COUNTFILE="$(mktemp)"
+      echo 0 > "$COUNTFILE"
 
       find "$src" \
         ${pruneStr} \
         -o -type f \
         -exec bash -c '[[ -f "$1" ]] && echo "$1" || :' empty '{}' ';' \
         | sed "s@$src/@@" \
-        | grep -Ev ${lib.escapeShellArg "^(${excludeRegex})$"} \
+        | grep -Ev ${lib.escapeShellArg excludeRegex} \
         | while read -r file ; do
           if ! head -n1 "$src/$file" | grep '^# SPDX-FileType: SOURCE$' &>/dev/null ; then
             echo "File $file is missing SPDX header"
-            echo 1 > "$CODEFILE"
+            count="$(cat "$COUNTFILE")"
+            echo "$(( count + 1 ))" > "$COUNTFILE"
           fi
         done
 
-        EXITCODE="$(cat $CODEFILE)"
-        if ! [[ "$EXITCODE" = "0" ]]; then
-          exit "$EXITCODE"
+
+        count="$(cat "$COUNTFILE")"
+        if [[ "$count" -gt 1 ]]; then
+          echo "$count files missing SPDX header."
+          exit "$count"
+        elif [[ "$count" -gt 0 ]]; then
+          echo "1 file missing SPDX header."
+          exit 1
         fi
 
         touch "$out"
