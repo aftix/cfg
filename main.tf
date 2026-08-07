@@ -112,7 +112,7 @@ resource "hcloud_zone_rrset" "mail" {
   zone = hcloud_zone.main.name
   name = "@"
   type = "MX"
-  records = [for id in range(3): { value = "0 mxext${id + 1}.mailbox.org." }]
+  records = [for id in range(4): { value = "0 mxext${id + 1}.mailbox.org." }]
   ttl = 600
   change_protection = true
 }
