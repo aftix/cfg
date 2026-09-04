@@ -22,9 +22,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "041a999e8c1c5b731913855909e68d30ca69b8e0",
-      "url": "https://github.com/nix-community/home-manager/archive/041a999e8c1c5b731913855909e68d30ca69b8e0.tar.gz",
-      "hash": "sha256-J5+C9wsO0lhDyUalQzfplDbRjyHDYeEH5+9sdyXtwa8="
+      "revision": "8381f3481e4424ea0b53c9e7469c14da799d5822",
+      "url": "https://github.com/nix-community/home-manager/archive/8381f3481e4424ea0b53c9e7469c14da799d5822.tar.gz",
+      "hash": "sha256-qdXXcNrxlA35KvMH8yxlQen3pyJnV7yMDbv1QOOIOBQ="
     },
     "hostsBlacklist": {
       "type": "Git",
@@ -35,16 +35,16 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "87b9daba89ce3817466fe1b81fe61453e40fb17d",
-      "url": "https://github.com/Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist/archive/87b9daba89ce3817466fe1b81fe61453e40fb17d.tar.gz",
-      "hash": "sha256-XQOcFF1KtHgQpafLBvMFIZHb9DItRt64yT/csOxsHOY="
+      "revision": "daf34f679a2b976bb7c645236c3d3cf86c4d18c1",
+      "url": "https://github.com/Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist/archive/daf34f679a2b976bb7c645236c3d3cf86c4d18c1.tar.gz",
+      "hash": "sha256-jwxgr4/axoTy5IfnDSNsL+4AbaWNnsxpyx1U+h/+zVc="
     },
     "hydra": {
       "type": "MutableUrl",
       "update_url": "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz",
       "unpack": true,
-      "url": "https://s3.afnix.fr/lix-forgejo-repo-archive/repo-archive/74/eb/eb1559a3f36ff94a9e720e924c89e2ddee5ad7ab.tar.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GKd269690f28210b20c919b6fb%2F20260722%2Fglobal%2Fs3%2Faws4_request&X-Amz-Date=20260722T233018Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22hydra-main.tar.gz%22&X-Amz-Signature=20a7514e61681f71b5c1ca31ad545b89949a44b787d18bb681ba067f140e6110",
-      "hash": "sha256-/mdUe1GMK/ZbaRcXc0A6o+4+hwSXRd62h0AWjWKm6bY="
+      "url": "https://s3.afnix.fr/lix-forgejo-repo-archive/repo-archive/74/ef/ef873d07fea9ef88b0b14b70e569563336dddb4c.tar.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GKd269690f28210b20c919b6fb%2F20260905%2Fglobal%2Fs3%2Faws4_request&X-Amz-Date=20260905T200233Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22hydra-main.tar.gz%22&X-Amz-Signature=009c1eb7106ad5e4da02a5337806bbc39ed2a6a6d0f485452d6b45b6aa425772",
+      "hash": "sha256-StsVqgipV1tXCISWNs1sJKic8b9uA/tWuRRh3fBJRf0="
     },
     "lanzaboote": {
       "type": "GitRelease",
@@ -71,9 +71,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "aa2ef0dce7f028c38f121e0d1bb951395ca0bc73",
-      "url": "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/archive/aa2ef0dce7f028c38f121e0d1bb951395ca0bc73.tar.gz",
-      "hash": "sha256-37rf7mKaFMPnue6zyn+RwfJXMpVdbPqfQ1tXZ/5MpR0="
+      "revision": "ac412e235923d2b5e78e3eed15069dc6f6b2d521",
+      "url": "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/archive/ac412e235923d2b5e78e3eed15069dc6f6b2d521.tar.gz",
+      "hash": "sha256-io/tGBijOH5MVv8yXk6v3gwecRq+sw/X60/2Jerf0zM="
     },
     "nix-index-database": {
       "type": "Git",
@@ -84,9 +84,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "4f8d52a3598b0dc7db7a5e7b419e3edd9d1ecfdb",
-      "url": "https://github.com/nix-community/nix-index-database/archive/4f8d52a3598b0dc7db7a5e7b419e3edd9d1ecfdb.tar.gz",
-      "hash": "sha256-Q5kNLlWngt7TaIIZoxDKWMHjiSaNRVqr70FqWCRRfr4="
+      "revision": "dbb978fa87faf13398e90ccbc52c343d21c7dd6d",
+      "url": "https://github.com/nix-community/nix-index-database/archive/dbb978fa87faf13398e90ccbc52c343d21c7dd6d.tar.gz",
+      "hash": "sha256-n14luQo3F/ZLfCEHk1QieiI1nGnW92ZQZeZ0UIb0UMQ="
     },
     "nixcord": {
       "type": "Git",
@@ -97,9 +97,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "d9073fa1bdcb554792bca3dec3abd0b9e6beea35",
-      "url": "https://github.com/FlameFlag/nixcord/archive/d9073fa1bdcb554792bca3dec3abd0b9e6beea35.tar.gz",
-      "hash": "sha256-s7rrJT78swp8I7aEvOxsXO9R3ivgCHhMPX2KyrbjajY="
+      "revision": "473f107b6d7761efb8ac4985629be61ed2a5f882",
+      "url": "https://github.com/FlameFlag/nixcord/archive/473f107b6d7761efb8ac4985629be61ed2a5f882.tar.gz",
+      "hash": "sha256-RvMVTz0Oau57JiHltARhoOMQFIEKJ+kKEK/QiIb02rk="
     },
     "nixpkgs": {
       "type": "Git",
@@ -110,9 +110,9 @@
       },
       "branch": "nixos-unstable",
       "submodules": false,
-      "revision": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
-      "url": "https://github.com/NixOS/nixpkgs/archive/241313f4e8e508cb9b13278c2b0fa25b9ca27163.tar.gz",
-      "hash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU="
+      "revision": "801bef6abd86b91e51083066b83fb354a11fc640",
+      "url": "https://github.com/NixOS/nixpkgs/archive/801bef6abd86b91e51083066b83fb354a11fc640.tar.gz",
+      "hash": "sha256-hLD4l3QOGBQhkVp3mQ2lJ/YbEi99qUgKapb40KovZ88="
     },
     "nur": {
       "type": "Git",
@@ -123,9 +123,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "b6017989610faa532b48247f6ed95d2c738c41c4",
-      "url": "https://github.com/nix-community/NUR/archive/b6017989610faa532b48247f6ed95d2c738c41c4.tar.gz",
-      "hash": "sha256-cZHHy7YSq+TIuyoFAqIqqJU/vH2JZr2PG0S6l+6yJBM="
+      "revision": "ea21b2244b08de23d08fba724ac8a45bba157050",
+      "url": "https://github.com/nix-community/NUR/archive/ea21b2244b08de23d08fba724ac8a45bba157050.tar.gz",
+      "hash": "sha256-HvvCu1VSYzwx+ycFvTWHzHk/4RMguZ+7v1bOeiIkWmg="
     },
     "preservation": {
       "type": "Git",
@@ -149,9 +149,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "f1406619a3884cd5c47992a70b8b35c9c0fcb4c9",
-      "url": "https://github.com/Mic92/sops-nix/archive/f1406619a3884cd5c47992a70b8b35c9c0fcb4c9.tar.gz",
-      "hash": "sha256-aCWC8ngycU7OdJrU2+Je3qf+1a2ykuBvpPhZT/9tXMc="
+      "revision": "fbf759290e0cb0a98dfc813a4eb7d53ad1dacb57",
+      "url": "https://github.com/Mic92/sops-nix/archive/fbf759290e0cb0a98dfc813a4eb7d53ad1dacb57.tar.gz",
+      "hash": "sha256-gkSH8VUtCo6hnysNmb9DbTuDepH2t5pv+QWjP75xKAk="
     },
     "srvos": {
       "type": "Git",
@@ -162,9 +162,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "c4bc7f50aaa6b2e120603790d7ffc509c4584ab7",
-      "url": "https://github.com/numtide/srvos/archive/c4bc7f50aaa6b2e120603790d7ffc509c4584ab7.tar.gz",
-      "hash": "sha256-G4eW1fqbvS5nPSCgIlLISmBsXSkoffi8bNKlCstJaDM="
+      "revision": "184833614a224584f3f5d0cba2f1d5e6c3cf33fc",
+      "url": "https://github.com/numtide/srvos/archive/184833614a224584f3f5d0cba2f1d5e6c3cf33fc.tar.gz",
+      "hash": "sha256-xTt2tluB2MYmRdbpmPOlPN3j0w4UApiW5P0Zwp9ZnvI="
     },
     "stylix": {
       "type": "Git",
@@ -175,9 +175,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "66714e5ce44269ecc58c20d9196da8dbe1b27a31",
-      "url": "https://github.com/nix-community/stylix/archive/66714e5ce44269ecc58c20d9196da8dbe1b27a31.tar.gz",
-      "hash": "sha256-ndyanKzw90yX2nUVFmTuYqXidUNymtMfgmIHyNdhht0="
+      "revision": "5e3809851f486e7fc7e84b40f174c74b60ecc784",
+      "url": "https://github.com/nix-community/stylix/archive/5e3809851f486e7fc7e84b40f174c74b60ecc784.tar.gz",
+      "hash": "sha256-DkkJSBOXWV/mja5Vy8az5g1KpZlsbUwlmH0BsQhowaQ="
     }
   },
   "version": 8

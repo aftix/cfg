@@ -232,8 +232,6 @@ in {
     };
 
     security = {
-      unprivilegedUsernsClone = lib.mkDefault true;
-
       pam.services.systemd-run0 = {
         setEnvironment = true;
         pamMount = false;

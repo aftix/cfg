@@ -69,10 +69,7 @@ in {
       attic-client
     ];
 
-    sessionVariables = {
-      WEECHAT_HOME = dataHome + "/weechat";
-      SSH_ASKPASS = lib.getExe pkgs.ssh-askpass-fullscreen;
-    };
+    sessionVariables.SSH_ASKPASS = "${pkgs.openssh-askpass}/libexec/gtk-ssh-askpass";
   };
 
   services.swaync.enable = true;

@@ -27,8 +27,18 @@ in {
         rose-pine-cursor
       ];
 
-      programs = {
-        regreet = {
+      console.useXkbConfig = true;
+
+      services = {
+        greetd = {
+          enable = true;
+          settings = {
+            terminal.vt = 1;
+            default_session.command = "${lib.getExe pkgs.cage} -s -mextend -- ${lib.getExe config.services.displayManager.regreet.package}";
+          };
+        };
+
+        displayManager.regreet = {
           enable = true;
           settings = {
             commands = {
@@ -45,18 +55,6 @@ in {
               path = wallpaper;
               fit = "Contain";
             };
-          };
-        };
-      };
-
-      console.useXkbConfig = true;
-
-      services = {
-        greetd = {
-          enable = true;
-          settings = {
-            terminal.vt = 1;
-            default_session.command = "${lib.getExe pkgs.cage} -s -mextend -- ${lib.getExe config.programs.regreet.package}";
           };
         };
 
