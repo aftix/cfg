@@ -145,6 +145,9 @@ in {
       networkmanagerapplet
 
       sbctl
+
+      scarlett2
+      alsa-scarlett-gui
     ];
   };
 
