@@ -91,6 +91,7 @@ in {
             rm: {always_trash: true}
             history: {file_format: sqlite}
             completions: {algorithm: fuzzy}
+            edit_mode: helix
             use_kitty_protocol: ${
             if config.programs.kitty.enable
             then "true"
