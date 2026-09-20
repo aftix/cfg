@@ -9,9 +9,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "ff8702b4de27f72b4c78573dfb89ec74e36abdf1",
-      "url": "https://github.com/nix-community/disko/archive/ff8702b4de27f72b4c78573dfb89ec74e36abdf1.tar.gz",
-      "hash": "sha256-RxWs5ND31KzTG7wvMM+PMfUjyNpmIEr999lqNARaM5o="
+      "revision": "725ea35e410ad83be4931d1bff7e090eacaf3563",
+      "url": "https://github.com/nix-community/disko/archive/725ea35e410ad83be4931d1bff7e090eacaf3563.tar.gz",
+      "hash": "sha256-uZkBR7yHdIKUFB5SZdfgh1qkGfI3XmYmI/lTiquxbck="
     },
     "home-manager": {
       "type": "Git",
@@ -22,9 +22,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "9d485f74cd27d17126ee34cb31005c39d20f741f",
-      "url": "https://github.com/nix-community/home-manager/archive/9d485f74cd27d17126ee34cb31005c39d20f741f.tar.gz",
-      "hash": "sha256-mOvO5VvycuBtOUe5EYI54vrLsWe+2KF/82fmwKooe48="
+      "revision": "17903129f47656fa4d07e78ad87f6592ff4f2527",
+      "url": "https://github.com/nix-community/home-manager/archive/17903129f47656fa4d07e78ad87f6592ff4f2527.tar.gz",
+      "hash": "sha256-voJJ5IZR4w2149u2Jm/j2zifeWROlpZQ+JzmCQwjgn8="
     },
     "hostsBlacklist": {
       "type": "Git",
@@ -35,15 +35,15 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "378e4b95e09e97065c826d435313f280d15e6264",
-      "url": "https://github.com/Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist/archive/378e4b95e09e97065c826d435313f280d15e6264.tar.gz",
-      "hash": "sha256-bCjOSuXBNyl+F0AQ/2rjq5RT5m4FrLtbt+YsiYST+i8="
+      "revision": "e92c88e133de941636d0b516cf8c9eedcc27a5a7",
+      "url": "https://github.com/Ultimate-Hosts-Blacklist/Ultimate.Hosts.Blacklist/archive/e92c88e133de941636d0b516cf8c9eedcc27a5a7.tar.gz",
+      "hash": "sha256-Tj8elQdeCi0MZaFKNQiMqtLAi5Dg+IocK755DBRYgsA="
     },
     "hydra": {
       "type": "MutableUrl",
       "update_url": "https://git.lix.systems/lix-project/hydra/archive/main.tar.gz",
       "unpack": true,
-      "url": "https://s3.afnix.fr/lix-forgejo-repo-archive/repo-archive/74/ef/ef873d07fea9ef88b0b14b70e569563336dddb4c.tar.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GKd269690f28210b20c919b6fb%2F20260917%2Fglobal%2Fs3%2Faws4_request&X-Amz-Date=20260917T232324Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22hydra-main.tar.gz%22&X-Amz-Signature=c73a77b05aa588f1bfca10b7ebbdde2ead1c55c54ddc4cadad55d07334601852",
+      "url": "https://s3.afnix.fr/lix-forgejo-repo-archive/repo-archive/74/ef/ef873d07fea9ef88b0b14b70e569563336dddb4c.tar.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GKd269690f28210b20c919b6fb%2F20260920%2Fglobal%2Fs3%2Faws4_request&X-Amz-Date=20260920T001137Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22hydra-main.tar.gz%22&X-Amz-Signature=eade5d865e36cf185c46ed981856693aca7b2c273b40a9eeda73194efbbd835c",
       "hash": "sha256-StsVqgipV1tXCISWNs1sJKic8b9uA/tWuRRh3fBJRf0="
     },
     "lanzaboote": {
@@ -71,9 +71,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "c2dbdc107e3584be1679db949d5efaa6330bd74a",
-      "url": "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/archive/c2dbdc107e3584be1679db949d5efaa6330bd74a.tar.gz",
-      "hash": "sha256-RfNgyyftRKTe8BOvvPtc6YJ3CxE4l2tx8m0gVI50BqU="
+      "revision": "4ff8b50e4773019f8fcbae2fa0e97c08929dfe6e",
+      "url": "https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/archive/4ff8b50e4773019f8fcbae2fa0e97c08929dfe6e.tar.gz",
+      "hash": "sha256-VKaLk0CgetIN5qS4+0nELV0Dzdcxiz1+H12/Q4/JMB0="
     },
     "nix-index-database": {
       "type": "Git",
@@ -97,9 +97,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "65485f4b335e9a0e8a77d88a1595c70341919ac3",
-      "url": "https://github.com/FlameFlag/nixcord/archive/65485f4b335e9a0e8a77d88a1595c70341919ac3.tar.gz",
-      "hash": "sha256-o8AQKmjmTE/wWZ1eTTzCSG9ZUzWUq71ChL0nCycW1bI="
+      "revision": "b515da0ace7784f378ce423ece9041b42d5a1cc1",
+      "url": "https://github.com/FlameFlag/nixcord/archive/b515da0ace7784f378ce423ece9041b42d5a1cc1.tar.gz",
+      "hash": "sha256-V3V1x1Sl3W92uapp+7s8Kh67f0U962Zv797RMkoGdPo="
     },
     "nixpkgs": {
       "type": "Git",
@@ -110,9 +110,9 @@
       },
       "branch": "nixos-unstable",
       "submodules": false,
-      "revision": "b1b875982b17dabde9b4a37f3e229e74913e6db3",
-      "url": "https://github.com/NixOS/nixpkgs/archive/b1b875982b17dabde9b4a37f3e229e74913e6db3.tar.gz",
-      "hash": "sha256-zVxLZiSnmaaPLwnhj7pwmqe3axBg/C6nG5JZsJMh2g4="
+      "revision": "20b1ddd1aa5ace70c9468305030aa4f9ef79671b",
+      "url": "https://github.com/NixOS/nixpkgs/archive/20b1ddd1aa5ace70c9468305030aa4f9ef79671b.tar.gz",
+      "hash": "sha256-B44WL6h0XoLjJ41bUPJk0X5SDinLCII//6EcBLXKiJ0="
     },
     "nur": {
       "type": "Git",
@@ -123,9 +123,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "bde47912e6e03057e717244ded617947d81dd89a",
-      "url": "https://github.com/nix-community/NUR/archive/bde47912e6e03057e717244ded617947d81dd89a.tar.gz",
-      "hash": "sha256-HQczYakzbDaqA6/dhcTWEAxThe9InHAEWh0XhHYUeqE="
+      "revision": "45af3a58473cbfeb583608aefed73953ca946e0a",
+      "url": "https://github.com/nix-community/NUR/archive/45af3a58473cbfeb583608aefed73953ca946e0a.tar.gz",
+      "hash": "sha256-33meXf0hIqiFBYpCCPBAqxlRgOMLXnQEXXE3wcVcf7o="
     },
     "preservation": {
       "type": "Git",
@@ -149,9 +149,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "16954c1c360c3dc4d4b3b3e64df59f7e89452cb1",
-      "url": "https://github.com/Mic92/sops-nix/archive/16954c1c360c3dc4d4b3b3e64df59f7e89452cb1.tar.gz",
-      "hash": "sha256-kmlp8rPrvrXn58YiaANHKSWUijtUc7pwgerIywosOIM="
+      "revision": "166fc0d3f4fcd0dfc9af102ba8e85fa5dd04e5f7",
+      "url": "https://github.com/Mic92/sops-nix/archive/166fc0d3f4fcd0dfc9af102ba8e85fa5dd04e5f7.tar.gz",
+      "hash": "sha256-/Ql9UE21iDwOU/JdPV20yZtaMpGf+iD2EhIA1aAi540="
     },
     "srvos": {
       "type": "Git",
