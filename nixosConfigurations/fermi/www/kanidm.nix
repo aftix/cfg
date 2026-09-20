@@ -75,7 +75,7 @@ in {
           };
         };
 
-        package = pkgs.kanidmWithSecretProvisioning_1_10;
+        package = pkgs.kanidmWithSecretProvisioning_1_11;
         provision = {
           enable = true;
           adminPasswordFile = config.sops.secrets.kanidm_admin_password.path;
