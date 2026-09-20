@@ -253,7 +253,7 @@ export def --env jump_init [] {
       name: jump_back
       modifier: alt
       keycode: char_o
-      mode: [emacs vi_normal vi_insert]
+      mode: [emacs vi_normal vi_insert helix_normal helix_insert]
       event: [
         { edit: Clear }
         { send: executehostcommand cmd: "jump_back" }
@@ -264,7 +264,7 @@ export def --env jump_init [] {
       name: jump_pop
       modifier: shift_alt
       keycode: char_o
-      mode: [emacs vi_normal vi_insert]
+      mode: [emacs vi_normal vi_insert helix_normal helix_insert]
       event: [
         { edit: Clear }
         { send: executehostcommand cmd: "jump_pop" }
@@ -275,7 +275,7 @@ export def --env jump_init [] {
       name: jump_forward
       modifier: alt
       keycode: char_i
-      mode: [emacs vi_normal vi_insert]
+      mode: [emacs vi_normal vi_insert helix_normal helix_insert]
       event: [
         { edit: Clear }
         { send: executehostcommand cmd: "jump_forward" }
@@ -286,7 +286,7 @@ export def --env jump_init [] {
       name: insert_jump
       modifier: alt
       keycode: char_e
-      mode: [emacs vi_insert]
+      mode: [emacs vi_insert helix_insert]
       event: [
         { edit: Insertstring value: "(jump_pick)" }
       ]
@@ -295,7 +295,7 @@ export def --env jump_init [] {
       name: jump_pick
       modifier: alt
       keycode: char_j
-      mode: [emacs vi_normal vi_insert]
+      mode: [emacs vi_normal vi_insert helix_normal helix_insert]
       event: [
         { edit: Clear }
         { send: executehostcommand cmd: "jump_to_pick" }
@@ -306,21 +306,21 @@ export def --env jump_init [] {
       name: jump_mark
       modifier: alt_shift
       keycode: char_j
-      mode: [emacs vi_normal vi_insert]
+      mode: [emacs vi_normal vi_insert helix_normal helix_insert]
       event: { send: executehostcommand cmd: "jump_mark" }
     }
     {
       name: jump_unmark
       modifier: control_alt_shift
       keycode: char_j
-      mode: [emacs vi_normal vi_insert]
+      mode: [emacs vi_normal vi_insert helix_normal helix_insert]
       event: { send: executehostcommand cmd: "jump_unmark" }
     }
     {
       name: goto_bmark
       modifier: alt
       keycode: char_x
-      mode: [emacs vi_normal vi_insert]
+      mode: [emacs vi_normal vi_insert helix_normal helix_insert]
       event: [
         { edit: Clear }
         { send: executehostcommand cmd: "goto_bookmark" }
@@ -331,7 +331,7 @@ export def --env jump_init [] {
       name: insert_bmark
       modifier: shift_alt
       keycode: char_x
-      mode: [emacs vi_insert]
+      mode: [emacs vi_insert helix_insert]
       event: [
         { edit: Insertstring value: "(get_bookmark)" }
       ]
