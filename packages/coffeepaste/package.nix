@@ -8,7 +8,7 @@
   lix-update-script,
   pkg-config,
   glib,
-  gexiv2,
+  gexiv2_0_10,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "coffeepaste";
@@ -20,7 +20,7 @@ rustPlatform.buildRustPackage rec {
   };
   cargoHash = "sha256-ymD5SCUpIBHGx2ViOPJfZGFPEdev4VMfllkkTZUNKz8=";
 
-  buildInputs = [glib gexiv2];
+  buildInputs = [glib gexiv2_0_10];
   nativeBuildInputs = [pkg-config];
 
   patches = [./change-url-replace.patch];
