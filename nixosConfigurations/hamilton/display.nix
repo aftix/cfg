@@ -83,12 +83,10 @@
         extraPortals = [
           pkgs.xdg-desktop-portal-gnome
           pkgs.xdg-desktop-portal-gtk
-          pkgs.gnome-keyring
         ];
         configPackages = [
           pkgs.xdg-desktop-portal-gnome
           pkgs.xdg-desktop-portal-gtk
-          pkgs.gnome-keyring
         ];
         config.preferred.default = "xdg-desktop-portal-gnome";
       };
