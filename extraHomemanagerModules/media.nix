@@ -54,10 +54,7 @@
       ];
     };
 
-    mpd-mpris = {
-      enable = true;
-      mpd.useLocal = true;
-    };
+    mpd-mpris.enable = true;
   };
 
   sops.secrets.mpv = {};
