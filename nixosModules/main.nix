@@ -147,11 +147,10 @@ in {
     };
 
     nix = {
-      nixPath = ["/nix/var/nix/profiles/per-user/root/channels"];
-
       package = pkgs.lixPackageSets.git.lix;
 
       settings = {
+        nix-path = ["/nix/var/nix/profiles/per-user/root/channels"];
         accept-flake-config = false;
         use-xdg-base-directories = true;
         trusted-users = ["@wheel"];

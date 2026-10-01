@@ -33,6 +33,10 @@ in
     python314Packages = prev.python314Packages.overrideScope (_: pyprev: {
       pylsp-mypy = pyprev.pylsp-mypy.overridePythonAttrs {doCheck = false;};
     });
+
+    mergiraf = prev.mergiraf.overrideAttrs {
+      doCheck = false;
+    };
   }
   // aftixPkgs
   // aftixOverlayedPkgs

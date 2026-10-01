@@ -31,8 +31,6 @@ in {
         [
           aspell
           aspellDicts.en
-          aspellDicts.en-science
-          aspellDicts.en-computers
 
           jq
           # nix-doc

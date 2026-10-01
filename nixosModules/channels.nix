@@ -58,11 +58,11 @@ in {
 
     toTmpfilesSetting = mod: attrs:
       optionalAttrs attrs.enable {
-        ${toDir attrs}."L+".argument = builtins.toString mod;
+        ${toDir attrs}."L+".argument = toString mod;
       };
   in
     lib.mkIf cfg.enable {
-      nix.nixPath =
+      nix.settings.nix-path =
         (toNixPath "nixpkgs" cfg.nixpkgs)
         ++ (toNixPath "home-manager" cfg.home-manager);
 

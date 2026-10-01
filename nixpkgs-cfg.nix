@@ -18,7 +18,6 @@
         builtins.elem (inputs.nixpkgs.lib.getName pkg) [
           "discord"
           "pay-by-privacy"
-          "aspell-dict-en-science"
 
           "steam"
           "steam-unwrapped"
