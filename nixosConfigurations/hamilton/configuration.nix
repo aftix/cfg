@@ -424,11 +424,13 @@ in {
       pkiBundle = "/persist/var/lib/sbctl";
     };
 
-    initrd.systemd = rec {
-      storePaths = with pkgs; [
-        toybox
-        btrfs-progs
+    initrd.systemd = let
+      storePaths = [
+        pkgs.toybox
+        pkgs.btrfs-progs
       ];
+    in {
+      inherit storePaths;
 
       network.wait-online.enable = false;
 

@@ -8,10 +8,7 @@
 }: {
   users.users.root.hashedPasswordFile = null;
 
-  boot = {
-    kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
-    initrd.systemd.enable = lib.mkForce false;
-  };
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
 
   environment = {
     systemPackages = with pkgs; [

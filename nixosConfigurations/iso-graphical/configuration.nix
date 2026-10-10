@@ -5,9 +5,7 @@
   pkgs,
   lib,
   ...
-}: let
-  inherit (lib) mkForce;
-in {
+}: {
   users.users.root.hashedPasswordFile = null;
 
   aftix = {
@@ -15,10 +13,7 @@ in {
     sound = true;
   };
 
-  boot = {
-    kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
-    initrd.systemd.enable = lib.mkForce false;
-  };
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
 
   environment = {
     systemPackages = with pkgs; [
@@ -41,8 +36,8 @@ in {
     udisks2.enable = true;
 
     greetd.settings = {
-      initial_session.user = mkForce "nixos";
-      default_session.user = mkForce "nixos";
+      initial_session.user = lib.mkForce "nixos";
+      default_session.user = lib.mkForce "nixos";
     };
   };
 

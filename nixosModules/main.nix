@@ -217,13 +217,9 @@ in {
       plymouth = {
         enable = true;
         theme = "solar";
-        themePackages = [pkgs.plymouth];
       };
 
-      initrd.systemd = {
-        enable = true;
-        storePaths = with pkgs; [kbd];
-      };
+      initrd.systemd.storePaths = [pkgs.kbd];
 
       kernelPackages = pkgs.linuxPackages_latest;
       # Enable https://en.wikipedia.org/wiki/Magic_SysRq_key
