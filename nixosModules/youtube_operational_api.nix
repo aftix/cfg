@@ -122,7 +122,7 @@ in {
     services = {
       phpfpm.pools.${cfg.pool} = {
         inherit (cfg) user group;
-        phpPackage = pkgs.php82;
+        phpPackage = pkgs.php85;
         settings = {
           "listen.owner" = cfg.user;
           "listen.group" = cfg.group;

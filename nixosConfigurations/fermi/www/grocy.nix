@@ -178,7 +178,7 @@ in {
         user = "grocy";
         group = "grocy";
         inherit (cfg.phpfpm) settings;
-        phpPackage = pkgs.php82;
+        phpPackage = pkgs.php85;
         phpEnv = {
           GROCY_CONFIG_FILE = "/etc/grocy/config.php";
           GROCY_DB_FILE = "/var/lib/grocy/grocy.db";
