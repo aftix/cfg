@@ -72,7 +72,6 @@ in {
         default =
           (with pkgs.nushellPlugins; [query gstat polars formats skim])
           ++ (with pkgs; [
-            nu_plugin_compress
             nu_plugin_dns
             nu_plugin_explore
             nu_plugin_semver
