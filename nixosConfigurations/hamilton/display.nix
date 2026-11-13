@@ -11,7 +11,6 @@
   environment.systemPackages = with pkgs; [
     xdg-utils
     noctalia
-    pw-volume
     libnotify
     wl-clipboard
     xclip

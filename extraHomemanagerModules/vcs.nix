@@ -326,7 +326,6 @@ in {
         git = {
           colocate = true;
           private-commits = "local_only()";
-          sign-on-push = false;
         };
         signing.backend = "none";
 
@@ -337,6 +336,7 @@ in {
           log-graph-prioritize = "coalesce(megamerge(), trunk())";
           bookmark-advance-from = "closest_bookmarked_ancestor()";
           bookmark-advance-to = "heads_nonempty()";
+          git-sign-on-push = "none()";
         };
 
         revset-aliases = {
